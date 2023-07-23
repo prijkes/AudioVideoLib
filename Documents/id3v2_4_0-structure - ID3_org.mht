@@ -1,0 +1,2991 @@
+From: "Saved by Windows Internet Explorer 8"
+Subject: id3v2.4.0-structure - ID3.org
+Date: Fri, 13 May 2011 21:14:25 +0200
+MIME-Version: 1.0
+Content-Type: multipart/related;
+	type="text/html";
+	boundary="----=_NextPart_000_0051_01CC11B2.BC886CD0"
+X-MimeOLE: Produced By Microsoft MimeOLE V6.1.7601.17574
+
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_0051_01CC11B2.BC886CD0
+Content-Type: text/html;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://www.id3.org/id3v2.4.0-structure
+
+=EF=BB=BF<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><TITLE>id3v2.4.0-structure - ID3.org</TITLE>
+<META content=3Dtext/html;charset=3Dutf-8 http-equiv=3DContent-Type>
+<META name=3Drobots content=3Dindex,nofollow>
+<SCRIPT type=3Dtext/javascript=20
+src=3D"http://www.id3.org/wiki/common/js/common.js"></SCRIPT>
+
+<SCRIPT type=3Dtext/javascript>=0A=
+<!--// common functions=0A=
+=0A=
+// We keep here the state of the search box=0A=
+searchIsDisabled =3D false;=0A=
+=0A=
+function searchChange(e) {=0A=
+    // Update search buttons status according to search box content.=0A=
+    // Ignore empty or whitespace search term.=0A=
+    var value =3D e.value.replace(/\s+/, '');=0A=
+    if (value =3D=3D '' || searchIsDisabled) { =0A=
+        searchSetDisabled(true);=0A=
+    } else {=0A=
+        searchSetDisabled(false);=0A=
+    }=0A=
+}=0A=
+=0A=
+function searchSetDisabled(flag) {=0A=
+    // Enable or disable search=0A=
+    document.getElementById('fullsearch').disabled =3D flag;=0A=
+    document.getElementById('titlesearch').disabled =3D flag;=0A=
+}=0A=
+=0A=
+function searchFocus(e) {=0A=
+    // Update search input content on focus=0A=
+    if (e.value =3D=3D '=E6=A4=9C=E7=B4=A2') {=0A=
+        e.value =3D '';=0A=
+        e.className =3D '';=0A=
+        searchIsDisabled =3D false;=0A=
+    }=0A=
+}=0A=
+=0A=
+function searchBlur(e) {=0A=
+    // Update search input content on blur=0A=
+    if (e.value =3D=3D '') {=0A=
+        e.value =3D '=E6=A4=9C=E7=B4=A2';=0A=
+        e.className =3D 'disabled';=0A=
+        searchIsDisabled =3D true;=0A=
+    }=0A=
+}=0A=
+=0A=
+function actionsMenuInit(title) {=0A=
+    // Initialize action menu=0A=
+    for (i =3D 0; i < document.forms.length; i++) {=0A=
+        var form =3D document.forms[i];=0A=
+        if (form.className =3D=3D 'actionsmenu') {=0A=
+            // Check if this form needs update=0A=
+            var div =3D form.getElementsByTagName('div')[0];=0A=
+            var label =3D div.getElementsByTagName('label')[0];=0A=
+            if (label) {=0A=
+                // This is the first time: remove label and do buton.=0A=
+                div.removeChild(label);=0A=
+                var dobutton =3D div.getElementsByTagName('input')[0];=0A=
+                div.removeChild(dobutton);=0A=
+                // and add menu title=0A=
+                var select =3D div.getElementsByTagName('select')[0];=0A=
+                var item =3D document.createElement('option');=0A=
+                item.appendChild(document.createTextNode(title));=0A=
+                item.value =3D 'show';=0A=
+                select.insertBefore(item, select.options[0]);=0A=
+                select.selectedIndex =3D 0;=0A=
+            }=0A=
+        }=0A=
+    }=0A=
+}=0A=
+//-->=0A=
+</SCRIPT>
+<LINK rel=3Dstylesheet type=3Dtext/css=20
+href=3D"http://www.id3.org/wiki/mentalwealth_id3/css/common.css" =
+charset=3Dutf-8=20
+media=3Dall><LINK rel=3Dstylesheet type=3Dtext/css=20
+href=3D"http://www.id3.org/wiki/mentalwealth_id3/css/screen.css" =
+charset=3Dutf-8=20
+media=3Dscreen><LINK rel=3Dstylesheet type=3Dtext/css=20
+href=3D"http://www.id3.org/wiki/mentalwealth_id3/css/print.css" =
+charset=3Dutf-8=20
+media=3Dprint><LINK rel=3Dstylesheet type=3Dtext/css=20
+href=3D"http://www.id3.org/wiki/mentalwealth_id3/css/projection.css" =
+charset=3Dutf-8=20
+media=3Dprojection><LINK title=3D"ID3.org Recent Changes" =
+rel=3Dalternate=20
+type=3Dapplication/rss+xml=20
+href=3D"/RecentChanges?action=3Drss_rc&amp;ddiffs=3D1&amp;unique=3D1"><LI=
+NK rel=3DStart=20
+href=3D"/Home"><LINK =
+title=3DWiki=E3=83=9E=E3=83=BC=E3=82=AF=E3=82=A2=E3=83=83=E3=83=97 =
+rel=3DAlternate=20
+href=3D"/id3v2.4.0-structure?action=3Draw"><LINK =
+title=3D=E5=8D=B0=E5=88=B7=E3=83=93=E3=83=A5=E3=83=BC rel=3DAlternate=20
+href=3D"/id3v2.4.0-structure?action=3Dprint" media=3Dprint><LINK =
+rel=3DSearch=20
+href=3D"/FindPage"><LINK rel=3DIndex href=3D"/TitleIndex"><LINK =
+rel=3DGlossary=20
+href=3D"/WordIndex"><LINK rel=3DHelp href=3D"/HelpOnFormatting">
+<META name=3DGENERATOR content=3D"MSHTML 8.00.7601.17573"></HEAD>
+<BODY dir=3Dltr lang=3Dja>
+<CENTER>
+<SCRIPT type=3Dtext/javascript><!--=0A=
+google_ad_client =3D "pub-1408728402565238";=0A=
+google_ad_width =3D 728;=0A=
+google_ad_height =3D 90;=0A=
+google_ad_format =3D "728x90_as";=0A=
+google_ad_type =3D "text";=0A=
+google_ad_channel =3D "";=0A=
+google_color_border =3D "ffffff";=0A=
+google_color_bg =3D "FFFFFF";=0A=
+google_color_link =3D "DD6600";=0A=
+google_color_text =3D "000000";=0A=
+google_color_url =3D "DD6600";=0A=
+//--></SCRIPT>
+
+<SCRIPT type=3Dtext/javascript=20
+src=3D"http://pagead2.googlesyndication.com/pagead/show_ads.js">=0A=
+  </SCRIPT>
+</CENTER>
+<DIV id=3Dheader>
+<DIV id=3Dlogo><A href=3D"http://www.id3.org/Home"><IMG alt=3D"ID3.org =
+Logo"=20
+src=3D"http://www.id3.org/id3v2.gif">&nbsp;&nbsp;The Audience is=20
+informed</A></DIV></DIV>
+<DIV id=3Dsidebar>
+<DIV class=3Dsidepanel>
+<H1>=E6=A4=9C=E7=B4=A2</H1>
+<FORM id=3Dsearchform method=3Dget action=3D"">
+<DIV><INPUT value=3Dfullsearch type=3Dhidden name=3Daction> <INPUT =
+value=3D180=20
+type=3Dhidden name=3Dcontext> <LABEL =
+for=3Dsearchinput>=E6=A4=9C=E7=B4=A2:</LABEL> <INPUT=20
+onblur=3DsearchBlur(this) id=3Dsearchinput onfocus=3DsearchFocus(this)=20
+onkeyup=3DsearchChange(this) onchange=3DsearchChange(this) alt=3DSearch =
+size=3D20=20
+type=3Dtext name=3Dvalue> <BR><INPUT id=3Dtitlesearch =
+value=3D=E3=82=BF=E3=82=A4=E3=83=88=E3=83=AB alt=3D"Search Titles" =
+type=3Dsubmit name=3Dtitlesearch>=20
+<INPUT id=3Dfullsearch value=3D=E3=83=86=E3=82=AD=E3=82=B9=E3=83=88 =
+alt=3D"Search Full Text" type=3Dsubmit name=3Dfullsearch>=20
+</DIV></FORM>
+<SCRIPT type=3Dtext/javascript>=0A=
+<!--// Initialize search form=0A=
+var f =3D document.getElementById('searchform');=0A=
+f.getElementsByTagName('label')[0].style.display =3D 'none';=0A=
+var e =3D document.getElementById('searchinput');=0A=
+searchChange(e);=0A=
+searchBlur(e);=0A=
+//-->=0A=
+</SCRIPT>
+</DIV>
+<DIV class=3Dsidepanel>
+<H1>Navigation</H1>
+<UL id=3Dnavibar>
+  <LI class=3Dwikilink><A href=3D"http://www.id3.org/Home">Home</A></LI>
+  <LI class=3Dwikilink><A=20
+  href=3D"http://www.id3.org/Introduction">Introduction</A></LI>
+  <LI class=3Dwikilink><A=20
+  href=3D"http://www.id3.org/Developer_Information">Developer =
+Information</A></LI>
+  <LI class=3Dwikilink><A=20
+  href=3D"http://www.id3.org/Implementations">Implementations</A></LI>
+  <LI class=3Dwikilink><A =
+href=3D"http://www.id3.org/Compliance_Issues">Compliance=20
+  Issues</A></LI>
+  <LI class=3Dwikilink><A=20
+  href=3D"http://www.id3.org/Contributors">Contributors</A></LI>
+  <LI class=3Dwikilink><A href=3D"http://www.id3.org/FAQ">FAQ</A></LI>
+  <LI class=3Dwikilink><A=20
+  href=3D"http://www.id3.org/MailingList">MailingList</A></LI>
+  <LI class=3Dwikilink><A=20
+  href=3D"http://www.id3.org/RecentChanges">RecentChanges</A></LI>
+  <LI class=3Dwikilink><A =
+href=3D"http://www.id3.org/FindPage">FindPage</A></LI>
+  <LI class=3Dwikilink><A=20
+  href=3D"http://www.id3.org/HelpContents">HelpContents</A></LI>
+  <LI class=3Dcurrent><A=20
+  =
+href=3D"http://www.id3.org/id3v2.4.0-structure">id3v2.4.0-structure</A></=
+LI></UL></DIV>
+<DIV class=3Dsidepanel>
+<H1>Recent</H1></DIV>
+<DIV class=3Dsidepanel>
+<H1>This Page</H1>
+<UL class=3Deditbar>
+  <LI><A =
+href=3D"http://www.id3.org/id3v2.4.0-structure?action=3Ddiff">show=20
+  changes</A></LI>
+  <LI><A =
+href=3D"http://www.id3.org/id3v2.4.0-structure?action=3Dinfo">get=20
+  info</A></LI>
+  <LI><A =
+href=3D"http://www.id3.org/id3v2.4.0-structure?action=3Draw">show raw=20
+  text</A></LI>
+  <LI><A =
+href=3D"http://www.id3.org/id3v2.4.0-structure?action=3Dprint">show =
+print=20
+  view</A></LI>
+  <LI><A =
+href=3D"http://www.id3.org/id3v2.4.0-structure?action=3Drefresh">delete=20
+  cache</A></LI>
+  <LI><A =
+href=3D"http://www.id3.org/id3v2.4.0-structure?action=3DAttachFile">attac=
+h=20
+  file</A></LI>
+  <LI><A =
+href=3D"http://www.id3.org/id3v2.4.0-structure?action=3DSpellCheck">check=
+=20
+  spelling</A></LI>
+  <LI><A =
+href=3D"http://www.id3.org/id3v2.4.0-structure?action=3DLikePages">show=20
+  like pages</A></LI>
+  <LI><A =
+href=3D"http://www.id3.org/id3v2.4.0-structure?action=3DLocalSiteMap">sho=
+w=20
+  local site map</A></LI></UL></DIV>
+<DIV class=3Dsidepanel>
+<H1>More Actions</H1>
+<UL class=3Deditbar>
+  <LI><A=20
+  =
+href=3D"http://www.id3.org/id3v2.4.0-structure?action=3DDespam">despam</A=
+></LI>
+  <LI><A=20
+  =
+href=3D"http://www.id3.org/id3v2.4.0-structure?action=3DSubscribeUser">su=
+bscribe=20
+  user</A></LI>
+  <LI><A=20
+  =
+href=3D"http://www.id3.org/id3v2.4.0-structure?action=3DRenderAsDocbook">=
+render as=20
+  docbook</A></LI>
+  <LI><A=20
+  =
+href=3D"http://www.id3.org/id3v2.4.0-structure?action=3DPackagePages">pac=
+kage=20
+  pages</A></LI>
+  <LI><A =
+href=3D"http://www.id3.org/id3v2.4.0-structure?action=3DMyPages">my=20
+  pages</A></LI></UL></DIV>
+<DIV class=3Dsidepanel>
+<H1>=E3=83=A6=E3=83=BC=E3=82=B6</H1>
+<UL id=3Dusername>
+  <LI><A id=3Dlogin=20
+  =
+href=3D"http://www.id3.org/id3v2.4.0-structure?action=3Dlogin">=E3=83=AD=E3=
+=82=B0=E3=82=A4=E3=83=B3</A></LI></UL></DIV>
+<UL id=3Dcredits>
+  <LI><A href=3D"http://moinmoin.wikiwikiweb.de/">MoinMoin =
+Powered</A></LI>
+  <LI><A href=3D"http://www.python.org/">Python Powered</A></LI>
+  <LI><A href=3D"http://validator.w3.org/check?uri=3Dreferer">Valid HTML =
+
+  4.01</A></LI></UL></DIV>
+<DIV dir=3Dltr id=3Dpage lang=3Den>
+<DIV dir=3Dltr id=3Dcontent lang=3Den><SPAN id=3Dtop =
+class=3Danchor></SPAN><SPAN id=3Dline-2=20
+class=3Danchor></SPAN>
+<P class=3Dline867><SPAN id=3Dline-3 class=3Danchor></SPAN><PRE>Informal =
+standard                                             M. Nilsson
+<SPAN id=3Dline-4 class=3Danchor></SPAN>Document: =
+id3v2.4.0-structure.txt                      1st November 2000
+<SPAN id=3Dline-5 class=3Danchor></SPAN>
+<SPAN id=3Dline-6 class=3Danchor></SPAN>
+<SPAN id=3Dline-7 class=3Danchor></SPAN>                 ID3 tag version =
+2.4.0 - Main Structure
+<SPAN id=3Dline-8 class=3Danchor></SPAN>
+<SPAN id=3Dline-9 class=3Danchor></SPAN>Status of this document
+<SPAN id=3Dline-10 class=3Danchor></SPAN>
+<SPAN id=3Dline-11 class=3Danchor></SPAN>   This document is an informal =
+standard and replaces the ID3v2.3.0
+<SPAN id=3Dline-12 class=3Danchor></SPAN>   standard [ID3v2]. A formal =
+standard will use another revision number
+<SPAN id=3Dline-13 class=3Danchor></SPAN>   even if the content is =
+identical to document. The contents in this
+<SPAN id=3Dline-14 class=3Danchor></SPAN>   document may change for =
+clarifications but never for added or altered
+<SPAN id=3Dline-15 class=3Danchor></SPAN>   functionallity.
+<SPAN id=3Dline-16 class=3Danchor></SPAN>
+<SPAN id=3Dline-17 class=3Danchor></SPAN>   Distribution of this =
+document is unlimited.
+<SPAN id=3Dline-18 class=3Danchor></SPAN>
+<SPAN id=3Dline-19 class=3Danchor></SPAN>
+<SPAN id=3Dline-20 class=3Danchor></SPAN>Abstract
+<SPAN id=3Dline-21 class=3Danchor></SPAN>
+<SPAN id=3Dline-22 class=3Danchor></SPAN>   This document describes the =
+main structure of ID3v2.4.0, which is a
+<SPAN id=3Dline-23 class=3Danchor></SPAN>   revised version of the ID3v2 =
+informal standard [ID3v2] version
+<SPAN id=3Dline-24 class=3Danchor></SPAN>   2.3.0. The ID3v2 offers a =
+flexible way of storing audio meta
+<SPAN id=3Dline-25 class=3Danchor></SPAN>   information within the audio =
+file itself. The information may be
+<SPAN id=3Dline-26 class=3Danchor></SPAN>   technical information, such =
+as equalisation curves, as well as
+<SPAN id=3Dline-27 class=3Danchor></SPAN>   title, performer, copyright =
+etc.
+<SPAN id=3Dline-28 class=3Danchor></SPAN>
+<SPAN id=3Dline-29 class=3Danchor></SPAN>   ID3v2.4.0 is meant to be as =
+close as possible to ID3v2.3.0 in order
+<SPAN id=3Dline-30 class=3Danchor></SPAN>   to allow for implementations =
+to be revised as easily as possible.
+<SPAN id=3Dline-31 class=3Danchor></SPAN>
+<SPAN id=3Dline-32 class=3Danchor></SPAN>
+<SPAN id=3Dline-33 class=3Danchor></SPAN>1.   Table of contents
+<SPAN id=3Dline-34 class=3Danchor></SPAN>
+<SPAN id=3Dline-35 class=3Danchor></SPAN>        Status of this document
+<SPAN id=3Dline-36 class=3Danchor></SPAN>        Abstract
+<SPAN id=3Dline-37 class=3Danchor></SPAN>   1.   Table of contents
+<SPAN id=3Dline-38 class=3Danchor></SPAN>   2.   Conventions in this =
+document
+<SPAN id=3Dline-39 class=3Danchor></SPAN>   2.   Standard overview
+<SPAN id=3Dline-40 class=3Danchor></SPAN>   3.   ID3v2 overview
+<SPAN id=3Dline-41 class=3Danchor></SPAN>     3.1.   ID3v2 header
+<SPAN id=3Dline-42 class=3Danchor></SPAN>     3.2.   ID3v2 extended =
+header
+<SPAN id=3Dline-43 class=3Danchor></SPAN>     3.3.   Padding
+<SPAN id=3Dline-44 class=3Danchor></SPAN>     3.4.   ID3v2 footer
+<SPAN id=3Dline-45 class=3Danchor></SPAN>   4.   ID3v2 frames overview
+<SPAN id=3Dline-46 class=3Danchor></SPAN>     4.1.   Frame header flags
+<SPAN id=3Dline-47 class=3Danchor></SPAN>       4.1.1. Frame status =
+flags
+<SPAN id=3Dline-48 class=3Danchor></SPAN>       4.1.2. Frame format =
+flags
+<SPAN id=3Dline-49 class=3Danchor></SPAN>   5.   Tag location
+<SPAN id=3Dline-50 class=3Danchor></SPAN>   6.   Unsynchronisation
+<SPAN id=3Dline-51 class=3Danchor></SPAN>     6.1.   The =
+unsynchronisation scheme
+<SPAN id=3Dline-52 class=3Danchor></SPAN>     6.2.   Synchsafe integers
+<SPAN id=3Dline-53 class=3Danchor></SPAN>   7.   Copyright
+<SPAN id=3Dline-54 class=3Danchor></SPAN>   8.   References
+<SPAN id=3Dline-55 class=3Danchor></SPAN>   9.   Author's Address
+<SPAN id=3Dline-56 class=3Danchor></SPAN>
+<SPAN id=3Dline-57 class=3Danchor></SPAN>
+<SPAN id=3Dline-58 class=3Danchor></SPAN>2.   Conventions in this =
+document
+<SPAN id=3Dline-59 class=3Danchor></SPAN>
+<SPAN id=3Dline-60 class=3Danchor></SPAN>   Text within "" is a text =
+string exactly as it appears in a tag.
+<SPAN id=3Dline-61 class=3Danchor></SPAN>   Numbers preceded with $ are =
+hexadecimal and numbers preceded with %
+<SPAN id=3Dline-62 class=3Danchor></SPAN>   are binary. $xx is used to =
+indicate a byte with unknown content. %x
+<SPAN id=3Dline-63 class=3Danchor></SPAN>   is used to indicate a bit =
+with unknown content. The most significant
+<SPAN id=3Dline-64 class=3Danchor></SPAN>   bit (MSB) of a byte is =
+called 'bit 7' and the least significant bit
+<SPAN id=3Dline-65 class=3Danchor></SPAN>   (LSB) is called 'bit 0'.
+<SPAN id=3Dline-66 class=3Danchor></SPAN>
+<SPAN id=3Dline-67 class=3Danchor></SPAN>   A tag is the whole tag =
+described in this document. A frame is a block
+<SPAN id=3Dline-68 class=3Danchor></SPAN>   of information in the tag. =
+The tag consists of a header, frames and
+<SPAN id=3Dline-69 class=3Danchor></SPAN>   optional padding. A field is =
+a piece of information; one value, a
+<SPAN id=3Dline-70 class=3Danchor></SPAN>   string etc. A numeric string =
+is a string that consists of the
+<SPAN id=3Dline-71 class=3Danchor></SPAN>   characters "0123456789" =
+only.
+<SPAN id=3Dline-72 class=3Danchor></SPAN>
+<SPAN id=3Dline-73 class=3Danchor></SPAN>   The key words "MUST", "MUST =
+NOT", "REQUIRED", "SHALL", "SHALL NOT",
+<SPAN id=3Dline-74 class=3Danchor></SPAN>   "SHOULD", "SHOULD NOT", =
+"RECOMMENDED",  "MAY", and "OPTIONAL" in this
+<SPAN id=3Dline-75 class=3Danchor></SPAN>   document are to be =
+interpreted as described in RFC 2119 [KEYWORDS].
+<SPAN id=3Dline-76 class=3Danchor></SPAN>
+<SPAN id=3Dline-77 class=3Danchor></SPAN>
+<SPAN id=3Dline-78 class=3Danchor></SPAN>3.   ID3v2 overview
+<SPAN id=3Dline-79 class=3Danchor></SPAN>
+<SPAN id=3Dline-80 class=3Danchor></SPAN>   ID3v2 is a general tagging =
+format for audio, which makes it possible
+<SPAN id=3Dline-81 class=3Danchor></SPAN>   to store meta data about the =
+audio inside the audio file itself. The
+<SPAN id=3Dline-82 class=3Danchor></SPAN>   ID3 tag described in this =
+document is mainly targeted at files
+<SPAN id=3Dline-83 class=3Danchor></SPAN>   encoded with MPEG-1/2 layer =
+I, MPEG-1/2 layer II, MPEG-1/2 layer III
+<SPAN id=3Dline-84 class=3Danchor></SPAN>   and MPEG-2.5, but may work =
+with other types of encoded audio or as a
+<SPAN id=3Dline-85 class=3Danchor></SPAN>   stand alone format for audio =
+meta data.
+<SPAN id=3Dline-86 class=3Danchor></SPAN>
+<SPAN id=3Dline-87 class=3Danchor></SPAN>   ID3v2 is designed to be as =
+flexible and expandable as possible to
+<SPAN id=3Dline-88 class=3Danchor></SPAN>   meet new meta information =
+needs that might arise. To achieve that
+<SPAN id=3Dline-89 class=3Danchor></SPAN>   ID3v2 is constructed as a =
+container for several information blocks,
+<SPAN id=3Dline-90 class=3Danchor></SPAN>   called frames, whose format =
+need not be known to the software that
+<SPAN id=3Dline-91 class=3Danchor></SPAN>   encounters them. At the =
+start of every frame is an unique and
+<SPAN id=3Dline-92 class=3Danchor></SPAN>   predefined identifier, a =
+size descriptor that allows software to skip
+<SPAN id=3Dline-93 class=3Danchor></SPAN>   unknown frames and a flags =
+field. The flags describes encoding
+<SPAN id=3Dline-94 class=3Danchor></SPAN>   details and if the frame =
+should remain in the tag, should it be
+<SPAN id=3Dline-95 class=3Danchor></SPAN>   unknown to the software, if =
+the file is altered.
+<SPAN id=3Dline-96 class=3Danchor></SPAN>
+<SPAN id=3Dline-97 class=3Danchor></SPAN>   The bitorder in ID3v2 is =
+most significant bit first (MSB). The
+<SPAN id=3Dline-98 class=3Danchor></SPAN>   byteorder in multibyte =
+numbers is most significant byte first (e.g.
+<SPAN id=3Dline-99 class=3Danchor></SPAN>   $12345678 would be encoded =
+$12 34 56 78), also known as big endian
+<SPAN id=3Dline-100 class=3Danchor></SPAN>   and network byte order.
+<SPAN id=3Dline-101 class=3Danchor></SPAN>
+<SPAN id=3Dline-102 class=3Danchor></SPAN>   Overall tag structure:
+<SPAN id=3Dline-103 class=3Danchor></SPAN>
+<SPAN id=3Dline-104 class=3Danchor></SPAN>     =
++-----------------------------+
+<SPAN id=3Dline-105 class=3Danchor></SPAN>     |      Header (10 bytes)  =
+    |
+<SPAN id=3Dline-106 class=3Danchor></SPAN>     =
++-----------------------------+
+<SPAN id=3Dline-107 class=3Danchor></SPAN>     |       Extended Header   =
+    |
+<SPAN id=3Dline-108 class=3Danchor></SPAN>     | (variable length, =
+OPTIONAL) |
+<SPAN id=3Dline-109 class=3Danchor></SPAN>     =
++-----------------------------+
+<SPAN id=3Dline-110 class=3Danchor></SPAN>     |   Frames (variable =
+length)  |
+<SPAN id=3Dline-111 class=3Danchor></SPAN>     =
++-----------------------------+
+<SPAN id=3Dline-112 class=3Danchor></SPAN>     |           Padding       =
+    |
+<SPAN id=3Dline-113 class=3Danchor></SPAN>     | (variable length, =
+OPTIONAL) |
+<SPAN id=3Dline-114 class=3Danchor></SPAN>     =
++-----------------------------+
+<SPAN id=3Dline-115 class=3Danchor></SPAN>     | Footer (10 bytes, =
+OPTIONAL) |
+<SPAN id=3Dline-116 class=3Danchor></SPAN>     =
++-----------------------------+
+<SPAN id=3Dline-117 class=3Danchor></SPAN>
+<SPAN id=3Dline-118 class=3Danchor></SPAN>   In general, padding and =
+footer are mutually exclusive. See details in
+<SPAN id=3Dline-119 class=3Danchor></SPAN>   sections 3.3, 3.4 and 5.
+<SPAN id=3Dline-120 class=3Danchor></SPAN>
+<SPAN id=3Dline-121 class=3Danchor></SPAN>
+<SPAN id=3Dline-122 class=3Danchor></SPAN>3.1.   ID3v2 header
+<SPAN id=3Dline-123 class=3Danchor></SPAN>
+<SPAN id=3Dline-124 class=3Danchor></SPAN>   The first part of the ID3v2 =
+tag is the 10 byte tag header, laid out
+<SPAN id=3Dline-125 class=3Danchor></SPAN>   as follows:
+<SPAN id=3Dline-126 class=3Danchor></SPAN>
+<SPAN id=3Dline-127 class=3Danchor></SPAN>     ID3v2/file identifier     =
+ "ID3"
+<SPAN id=3Dline-128 class=3Danchor></SPAN>     ID3v2 version             =
+ $04 00
+<SPAN id=3Dline-129 class=3Danchor></SPAN>     ID3v2 flags               =
+ %abcd0000
+<SPAN id=3Dline-130 class=3Danchor></SPAN>     ID3v2 size             4 =
+* %0xxxxxxx
+<SPAN id=3Dline-131 class=3Danchor></SPAN>
+<SPAN id=3Dline-132 class=3Danchor></SPAN>   The first three bytes of =
+the tag are always "ID3", to indicate that
+<SPAN id=3Dline-133 class=3Danchor></SPAN>   this is an ID3v2 tag, =
+directly followed by the two version bytes. The
+<SPAN id=3Dline-134 class=3Danchor></SPAN>   first byte of ID3v2 version =
+is its major version, while the second
+<SPAN id=3Dline-135 class=3Danchor></SPAN>   byte is its revision =
+number. In this case this is ID3v2.4.0. All
+<SPAN id=3Dline-136 class=3Danchor></SPAN>   revisions are backwards =
+compatible while major versions are not. If
+<SPAN id=3Dline-137 class=3Danchor></SPAN>   software with ID3v2.4.0 and =
+below support should encounter version
+<SPAN id=3Dline-138 class=3Danchor></SPAN>   five or higher it should =
+simply ignore the whole tag. Version or
+<SPAN id=3Dline-139 class=3Danchor></SPAN>   revision will never be $FF.
+<SPAN id=3Dline-140 class=3Danchor></SPAN>
+<SPAN id=3Dline-141 class=3Danchor></SPAN>   The version is followed by =
+the ID3v2 flags field, of which currently
+<SPAN id=3Dline-142 class=3Danchor></SPAN>   four flags are used.
+<SPAN id=3Dline-143 class=3Danchor></SPAN>
+<SPAN id=3Dline-144 class=3Danchor></SPAN>
+<SPAN id=3Dline-145 class=3Danchor></SPAN>   a - Unsynchronisation
+<SPAN id=3Dline-146 class=3Danchor></SPAN>
+<SPAN id=3Dline-147 class=3Danchor></SPAN>     Bit 7 in the 'ID3v2 =
+flags' indicates whether or not
+<SPAN id=3Dline-148 class=3Danchor></SPAN>     unsynchronisation is =
+applied on all frames (see section 6.1 for
+<SPAN id=3Dline-149 class=3Danchor></SPAN>     details); a set bit =
+indicates usage.
+<SPAN id=3Dline-150 class=3Danchor></SPAN>
+<SPAN id=3Dline-151 class=3Danchor></SPAN>
+<SPAN id=3Dline-152 class=3Danchor></SPAN>   b - Extended header
+<SPAN id=3Dline-153 class=3Danchor></SPAN>
+<SPAN id=3Dline-154 class=3Danchor></SPAN>     The second bit (bit 6) =
+indicates whether or not the header is
+<SPAN id=3Dline-155 class=3Danchor></SPAN>     followed by an extended =
+header. The extended header is described in
+<SPAN id=3Dline-156 class=3Danchor></SPAN>     section 3.2. A set bit =
+indicates the presence of an extended
+<SPAN id=3Dline-157 class=3Danchor></SPAN>     header.
+<SPAN id=3Dline-158 class=3Danchor></SPAN>
+<SPAN id=3Dline-159 class=3Danchor></SPAN>
+<SPAN id=3Dline-160 class=3Danchor></SPAN>   c - Experimental indicator
+<SPAN id=3Dline-161 class=3Danchor></SPAN>
+<SPAN id=3Dline-162 class=3Danchor></SPAN>     The third bit (bit 5) is =
+used as an 'experimental indicator'. This
+<SPAN id=3Dline-163 class=3Danchor></SPAN>     flag SHALL always be set =
+when the tag is in an experimental stage.
+<SPAN id=3Dline-164 class=3Danchor></SPAN>
+<SPAN id=3Dline-165 class=3Danchor></SPAN>
+<SPAN id=3Dline-166 class=3Danchor></SPAN>   d - Footer present
+<SPAN id=3Dline-167 class=3Danchor></SPAN>
+<SPAN id=3Dline-168 class=3Danchor></SPAN>     Bit 4 indicates that a =
+footer (section 3.4) is present at the very
+<SPAN id=3Dline-169 class=3Danchor></SPAN>     end of the tag. A set bit =
+indicates the presence of a footer.
+<SPAN id=3Dline-170 class=3Danchor></SPAN>
+<SPAN id=3Dline-171 class=3Danchor></SPAN>
+<SPAN id=3Dline-172 class=3Danchor></SPAN>   All the other flags MUST be =
+cleared. If one of these undefined flags
+<SPAN id=3Dline-173 class=3Danchor></SPAN>   are set, the tag might not =
+be readable for a parser that does not
+<SPAN id=3Dline-174 class=3Danchor></SPAN>   know the flags function.
+<SPAN id=3Dline-175 class=3Danchor></SPAN>
+<SPAN id=3Dline-176 class=3Danchor></SPAN>   The ID3v2 tag size is =
+stored as a 32 bit synchsafe integer (section
+<SPAN id=3Dline-177 class=3Danchor></SPAN>   6.2), making a total of 28 =
+effective bits (representing up to 256MB).
+<SPAN id=3Dline-178 class=3Danchor></SPAN>
+<SPAN id=3Dline-179 class=3Danchor></SPAN>   The ID3v2 tag size is the =
+sum of the byte length of the extended
+<SPAN id=3Dline-180 class=3Danchor></SPAN>   header, the padding and the =
+frames after unsynchronisation. If a
+<SPAN id=3Dline-181 class=3Danchor></SPAN>   footer is present this =
+equals to ('total size' - 20) bytes, otherwise
+<SPAN id=3Dline-182 class=3Danchor></SPAN>   ('total size' - 10) bytes.
+<SPAN id=3Dline-183 class=3Danchor></SPAN>
+<SPAN id=3Dline-184 class=3Danchor></SPAN>   An ID3v2 tag can be =
+detected with the following pattern:
+<SPAN id=3Dline-185 class=3Danchor></SPAN>     $49 44 33 yy yy xx zz zz =
+zz zz
+<SPAN id=3Dline-186 class=3Danchor></SPAN>   Where yy is less than $FF, =
+xx is the 'flags' byte and zz is less than
+<SPAN id=3Dline-187 class=3Danchor></SPAN>   $80.
+<SPAN id=3Dline-188 class=3Danchor></SPAN>
+<SPAN id=3Dline-189 class=3Danchor></SPAN>
+<SPAN id=3Dline-190 class=3Danchor></SPAN>3.2. Extended header
+<SPAN id=3Dline-191 class=3Danchor></SPAN>
+<SPAN id=3Dline-192 class=3Danchor></SPAN>   The extended header =
+contains information that can provide further
+<SPAN id=3Dline-193 class=3Danchor></SPAN>   insight in the structure of =
+the tag, but is not vital to the correct
+<SPAN id=3Dline-194 class=3Danchor></SPAN>   parsing of the tag =
+information; hence the extended header is
+<SPAN id=3Dline-195 class=3Danchor></SPAN>   optional.
+<SPAN id=3Dline-196 class=3Danchor></SPAN>
+<SPAN id=3Dline-197 class=3Danchor></SPAN>     Extended header size   4 =
+* %0xxxxxxx
+<SPAN id=3Dline-198 class=3Danchor></SPAN>     Number of flag bytes      =
+ $01
+<SPAN id=3Dline-199 class=3Danchor></SPAN>     Extended Flags            =
+ $xx
+<SPAN id=3Dline-200 class=3Danchor></SPAN>
+<SPAN id=3Dline-201 class=3Danchor></SPAN>   Where the 'Extended header =
+size' is the size of the whole extended
+<SPAN id=3Dline-202 class=3Danchor></SPAN>   header, stored as a 32 bit =
+synchsafe integer. An extended header can
+<SPAN id=3Dline-203 class=3Danchor></SPAN>   thus never have a size of =
+fewer than six bytes.
+<SPAN id=3Dline-204 class=3Danchor></SPAN>
+<SPAN id=3Dline-205 class=3Danchor></SPAN>   The extended flags field, =
+with its size described by 'number of flag
+<SPAN id=3Dline-206 class=3Danchor></SPAN>   bytes', is defined as:
+<SPAN id=3Dline-207 class=3Danchor></SPAN>
+<SPAN id=3Dline-208 class=3Danchor></SPAN>     %0bcd0000
+<SPAN id=3Dline-209 class=3Danchor></SPAN>
+<SPAN id=3Dline-210 class=3Danchor></SPAN>   Each flag that is set in =
+the extended header has data attached, which
+<SPAN id=3Dline-211 class=3Danchor></SPAN>   comes in the order in which =
+the flags are encountered (i.e. the data
+<SPAN id=3Dline-212 class=3Danchor></SPAN>   for flag 'b' comes before =
+the data for flag 'c'). Unset flags cannot
+<SPAN id=3Dline-213 class=3Danchor></SPAN>   have any attached data. All =
+unknown flags MUST be unset and their
+<SPAN id=3Dline-214 class=3Danchor></SPAN>   corresponding data removed =
+when a tag is modified.
+<SPAN id=3Dline-215 class=3Danchor></SPAN>
+<SPAN id=3Dline-216 class=3Danchor></SPAN>   Every set flag's data =
+starts with a length byte, which contains a
+<SPAN id=3Dline-217 class=3Danchor></SPAN>   value between 0 and 128 =
+($00 - $7f), followed by data that has the
+<SPAN id=3Dline-218 class=3Danchor></SPAN>   field length indicated by =
+the length byte. If a flag has no attached
+<SPAN id=3Dline-219 class=3Danchor></SPAN>   data, the value $00 is used =
+as length byte.
+<SPAN id=3Dline-220 class=3Danchor></SPAN>
+<SPAN id=3Dline-221 class=3Danchor></SPAN>
+<SPAN id=3Dline-222 class=3Danchor></SPAN>   b - Tag is an update
+<SPAN id=3Dline-223 class=3Danchor></SPAN>
+<SPAN id=3Dline-224 class=3Danchor></SPAN>     If this flag is set, the =
+present tag is an update of a tag found
+<SPAN id=3Dline-225 class=3Danchor></SPAN>     earlier in the present =
+file or stream. If frames defined as unique
+<SPAN id=3Dline-226 class=3Danchor></SPAN>     are found in the present =
+tag, they are to override any
+<SPAN id=3Dline-227 class=3Danchor></SPAN>     corresponding ones found =
+in the earlier tag. This flag has no
+<SPAN id=3Dline-228 class=3Danchor></SPAN>     corresponding data.
+<SPAN id=3Dline-229 class=3Danchor></SPAN>
+<SPAN id=3Dline-230 class=3Danchor></SPAN>         Flag data length      =
+$00
+<SPAN id=3Dline-231 class=3Danchor></SPAN>
+<SPAN id=3Dline-232 class=3Danchor></SPAN>   c - CRC data present
+<SPAN id=3Dline-233 class=3Danchor></SPAN>
+<SPAN id=3Dline-234 class=3Danchor></SPAN>     If this flag is set, a =
+CRC-32 [ISO-3309] data is included in the
+<SPAN id=3Dline-235 class=3Danchor></SPAN>     extended header. The CRC =
+is calculated on all the data between the
+<SPAN id=3Dline-236 class=3Danchor></SPAN>     header and footer as =
+indicated by the header's tag length field,
+<SPAN id=3Dline-237 class=3Danchor></SPAN>     minus the extended =
+header. Note that this includes the padding (if
+<SPAN id=3Dline-238 class=3Danchor></SPAN>     there is any), but =
+excludes the footer. The CRC-32 is stored as an
+<SPAN id=3Dline-239 class=3Danchor></SPAN>     35 bit synchsafe integer, =
+leaving the upper four bits always
+<SPAN id=3Dline-240 class=3Danchor></SPAN>     zeroed.
+<SPAN id=3Dline-241 class=3Danchor></SPAN>
+<SPAN id=3Dline-242 class=3Danchor></SPAN>        Flag data length       =
+$05
+<SPAN id=3Dline-243 class=3Danchor></SPAN>        Total frame CRC    5 * =
+%0xxxxxxx
+<SPAN id=3Dline-244 class=3Danchor></SPAN>
+<SPAN id=3Dline-245 class=3Danchor></SPAN>   d - Tag restrictions
+<SPAN id=3Dline-246 class=3Danchor></SPAN>
+<SPAN id=3Dline-247 class=3Danchor></SPAN>     For some applications it =
+might be desired to restrict a tag in more
+<SPAN id=3Dline-248 class=3Danchor></SPAN>     ways than imposed by the =
+ID3v2 specification. Note that the
+<SPAN id=3Dline-249 class=3Danchor></SPAN>     presence of these =
+restrictions does not affect how the tag is
+<SPAN id=3Dline-250 class=3Danchor></SPAN>     decoded, merely how it =
+was restricted before encoding. If this flag
+<SPAN id=3Dline-251 class=3Danchor></SPAN>     is set the tag is =
+restricted as follows:
+<SPAN id=3Dline-252 class=3Danchor></SPAN>
+<SPAN id=3Dline-253 class=3Danchor></SPAN>        Flag data length       =
+$01
+<SPAN id=3Dline-254 class=3Danchor></SPAN>        Restrictions           =
+%ppqrrstt
+<SPAN id=3Dline-255 class=3Danchor></SPAN>
+<SPAN id=3Dline-256 class=3Danchor></SPAN>     p - Tag size restrictions
+<SPAN id=3Dline-257 class=3Danchor></SPAN>
+<SPAN id=3Dline-258 class=3Danchor></SPAN>       00   No more than 128 =
+frames and 1 MB total tag size.
+<SPAN id=3Dline-259 class=3Danchor></SPAN>       01   No more than 64 =
+frames and 128 KB total tag size.
+<SPAN id=3Dline-260 class=3Danchor></SPAN>       10   No more than 32 =
+frames and 40 KB total tag size.
+<SPAN id=3Dline-261 class=3Danchor></SPAN>       11   No more than 32 =
+frames and 4 KB total tag size.
+<SPAN id=3Dline-262 class=3Danchor></SPAN>
+<SPAN id=3Dline-263 class=3Danchor></SPAN>     q - Text encoding =
+restrictions
+<SPAN id=3Dline-264 class=3Danchor></SPAN>
+<SPAN id=3Dline-265 class=3Danchor></SPAN>       0    No restrictions
+<SPAN id=3Dline-266 class=3Danchor></SPAN>       1    Strings are only =
+encoded with ISO-8859-1 [ISO-8859-1] or
+<SPAN id=3Dline-267 class=3Danchor></SPAN>            UTF-8 [UTF-8].
+<SPAN id=3Dline-268 class=3Danchor></SPAN>
+<SPAN id=3Dline-269 class=3Danchor></SPAN>     r - Text fields size =
+restrictions
+<SPAN id=3Dline-270 class=3Danchor></SPAN>
+<SPAN id=3Dline-271 class=3Danchor></SPAN>       00   No restrictions
+<SPAN id=3Dline-272 class=3Danchor></SPAN>       01   No string is =
+longer than 1024 characters.
+<SPAN id=3Dline-273 class=3Danchor></SPAN>       10   No string is =
+longer than 128 characters.
+<SPAN id=3Dline-274 class=3Danchor></SPAN>       11   No string is =
+longer than 30 characters.
+<SPAN id=3Dline-275 class=3Danchor></SPAN>
+<SPAN id=3Dline-276 class=3Danchor></SPAN>       Note that nothing is =
+said about how many bytes is used to
+<SPAN id=3Dline-277 class=3Danchor></SPAN>       represent those =
+characters, since it is encoding dependent. If a
+<SPAN id=3Dline-278 class=3Danchor></SPAN>       text frame consists of =
+more than one string, the sum of the
+<SPAN id=3Dline-279 class=3Danchor></SPAN>       strungs is restricted =
+as stated.
+<SPAN id=3Dline-280 class=3Danchor></SPAN>
+<SPAN id=3Dline-281 class=3Danchor></SPAN>     s - Image encoding =
+restrictions
+<SPAN id=3Dline-282 class=3Danchor></SPAN>
+<SPAN id=3Dline-283 class=3Danchor></SPAN>       0   No restrictions
+<SPAN id=3Dline-284 class=3Danchor></SPAN>       1   Images are encoded =
+only with PNG [PNG] or JPEG [JFIF].
+<SPAN id=3Dline-285 class=3Danchor></SPAN>
+<SPAN id=3Dline-286 class=3Danchor></SPAN>     t - Image size =
+restrictions
+<SPAN id=3Dline-287 class=3Danchor></SPAN>
+<SPAN id=3Dline-288 class=3Danchor></SPAN>       00  No restrictions
+<SPAN id=3Dline-289 class=3Danchor></SPAN>       01  All images are =
+256x256 pixels or smaller.
+<SPAN id=3Dline-290 class=3Danchor></SPAN>       10  All images are =
+64x64 pixels or smaller.
+<SPAN id=3Dline-291 class=3Danchor></SPAN>       11  All images are =
+exactly 64x64 pixels, unless required
+<SPAN id=3Dline-292 class=3Danchor></SPAN>           otherwise.
+<SPAN id=3Dline-293 class=3Danchor></SPAN>
+<SPAN id=3Dline-294 class=3Danchor></SPAN>
+<SPAN id=3Dline-295 class=3Danchor></SPAN>3.3.   Padding
+<SPAN id=3Dline-296 class=3Danchor></SPAN>
+<SPAN id=3Dline-297 class=3Danchor></SPAN>   It is OPTIONAL to include =
+padding after the final frame (at the end
+<SPAN id=3Dline-298 class=3Danchor></SPAN>   of the ID3 tag), making the =
+size of all the frames together smaller
+<SPAN id=3Dline-299 class=3Danchor></SPAN>   than the size given in the =
+tag header. A possible purpose of this
+<SPAN id=3Dline-300 class=3Danchor></SPAN>   padding is to allow for =
+adding a few additional frames or enlarge
+<SPAN id=3Dline-301 class=3Danchor></SPAN>   existing frames within the =
+tag without having to rewrite the entire
+<SPAN id=3Dline-302 class=3Danchor></SPAN>   file. The value of the =
+padding bytes must be $00. A tag MUST NOT have
+<SPAN id=3Dline-303 class=3Danchor></SPAN>   any padding between the =
+frames or between the tag header and the
+<SPAN id=3Dline-304 class=3Danchor></SPAN>   frames. Furthermore it MUST =
+NOT have any padding when a tag footer is
+<SPAN id=3Dline-305 class=3Danchor></SPAN>   added to the tag.
+<SPAN id=3Dline-306 class=3Danchor></SPAN>
+<SPAN id=3Dline-307 class=3Danchor></SPAN>
+<SPAN id=3Dline-308 class=3Danchor></SPAN>3.4.   ID3v2 footer
+<SPAN id=3Dline-309 class=3Danchor></SPAN>
+<SPAN id=3Dline-310 class=3Danchor></SPAN>   To speed up the process of =
+locating an ID3v2 tag when searching from
+<SPAN id=3Dline-311 class=3Danchor></SPAN>   the end of a file, a footer =
+can be added to the tag. It is REQUIRED
+<SPAN id=3Dline-312 class=3Danchor></SPAN>   to add a footer to an =
+appended tag, i.e. a tag located after all
+<SPAN id=3Dline-313 class=3Danchor></SPAN>   audio data. The footer is a =
+copy of the header, but with a different
+<SPAN id=3Dline-314 class=3Danchor></SPAN>   identifier.
+<SPAN id=3Dline-315 class=3Danchor></SPAN>
+<SPAN id=3Dline-316 class=3Danchor></SPAN>     ID3v2 identifier          =
+ "3DI"
+<SPAN id=3Dline-317 class=3Danchor></SPAN>     ID3v2 version             =
+ $04 00
+<SPAN id=3Dline-318 class=3Danchor></SPAN>     ID3v2 flags               =
+ %abcd0000
+<SPAN id=3Dline-319 class=3Danchor></SPAN>     ID3v2 size             4 =
+* %0xxxxxxx
+<SPAN id=3Dline-320 class=3Danchor></SPAN>
+<SPAN id=3Dline-321 class=3Danchor></SPAN>
+<SPAN id=3Dline-322 class=3Danchor></SPAN>4.   ID3v2 frame overview
+<SPAN id=3Dline-323 class=3Danchor></SPAN>
+<SPAN id=3Dline-324 class=3Danchor></SPAN>   All ID3v2 frames consists =
+of one frame header followed by one or more
+<SPAN id=3Dline-325 class=3Danchor></SPAN>   fields containing the =
+actual information. The header is always 10
+<SPAN id=3Dline-326 class=3Danchor></SPAN>   bytes and laid out as =
+follows:
+<SPAN id=3Dline-327 class=3Danchor></SPAN>
+<SPAN id=3Dline-328 class=3Danchor></SPAN>     Frame ID      $xx xx xx =
+xx  (four characters)
+<SPAN id=3Dline-329 class=3Danchor></SPAN>     Size      4 * %0xxxxxxx
+<SPAN id=3Dline-330 class=3Danchor></SPAN>     Flags         $xx xx
+<SPAN id=3Dline-331 class=3Danchor></SPAN>
+<SPAN id=3Dline-332 class=3Danchor></SPAN>   The frame ID is made out of =
+the characters capital A-Z and 0-9.
+<SPAN id=3Dline-333 class=3Danchor></SPAN>   Identifiers beginning with =
+"X", "Y" and "Z" are for experimental
+<SPAN id=3Dline-334 class=3Danchor></SPAN>   frames and free for =
+everyone to use, without the need to set the
+<SPAN id=3Dline-335 class=3Danchor></SPAN>   experimental bit in the tag =
+header. Bear in mind that someone else
+<SPAN id=3Dline-336 class=3Danchor></SPAN>   might have used the same =
+identifier as you. All other identifiers are
+<SPAN id=3Dline-337 class=3Danchor></SPAN>   either used or reserved for =
+future use.
+<SPAN id=3Dline-338 class=3Danchor></SPAN>
+<SPAN id=3Dline-339 class=3Danchor></SPAN>   The frame ID is followed by =
+a size descriptor containing the size of
+<SPAN id=3Dline-340 class=3Danchor></SPAN>   the data in the final =
+frame, after encryption, compression and
+<SPAN id=3Dline-341 class=3Danchor></SPAN>   unsynchronisation. The size =
+is excluding the frame header ('total
+<SPAN id=3Dline-342 class=3Danchor></SPAN>   frame size' - 10 bytes) and =
+stored as a 32 bit synchsafe integer.
+<SPAN id=3Dline-343 class=3Danchor></SPAN>
+<SPAN id=3Dline-344 class=3Danchor></SPAN>   In the frame header the =
+size descriptor is followed by two flag
+<SPAN id=3Dline-345 class=3Danchor></SPAN>   bytes. These flags are =
+described in section 4.1.
+<SPAN id=3Dline-346 class=3Danchor></SPAN>
+<SPAN id=3Dline-347 class=3Danchor></SPAN>   There is no fixed order of =
+the frames' appearance in the tag,
+<SPAN id=3Dline-348 class=3Danchor></SPAN>   although it is desired that =
+the frames are arranged in order of
+<SPAN id=3Dline-349 class=3Danchor></SPAN>   significance concerning the =
+recognition of the file. An example of
+<SPAN id=3Dline-350 class=3Danchor></SPAN>   such order: UFID, TIT2, =
+MCDI, TRCK ...
+<SPAN id=3Dline-351 class=3Danchor></SPAN>
+<SPAN id=3Dline-352 class=3Danchor></SPAN>   A tag MUST contain at least =
+one frame. A frame must be at least 1
+<SPAN id=3Dline-353 class=3Danchor></SPAN>   byte big, excluding the =
+header.
+<SPAN id=3Dline-354 class=3Danchor></SPAN>
+<SPAN id=3Dline-355 class=3Danchor></SPAN>   If nothing else is said, =
+strings, including numeric strings and URLs
+<SPAN id=3Dline-356 class=3Danchor></SPAN>   [URL], are represented as =
+ISO-8859-1 [ISO-8859-1] characters in the
+<SPAN id=3Dline-357 class=3Danchor></SPAN>   range $20 - $FF. Such =
+strings are represented in frame descriptions
+<SPAN id=3Dline-358 class=3Danchor></SPAN>   as &lt;text string&gt;, or =
+&lt;full text string&gt; if newlines are allowed. If
+<SPAN id=3Dline-359 class=3Danchor></SPAN>   nothing else is said =
+newline character is forbidden. In ISO-8859-1 a
+<SPAN id=3Dline-360 class=3Danchor></SPAN>   newline is represented, =
+when allowed, with $0A only.
+<SPAN id=3Dline-361 class=3Danchor></SPAN>
+<SPAN id=3Dline-362 class=3Danchor></SPAN>   Frames that allow different =
+types of text encoding contains a text
+<SPAN id=3Dline-363 class=3Danchor></SPAN>   encoding description byte. =
+Possible encodings:
+<SPAN id=3Dline-364 class=3Danchor></SPAN>
+<SPAN id=3Dline-365 class=3Danchor></SPAN>     $00   ISO-8859-1 =
+[ISO-8859-1]. Terminated with $00.
+<SPAN id=3Dline-366 class=3Danchor></SPAN>     $01   UTF-16 [UTF-16] =
+encoded Unicode [UNICODE] with BOM. All
+<SPAN id=3Dline-367 class=3Danchor></SPAN>           strings in the same =
+frame SHALL have the same byteorder.
+<SPAN id=3Dline-368 class=3Danchor></SPAN>           Terminated with $00 =
+00.
+<SPAN id=3Dline-369 class=3Danchor></SPAN>     $02   UTF-16BE [UTF-16] =
+encoded Unicode [UNICODE] without BOM.
+<SPAN id=3Dline-370 class=3Danchor></SPAN>           Terminated with $00 =
+00.
+<SPAN id=3Dline-371 class=3Danchor></SPAN>     $03   UTF-8 [UTF-8] =
+encoded Unicode [UNICODE]. Terminated with $00.
+<SPAN id=3Dline-372 class=3Danchor></SPAN>
+<SPAN id=3Dline-373 class=3Danchor></SPAN>   Strings dependent on =
+encoding are represented in frame descriptions
+<SPAN id=3Dline-374 class=3Danchor></SPAN>   as &lt;text string =
+according to encoding&gt;, or &lt;full text string
+<SPAN id=3Dline-375 class=3Danchor></SPAN>   according to encoding&gt; =
+if newlines are allowed. Any empty strings of
+<SPAN id=3Dline-376 class=3Danchor></SPAN>   type $01 which are =
+NULL-terminated may have the Unicode BOM followed
+<SPAN id=3Dline-377 class=3Danchor></SPAN>   by a Unicode NULL ($FF FE =
+00 00 or $FE FF 00 00).
+<SPAN id=3Dline-378 class=3Danchor></SPAN>
+<SPAN id=3Dline-379 class=3Danchor></SPAN>   The timestamp fields are =
+based on a subset of ISO 8601. When being as
+<SPAN id=3Dline-380 class=3Danchor></SPAN>   precise as possible the =
+format of a time string is
+<SPAN id=3Dline-381 class=3Danchor></SPAN>   yyyy-MM-ddTHH:mm:ss (year, =
+"-", month, "-", day, "T", hour (out of
+<SPAN id=3Dline-382 class=3Danchor></SPAN>   24), ":", minutes, ":", =
+seconds), but the precision may be reduced by
+<SPAN id=3Dline-383 class=3Danchor></SPAN>   removing as many time =
+indicators as wanted. Hence valid timestamps
+<SPAN id=3Dline-384 class=3Danchor></SPAN>   are
+<SPAN id=3Dline-385 class=3Danchor></SPAN>   yyyy, yyyy-MM, yyyy-MM-dd, =
+yyyy-MM-ddTHH, yyyy-MM-ddTHH:mm and
+<SPAN id=3Dline-386 class=3Danchor></SPAN>   yyyy-MM-ddTHH:mm:ss. All =
+time stamps are UTC. For durations, use
+<SPAN id=3Dline-387 class=3Danchor></SPAN>   the slash character as =
+described in 8601, and for multiple non-
+<SPAN id=3Dline-388 class=3Danchor></SPAN>   contiguous dates, use =
+multiple strings, if allowed by the frame
+<SPAN id=3Dline-389 class=3Danchor></SPAN>   definition.
+<SPAN id=3Dline-390 class=3Danchor></SPAN>
+<SPAN id=3Dline-391 class=3Danchor></SPAN>   The three byte language =
+field, present in several frames, is used to
+<SPAN id=3Dline-392 class=3Danchor></SPAN>   describe the language of =
+the frame's content, according to ISO-639-2
+<SPAN id=3Dline-393 class=3Danchor></SPAN>   [ISO-639-2]. The language =
+should be represented in lower case. If the
+<SPAN id=3Dline-394 class=3Danchor></SPAN>   language is not known the =
+string "XXX" should be used.
+<SPAN id=3Dline-395 class=3Danchor></SPAN>
+<SPAN id=3Dline-396 class=3Danchor></SPAN>   All URLs [URL] MAY be =
+relative, e.g. "picture.png", "../doc.txt".
+<SPAN id=3Dline-397 class=3Danchor></SPAN>
+<SPAN id=3Dline-398 class=3Danchor></SPAN>   If a frame is longer than =
+it should be, e.g. having more fields than
+<SPAN id=3Dline-399 class=3Danchor></SPAN>   specified in this document, =
+that indicates that additions to the
+<SPAN id=3Dline-400 class=3Danchor></SPAN>   frame have been made in a =
+later version of the ID3v2 standard. This
+<SPAN id=3Dline-401 class=3Danchor></SPAN>   is reflected by the =
+revision number in the header of the tag.
+<SPAN id=3Dline-402 class=3Danchor></SPAN>
+<SPAN id=3Dline-403 class=3Danchor></SPAN>
+<SPAN id=3Dline-404 class=3Danchor></SPAN>4.1.   Frame header flags
+<SPAN id=3Dline-405 class=3Danchor></SPAN>
+<SPAN id=3Dline-406 class=3Danchor></SPAN>   In the frame header the =
+size descriptor is followed by two flag
+<SPAN id=3Dline-407 class=3Danchor></SPAN>   bytes. All unused flags =
+MUST be cleared. The first byte is for
+<SPAN id=3Dline-408 class=3Danchor></SPAN>   'status messages' and the =
+second byte is a format description. If an
+<SPAN id=3Dline-409 class=3Danchor></SPAN>   unknown flag is set in the =
+first byte the frame MUST NOT be changed
+<SPAN id=3Dline-410 class=3Danchor></SPAN>   without that bit cleared. =
+If an unknown flag is set in the second
+<SPAN id=3Dline-411 class=3Danchor></SPAN>   byte the frame is likely to =
+not be readable. Some flags in the second
+<SPAN id=3Dline-412 class=3Danchor></SPAN>   byte indicates that extra =
+information is added to the header. These
+<SPAN id=3Dline-413 class=3Danchor></SPAN>   fields of extra information =
+is ordered as the flags that indicates
+<SPAN id=3Dline-414 class=3Danchor></SPAN>   them. The flags field is =
+defined as follows (l and o left out because
+<SPAN id=3Dline-415 class=3Danchor></SPAN>   ther resemblence to one and =
+zero):
+<SPAN id=3Dline-416 class=3Danchor></SPAN>
+<SPAN id=3Dline-417 class=3Danchor></SPAN>     %0abc0000 %0h00kmnp
+<SPAN id=3Dline-418 class=3Danchor></SPAN>
+<SPAN id=3Dline-419 class=3Danchor></SPAN>   Some frame format flags =
+indicate that additional information fields
+<SPAN id=3Dline-420 class=3Danchor></SPAN>   are added to the frame. =
+This information is added after the frame
+<SPAN id=3Dline-421 class=3Danchor></SPAN>   header and before the frame =
+data in the same order as the flags that
+<SPAN id=3Dline-422 class=3Danchor></SPAN>   indicates them. I.e. the =
+four bytes of decompressed size will precede
+<SPAN id=3Dline-423 class=3Danchor></SPAN>   the encryption method byte. =
+These additions affects the 'frame size'
+<SPAN id=3Dline-424 class=3Danchor></SPAN>   field, but are not subject =
+to encryption or compression.
+<SPAN id=3Dline-425 class=3Danchor></SPAN>  =20
+<SPAN id=3Dline-426 class=3Danchor></SPAN>   The default status flags =
+setting for a frame is, unless stated
+<SPAN id=3Dline-427 class=3Danchor></SPAN>   otherwise, 'preserved if =
+tag is altered' and 'preserved if file is
+<SPAN id=3Dline-428 class=3Danchor></SPAN>   altered', i.e. %00000000.
+<SPAN id=3Dline-429 class=3Danchor></SPAN>
+<SPAN id=3Dline-430 class=3Danchor></SPAN>
+<SPAN id=3Dline-431 class=3Danchor></SPAN>4.1.1. Frame status flags
+<SPAN id=3Dline-432 class=3Danchor></SPAN>
+<SPAN id=3Dline-433 class=3Danchor></SPAN>   a - Tag alter preservation
+<SPAN id=3Dline-434 class=3Danchor></SPAN>
+<SPAN id=3Dline-435 class=3Danchor></SPAN>     This flag tells the tag =
+parser what to do with this frame if it is
+<SPAN id=3Dline-436 class=3Danchor></SPAN>     unknown and the tag is =
+altered in any way. This applies to all
+<SPAN id=3Dline-437 class=3Danchor></SPAN>     kinds of alterations, =
+including adding more padding and reordering
+<SPAN id=3Dline-438 class=3Danchor></SPAN>     the frames.
+<SPAN id=3Dline-439 class=3Danchor></SPAN>
+<SPAN id=3Dline-440 class=3Danchor></SPAN>     0     Frame should be =
+preserved.
+<SPAN id=3Dline-441 class=3Danchor></SPAN>     1     Frame should be =
+discarded.
+<SPAN id=3Dline-442 class=3Danchor></SPAN>
+<SPAN id=3Dline-443 class=3Danchor></SPAN>
+<SPAN id=3Dline-444 class=3Danchor></SPAN>   b - File alter preservation
+<SPAN id=3Dline-445 class=3Danchor></SPAN>
+<SPAN id=3Dline-446 class=3Danchor></SPAN>     This flag tells the tag =
+parser what to do with this frame if it is
+<SPAN id=3Dline-447 class=3Danchor></SPAN>     unknown and the file, =
+excluding the tag, is altered. This does not
+<SPAN id=3Dline-448 class=3Danchor></SPAN>     apply when the audio is =
+completely replaced with other audio data.
+<SPAN id=3Dline-449 class=3Danchor></SPAN>
+<SPAN id=3Dline-450 class=3Danchor></SPAN>     0     Frame should be =
+preserved.
+<SPAN id=3Dline-451 class=3Danchor></SPAN>     1     Frame should be =
+discarded.
+<SPAN id=3Dline-452 class=3Danchor></SPAN>
+<SPAN id=3Dline-453 class=3Danchor></SPAN>
+<SPAN id=3Dline-454 class=3Danchor></SPAN>   c - Read only
+<SPAN id=3Dline-455 class=3Danchor></SPAN>
+<SPAN id=3Dline-456 class=3Danchor></SPAN>      This flag, if set, tells =
+the software that the contents of this
+<SPAN id=3Dline-457 class=3Danchor></SPAN>      frame are intended to be =
+read only. Changing the contents might
+<SPAN id=3Dline-458 class=3Danchor></SPAN>      break something, e.g. a =
+signature. If the contents are changed,
+<SPAN id=3Dline-459 class=3Danchor></SPAN>      without knowledge of why =
+the frame was flagged read only and
+<SPAN id=3Dline-460 class=3Danchor></SPAN>      without taking the =
+proper means to compensate, e.g. recalculating
+<SPAN id=3Dline-461 class=3Danchor></SPAN>      the signature, the bit =
+MUST be cleared.
+<SPAN id=3Dline-462 class=3Danchor></SPAN>
+<SPAN id=3Dline-463 class=3Danchor></SPAN>
+<SPAN id=3Dline-464 class=3Danchor></SPAN>4.1.2. Frame format flags
+<SPAN id=3Dline-465 class=3Danchor></SPAN>
+<SPAN id=3Dline-466 class=3Danchor></SPAN>   h - Grouping identity
+<SPAN id=3Dline-467 class=3Danchor></SPAN>
+<SPAN id=3Dline-468 class=3Danchor></SPAN>      This flag indicates =
+whether or not this frame belongs in a group
+<SPAN id=3Dline-469 class=3Danchor></SPAN>      with other frames. If =
+set, a group identifier byte is added to the
+<SPAN id=3Dline-470 class=3Danchor></SPAN>      frame. Every frame with =
+the same group identifier belongs to the
+<SPAN id=3Dline-471 class=3Danchor></SPAN>      same group.
+<SPAN id=3Dline-472 class=3Danchor></SPAN>
+<SPAN id=3Dline-473 class=3Danchor></SPAN>      0     Frame does not =
+contain group information
+<SPAN id=3Dline-474 class=3Danchor></SPAN>      1     Frame contains =
+group information
+<SPAN id=3Dline-475 class=3Danchor></SPAN>
+<SPAN id=3Dline-476 class=3Danchor></SPAN>
+<SPAN id=3Dline-477 class=3Danchor></SPAN>   k - Compression
+<SPAN id=3Dline-478 class=3Danchor></SPAN>
+<SPAN id=3Dline-479 class=3Danchor></SPAN>      This flag indicates =
+whether or not the frame is compressed.
+<SPAN id=3Dline-480 class=3Danchor></SPAN>      A 'Data Length =
+Indicator' byte MUST be included in the frame.
+<SPAN id=3Dline-481 class=3Danchor></SPAN>
+<SPAN id=3Dline-482 class=3Danchor></SPAN>      0     Frame is not =
+compressed.
+<SPAN id=3Dline-483 class=3Danchor></SPAN>      1     Frame is =
+compressed using zlib [zlib] deflate method.
+<SPAN id=3Dline-484 class=3Danchor></SPAN>            If set, this =
+requires the 'Data Length Indicator' bit
+<SPAN id=3Dline-485 class=3Danchor></SPAN>            to be set as well.
+<SPAN id=3Dline-486 class=3Danchor></SPAN>
+<SPAN id=3Dline-487 class=3Danchor></SPAN>
+<SPAN id=3Dline-488 class=3Danchor></SPAN>   m - Encryption
+<SPAN id=3Dline-489 class=3Danchor></SPAN>  =20
+<SPAN id=3Dline-490 class=3Danchor></SPAN>      This flag indicates =
+whether or not the frame is encrypted. If set,
+<SPAN id=3Dline-491 class=3Danchor></SPAN>      one byte indicating with =
+which method it was encrypted will be
+<SPAN id=3Dline-492 class=3Danchor></SPAN>      added to the frame. See =
+description of the ENCR frame for more
+<SPAN id=3Dline-493 class=3Danchor></SPAN>      information about =
+encryption method registration. Encryption
+<SPAN id=3Dline-494 class=3Danchor></SPAN>      should be done after =
+compression. Whether or not setting this flag
+<SPAN id=3Dline-495 class=3Danchor></SPAN>      requires the presence of =
+a 'Data Length Indicator' depends on the
+<SPAN id=3Dline-496 class=3Danchor></SPAN>      specific algorithm used.
+<SPAN id=3Dline-497 class=3Danchor></SPAN>
+<SPAN id=3Dline-498 class=3Danchor></SPAN>      0     Frame is not =
+encrypted.
+<SPAN id=3Dline-499 class=3Danchor></SPAN>      1     Frame is =
+encrypted.
+<SPAN id=3Dline-500 class=3Danchor></SPAN>
+<SPAN id=3Dline-501 class=3Danchor></SPAN>   n - Unsynchronisation
+<SPAN id=3Dline-502 class=3Danchor></SPAN>
+<SPAN id=3Dline-503 class=3Danchor></SPAN>      This flag indicates =
+whether or not unsynchronisation was applied
+<SPAN id=3Dline-504 class=3Danchor></SPAN>      to this frame. See =
+section 6 for details on unsynchronisation.
+<SPAN id=3Dline-505 class=3Danchor></SPAN>      If this flag is set all =
+data from the end of this header to the
+<SPAN id=3Dline-506 class=3Danchor></SPAN>      end of this frame has =
+been unsynchronised. Although desirable, the
+<SPAN id=3Dline-507 class=3Danchor></SPAN>      presence of a 'Data =
+Length Indicator' is not made mandatory by
+<SPAN id=3Dline-508 class=3Danchor></SPAN>      unsynchronisation.
+<SPAN id=3Dline-509 class=3Danchor></SPAN>
+<SPAN id=3Dline-510 class=3Danchor></SPAN>      0     Frame has not been =
+unsynchronised.
+<SPAN id=3Dline-511 class=3Danchor></SPAN>      1     Frame has been =
+unsyrchronised.
+<SPAN id=3Dline-512 class=3Danchor></SPAN>
+<SPAN id=3Dline-513 class=3Danchor></SPAN>   p - Data length indicator
+<SPAN id=3Dline-514 class=3Danchor></SPAN>
+<SPAN id=3Dline-515 class=3Danchor></SPAN>      This flag indicates that =
+a data length indicator has been added to
+<SPAN id=3Dline-516 class=3Danchor></SPAN>      the frame. The data =
+length indicator is the value one would write
+<SPAN id=3Dline-517 class=3Danchor></SPAN>      as the 'Frame length' if =
+all of the frame format flags were
+<SPAN id=3Dline-518 class=3Danchor></SPAN>      zeroed, represented as a =
+32 bit synchsafe integer.
+<SPAN id=3Dline-519 class=3Danchor></SPAN>
+<SPAN id=3Dline-520 class=3Danchor></SPAN>      0      There is no Data =
+Length Indicator.
+<SPAN id=3Dline-521 class=3Danchor></SPAN>      1      A data length =
+Indicator has been added to the frame.
+<SPAN id=3Dline-522 class=3Danchor></SPAN>
+<SPAN id=3Dline-523 class=3Danchor></SPAN>
+<SPAN id=3Dline-524 class=3Danchor></SPAN>5.   Tag location
+<SPAN id=3Dline-525 class=3Danchor></SPAN>
+<SPAN id=3Dline-526 class=3Danchor></SPAN>   The default location of an =
+ID3v2 tag is prepended to the audio so
+<SPAN id=3Dline-527 class=3Danchor></SPAN>   that players can benefit =
+from the information when the data is
+<SPAN id=3Dline-528 class=3Danchor></SPAN>   streamed. It is however =
+possible to append the tag, or make a
+<SPAN id=3Dline-529 class=3Danchor></SPAN>   prepend/append combination. =
+When deciding upon where an unembedded
+<SPAN id=3Dline-530 class=3Danchor></SPAN>   tag should be located, the =
+following order of preference SHOULD be
+<SPAN id=3Dline-531 class=3Danchor></SPAN>   considered.
+<SPAN id=3Dline-532 class=3Danchor></SPAN>  =20
+<SPAN id=3Dline-533 class=3Danchor></SPAN>     1. Prepend the tag.
+<SPAN id=3Dline-534 class=3Danchor></SPAN>
+<SPAN id=3Dline-535 class=3Danchor></SPAN>     2. Prepend a tag with all =
+vital information and add a second tag at=20
+<SPAN id=3Dline-536 class=3Danchor></SPAN>        the end of the file, =
+before tags from other tagging systems. The
+<SPAN id=3Dline-537 class=3Danchor></SPAN>        first tag is required =
+to have a SEEK frame.
+<SPAN id=3Dline-538 class=3Danchor></SPAN>     =20
+<SPAN id=3Dline-539 class=3Danchor></SPAN>     3. Add a tag at the end =
+of the file, before tags from other tagging
+<SPAN id=3Dline-540 class=3Danchor></SPAN>        systems.
+<SPAN id=3Dline-541 class=3Danchor></SPAN>     =20
+<SPAN id=3Dline-542 class=3Danchor></SPAN>   In case 2 and 3 the tag can =
+simply be appended if no other known tags
+<SPAN id=3Dline-543 class=3Danchor></SPAN>   are present. The suggested =
+method to find ID3v2 tags are:
+<SPAN id=3Dline-544 class=3Danchor></SPAN>  =20
+<SPAN id=3Dline-545 class=3Danchor></SPAN>     1. Look for a prepended =
+tag using the pattern found in section 3.1.
+<SPAN id=3Dline-546 class=3Danchor></SPAN>
+<SPAN id=3Dline-547 class=3Danchor></SPAN>     2. If a SEEK frame was =
+found, use its values to guide further
+<SPAN id=3Dline-548 class=3Danchor></SPAN>        searching.
+<SPAN id=3Dline-549 class=3Danchor></SPAN>
+<SPAN id=3Dline-550 class=3Danchor></SPAN>     3. Look for a tag footer, =
+scanning from the back of the file.
+<SPAN id=3Dline-551 class=3Danchor></SPAN>
+<SPAN id=3Dline-552 class=3Danchor></SPAN>   For every new tag that is =
+found, the old tag should be discarded
+<SPAN id=3Dline-553 class=3Danchor></SPAN>   unless the update flag in =
+the extended header (section 3.2) is set.
+<SPAN id=3Dline-554 class=3Danchor></SPAN>  =20
+<SPAN id=3Dline-555 class=3Danchor></SPAN>
+<SPAN id=3Dline-556 class=3Danchor></SPAN>6.   Unsynchronisation
+<SPAN id=3Dline-557 class=3Danchor></SPAN>
+<SPAN id=3Dline-558 class=3Danchor></SPAN>   The only purpose of =
+unsynchronisation is to make the ID3v2 tag as
+<SPAN id=3Dline-559 class=3Danchor></SPAN>   compatible as possible with =
+existing software and hardware. There is
+<SPAN id=3Dline-560 class=3Danchor></SPAN>   no use in 'unsynchronising' =
+tags if the file is only to be processed
+<SPAN id=3Dline-561 class=3Danchor></SPAN>   only by ID3v2 aware =
+software and hardware. Unsynchronisation is only
+<SPAN id=3Dline-562 class=3Danchor></SPAN>   useful with tags in MPEG =
+1/2 layer I, II and III, MPEG 2.5 and AAC
+<SPAN id=3Dline-563 class=3Danchor></SPAN>   files.
+<SPAN id=3Dline-564 class=3Danchor></SPAN>
+<SPAN id=3Dline-565 class=3Danchor></SPAN>
+<SPAN id=3Dline-566 class=3Danchor></SPAN>6.1.   The unsynchronisation =
+scheme
+<SPAN id=3Dline-567 class=3Danchor></SPAN>
+<SPAN id=3Dline-568 class=3Danchor></SPAN>   Whenever a false =
+synchronisation is found within the tag, one zeroed
+<SPAN id=3Dline-569 class=3Danchor></SPAN>   byte is inserted after the =
+first false synchronisation byte. The
+<SPAN id=3Dline-570 class=3Danchor></SPAN>   format of synchronisations =
+that should be altered by ID3 encoders is
+<SPAN id=3Dline-571 class=3Danchor></SPAN>   as follows:
+<SPAN id=3Dline-572 class=3Danchor></SPAN>
+<SPAN id=3Dline-573 class=3Danchor></SPAN>         %11111111 111xxxxx
+<SPAN id=3Dline-574 class=3Danchor></SPAN>
+<SPAN id=3Dline-575 class=3Danchor></SPAN>   and should be replaced =
+with:
+<SPAN id=3Dline-576 class=3Danchor></SPAN>
+<SPAN id=3Dline-577 class=3Danchor></SPAN>         %11111111 00000000 =
+111xxxxx
+<SPAN id=3Dline-578 class=3Danchor></SPAN>
+<SPAN id=3Dline-579 class=3Danchor></SPAN>   This has the side effect =
+that all $FF 00 combinations have to be
+<SPAN id=3Dline-580 class=3Danchor></SPAN>   altered, so they will not =
+be affected by the decoding process.
+<SPAN id=3Dline-581 class=3Danchor></SPAN>   Therefore all the $FF 00 =
+combinations have to be replaced with the
+<SPAN id=3Dline-582 class=3Danchor></SPAN>   $FF 00 00 combination =
+during the unsynchronisation.
+<SPAN id=3Dline-583 class=3Danchor></SPAN>
+<SPAN id=3Dline-584 class=3Danchor></SPAN>   To indicate usage of the =
+unsynchronisation, the unsynchronisation
+<SPAN id=3Dline-585 class=3Danchor></SPAN>   flag in the frame header =
+should be set. This bit MUST be set if the
+<SPAN id=3Dline-586 class=3Danchor></SPAN>   frame was altered by the =
+unsynchronisation and SHOULD NOT be set if
+<SPAN id=3Dline-587 class=3Danchor></SPAN>   unaltered. If all frames in =
+the tag are unsynchronised the
+<SPAN id=3Dline-588 class=3Danchor></SPAN>   unsynchronisation flag in =
+the tag header SHOULD be set. It MUST NOT
+<SPAN id=3Dline-589 class=3Danchor></SPAN>   be set if the tag has a =
+frame which is not unsynchronised.
+<SPAN id=3Dline-590 class=3Danchor></SPAN>
+<SPAN id=3Dline-591 class=3Danchor></SPAN>   Assume the first byte of =
+the audio to be $FF. The special case when
+<SPAN id=3Dline-592 class=3Danchor></SPAN>   the last byte of the last =
+frame is $FF and no padding nor footer is
+<SPAN id=3Dline-593 class=3Danchor></SPAN>   used will then introduce a =
+false synchronisation. This can be solved
+<SPAN id=3Dline-594 class=3Danchor></SPAN>   by adding a footer, adding =
+padding or unsynchronising the frame and
+<SPAN id=3Dline-595 class=3Danchor></SPAN>   add $00 to the end of the =
+frame data, thus adding more byte to the
+<SPAN id=3Dline-596 class=3Danchor></SPAN>   frame size than a normal =
+unsynchronisation would. Although not
+<SPAN id=3Dline-597 class=3Danchor></SPAN>   preferred, it is allowed to =
+apply the last method on all frames
+<SPAN id=3Dline-598 class=3Danchor></SPAN>   ending with $FF.
+<SPAN id=3Dline-599 class=3Danchor></SPAN>
+<SPAN id=3Dline-600 class=3Danchor></SPAN>   It is preferred that the =
+tag is either completely unsynchronised or
+<SPAN id=3Dline-601 class=3Danchor></SPAN>   not unsynchronised at all. =
+A completely unsynchronised tag has no=20
+<SPAN id=3Dline-602 class=3Danchor></SPAN>   false synchonisations in =
+it, as defined above, and does not end with
+<SPAN id=3Dline-603 class=3Danchor></SPAN>   $FF. A completely =
+non-unsynchronised tag contains no unsynchronised
+<SPAN id=3Dline-604 class=3Danchor></SPAN>   frames, and thus the =
+unsynchronisation flag in the header is cleared.
+<SPAN id=3Dline-605 class=3Danchor></SPAN>
+<SPAN id=3Dline-606 class=3Danchor></SPAN>   Do bear in mind, that if =
+compression or encryption is used, the
+<SPAN id=3Dline-607 class=3Danchor></SPAN>   unsynchronisation scheme =
+MUST be applied afterwards. When decoding an
+<SPAN id=3Dline-608 class=3Danchor></SPAN>   unsynchronised frame, the =
+unsynchronisation scheme MUST be reversed
+<SPAN id=3Dline-609 class=3Danchor></SPAN>   first, encryption and =
+decompression afterwards.
+<SPAN id=3Dline-610 class=3Danchor></SPAN>
+<SPAN id=3Dline-611 class=3Danchor></SPAN>
+<SPAN id=3Dline-612 class=3Danchor></SPAN>6.2.   Synchsafe integers
+<SPAN id=3Dline-613 class=3Danchor></SPAN>
+<SPAN id=3Dline-614 class=3Danchor></SPAN>   In some parts of the tag it =
+is inconvenient to use the
+<SPAN id=3Dline-615 class=3Danchor></SPAN>   unsychronisation scheme =
+because the size of unsynchronised data is
+<SPAN id=3Dline-616 class=3Danchor></SPAN>   not known in advance, which =
+is particularly problematic with size
+<SPAN id=3Dline-617 class=3Danchor></SPAN>   descriptors. The solution =
+in ID3v2 is to use synchsafe integers, in
+<SPAN id=3Dline-618 class=3Danchor></SPAN>   which there can never be =
+any false synchs. Synchsafe integers are
+<SPAN id=3Dline-619 class=3Danchor></SPAN>   integers that keep its =
+highest bit (bit 7) zeroed, making seven bits
+<SPAN id=3Dline-620 class=3Danchor></SPAN>   out of eight available. =
+Thus a 32 bit synchsafe integer can store 28
+<SPAN id=3Dline-621 class=3Danchor></SPAN>   bits of information.
+<SPAN id=3Dline-622 class=3Danchor></SPAN>  =20
+<SPAN id=3Dline-623 class=3Danchor></SPAN>   Example:
+<SPAN id=3Dline-624 class=3Danchor></SPAN>  =20
+<SPAN id=3Dline-625 class=3Danchor></SPAN>     255 (%11111111) encoded =
+as a 16 bit synchsafe integer is 383
+<SPAN id=3Dline-626 class=3Danchor></SPAN>     (%00000001 01111111).
+<SPAN id=3Dline-627 class=3Danchor></SPAN>
+<SPAN id=3Dline-628 class=3Danchor></SPAN>
+<SPAN id=3Dline-629 class=3Danchor></SPAN>7.   Copyright
+<SPAN id=3Dline-630 class=3Danchor></SPAN>
+<SPAN id=3Dline-631 class=3Danchor></SPAN>   Copyright (C) Martin =
+Nilsson 2000. All Rights Reserved.
+<SPAN id=3Dline-632 class=3Danchor></SPAN>
+<SPAN id=3Dline-633 class=3Danchor></SPAN>   This document and =
+translations of it may be copied and furnished to
+<SPAN id=3Dline-634 class=3Danchor></SPAN>   others, and derivative =
+works that comment on or otherwise explain it
+<SPAN id=3Dline-635 class=3Danchor></SPAN>   or assist in its =
+implementation may be prepared, copied, published
+<SPAN id=3Dline-636 class=3Danchor></SPAN>   and distributed, in whole =
+or in part, without restriction of any
+<SPAN id=3Dline-637 class=3Danchor></SPAN>   kind, provided that a =
+reference to this document is included on all
+<SPAN id=3Dline-638 class=3Danchor></SPAN>   such copies and derivative =
+works. However, this document itself may
+<SPAN id=3Dline-639 class=3Danchor></SPAN>   not be modified in any way =
+and reissued as the original document.
+<SPAN id=3Dline-640 class=3Danchor></SPAN>
+<SPAN id=3Dline-641 class=3Danchor></SPAN>   The limited permissions =
+granted above are perpetual and will not be
+<SPAN id=3Dline-642 class=3Danchor></SPAN>   revoked.
+<SPAN id=3Dline-643 class=3Danchor></SPAN>
+<SPAN id=3Dline-644 class=3Danchor></SPAN>   This document and the =
+information contained herein is provided on an
+<SPAN id=3Dline-645 class=3Danchor></SPAN>   'AS IS' basis and THE =
+AUTHORS DISCLAIMS ALL WARRANTIES, EXPRESS OR
+<SPAN id=3Dline-646 class=3Danchor></SPAN>   IMPLIED, INCLUDING BUT NOT =
+LIMITED TO ANY WARRANTY THAT THE USE OF
+<SPAN id=3Dline-647 class=3Danchor></SPAN>   THE INFORMATION HEREIN WILL =
+NOT INFRINGE ANY RIGHTS OR ANY IMPLIED
+<SPAN id=3Dline-648 class=3Danchor></SPAN>   WARRANTIES OF =
+MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+<SPAN id=3Dline-649 class=3Danchor></SPAN>
+<SPAN id=3Dline-650 class=3Danchor></SPAN>
+<SPAN id=3Dline-651 class=3Danchor></SPAN>8.   References
+<SPAN id=3Dline-652 class=3Danchor></SPAN>
+<SPAN id=3Dline-653 class=3Danchor></SPAN>   [ID3v2] Martin Nilsson, =
+'ID3v2 informal standard'.
+<SPAN id=3Dline-654 class=3Danchor></SPAN>
+<SPAN id=3Dline-655 class=3Danchor></SPAN>      =
+&lt;url:http://www.id3.org/id3v2.3.0.txt&gt;
+<SPAN id=3Dline-656 class=3Danchor></SPAN>
+<SPAN id=3Dline-657 class=3Danchor></SPAN>   [ISO-639-2] ISO/FDIS 639-2.
+<SPAN id=3Dline-658 class=3Danchor></SPAN>   'Codes for the =
+representation of names of languages, Part 2: Alpha-3
+<SPAN id=3Dline-659 class=3Danchor></SPAN>   code.' Technical committee =
+/ subcommittee: TC 37 / SC 2
+<SPAN id=3Dline-660 class=3Danchor></SPAN>
+<SPAN id=3Dline-661 class=3Danchor></SPAN>   [ISO-3309] ISO 3309
+<SPAN id=3Dline-662 class=3Danchor></SPAN>   'Information Processing =
+Systems--Data Communication High-Level Data
+<SPAN id=3Dline-663 class=3Danchor></SPAN>   Link Control =
+Procedure--Frame Structure', IS 3309, October 1984, 3rd
+<SPAN id=3Dline-664 class=3Danchor></SPAN>   Edition.
+<SPAN id=3Dline-665 class=3Danchor></SPAN>
+<SPAN id=3Dline-666 class=3Danchor></SPAN>   [ISO-8859-1] ISO/IEC DIS =
+8859-1.
+<SPAN id=3Dline-667 class=3Danchor></SPAN>   '8-bit single-byte coded =
+graphic character sets, Part 1: Latin
+<SPAN id=3Dline-668 class=3Danchor></SPAN>   alphabet No. 1.' Technical =
+committee / subcommittee: JTC 1 / SC 2
+<SPAN id=3Dline-669 class=3Danchor></SPAN>
+<SPAN id=3Dline-670 class=3Danchor></SPAN>   [JFIF] 'JPEG File =
+Interchange Format, version 1.02'
+<SPAN id=3Dline-671 class=3Danchor></SPAN>
+<SPAN id=3Dline-672 class=3Danchor></SPAN>      =
+&lt;url:http://www.w3.org/Graphics/JPEG/jfif.txt&gt;
+<SPAN id=3Dline-673 class=3Danchor></SPAN>
+<SPAN id=3Dline-674 class=3Danchor></SPAN>   [KEYWORDS] S. Bradner, 'Key =
+words for use in RFCs to Indicate
+<SPAN id=3Dline-675 class=3Danchor></SPAN>   Requirement Levels', RFC =
+2119, March 1997.
+<SPAN id=3Dline-676 class=3Danchor></SPAN>
+<SPAN id=3Dline-677 class=3Danchor></SPAN>      =
+&lt;url:ftp://ftp.isi.edu/in-notes/rfc2119.txt&gt;
+<SPAN id=3Dline-678 class=3Danchor></SPAN>
+<SPAN id=3Dline-679 class=3Danchor></SPAN>   [MPEG] ISO/IEC =
+11172-3:1993.
+<SPAN id=3Dline-680 class=3Danchor></SPAN>   'Coding of moving pictures =
+and associated audio for digital storage
+<SPAN id=3Dline-681 class=3Danchor></SPAN>   media at up to about 1,5 =
+Mbit/s, Part 3: Audio.'
+<SPAN id=3Dline-682 class=3Danchor></SPAN>   Technical committee / =
+subcommittee: JTC 1 / SC 29
+<SPAN id=3Dline-683 class=3Danchor></SPAN>    and
+<SPAN id=3Dline-684 class=3Danchor></SPAN>   ISO/IEC 13818-3:1995
+<SPAN id=3Dline-685 class=3Danchor></SPAN>   'Generic coding of moving =
+pictures and associated audio information,
+<SPAN id=3Dline-686 class=3Danchor></SPAN>   Part 3: Audio.'
+<SPAN id=3Dline-687 class=3Danchor></SPAN>   Technical committee / =
+subcommittee: JTC 1 / SC 29
+<SPAN id=3Dline-688 class=3Danchor></SPAN>    and
+<SPAN id=3Dline-689 class=3Danchor></SPAN>   ISO/IEC DIS 13818-3
+<SPAN id=3Dline-690 class=3Danchor></SPAN>   'Generic coding of moving =
+pictures and associated audio information,
+<SPAN id=3Dline-691 class=3Danchor></SPAN>   Part 3: Audio (Revision of =
+ISO/IEC 13818-3:1995)'
+<SPAN id=3Dline-692 class=3Danchor></SPAN>
+<SPAN id=3Dline-693 class=3Danchor></SPAN>   [PNG] 'Portable Network =
+Graphics, version 1.0'
+<SPAN id=3Dline-694 class=3Danchor></SPAN>
+<SPAN id=3Dline-695 class=3Danchor></SPAN>      =
+&lt;url:http://www.w3.org/TR/REC-png-multi.html&gt;
+<SPAN id=3Dline-696 class=3Danchor></SPAN>
+<SPAN id=3Dline-697 class=3Danchor></SPAN>   [UNICODE] The Unicode =
+Consortium,
+<SPAN id=3Dline-698 class=3Danchor></SPAN>   'The Unicode Standard =
+Version 3.0', ISBN 0-201-61633-5.
+<SPAN id=3Dline-699 class=3Danchor></SPAN>
+<SPAN id=3Dline-700 class=3Danchor></SPAN>   =
+&lt;url:http://www.unicode.org/unicode/standard/versions/Unicode3.0.htm&g=
+t;
+<SPAN id=3Dline-701 class=3Danchor></SPAN>
+<SPAN id=3Dline-702 class=3Danchor></SPAN>   [URL] T. Berners-Lee, L. =
+Masinter &amp; M. McCahill, 'Uniform Resource
+<SPAN id=3Dline-703 class=3Danchor></SPAN>   Locators (URL)', RFC 1738, =
+December 1994.
+<SPAN id=3Dline-704 class=3Danchor></SPAN>
+<SPAN id=3Dline-705 class=3Danchor></SPAN>      =
+&lt;url:ftp://ftp.isi.edu/in-notes/rfc1738.txt&gt;
+<SPAN id=3Dline-706 class=3Danchor></SPAN>
+<SPAN id=3Dline-707 class=3Danchor></SPAN>   [UTF-8] F. Yergeau, 'UTF-8, =
+a transformation format of ISO 10646',
+<SPAN id=3Dline-708 class=3Danchor></SPAN>   RFC 2279, January 1998.
+<SPAN id=3Dline-709 class=3Danchor></SPAN>  =20
+<SPAN id=3Dline-710 class=3Danchor></SPAN>      =
+&lt;url:ftp://ftp.isi.edu/in-notes/rfc2279.txt&gt;
+<SPAN id=3Dline-711 class=3Danchor></SPAN>
+<SPAN id=3Dline-712 class=3Danchor></SPAN>   [UTF-16] F. Yergeau, =
+'UTF-16, an encoding of ISO 10646', RFC 2781,
+<SPAN id=3Dline-713 class=3Danchor></SPAN>   February 2000.
+<SPAN id=3Dline-714 class=3Danchor></SPAN>  =20
+<SPAN id=3Dline-715 class=3Danchor></SPAN>      =
+&lt;url:ftp://ftp.isi.edu/in-notes/rfc2781.txt&gt;
+<SPAN id=3Dline-716 class=3Danchor></SPAN>  =20
+<SPAN id=3Dline-717 class=3Danchor></SPAN>   [ZLIB] P. Deutsch, Aladdin =
+Enterprises &amp; J-L. Gailly, 'ZLIB
+<SPAN id=3Dline-718 class=3Danchor></SPAN>   Compressed Data Format =
+Specification version 3.3', RFC 1950,
+<SPAN id=3Dline-719 class=3Danchor></SPAN>   May 1996.
+<SPAN id=3Dline-720 class=3Danchor></SPAN>
+<SPAN id=3Dline-721 class=3Danchor></SPAN>      =
+&lt;url:ftp://ftp.isi.edu/in-notes/rfc1950.txt&gt;
+<SPAN id=3Dline-722 class=3Danchor></SPAN>
+<SPAN id=3Dline-723 class=3Danchor></SPAN>
+<SPAN id=3Dline-724 class=3Danchor></SPAN>9.   Author's Address
+<SPAN id=3Dline-725 class=3Danchor></SPAN>
+<SPAN id=3Dline-726 class=3Danchor></SPAN>   Written by
+<SPAN id=3Dline-727 class=3Danchor></SPAN>
+<SPAN id=3Dline-728 class=3Danchor></SPAN>     Martin Nilsson
+<SPAN id=3Dline-729 class=3Danchor></SPAN>     Rydsv=EF=BF=BDgen 246 C. =
+30
+<SPAN id=3Dline-730 class=3Danchor></SPAN>     SE-584 34 =
+Link=EF=BF=BDping
+<SPAN id=3Dline-731 class=3Danchor></SPAN>     Sweden
+<SPAN id=3Dline-732 class=3Danchor></SPAN>
+<SPAN id=3Dline-733 class=3Danchor></SPAN>     Email: nilsson at id3.org
+<SPAN id=3Dline-734 class=3Danchor></SPAN></PRE><SPAN id=3Dline-735=20
+class=3Danchor></SPAN><SPAN id=3Dbottom class=3Danchor></SPAN></DIV>
+<DIV id=3Dpagebottom></DIV>
+<P dir=3Dltr id=3Dpageinfo lang=3Dja class=3Dinfo>id3v2.4.0-structure =
+(=E6=9C=80=E7=B5=82=E6=9B=B4=E6=96=B0=E6=97=A5=E6=99=82 2006-12-18=20
+06:23:19 =E6=9B=B4=E6=96=B0=E8=80=85 <SPAN title=3DDanONeill><A =
+title=3DDanONeill=20
+href=3D"http://www.id3.org/DanONeill" =
+generated=3D"True">DanONeill</A></SPAN>)</P>
+<DIV id=3Dpagebottom></DIV></DIV>
+<CENTER><A href=3D"http://www.id3.org/Copyright">Copyright</A> =C2=A9 =
+1998-2009 by=20
+their respective owners</CENTER></BODY></HTML>
+
+------=_NextPart_000_0051_01CC11B2.BC886CD0
+Content-Type: image/gif
+Content-Transfer-Encoding: base64
+Content-Location: http://www.id3.org/id3v2.gif
+
+R0lGODlhOAA2ANUAAAAAABEJCRcXFyIREScnJzc3N0EsLE45OUhISFxKSldXV2VOTmJiYnRjY29w
+cHd3d/9bAP9pAPtyDvqAJf+OO/+URv+lY4KCgpmZma2fn6emprW0tP+6h8q7u8jIyNvNzc/Q0NnZ
+2ebm5vLy8v///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACwAAAAAOAA2AAAG/8CJZEgcRiyk5EbB
+aDoZjwtmExolr9isdiuJeL9fZPICKJvPZkFBgRFt3+8uGCwmkdF4NOHihvtJcnNedXd5hmUCGH9w
+gYKEh5BlCH2LWI1zj5GQCCGVloJhV4WahgRWnoCgg6KkkQWUi6oREJmthw+oFbq7uxQcVx5RFxcP
+TQgFArYAGqjNWyIhGgqkBc7WWxoFmorX3VfTkAKdfxcFCOfox8zXCJG4f+B5F90eyYfVfwyH890Y
+keNw9Bnidy1EJIJvBMrzRiJeHnwB9zHcEAmWFoV4EFoTYc+QBz8Y0Wj0I41AgQfjCEBaR8IDBikb
+rIQ8M/LNKAAE3LQ7xO0BGv8FJGaaqanFIAAEHu4waAhpHkUABcqVaSJxkYcCBD6KkBQUEq52OUlw
+xCm0DFE/HqZ2PbT0AgOC7QSUBXB2SwgFyRS40bdhw4AyCkD4BJolRDIEc+tqeUo3iQMAHUg0KBN5
+MoIsIwRiSNwsxIY7QH0eIEExAYkPXLGAW8rZmkARPgGE2KpoQWqxO/WuXbgoGjcS/gAEK1Pbg4gA
+qUWsvtL6T/ANScCJEGhALAkNZpYybcy86p+0OB+AuxwvQ5IEZnBhn/qgmFvvztEU+LgTANAONEmo
+xCMX/p8QDyDAxinapIGGBoblQUBz14ywnyHQiTDChBROyOBGkXwU0UAMBXeGiEVZXOhMfXlcBpJ/
+nUXCUkIoouJhHgKAGGKLlYTwYB6EncjhNQ7l8duGvDUzQo94mJgPjW+MINU/lczFgAhQRiklNB54
+oMGSkeR4pDJc6iHjFnN1qQl0noQpJpJgnsnlO6iYqeYZP5b5piYFkOmMm2cm4g2eXDKgwZdyvimA
+Goi1wdAVQQAAOw==
+
+------=_NextPart_000_0051_01CC11B2.BC886CD0
+Content-Type: text/css;
+	charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://www.id3.org/wiki/mentalwealth_id3/css/common.css
+
+HTML {
+	LINE-HEIGHT: 1.25em; BACKGROUND-COLOR: white; FONT-FAMILY: Arial, =
+Lucida Grande, sans-serif; COLOR: black; FONT-SIZE: 0.85em
+}
+A:hover {
+	COLOR: #0044b3
+}
+A {
+	COLOR: #597bb3
+}
+A.nonexistent {
+	COLOR: gray
+}
+A.badinterwiki {
+	COLOR: gray
+}
+H1 A {
+	COLOR: black; TEXT-DECORATION: none
+}
+LI P {
+	MARGIN: 0.25em 0px
+}
+LI.gap {
+	MARGIN-TOP: 0.5em
+}
+A {
+	BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; BORDER-TOP: 0px; BORDER-RIGHT: =
+0px
+}
+IMG {
+	BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; BORDER-TOP: 0px; BORDER-RIGHT: =
+0px
+}
+IMG.drawing {
+	BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; BORDER-TOP: 0px; BORDER-RIGHT: =
+0px
+}
+DT {
+	FONT-WEIGHT: bold
+}
+PRE {
+	BORDER-BOTTOM: #c0c0c0 1pt solid; BORDER-LEFT: #c0c0c0 1pt solid; =
+PADDING-BOTTOM: 0.5em; PADDING-LEFT: 0.5em; PADDING-RIGHT: 0.5em; =
+FONT-FAMILY: courier, monospace; WORD-WRAP: break-word; WHITE-SPACE: =
+pre-wrap; BACKGROUND: #f0ece6; BORDER-TOP: #c0c0c0 1pt solid; =
+BORDER-RIGHT: #c0c0c0 1pt solid; PADDING-TOP: 0.5em
+}
+TABLE {
+	MARGIN: 0.5em 0px; BORDER-COLLAPSE: collapse
+}
+TD {
+	BORDER-BOTTOM: #adb9cc 1px solid; BORDER-LEFT: #adb9cc 1px solid; =
+PADDING-BOTTOM: 0.25em; PADDING-LEFT: 0.25em; PADDING-RIGHT: 0.25em; =
+BORDER-TOP: #adb9cc 1px solid; BORDER-RIGHT: #adb9cc 1px solid; =
+PADDING-TOP: 0.25em
+}
+TD P {
+	PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: =
+0px; PADDING-TOP: 0px
+}
+HR {
+	BORDER-BOTTOM: medium none; BORDER-LEFT: medium none; BACKGROUND-COLOR: =
+#c0c0c0; HEIGHT: 1px; BORDER-TOP: medium none; BORDER-RIGHT: medium none
+}
+.hr1 {
+	HEIGHT: 2px
+}
+.hr2 {
+	HEIGHT: 3px
+}
+.hr3 {
+	HEIGHT: 4px
+}
+.hr4 {
+	HEIGHT: 5px
+}
+.hr5 {
+	HEIGHT: 6px
+}
+.hr6 {
+	HEIGHT: 7px
+}
+.u {
+	TEXT-DECORATION: underline
+}
+.strike {
+	TEXT-DECORATION: line-through
+}
+.table-of-contents {
+	TEXT-ALIGN: left; MARGIN: 0.5em; PADDING-LEFT: 2em; WIDTH: 50%; =
+FONT-SIZE: small
+}
+.table-of-contents OL {
+	LIST-STYLE-TYPE: decimal; MARGIN: 0px 0px 0px 1em
+}
+.table-of-contents UL {
+	LIST-STYLE-TYPE: none; MARGIN: 0px
+}
+.table-of-contents-heading {
+	PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: =
+0px; FONT-WEIGHT: bold; PADDING-TOP: 0px
+}
+footnotes UL {
+	PADDING-BOTTOM: 0px; MARGIN: 0px 0px 1em; PADDING-LEFT: 2em; =
+PADDING-RIGHT: 2em; PADDING-TOP: 0px
+}
+.footnotes LI {
+	LIST-STYLE-TYPE: none; LIST-STYLE-IMAGE: none
+}
+.info {
+	COLOR: gray; FONT-SIZE: 0.85em
+}
+.warning {
+	COLOR: red
+}
+.error {
+	COLOR: red
+}
+STRONG.highlight {
+	PADDING-BOTTOM: 1pt; BACKGROUND-COLOR: #cce0ff; PADDING-LEFT: 1pt; =
+PADDING-RIGHT: 1pt; PADDING-TOP: 1pt
+}
+.recentchanges P {
+	MARGIN: 0.25em
+}
+.recentchanges TD {
+	BORDER-BOTTOM: #f0ece6 1pt solid; BORDER-LEFT: medium none; BACKGROUND: =
+#f7f6f2; VERTICAL-ALIGN: top; BORDER-TOP: medium none; BORDER-RIGHT: =
+medium none
+}
+.rcdaybreak TD {
+	BORDER-BOTTOM: medium none; BORDER-LEFT: medium none; BACKGROUND: =
+#b8c5d9; BORDER-TOP: medium none; BORDER-RIGHT: medium none
+}
+.rcdaybreak TD A {
+	FONT-SIZE: 0.88em
+}
+.rcicon1 {
+	TEXT-ALIGN: center
+}
+.rcicon2 {
+	TEXT-ALIGN: center
+}
+.rcpagelink {
+	WIDTH: 33%
+}
+.rctime {
+	WHITE-SPACE: nowrap; FONT-SIZE: 0.88em
+}
+.rceditor {
+	WHITE-SPACE: nowrap; FONT-SIZE: 0.88em
+}
+.rccomment {
+	WIDTH: 66%; COLOR: gray; FONT-SIZE: 0.88em
+}
+.rcrss {
+	FLOAT: right
+}
+[dir=3D'rtl'].recentchanges .rcrss {
+	FLOAT: left
+}
+.userpref TABLE {
+	BORDER-BOTTOM: medium none; BORDER-LEFT: medium none; BORDER-TOP: =
+medium none; BORDER-RIGHT: medium none
+}
+.userpref TD {
+	BORDER-BOTTOM: medium none; BORDER-LEFT: medium none; BORDER-TOP: =
+medium none; BORDER-RIGHT: medium none
+}
+DIV.codearea {
+	BORDER-BOTTOM: #aebdcc 1pt solid; BORDER-LEFT: #aebdcc 1pt solid; =
+PADDING-BOTTOM: 0px; BACKGROUND-COLOR: #f3f5f7; MARGIN: 0.5em 0px; =
+PADDING-LEFT: 0px; PADDING-RIGHT: 0px; COLOR: black; BORDER-TOP: #aebdcc =
+1pt solid; BORDER-RIGHT: #aebdcc 1pt solid; PADDING-TOP: 0px
+}
+DIV.codearea PRE {
+	BORDER-BOTTOM: medium none; BORDER-LEFT: medium none; PADDING-BOTTOM: =
+10pt; MARGIN: 0px; PADDING-LEFT: 10pt; PADDING-RIGHT: 10pt; BORDER-TOP: =
+medium none; BORDER-RIGHT: medium none; PADDING-TOP: 10pt
+}
+A.codenumbers {
+	MARGIN: 0px 10pt; COLOR: gray; FONT-SIZE: 0.85em
+}
+DIV.codearea PRE SPAN.LineNumber {
+	COLOR: gray
+}
+DIV.codearea PRE SPAN.ID {
+	COLOR: #000000
+}
+DIV.codearea PRE SPAN.Operator {
+	COLOR: #0000c0
+}
+DIV.codearea PRE SPAN.Char {
+	COLOR: #004080
+}
+DIV.codearea PRE SPAN.Comment {
+	COLOR: #008000
+}
+DIV.codearea PRE SPAN.Number {
+	COLOR: #0080c0
+}
+DIV.codearea PRE SPAN.String {
+	COLOR: #004080
+}
+DIV.codearea PRE SPAN.SPChar {
+	COLOR: #0000c0
+}
+DIV.codearea PRE SPAN.ResWord {
+	COLOR: #a00000
+}
+DIV.codearea PRE SPAN.ConsWord {
+	COLOR: #008080; FONT-WEIGHT: bold
+}
+DIV.codearea PRE SPAN.Error {
+	BORDER-BOTTOM: #ff0000 1.5pt solid; BORDER-LEFT: #ff0000 1.5pt solid; =
+COLOR: #ff8080; BORDER-TOP: #ff0000 1.5pt solid; BORDER-RIGHT: #ff0000 =
+1.5pt solid
+}
+DIV.codearea PRE SPAN.ResWord2 {
+	COLOR: #0080ff; FONT-WEIGHT: bold
+}
+DIV.codearea PRE SPAN.Special {
+	COLOR: #0000ff
+}
+DIV.codearea PRE SPAN.Preprc {
+	COLOR: #803999
+}
+#pageinfo {
+	MARGIN-TOP: 2em
+}
+#credits IMG {
+	VERTICAL-ALIGN: middle
+}
+#preview {
+	BORDER-BOTTOM: #e5e5e5 2px solid; BORDER-LEFT: #e5e5e5 2px solid; =
+PADDING-BOTTOM: 0.5em; PADDING-LEFT: 0.5em; PADDING-RIGHT: 0.5em; =
+BACKGROUND: url(../img/draft.png); BORDER-TOP: #e5e5e5 2px solid; =
+BORDER-RIGHT: #e5e5e5 2px solid; PADDING-TOP: 0.5em
+}
+.diff {
+	WIDTH: 99%
+}
+.diff-title {
+	BACKGROUND-COLOR: #c0c0c0
+}
+.diff-added {
+	BACKGROUND-COLOR: #e0ffe0; VERTICAL-ALIGN: sub
+}
+.diff-removed {
+	BACKGROUND-COLOR: #ffffe0; VERTICAL-ALIGN: sub
+}
+.diff-added SPAN {
+	BACKGROUND-COLOR: #80ff80
+}
+.diff-removed SPAN {
+	BACKGROUND-COLOR: #ffff80
+}
+FORM.dialog {
+	MARGIN: 0px 15px
+}
+.dialog TD {
+	BORDER-BOTTOM: medium none; BORDER-LEFT: medium none; PADDING-BOTTOM: =
+5px; PADDING-LEFT: 5px; PADDING-RIGHT: 5px; BORDER-TOP: medium none; =
+BORDER-RIGHT: medium none; PADDING-TOP: 5px
+}
+.dialog TD.label {
+	TEXT-ALIGN: right; WIDTH: 25%; FONT-WEIGHT: bold
+}
+*[dir=3D'rtl'] .dialog TD.label {
+	TEXT-ALIGN: left
+}
+.dialog TD.content INPUT {
+	WIDTH: 100%
+}
+#message P {
+	PADDING-BOTTOM: 0px; MARGIN: 5px 0px; PADDING-LEFT: 0px; PADDING-RIGHT: =
+0px; FONT-WEIGHT: bold; PADDING-TOP: 0px
+}
+#message DIV.buttons {
+	FONT-WEIGHT: normal
+}
+
+------=_NextPart_000_0051_01CC11B2.BC886CD0
+Content-Type: text/css;
+	charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://www.id3.org/base.css
+
+HTML {
+	FONT-SIZE: 81%
+}
+HTML {
+	PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: =
+0px; PADDING-TOP: 0px
+}
+BODY {
+	PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: =
+0px; PADDING-TOP: 0px
+}
+BODY {
+	FONT: 1em Verdana, Arial, Helvetica, sans-serif; VERTICAL-ALIGN: =
+text-top
+}
+P {
+	FONT-SIZE: 1em
+}
+OL {
+	FONT-SIZE: 1em
+}
+UL {
+	FONT-SIZE: 1em
+}
+LI {
+	FONT-SIZE: 1em
+}
+TABLE {
+	FONT-SIZE: 1em
+}
+P {
+	MARGIN: 1.2em 0px 0px
+}
+H1 {
+	MARGIN: 1.2em 0px 0px
+}
+H2 {
+	MARGIN: 1.2em 0px 0px
+}
+H3 {
+	MARGIN: 1.2em 0px 0px
+}
+H4 {
+	MARGIN: 1.2em 0px 0px
+}
+H5 {
+	MARGIN: 1.2em 0px 0px
+}
+H6 {
+	MARGIN: 1.2em 0px 0px
+}
+INPUT {
+	FONT-SIZE: 1em
+}
+SELECT {
+	FONT-SIZE: 1em
+}
+TH {
+	FONT-SIZE: 1em
+}
+TR {
+	FONT-SIZE: 1em
+}
+TD {
+	FONT-SIZE: 1em
+}
+PRE {
+	FONT-FAMILY: monospace, courier; FONT-SIZE: 1.1em
+}
+TT {
+	FONT-FAMILY: monospace, courier; FONT-SIZE: 1.1em
+}
+STRONG {
+	FONT-WEIGHT: bold
+}
+B {
+	FONT-WEIGHT: bold
+}
+SMALL {
+	FONT-SIZE: 0.8em
+}
+IMG {
+	BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; BORDER-TOP: 0px; BORDER-RIGHT: =
+0px
+}
+TABLE {
+	PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-LEFT: 0px; WIDTH: 99%; =
+PADDING-RIGHT: 0px; PADDING-TOP: 0px
+}
+TH {
+	TEXT-ALIGN: left; FONT-WEIGHT: bold
+}
+TR {
+	TEXT-ALIGN: left
+}
+TH {
+	VERTICAL-ALIGN: top
+}
+TR {
+	VERTICAL-ALIGN: top
+}
+TD {
+	VERTICAL-ALIGN: top
+}
+H1 {
+	MARGIN-TOP: 0px; FONT-SIZE: 1.7em
+}
+H2 {
+	BORDER-BOTTOM: black 2px solid; FONT-SIZE: 1.4em
+}
+H3 {
+	BORDER-LEFT: black 10px solid; PADDING-LEFT: 0.3em; FONT-SIZE: 1.4em
+}
+H4 {
+	BORDER-LEFT: black 3px solid; PADDING-LEFT: 0.3em; FONT-SIZE: 1em
+}
+H5 {
+	FONT-SIZE: 1em; FONT-WEIGHT: bold
+}
+H6 {
+	FONT-SIZE: 1em; FONT-WEIGHT: bold
+}
+H6 {
+	MARGIN-BOTTOM: -1em
+}
+#sidebar {
+	PADDING-BOTTOM: 0px; MARGIN: 0px 8px 0px 12px; PADDING-LEFT: 0px; =
+WIDTH: 160px; PADDING-RIGHT: 0px; DISPLAY: inline; FLOAT: left; =
+FONT-SIZE: 0.88em; PADDING-TOP: 0px
+}
+#page {
+	BORDER-BOTTOM: black 2px solid; BORDER-LEFT: black 1px solid; =
+PADDING-BOTTOM: 15px; MARGIN: 10px 10px 10px 185px; PADDING-LEFT: 30px; =
+PADDING-RIGHT: 30px; BORDER-TOP: black 1px solid; BORDER-RIGHT: black =
+1px solid; PADDING-TOP: 15px
+}
+#credits {
+	TEXT-ALIGN: center; PADDING-BOTTOM: 0px; LIST-STYLE-TYPE: none; MARGIN: =
+5px 0px; PADDING-LEFT: 0px; WIDTH: 160px; PADDING-RIGHT: 0px; FLOAT: =
+left; FONT-SIZE: 0.9em; PADDING-TOP: 0px
+}
+#version {
+	TEXT-ALIGN: center; PADDING-BOTTOM: 0px; LIST-STYLE-TYPE: none; MARGIN: =
+5px 0px; PADDING-LEFT: 0px; WIDTH: 160px; PADDING-RIGHT: 0px; FLOAT: =
+left; FONT-SIZE: 0.9em; PADDING-TOP: 0px
+}
+#timings {
+	TEXT-ALIGN: center; PADDING-BOTTOM: 0px; LIST-STYLE-TYPE: none; MARGIN: =
+5px 0px; PADDING-LEFT: 0px; WIDTH: 160px; PADDING-RIGHT: 0px; FLOAT: =
+left; FONT-SIZE: 0.9em; PADDING-TOP: 0px
+}
+#message {
+	BORDER-BOTTOM: black 2px solid; BORDER-LEFT: black 1px solid; =
+PADDING-BOTTOM: 5px; MARGIN: 10px 10px 10px 185px; PADDING-LEFT: 10px; =
+PADDING-RIGHT: 10px; BORDER-TOP: black 1px solid; BORDER-RIGHT: black =
+1px solid; PADDING-TOP: 5px
+}
+#header {
+	MARGIN: 10px
+}
+#logo {
+	PADDING-BOTTOM: 5px; MARGIN: 0px; PADDING-LEFT: 5px; PADDING-RIGHT: =
+5px; WHITE-SPACE: nowrap; FONT-SIZE: 1.7em; FONT-WEIGHT: bold; =
+PADDING-TOP: 5px
+}
+#logo IMG {
+	VERTICAL-ALIGN: middle
+}
+#logo A {
+	TEXT-DECORATION: none
+}
+#searchform {
+	PADDING-BOTTOM: 0px; MARGIN: 5px; PADDING-LEFT: 0px; PADDING-RIGHT: =
+0px; WHITE-SPACE: nowrap; FLOAT: right; PADDING-TOP: 0px
+}
+*[dir=3D'rtl'] #searchform {
+	FLOAT: left
+}
+#searchform FORM DIV {
+	DISPLAY: inline
+}
+.sidepanel {
+	BORDER-BOTTOM: black 2px solid; BORDER-LEFT: black 1px solid; MARGIN: =
+0px 0px 10px; WIDTH: 160px; FLOAT: right; FONT-SIZE: 1em; BORDER-TOP: =
+black 1px solid; BORDER-RIGHT: black 2px solid
+}
+.sidepanel H1 {
+	BORDER-BOTTOM: black 1px solid; BORDER-LEFT: medium none; =
+PADDING-BOTTOM: 0.2em; MARGIN: 0px; PADDING-LEFT: 10px; PADDING-RIGHT: =
+10px; FONT-SIZE: 1em; BORDER-TOP: medium none; BORDER-RIGHT: medium =
+none; PADDING-TOP: 0.2em
+}
+.sidepanel UL {
+	PADDING-BOTTOM: 0px; LIST-STYLE-TYPE: none; MARGIN: 0px; PADDING-LEFT: =
+0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px
+}
+.sidepanel LI {
+	BORDER-BOTTOM: black 1px solid; PADDING-BOTTOM: 2px; MARGIN: 0px; =
+PADDING-LEFT: 10px; PADDING-RIGHT: 10px; PADDING-TOP: 2px
+}
+.sidepanel LI FORM {
+	MARGIN: 0px
+}
+.sidepanel A {
+	DISPLAY: block; TEXT-DECORATION: none
+}
+.sidepanel A:hover {
+	TEXT-DECORATION: underline
+}
+SPAN.sep {
+	DISPLAY: none
+}
+.footnotes DIV {
+	WIDTH: 5em; BORDER-TOP: black 1px solid
+}
+.info {
+	FONT-SIZE: 0.8em
+}
+DIV.codearea PRE {
+	BORDER-BOTTOM: medium none; BORDER-LEFT: medium none; PADDING-BOTTOM: =
+0.9em; MARGIN: 0px; PADDING-LEFT: 0.9em; PADDING-RIGHT: 0.9em; =
+BORDER-TOP: medium none; BORDER-RIGHT: medium none; PADDING-TOP: 0.9em
+}
+#navibar LI.current {
+	BORDER-BOTTOM: black 1px solid; BORDER-LEFT: medium none; BORDER-TOP: =
+medium none; BORDER-RIGHT: medium none
+}
+.editbar FORM {
+	MARGIN: 0px; DISPLAY: inline
+}
+.editbar FORM DIV {
+	MARGIN: 0px; DISPLAY: inline
+}
+#editor-textarea {
+	WIDTH: 95%
+}
+#editor-comment {
+	WIDTH: 95%
+}
+#pagebottom {
+	CLEAR: both
+}
+.searchresult DD SPAN {
+	FONT-WEIGHT: bold
+}
+
+------=_NextPart_000_0051_01CC11B2.BC886CD0
+Content-Type: text/css;
+	charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://www.id3.org/skin-id3.css
+
+HTML {
+	BACKGROUND-COLOR: #fff
+}
+BODY {
+	BACKGROUND-COLOR: #fff
+}
+BODY {
+	COLOR: #000
+}
+#page {
+	BORDER-BOTTOM-COLOR: #9c9c9c; BORDER-TOP-COLOR: #9c9c9c; =
+BORDER-RIGHT-COLOR: #9c9c9c; BORDER-LEFT-COLOR: #9c9c9c
+}
+#message {
+	BORDER-BOTTOM-COLOR: #9c9c9c; BORDER-TOP-COLOR: #9c9c9c; =
+BORDER-RIGHT-COLOR: #9c9c9c; BORDER-LEFT-COLOR: #9c9c9c
+}
+#header {
+	BORDER-BOTTOM-COLOR: #9c9c9c; BORDER-TOP-COLOR: #9c9c9c; =
+BORDER-RIGHT-COLOR: #9c9c9c; BORDER-LEFT-COLOR: #9c9c9c
+}
+.sidepanel {
+	BORDER-BOTTOM-COLOR: #9c9c9c; BORDER-TOP-COLOR: #9c9c9c; =
+BORDER-RIGHT-COLOR: #9c9c9c; BORDER-LEFT-COLOR: #9c9c9c
+}
+.sidepanel H1 {
+	BORDER-BOTTOM-COLOR: #9c9c9c; BORDER-TOP-COLOR: #9c9c9c; =
+BORDER-RIGHT-COLOR: #9c9c9c; BORDER-LEFT-COLOR: #9c9c9c
+}
+.sidepanel LI {
+	BORDER-BOTTOM-COLOR: #9c9c9c; BORDER-TOP-COLOR: #9c9c9c; =
+BORDER-RIGHT-COLOR: #9c9c9c; BORDER-LEFT-COLOR: #9c9c9c
+}
+#navibar LI.current {
+	BORDER-BOTTOM-COLOR: #9c9c9c; BORDER-TOP-COLOR: #9c9c9c; =
+BORDER-RIGHT-COLOR: #9c9c9c; BORDER-LEFT-COLOR: #9c9c9c
+}
+.footnotes DIV {
+	BORDER-BOTTOM-COLOR: #9c9c9c; BORDER-TOP-COLOR: #9c9c9c; =
+BORDER-RIGHT-COLOR: #9c9c9c; BORDER-LEFT-COLOR: #9c9c9c
+}
+#header {
+	BACKGROUND: #ffffff
+}
+.sidepanel {
+	BACKGROUND: #ffffff
+}
+.sidepanel H1 {
+	COLOR: #ff6600
+}
+#navibar LI.current {
+	BACKGROUND: #ff6600
+}
+H2 {
+	BORDER-BOTTOM-COLOR: #ff6600; BORDER-TOP-COLOR: #ff6600; =
+BORDER-RIGHT-COLOR: #ff6600; BORDER-LEFT-COLOR: #ff6600
+}
+H3 {
+	BORDER-BOTTOM-COLOR: #ff6600; BORDER-TOP-COLOR: #ff6600; =
+BORDER-RIGHT-COLOR: #ff6600; BORDER-LEFT-COLOR: #ff6600
+}
+H4 {
+	BORDER-BOTTOM-COLOR: #ff6600; BORDER-TOP-COLOR: #ff6600; =
+BORDER-RIGHT-COLOR: #ff6600; BORDER-LEFT-COLOR: #ff6600
+}
+#credits {
+	COLOR: #777
+}
+#version {
+	COLOR: #777
+}
+#timings {
+	COLOR: #777
+}
+.info {
+	COLOR: #777
+}
+#logo A {
+	COLOR: #ff6600
+}
+
+------=_NextPart_000_0051_01CC11B2.BC886CD0
+Content-Type: text/css;
+	charset="iso-2022-jp"
+Content-Transfer-Encoding: 7bit
+Content-Location: http://www.id3.org/wiki/mentalwealth_id3/css/screen.css
+
+@import url( base.css );
+@import url( skin-id3.css );
+
+------=_NextPart_000_0051_01CC11B2.BC886CD0
+Content-Type: text/css;
+	charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://www.id3.org/wiki/mentalwealth_id3/css/print.css
+
+HTML {
+	BACKGROUND-COLOR: #fff
+}
+BODY {
+	BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: =
+1.5cm; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; FONT-FAMILY: Arial, =
+sans-serif; FONT-SIZE: 12pt; BORDER-TOP: 0px; BORDER-RIGHT: 0px; =
+PADDING-TOP: 0px
+}
+TABLE {
+	WIDTH: 99%
+}
+.footnotes DIV {
+	WIDTH: 5em; BORDER-TOP: #eee 1pt solid
+}
+PRE {
+	FONT-FAMILY: monospace, courier; FONT-SIZE: 10pt
+}
+H1 {
+	MARGIN: 0px
+}
+H2 {
+	MARGIN: 0px
+}
+H3 {
+	MARGIN: 0px
+}
+H4 {
+	MARGIN: 0px
+}
+H5 {
+	MARGIN: 0px
+}
+H6 {
+	MARGIN: 0px
+}
+H1 {
+	FONT-SIZE: 14pt
+}
+H2 {
+	BORDER-BOTTOM: #000 2px solid; PADDING-BOTTOM: 0.3em; LINE-HEIGHT: =
+1.2em; MARGIN-TOP: 1.5em; FONT-SIZE: 14pt
+}
+H3 {
+	BORDER-LEFT: #000 10px solid; MARGIN-TOP: 1.5em; PADDING-LEFT: 0.3em; =
+FONT-SIZE: 14pt
+}
+H4 {
+	BORDER-LEFT: #000 3px solid; MARGIN-TOP: 1.5em; PADDING-LEFT: 0.3em; =
+FONT-SIZE: 12pt
+}
+H5 {
+	FONT-SIZE: 12pt
+}
+H6 {
+	FONT-SIZE: 12pt
+}
+A.interwiki:before {
+	CONTENT: attr(title) ":"
+}
+A.badinterwiki:before {
+	CONTENT: attr(title) ":"
+}
+A.interwiki IMG {
+	DISPLAY: none
+}
+A.badinterwiki IMG {
+	DISPLAY: none
+}
+#header {
+	DISPLAY: none
+}
+#sidebar {
+	DISPLAY: none
+}
+#footer {
+	DISPLAY: none
+}
+#timings {
+	DISPLAY: none
+}
+#credits {
+	DISPLAY: none
+}
+#message {
+	DISPLAY: none
+}
+
+------=_NextPart_000_0051_01CC11B2.BC886CD0
+Content-Type: text/css;
+	charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://www.id3.org/base.css
+
+HTML {
+	FONT-SIZE: 81%
+}
+HTML {
+	PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: =
+0px; PADDING-TOP: 0px
+}
+BODY {
+	PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: =
+0px; PADDING-TOP: 0px
+}
+BODY {
+	FONT: 1em Verdana, Arial, Helvetica, sans-serif; VERTICAL-ALIGN: =
+text-top
+}
+P {
+	FONT-SIZE: 1em
+}
+OL {
+	FONT-SIZE: 1em
+}
+UL {
+	FONT-SIZE: 1em
+}
+LI {
+	FONT-SIZE: 1em
+}
+TABLE {
+	FONT-SIZE: 1em
+}
+P {
+	MARGIN: 1.2em 0px 0px
+}
+H1 {
+	MARGIN: 1.2em 0px 0px
+}
+H2 {
+	MARGIN: 1.2em 0px 0px
+}
+H3 {
+	MARGIN: 1.2em 0px 0px
+}
+H4 {
+	MARGIN: 1.2em 0px 0px
+}
+H5 {
+	MARGIN: 1.2em 0px 0px
+}
+H6 {
+	MARGIN: 1.2em 0px 0px
+}
+INPUT {
+	FONT-SIZE: 1em
+}
+SELECT {
+	FONT-SIZE: 1em
+}
+TH {
+	FONT-SIZE: 1em
+}
+TR {
+	FONT-SIZE: 1em
+}
+TD {
+	FONT-SIZE: 1em
+}
+PRE {
+	FONT-FAMILY: monospace, courier; FONT-SIZE: 1.1em
+}
+TT {
+	FONT-FAMILY: monospace, courier; FONT-SIZE: 1.1em
+}
+STRONG {
+	FONT-WEIGHT: bold
+}
+B {
+	FONT-WEIGHT: bold
+}
+SMALL {
+	FONT-SIZE: 0.8em
+}
+IMG {
+	BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; BORDER-TOP: 0px; BORDER-RIGHT: =
+0px
+}
+TABLE {
+	PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-LEFT: 0px; WIDTH: 99%; =
+PADDING-RIGHT: 0px; PADDING-TOP: 0px
+}
+TH {
+	TEXT-ALIGN: left; FONT-WEIGHT: bold
+}
+TR {
+	TEXT-ALIGN: left
+}
+TH {
+	VERTICAL-ALIGN: top
+}
+TR {
+	VERTICAL-ALIGN: top
+}
+TD {
+	VERTICAL-ALIGN: top
+}
+H1 {
+	MARGIN-TOP: 0px; FONT-SIZE: 1.7em
+}
+H2 {
+	BORDER-BOTTOM: black 2px solid; FONT-SIZE: 1.4em
+}
+H3 {
+	BORDER-LEFT: black 10px solid; PADDING-LEFT: 0.3em; FONT-SIZE: 1.4em
+}
+H4 {
+	BORDER-LEFT: black 3px solid; PADDING-LEFT: 0.3em; FONT-SIZE: 1em
+}
+H5 {
+	FONT-SIZE: 1em; FONT-WEIGHT: bold
+}
+H6 {
+	FONT-SIZE: 1em; FONT-WEIGHT: bold
+}
+H6 {
+	MARGIN-BOTTOM: -1em
+}
+#sidebar {
+	PADDING-BOTTOM: 0px; MARGIN: 0px 8px 0px 12px; PADDING-LEFT: 0px; =
+WIDTH: 160px; PADDING-RIGHT: 0px; DISPLAY: inline; FLOAT: left; =
+FONT-SIZE: 0.88em; PADDING-TOP: 0px
+}
+#page {
+	BORDER-BOTTOM: black 2px solid; BORDER-LEFT: black 1px solid; =
+PADDING-BOTTOM: 15px; MARGIN: 10px 10px 10px 185px; PADDING-LEFT: 30px; =
+PADDING-RIGHT: 30px; BORDER-TOP: black 1px solid; BORDER-RIGHT: black =
+1px solid; PADDING-TOP: 15px
+}
+#credits {
+	TEXT-ALIGN: center; PADDING-BOTTOM: 0px; LIST-STYLE-TYPE: none; MARGIN: =
+5px 0px; PADDING-LEFT: 0px; WIDTH: 160px; PADDING-RIGHT: 0px; FLOAT: =
+left; FONT-SIZE: 0.9em; PADDING-TOP: 0px
+}
+#version {
+	TEXT-ALIGN: center; PADDING-BOTTOM: 0px; LIST-STYLE-TYPE: none; MARGIN: =
+5px 0px; PADDING-LEFT: 0px; WIDTH: 160px; PADDING-RIGHT: 0px; FLOAT: =
+left; FONT-SIZE: 0.9em; PADDING-TOP: 0px
+}
+#timings {
+	TEXT-ALIGN: center; PADDING-BOTTOM: 0px; LIST-STYLE-TYPE: none; MARGIN: =
+5px 0px; PADDING-LEFT: 0px; WIDTH: 160px; PADDING-RIGHT: 0px; FLOAT: =
+left; FONT-SIZE: 0.9em; PADDING-TOP: 0px
+}
+#message {
+	BORDER-BOTTOM: black 2px solid; BORDER-LEFT: black 1px solid; =
+PADDING-BOTTOM: 5px; MARGIN: 10px 10px 10px 185px; PADDING-LEFT: 10px; =
+PADDING-RIGHT: 10px; BORDER-TOP: black 1px solid; BORDER-RIGHT: black =
+1px solid; PADDING-TOP: 5px
+}
+#header {
+	MARGIN: 10px
+}
+#logo {
+	PADDING-BOTTOM: 5px; MARGIN: 0px; PADDING-LEFT: 5px; PADDING-RIGHT: =
+5px; WHITE-SPACE: nowrap; FONT-SIZE: 1.7em; FONT-WEIGHT: bold; =
+PADDING-TOP: 5px
+}
+#logo IMG {
+	VERTICAL-ALIGN: middle
+}
+#logo A {
+	TEXT-DECORATION: none
+}
+#searchform {
+	PADDING-BOTTOM: 0px; MARGIN: 5px; PADDING-LEFT: 0px; PADDING-RIGHT: =
+0px; WHITE-SPACE: nowrap; FLOAT: right; PADDING-TOP: 0px
+}
+*[dir=3D'rtl'] #searchform {
+	FLOAT: left
+}
+#searchform FORM DIV {
+	DISPLAY: inline
+}
+.sidepanel {
+	BORDER-BOTTOM: black 2px solid; BORDER-LEFT: black 1px solid; MARGIN: =
+0px 0px 10px; WIDTH: 160px; FLOAT: right; FONT-SIZE: 1em; BORDER-TOP: =
+black 1px solid; BORDER-RIGHT: black 2px solid
+}
+.sidepanel H1 {
+	BORDER-BOTTOM: black 1px solid; BORDER-LEFT: medium none; =
+PADDING-BOTTOM: 0.2em; MARGIN: 0px; PADDING-LEFT: 10px; PADDING-RIGHT: =
+10px; FONT-SIZE: 1em; BORDER-TOP: medium none; BORDER-RIGHT: medium =
+none; PADDING-TOP: 0.2em
+}
+.sidepanel UL {
+	PADDING-BOTTOM: 0px; LIST-STYLE-TYPE: none; MARGIN: 0px; PADDING-LEFT: =
+0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px
+}
+.sidepanel LI {
+	BORDER-BOTTOM: black 1px solid; PADDING-BOTTOM: 2px; MARGIN: 0px; =
+PADDING-LEFT: 10px; PADDING-RIGHT: 10px; PADDING-TOP: 2px
+}
+.sidepanel LI FORM {
+	MARGIN: 0px
+}
+.sidepanel A {
+	DISPLAY: block; TEXT-DECORATION: none
+}
+.sidepanel A:hover {
+	TEXT-DECORATION: underline
+}
+SPAN.sep {
+	DISPLAY: none
+}
+.footnotes DIV {
+	WIDTH: 5em; BORDER-TOP: black 1px solid
+}
+.info {
+	FONT-SIZE: 0.8em
+}
+DIV.codearea PRE {
+	BORDER-BOTTOM: medium none; BORDER-LEFT: medium none; PADDING-BOTTOM: =
+0.9em; MARGIN: 0px; PADDING-LEFT: 0.9em; PADDING-RIGHT: 0.9em; =
+BORDER-TOP: medium none; BORDER-RIGHT: medium none; PADDING-TOP: 0.9em
+}
+#navibar LI.current {
+	BORDER-BOTTOM: black 1px solid; BORDER-LEFT: medium none; BORDER-TOP: =
+medium none; BORDER-RIGHT: medium none
+}
+.editbar FORM {
+	MARGIN: 0px; DISPLAY: inline
+}
+.editbar FORM DIV {
+	MARGIN: 0px; DISPLAY: inline
+}
+#editor-textarea {
+	WIDTH: 95%
+}
+#editor-comment {
+	WIDTH: 95%
+}
+#pagebottom {
+	CLEAR: both
+}
+.searchresult DD SPAN {
+	FONT-WEIGHT: bold
+}
+
+------=_NextPart_000_0051_01CC11B2.BC886CD0
+Content-Type: text/css;
+	charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://www.id3.org/skin-id3.css
+
+HTML {
+	BACKGROUND-COLOR: #fff
+}
+BODY {
+	BACKGROUND-COLOR: #fff
+}
+BODY {
+	COLOR: #000
+}
+#page {
+	BORDER-BOTTOM-COLOR: #9c9c9c; BORDER-TOP-COLOR: #9c9c9c; =
+BORDER-RIGHT-COLOR: #9c9c9c; BORDER-LEFT-COLOR: #9c9c9c
+}
+#message {
+	BORDER-BOTTOM-COLOR: #9c9c9c; BORDER-TOP-COLOR: #9c9c9c; =
+BORDER-RIGHT-COLOR: #9c9c9c; BORDER-LEFT-COLOR: #9c9c9c
+}
+#header {
+	BORDER-BOTTOM-COLOR: #9c9c9c; BORDER-TOP-COLOR: #9c9c9c; =
+BORDER-RIGHT-COLOR: #9c9c9c; BORDER-LEFT-COLOR: #9c9c9c
+}
+.sidepanel {
+	BORDER-BOTTOM-COLOR: #9c9c9c; BORDER-TOP-COLOR: #9c9c9c; =
+BORDER-RIGHT-COLOR: #9c9c9c; BORDER-LEFT-COLOR: #9c9c9c
+}
+.sidepanel H1 {
+	BORDER-BOTTOM-COLOR: #9c9c9c; BORDER-TOP-COLOR: #9c9c9c; =
+BORDER-RIGHT-COLOR: #9c9c9c; BORDER-LEFT-COLOR: #9c9c9c
+}
+.sidepanel LI {
+	BORDER-BOTTOM-COLOR: #9c9c9c; BORDER-TOP-COLOR: #9c9c9c; =
+BORDER-RIGHT-COLOR: #9c9c9c; BORDER-LEFT-COLOR: #9c9c9c
+}
+#navibar LI.current {
+	BORDER-BOTTOM-COLOR: #9c9c9c; BORDER-TOP-COLOR: #9c9c9c; =
+BORDER-RIGHT-COLOR: #9c9c9c; BORDER-LEFT-COLOR: #9c9c9c
+}
+.footnotes DIV {
+	BORDER-BOTTOM-COLOR: #9c9c9c; BORDER-TOP-COLOR: #9c9c9c; =
+BORDER-RIGHT-COLOR: #9c9c9c; BORDER-LEFT-COLOR: #9c9c9c
+}
+#header {
+	BACKGROUND: #ffffff
+}
+.sidepanel {
+	BACKGROUND: #ffffff
+}
+.sidepanel H1 {
+	COLOR: #ff6600
+}
+#navibar LI.current {
+	BACKGROUND: #ff6600
+}
+H2 {
+	BORDER-BOTTOM-COLOR: #ff6600; BORDER-TOP-COLOR: #ff6600; =
+BORDER-RIGHT-COLOR: #ff6600; BORDER-LEFT-COLOR: #ff6600
+}
+H3 {
+	BORDER-BOTTOM-COLOR: #ff6600; BORDER-TOP-COLOR: #ff6600; =
+BORDER-RIGHT-COLOR: #ff6600; BORDER-LEFT-COLOR: #ff6600
+}
+H4 {
+	BORDER-BOTTOM-COLOR: #ff6600; BORDER-TOP-COLOR: #ff6600; =
+BORDER-RIGHT-COLOR: #ff6600; BORDER-LEFT-COLOR: #ff6600
+}
+#credits {
+	COLOR: #777
+}
+#version {
+	COLOR: #777
+}
+#timings {
+	COLOR: #777
+}
+.info {
+	COLOR: #777
+}
+#logo A {
+	COLOR: #ff6600
+}
+
+------=_NextPart_000_0051_01CC11B2.BC886CD0
+Content-Type: text/css;
+	charset="iso-2022-jp"
+Content-Transfer-Encoding: 7bit
+Content-Location: http://www.id3.org/screen.css
+
+@import url( base.css );
+@import url( skin-id3.css );
+
+------=_NextPart_000_0051_01CC11B2.BC886CD0
+Content-Type: text/css;
+	charset="iso-2022-jp"
+Content-Transfer-Encoding: 7bit
+Content-Location: http://www.id3.org/wiki/mentalwealth_id3/css/projection.css
+
+@import url( screen.css );
+HTML {
+	LINE-HEIGHT: 1.8em
+}
+BODY {
+	FONT-SIZE: 22pt
+}
+B {
+	FONT-SIZE: 22pt
+}
+EM {
+	FONT-SIZE: 22pt
+}
+A {
+	FONT-SIZE: 22pt
+}
+SPAN {
+	FONT-SIZE: 22pt
+}
+DIV {
+	FONT-SIZE: 22pt
+}
+P {
+	FONT-SIZE: 22pt
+}
+TD {
+	FONT-SIZE: 22pt
+}
+H2 {
+	FONT-SIZE: 24pt
+}
+H3 {
+	FONT-SIZE: 22pt
+}
+H4 {
+	FONT-SIZE: 20pt
+}
+H5 {
+	FONT-SIZE: 18pt
+}
+H6 {
+	FONT-SIZE: 16pt
+}
+TT {
+	FONT-SIZE: 18pt
+}
+PRE {
+	FONT-SIZE: 18pt
+}
+SUP {
+	FONT-SIZE: 14pt
+}
+SUB {
+	FONT-SIZE: 14pt
+}
+.navigation {
+	PADDING-BOTTOM: 8pt; FONT-SIZE: 16pt; PADDING-TOP: 8pt
+}
+
+------=_NextPart_000_0051_01CC11B2.BC886CD0
+Content-Type: application/octet-stream
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://www.id3.org/wiki/common/js/common.js
+
+//=0A=
+// MoinMoin commonly used JavaScript functions=0A=
+//=0A=
+=0A=
+// use this instead of assigning to window.onload directly:=0A=
+function addLoadEvent(func) {=0A=
+  // alert("addLoadEvent " + func)=0A=
+  var oldonload =3D window.onload;=0A=
+  if (typeof window.onload !=3D 'function') {=0A=
+    window.onload =3D func;=0A=
+  } else {=0A=
+    window.onload =3D function() {=0A=
+      oldonload();=0A=
+      func();=0A=
+    }=0A=
+  }=0A=
+}=0A=
+=0A=
+function can_use_gui_editor() {=0A=
+    var sAgent =3D navigator.userAgent.toLowerCase();=0A=
+ =0A=
+    if (sAgent.indexOf("msie") !=3D -1 && sAgent.indexOf("mac") =3D=3D =
+-1 &&=0A=
+        sAgent.indexOf("opera") =3D=3D -1 ) {=0A=
+        // Internet Explorer=0A=
+        var sBrowserVersion =3D navigator.appVersion.match(/MSIE =
+(.\..)/)[1];=0A=
+        return ( sBrowserVersion >=3D 5.5 );=0A=
+    } else if (navigator.product =3D=3D "Gecko" && =0A=
+               navigator.productSub >=3D 20030210) {=0A=
+        // Gecko=0A=
+        return true;=0A=
+    }=0A=
+    // else if (sAgent.indexOf("safari") !=3D -1 ) {=0A=
+    //    // Safari - build must be at least 312 (1.3)=0A=
+    //    return (sAgent.match( /safari\/(\d+)/ )[1] >=3D 312 );=0A=
+    // } =0A=
+    else {=0A=
+        // Unknown browser, assume gui editor is not compatible=0A=
+        return false;=0A=
+    }=0A=
+}=0A=
+=0A=
+=0A=
+function update_edit_links() {=0A=
+    // Update editlink according if if the browser is compatible=0A=
+    if (can_use_gui_editor() =3D=3D false){=0A=
+        //alert("update_edit_links: can't use gui editor");=0A=
+        return;=0A=
+    }=0A=
+    var editlinks =3D document.getElementsByName("editlink");=0A=
+    for (i =3D 0; i < editlinks.length; i++) {=0A=
+        var link =3D editlinks[i];=0A=
+        href =3D =
+link.href.replace('editor=3Dtextonly','editor=3Dguipossible');=0A=
+        link.href =3D href;=0A=
+        //alert("update_edit_links: modified to guipossible");=0A=
+    }=0A=
+}=0A=
+=0A=
+=0A=
+function add_gui_editor_links() {=0A=
+    // Add gui editor link after the text editor link=0A=
+    =0A=
+    // If the variable is not set or browser is not compatible, exit=0A=
+    try {gui_editor_link_href}=0A=
+    catch (e) {=0A=
+        //alert("add_gui_editor_links: gui_editor_link_href not here");=0A=
+        return=0A=
+    }=0A=
+    if (can_use_gui_editor() =3D=3D false){=0A=
+        //alert("add_gui_editor_links: can't use gui_editor");=0A=
+        return;=0A=
+    }=0A=
+    var all =3D document.getElementsByName('texteditlink');=0A=
+    for (i =3D 0; i < all.length; i++) {=0A=
+        var textEditorLink =3D all[i];=0A=
+        // Create a list item with a link=0A=
+        var guiEditorLink =3D document.createElement('a');=0A=
+        guiEditorLink.href =3D gui_editor_link_href;=0A=
+        var text =3D document.createTextNode(gui_editor_link_text);=0A=
+        guiEditorLink.appendChild(text);=0A=
+        var listItem =3D document.createElement('li')=0A=
+        listItem.appendChild(guiEditorLink);=0A=
+        // Insert in the editbar=0A=
+        var editbar =3D textEditorLink.parentNode.parentNode=0A=
+        var nextListItem =3D textEditorLink.parentNode.nextSibling;=0A=
+        editbar.insertBefore(listItem, nextListItem);=0A=
+        //alert("add_gui_editor_links: added gui editor link");=0A=
+    }=0A=
+}=0A=
+ =0A=
+=0A=
+function show_switch2gui() {=0A=
+    // Show switch to gui editor link if the browser is compatible=0A=
+    if (can_use_gui_editor() =3D=3D false) return;=0A=
+    =0A=
+    var switch2gui =3D document.getElementById('switch2gui')=0A=
+    if (switch2gui) {=0A=
+        switch2gui.style.display =3D 'inline';=0A=
+    }=0A=
+}=0A=
+=0A=
+=0A=
+function load() {=0A=
+    // Do not name this "onload", it does not work with IE :-)=0A=
+    // TODO: create separate onload for each type of view and set the=0A=
+    // correct function name in the html. =0A=
+    // e.g <body onlod=3D'editor_onload()'>=0A=
+    =0A=
+    // Page view stuff=0A=
+    update_edit_links();=0A=
+    add_gui_editor_links();=0A=
+    =0A=
+    // Editor stuff=0A=
+    show_switch2gui();=0A=
+}=0A=
+=0A=
+=0A=
+function before_unload(evt) {=0A=
+    // TODO: Better to set this in the editor html, as it does not make=0A=
+    // sense elsehwere.=0A=
+    // confirmleaving is available when editing=0A=
+    try {return confirmleaving();}=0A=
+    catch (e) {}=0A=
+}=0A=
+=0A=
+// Initialize after loading the page=0A=
+addLoadEvent(load)=0A=
+=0A=
+// Catch before unloading the page=0A=
+window.onbeforeunload =3D before_unload=0A=
+=0A=
+
+------=_NextPart_000_0051_01CC11B2.BC886CD0
+Content-Type: application/octet-stream
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://pagead2.googlesyndication.com/pagead/show_ads.js
+
+=0A=
+(function(){var g=3Dnull,h=3D(new Date).getTime();var =
+i=3Dthis,aa=3Dfunction(a,b){var c=3Da.split("."),d=3Di;!(c[0]in =
+d)&&d.execScript&&d.execScript("var "+c[0]);for(var =
+e;c.length&&(e=3Dc.shift());)!c.length&&b!=3D=3Dvoid =
+0?d[e]=3Db:d=3Dd[e]?d[e]:d[e]=3D{}},ba=3Dfunction(a){return =
+a.call.apply(a.bind,arguments)},ca=3Dfunction(a,b){var =
+c=3Db||i;if(arguments.length>2){var =
+d=3DArray.prototype.slice.call(arguments,2);return function(){var =
+b=3DArray.prototype.slice.call(arguments);Array.prototype.unshift.apply(b=
+,d);return a.apply(c,b)}}else return function(){return =
+a.apply(c,arguments)}},=0A=
+j=3Dfunction(){j=3DFunction.prototype.bind&&Function.prototype.bind.toStr=
+ing().indexOf("native code")!=3D-1?ba:ca;return =
+j.apply(g,arguments)};var =
+da=3D/&/g,ea=3D/</g,fa=3D/>/g,ga=3D/\"/g,k=3D{"\0":"\\0","\u0008":"\\b","=
+\u000c":"\\f","\n":"\\n","\r":"\\r","\t":"\\t","\u000b":"\\x0B",'"':'\\"'=
+,"\\":"\\\\"},n=3D{"'":"\\'"},q=3Dfunction(a,b){if(a<b)return-1;else =
+if(a>b)return 1;return 0};var s,t,u,x,z=3Dfunction(){return =
+i.navigator?i.navigator.userAgent:g};x=3Du=3Dt=3Ds=3D!1;var =
+A;if(A=3Dz()){var =
+ia=3Di.navigator;s=3DA.indexOf("Opera")=3D=3D0;t=3D!s&&A.indexOf("MSIE")!=
+=3D-1;u=3D!s&&A.indexOf("WebKit")!=3D-1;x=3D!s&&!u&&ia.product=3D=3D"Geck=
+o"}var B=3Dt,D=3Dx,ja=3Du,E;=0A=
+a:{var F=3D"",G;if(s&&i.opera)var H=3Di.opera.version,F=3Dtypeof =
+H=3D=3D"function"?H():H;else =
+if(D?G=3D/rv\:([^\);]+)(\)|;)/:B?G=3D/MSIE\s+([^\);]+)(\)|;)/:ja&&(G=3D/W=
+ebKit\/(\S+)/),G)var ka=3DG.exec(z()),F=3Dka?ka[1]:"";if(B){var =
+I,la=3Di.document;I=3Dla?la.documentMode:void =
+0;if(I>parseFloat(F)){E=3DString(I);break a}}E=3DF}=0A=
+var ma=3DE,na=3D{},J=3Dfunction(a){var b;if(!(b=3Dna[a])){b=3D0;for(var =
+c=3DString(ma).replace(/^[\s\xa0]+|[\s\xa0]+$/g,"").split("."),d=3DString=
+(a).replace(/^[\s\xa0]+|[\s\xa0]+$/g,"").split("."),e=3DMath.max(c.length=
+,d.length),f=3D0;b=3D=3D0&&f<e;f++){var =
+ta=3Dc[f]||"",r=3Dd[f]||"",l=3DRegExp("(\\d*)(\\D*)","g"),y=3DRegExp("(\\=
+d*)(\\D*)","g");do{var =
+o=3Dl.exec(ta)||["","",""],m=3Dy.exec(r)||["","",""];if(o[0].length=3D=3D=
+0&&m[0].length=3D=3D0)break;b=3Dq(o[1].length=3D=3D0?0:parseInt(o[1],10),=
+m[1].length=3D=3D0?0:parseInt(m[1],10))||q(o[2].length=3D=3D=0A=
+0,m[2].length=3D=3D0)||q(o[2],m[2])}while(b=3D=3D0)}b=3Dna[a]=3Db>=3D0}re=
+turn b};var K,L;L=3DK=3D!1;var =
+M=3Dz();M&&(M.indexOf("Firefox")!=3D-1?K=3D!0:M.indexOf("Camino")!=3D-1||=
+M.indexOf("iPhone")!=3D-1||M.indexOf("iPod")!=3D-1||M.indexOf("iPad")!=3D=
+-1||M.indexOf("Android")!=3D-1||M.indexOf("Chrome")!=3D-1&&(L=3D!0));var =
+oa=3DK,pa=3DL;var qa=3Ddocument,N=3Dwindow;var =
+O=3Dfunction(a){a=3DparseFloat(a);return =
+isNaN(a)||a>1||a<0?0:a},ra=3Dfunction(a){if(a=3D=3D"true")return!0;return=
+!1},sa=3D/^([\w-]+\.)*([\w-]{2,})(\:[0-9]+)?$/,ua=3Dfunction(a){if(!a)ret=
+urn"pagead2.googlesyndication.com";return(a=3Da.match(sa))?a[0]:"pagead2.=
+googlesyndication.com"};var =
+va=3DO("0"),wa=3DO("0"),xa=3DO("0.2"),ya=3DO("0.002");var =
+za=3Dra("false"),Aa=3Dra("false"),Ba=3Dra("false");var =
+Ca=3Dfunction(){return =
+ua("")};!B||J("9");!D&&!B||B&&J("9")||D&&J("1.9.1");B&&J("9");ua("");var =
+P=3Dfunction(a){return!!a&&typeof =
+a=3D=3D"function"&&!!a.call},Da=3Dfunction(a){if(!(arguments.length<2))fo=
+r(var b=3D1,c=3Darguments.length;b<c;++b)a.push(arguments[b])};function =
+Q(a){return typeof =
+encodeURIComponent=3D=3D"function"?encodeURIComponent(a):escape(a)}functi=
+on =
+Ea(a,b){a.attachEvent?a.attachEvent("onload",b):a.addEventListener&&a.add=
+EventListener("load",b,!1)}=0A=
+function Fa(a,b){if(!(Math.random()<1.0E-4)){var =
+c=3DMath.random();if(c<b)return =
+a[Math.floor(c/b*a.length)]}return""};aa("google_protectAndRun",function(=
+a,b,c){a=3Dj(b,i,a);b=3Dwindow.onerror;window.onerror=3Da;try{c()}catch(d=
+){var c=3Dd.toString(),e=3D"";d.fileName&&(e=3Dd.fileName);var =
+f=3D-1;if(d.lineNumber)f=3Dd.lineNumber;if(!a(c,e,f))throw =
+d;}window.onerror=3Db});=0A=
+aa("google_handleError",function(a,b,c,d){if(Math.random()<0.01)a=3D["htt=
+p://",Ca(),"/pagead/gen_204","?id=3Djserror","&jscb=3D",za?1:0,"&jscd=3D"=
+,Aa?1:0,"&context=3D",Q(a),"&msg=3D",Q(b),"&file=3D",Q(c),"&line=3D",Q(d.=
+toString()),"&url=3D",Q(qa.URL.substring(0,512)),"&ref=3D",Q(qa.referrer.=
+substring(0,512))],a.push(["&client=3D",Q(N.google_ad_client),"&format=3D=
+",Q(N.google_ad_format),"&slotname=3D",Q(N.google_ad_slot),"&output=3D",Q=
+(N.google_ad_output),"&ad_type=3D",Q(N.google_ad_type)].join("")),a=3Da.j=
+oin(""),N.google_image_requests||=0A=
+(N.google_image_requests=3D[]),b=3Dnew =
+Image,b.src=3Da,N.google_image_requests.push(b);return!Ba});var =
+Ha=3Dfunction(a){try{var =
+b=3Da.google_test;a.google_test=3D!b;if(a.google_test=3D=3D=3D!b)return =
+a.google_test=3Db,!0}catch(c){}return!1},Ia=3Dg,Ja=3Dfunction(){if(!Ia){f=
+or(var =
+a=3Dwindow;a!=3Da.parent&&Ha(a.parent);)a=3Da.parent;Ia=3Da}return =
+Ia};var =
+R,S=3Dfunction(a){this.c=3D[];this.a=3Da||window;this.b=3D0;this.d=3Dg},K=
+a=3Dfunction(a,b){this.l=3Da;this.i=3Db};S.prototype.n=3Dfunction(a,b){th=
+is.b=3D=3D0&&this.c.length=3D=3D0&&(!b||b=3D=3Dwindow)?(this.b=3D2,this.g=
+(new =
+Ka(a,window))):this.h(a,b)};S.prototype.h=3Dfunction(a,b){this.c.push(new=
+ =
+Ka(a,b||this.a));La(this)};S.prototype.o=3Dfunction(a){this.b=3D1;if(a)th=
+is.d=3Dthis.a.setTimeout(j(this.f,this),a)};S.prototype.f=3Dfunction(){if=
+(this.b=3D=3D1){if(this.d!=3Dg)this.a.clearTimeout(this.d),this.d=3Dg;thi=
+s.b=3D0}La(this)};=0A=
+S.prototype.p=3Dfunction(){return!0};S.prototype.nq=3DS.prototype.n;S.pro=
+totype.nqa=3DS.prototype.h;S.prototype.al=3DS.prototype.o;S.prototype.rl=3D=
+S.prototype.f;S.prototype.sz=3DS.prototype.p;var =
+La=3Dfunction(a){a.a.setTimeout(j(a.m,a),0)};S.prototype.m=3Dfunction(){i=
+f(this.b=3D=3D0&&this.c.length){var =
+a=3Dthis.c.shift();this.b=3D2;a.i.setTimeout(j(this.g,this,a),0);La(this)=
+}};S.prototype.g=3Dfunction(a){this.b=3D0;a.l()};=0A=
+var Ma=3Dfunction(a){try{return =
+a.sz()}catch(b){return!1}},Na=3Dfunction(a){return!!a&&(typeof =
+a=3D=3D"object"||typeof =
+a=3D=3D"function")&&Ma(a)&&P(a.nq)&&P(a.nqa)&&P(a.al)&&P(a.rl)},Oa=3Dfunc=
+tion(){if(R&&Ma(R))return R;var =
+a=3DJa(),b=3Da.google_jobrunner;if(Na(b))return R=3Db;return =
+a.google_jobrunner=3DR=3Dnew =
+S(a)},Pa=3Dfunction(a,b){Oa().nq(a,b)},Qa=3Dfunction(a,b){Oa().nqa(a,b)};=
+var Ra=3Dfunction(){var =
+a=3DT,b=3DU.google_ad_width,c=3DU.google_ad_height,d=3D["<iframe"],e;for(=
+e in =
+a)a.hasOwnProperty(e)&&Da(d,e+"=3D"+a[e]);d.push('style=3D"left:0;positio=
+n:absolute;top:0;"');d.push("></iframe>");b=3D"border:none;height:"+c+"px=
+;margin:0;padding:0;position:relative;visibility:visible;width:"+b+"px";r=
+eturn['<ins style=3D"display:inline-table;',b,'"><ins =
+id=3D"',a.id+"_anchor",'" style=3D"display:block;',b,'">',d.join(" =
+"),"</ins></ins>"].join("")};var =
+Sa=3Dfunction(){},Ua=3Dfunction(a,b,c){switch(typeof b){case =
+"string":Ta(b,c);break;case =
+"number":c.push(isFinite(b)&&!isNaN(b)?b:"null");break;case =
+"boolean":c.push(b);break;case "undefined":c.push("null");break;case =
+"object":if(b=3D=3Dg){c.push("null");break}if(b instanceof Array){var =
+d=3Db.length;c.push("[");for(var =
+e=3D"",f=3D0;f<d;f++)c.push(e),Ua(a,b[f],c),e=3D",";c.push("]");break}c.p=
+ush("{");d=3D"";for(e in b)b.hasOwnProperty(e)&&(f=3Db[e],typeof =
+f!=3D"function"&&(c.push(d),Ta(e,c),c.push(":"),Ua(a,f,c),d=3D=0A=
+","));c.push("}");break;case "function":break;default:throw =
+Error("Unknown type: "+typeof =
+b);}},Va=3D{'"':'\\"',"\\":"\\\\","/":"\\/","\u0008":"\\b","\u000c":"\\f"=
+,"\n":"\\n","\r":"\\r","\t":"\\t","\u000b":"\\u000b"},Wa=3D/\uffff/.test(=
+"\uffff")?/[\\\"\x00-\x1f\x7f-\uffff]/g:/[\\\"\x00-\x1f\x7f-\xff]/g,Ta=3D=
+function(a,b){b.push('"');b.push(a.replace(Wa,function(a){if(a in =
+Va)return Va[a];var =
+b=3Da.charCodeAt(0),e=3D"\\u";b<16?e+=3D"000":b<256?e+=3D"00":b<4096&&(e+=
+=3D"0");return Va[a]=3De+b.toString(16)}));b.push('"')};var =
+V=3D["google_ad_block","google_ad_channel","google_ad_client","google_ad_=
+format","google_ad_height","google_ad_host","google_ad_host_channel","goo=
+gle_ad_host_tier_id","google_ad_output","google_ad_override","google_ad_r=
+egion","google_ad_section","google_ad_slot","google_ad_type","google_ad_w=
+idth","google_adtest","google_allow_expandable_ads","google_alternate_ad_=
+url","google_alternate_color","google_analytics_domain_name","google_anal=
+ytics_uacct","google_bid","google_city","google_color_bg","google_color_b=
+order",=0A=
+"google_color_line","google_color_link","google_color_text","google_color=
+_url","google_container_id","google_contents","google_country","google_cp=
+m","google_ctr_threshold","google_cust_age","google_cust_ch","google_cust=
+_gender","google_cust_id","google_cust_interests","google_cust_job","goog=
+le_cust_l","google_cust_lh","google_cust_u_url","google_disable_video_aut=
+oplay","google_ed","google_eids","google_enable_osd","google_encoding","g=
+oogle_font_face","google_font_size","google_frame_id","google_gl",=0A=
+"google_hints","google_image_size","google_kw","google_kw_type","google_l=
+anguage","google_max_num_ads","google_max_radlink_len","google_num_radlin=
+ks","google_num_radlinks_per_unit","google_num_slots_to_rotate","google_o=
+nly_ads_with_video","google_only_pyv_ads","google_only_userchoice_ads","g=
+oogle_override_format","google_page_url","google_referrer_url","google_re=
+gion","google_reuse_colors","google_rl_dest_url","google_rl_filtering","g=
+oogle_rl_mode","google_rt","google_safe","google_skip","google_tag_info",=0A=
+"google_targeting","google_ui_features","google_ui_version","google_video=
+_doc_id","google_video_product_type","google_with_pyv_ads"];var =
+W=3Dfunction(a){this.a=3Da;a.google_iframe_oncopy||(a.google_iframe_oncop=
+y=3D{handlers:{},log:[],img:Math.random()<0.01?[]:g});this.e=3Da.google_i=
+frame_oncopy;a.setTimeout(j(this.k,this),3E4)},Xa;var X=3D"var =
+i=3Dthis.id,s=3Dwindow.google_iframe_oncopy,H=3Ds&&s.handlers,h=3DH&&H[i]=
+,w=3Dthis.contentWindow,d;try{d=3Dw.document}catch(e){}if(h&&d&&(!d.body|=
+|!d.body.firstChild)){if(h.call){i+=3D'.call';setTimeout(h,0)}else =
+if(h.match){i+=3D'.nav';w.location.replace(h)}s.log&&s.log.push(i)}";=0A=
+/[&<>\"]/.test(X)&&(X.indexOf("&")!=3D-1&&(X=3DX.replace(da,"&amp;")),X.i=
+ndexOf("<")!=3D-1&&(X=3DX.replace(ea,"&lt;")),X.indexOf(">")!=3D-1&&(X=3D=
+X.replace(fa,"&gt;")),X.indexOf('"')!=3D-1&&(X=3DX.replace(ga,"&quot;")))=
+;Xa=3DX;W.prototype.set=3Dfunction(a,b){this.e.handlers[a]=3Db;this.a.add=
+EventListener&&this.a.addEventListener("load",j(this.j,this,a),!1)};W.pro=
+totype.j=3Dfunction(a){var =
+a=3Dthis.a.document.getElementById(a),b=3Da.contentWindow.document;if(a.o=
+nload&&b&&(!b.body||!b.body.firstChild))a.onload()};=0A=
+W.prototype.k=3Dfunction(){if(this.e.img){var =
+a=3Dthis.e.log,b=3Dthis.a.document;if(a.length)b=3D["http://",Ca(),"/page=
+ad/gen_204?id=3Diframecopy&log=3D",Q(a.join("-")),"&url=3D",Q(b.URL.subst=
+ring(0,512)),"&ref=3D",Q(b.referrer.substring(0,512))].join(""),a.length=3D=
+0,a=3Dnew Image,this.e.img.push(a),a.src=3Db}};var Ya=3Dfunction(){var =
+a=3D"script";return["<",a,' =
+src=3D"http://',ua(""),'/pagead/js/r20110509/r20110506/show_ads_impl.js">=
+</',a,">"].join("")},Za=3Dfunction(a,b,c,d){return function(){var =
+e=3D!1;d&&Oa().al(3E4);try{var =
+f;try{f=3D!!a.document.getElementById(b).contentWindow.document}catch(ta)=
+{f=3D!1}if(f){var r=3Da.document.getElementById(b).contentWindow,=0A=
+l=3Dr.document;if(!l.body||!l.body.firstChild)l.open(),r.google_async_ifr=
+ame_close=3D!0,l.write(c)}else{var =
+y=3Da.document.getElementById(b).contentWindow,o;f=3Dc;f=3DString(f);if(f=
+.quote)o=3Df.quote();else{r=3D['"'];for(l=3D0;l<f.length;l++){var =
+m=3Df.charAt(l),Ga=3Dm.charCodeAt(0),nb=3Dr,ob=3Dl+1,ha;if(!(ha=3Dk[m])){=
+var C;if(Ga>31&&Ga<127)C=3Dm;else{var p=3Dm;if(p in n)C=3Dn[p];else if(p =
+in k)C=3Dn[p]=3Dk[p];else{var =
+v=3Dp,w=3Dp.charCodeAt(0);if(w>31&&w<127)v=3Dp;else{if(w<256){if(v=3D"\\x=
+",w<16||w>256)v+=3D"0"}else v=3D"\\u",w<4096&&(v+=3D"0");=0A=
+v+=3Dw.toString(16).toUpperCase()}C=3Dn[p]=3Dv}}ha=3DC}nb[ob]=3Dha}r.push=
+('"');o=3Dr.join("")}y.location.replace("javascript:"+o)}e=3D!0}catch(ub)=
+{y=3DJa().google_jobrunner,Na(y)&&y.rl()}e&&(new =
+W(a)).set(b,Za(a,b,c,!1))}},$a=3Dfunction(){return va&&wa/va||typeof =
+window.google_hash_ratio=3D=3D"number"&&window.google_hash_ratio||g};wind=
+ow.google_loader_used=3D!0;(function(a){if(!("google_onload_fired"in =
+a))a.google_onload_fired=3D!1,Ea(a,function(){a.google_onload_fired=3D!0}=
+)})(window);if(!window.google_loader_experiment)window.google_loader_expe=
+riment=3DFa(["launch","blockodd"],xa)||Fa(["async2_black","async2_white"]=
+,ya)||"launch";var =
+ab,bb;a:{try{if(window.google_enable_async!=3D=3D!0&&window.google_loader=
+_experiment=3D=3D"blockodd"&&window.top.location.hostname.length%2=3D=3D1=
+){bb=3D!1;break a}}catch(cb){}bb=3D!0}=0A=
+if(ab=3Dbb)ab=3Dwindow.google_enable_async=3D=3D=3D!1?!1:(window.google_l=
+oader_experiment=3D=3D"async2_black"&&!/MSIE =
+[67]/.test(navigator.userAgent)||B&&/MSIE =
+8/.test(navigator.userAgent)||pa||oa&&!!window.document.body)&&!window.go=
+ogle_container_id&&(!window.google_ad_output||window.google_ad_output=3D=3D=
+"html");=0A=
+if(ab){var =
+db=3Dwindow;db.google_unique_id?++db.google_unique_id:db.google_unique_id=
+=3D1;for(var =
+Y=3Dwindow,_script$$inline_185=3D"script",Z,U=3DY,T=3D{allowtransparency:=
+'"true"',frameborder:'"0"',height:'"'+Y.google_ad_height+'"',hspace:'"0"'=
+,marginwidth:'"0"',marginheight:'"0"',onload:'"'+Xa+'"',scrolling:'"no"',=
+vspace:'"0"',width:'"'+Y.google_ad_width+'"'},eb=3DU.document,$=3DT.id,fb=
+=3D0;!$||U.document.getElementById($);)$=3D"aswift_"+fb++;T.id=3D$;T.name=
+=3D$;eb.write(Ra());Z=3D$;var gb;Y.google_page_url&&(Y.google_page_url=3D=0A=
+String(Y.google_page_url));for(var =
+hb=3D[],ib=3D0,jb=3DV.length;ib<jb;ib++){var =
+kb=3DV[ib];if(Y[kb]!=3Dg){var lb;try{var mb=3D[];Ua(new =
+Sa,Y[kb],mb);lb=3Dmb.join("")}catch(pb){}lb&&Da(hb,kb,"=3D",lb,";")}}gb=3D=
+hb.join("");for(var qb=3D0,rb=3DV.length;qb<rb;qb++)Y[V[qb]]=3Dg;var =
+sb=3D(new =
+Date).getTime(),tb=3D$a(),vb=3Dwindow.google_loader_experiment,wb=3D["<!d=
+octype =
+html><html><body><",_script$$inline_185,">",gb,"google_show_ads_impl=3Dtr=
+ue;google_unique_id=3D",Y.google_unique_id,';google_async_iframe_id=3D"',=
+Z,'";google_start_time=3D',=0A=
+h,";",tb?"google_hash_ratio=3D"+tb+";":"",vb?'google_loader_experiment=3D=
+"'+vb+'";':"","google_bpp=3D",sb>h?sb-h:1,";</",_script$$inline_185,">",Y=
+a(),"</body></html>"].join("");(Y.document.getElementById(Z)?Pa:Qa)(Za(Y,=
+Z,wb,!0))}else =
+window.google_start_time=3Dh,window.google_hash_ratio=3D$a(),document.wri=
+te(Ya());})();=0A=
+
+------=_NextPart_000_0051_01CC11B2.BC886CD0--

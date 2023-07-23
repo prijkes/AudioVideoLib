@@ -1,0 +1,2030 @@
+From: "Saved by Windows Internet Explorer 8"
+Subject: Mp3 Info Tag revision 1 Specifications
+Date: Fri, 13 May 2011 21:13:16 +0200
+MIME-Version: 1.0
+Content-Type: text/html;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://gabriel.mp3-tech.org/mp3infotag.html
+X-MimeOLE: Produced By Microsoft MimeOLE V6.1.7601.17574
+
+=EF=BB=BF<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><TITLE>Mp3 Info Tag revision 1 Specifications</TITLE>
+<META content=3D"text/html; charset=3Dutf-8" http-equiv=3DContent-Type>
+<META name=3DGENERATOR content=3D"MSHTML 8.00.7601.17573"></HEAD>
+<BODY aLink=3D#ff0000 link=3D#0000ee bgColor=3D#cccccc text=3D#000000 =
+vLink=3D#551a8b=20
+nosave>
+<CENTER><U><FONT size=3D-1 face=3DArial,Helvetica>Mp3 Info Tag rev 1 =
+specifications=20
+- draft 0</FONT></U> </CENTER>
+<P>The purpose of this tag is to provide extra information about the mp3 =
+
+bistream, encoder and parameters used. This tag should, as much as =
+possible, be=20
+meaningfull for as many encoders as possible, even if it is unlikely =
+that other=20
+encoders than Lame will implement it.=20
+<P>This tag should be backward compatible with tha Xing vbr tag, =
+providing basic=20
+support for a lot of already written software. As much as possible the =
+current=20
+revision (revision 1) should provide information similar to the one =
+already=20
+provided by revision 0.=20
+<P>A few fields, as they could be necessary for some functionnalities of =
+already=20
+existing software, should not be moved in any version of the tag. They =
+are=20
+indicated as "UNMOVABLE".=20
+<P>=20
+<P><FONT color=3D#000000 size=3D-1 face=3DArial,Helvetica><U>LAME 3.88 =
+Tag example</U>=20
+:</FONT>=20
+<P><FONT color=3D#000000 size=3D-1 face=3DArial,Helvetica>frame at =
+44.1kHz=20
+samplerate:</FONT> <BR>&nbsp;=20
+<CENTER>
+<TABLE border=3D1>
+  <TBODY>
+  <TR>
+    <TD><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0000:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0010:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0020:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0030:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0040:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0050:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0060:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0070:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0080:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0090:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">00A0:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">00B0:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">00C0:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">00D0:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">00E0:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">00F0:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0100:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0110:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0120:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0130:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0140:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0150:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0160:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0170:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0180:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0190:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">01A0:</FONT></TD>
+    <TD><B><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">FF FB 90=20
+      64-00 00 00 00-00 00 00 00-00 00 00 00</FONT></B> <BR><B><FONT=20
+      color=3D#000000 size=3D-1 face=3D"Courier New,Courier">00 00 00 =
+00-00 00 00=20
+      00-00 00 00 00-00 00 00 00</FONT></B> <BR><B><FONT size=3D-1=20
+      face=3D"Courier New,Courier"><FONT color=3D#000000>00 00 00 =
+00-</FONT><FONT=20
+      color=3D#009900>58 69 6E 67-00 00 00 0F-00 00 00 =
+74</FONT></FONT></B>=20
+      <BR><B><FONT color=3D#009900 size=3D-1 face=3D"Courier =
+New,Courier">00 00 30=20
+      C1-00 04 07 09-0B 0D 0F 14-16 18 1A 1D</FONT></B> <BR><B><FONT=20
+      color=3D#009900 size=3D-1 face=3D"Courier New,Courier">1F 23 26 =
+28-2A 2C 2E=20
+      33-35 37 39 3C-3E 40 44 47</FONT></B> <BR><B><FONT color=3D#009900 =
+size=3D-1=20
+      face=3D"Courier New,Courier">49 4B 4D 4F-54 56 58 5A-5D 5F 63 =
+66-68 6A 6C=20
+      6E</FONT></B> <BR><B><FONT color=3D#009900 size=3D-1=20
+      face=3D"Courier New,Courier">73 75 77 79-7C 7E 80 84-87 89 8B =
+8D-8F 94 96=20
+      98</FONT></B> <BR><B><FONT color=3D#009900 size=3D-1=20
+      face=3D"Courier New,Courier">9A 9D 9F A3-A6 A8 AA AC-AE B3 B5 =
+B7-B9 BC BE=20
+      C0</FONT></B> <BR><B><FONT color=3D#009900 size=3D-1=20
+      face=3D"Courier New,Courier">C4 C7 C9 CB-CD CF D4 D6-D8 DA DD =
+DF-E3 E6 E8=20
+      EA</FONT></B> <BR><B><FONT size=3D-1 face=3D"Courier =
+New,Courier"><FONT=20
+      color=3D#009900>EC EE F3 F5-F7 F9 FC FE-00 00 00 58</FONT><FONT=20
+      color=3D#000000>-</FONT><FONT color=3D#3333ff>4C 41 4D =
+45</FONT></FONT></B>=20
+      <BR><B><FONT color=3D#3333ff size=3D-1 face=3D"Courier =
+New,Courier">33 2E 38=20
+      38-20 28 62 65-74 61 29 00-00 00 00 00</FONT></B> <BR><B><FONT=20
+      color=3D#990000 size=3D-1 face=3D"Courier New,Courier">00 00 00 =
+00-00 00 00=20
+      00-00 00 00 00-00 00 00 00</FONT></B> <BR><B><FONT color=3D#990000 =
+size=3D-1=20
+      face=3D"Courier New,Courier">00 00 00 00-00 00 00 00-00 00 00 =
+00-00 00 00=20
+      00</FONT></B> <BR><B><FONT color=3D#990000 size=3D-1=20
+      face=3D"Courier New,Courier">00 00 00 00-00 00 00 00-00 00 00 =
+00-00 00 00=20
+      00</FONT></B> <BR><B><FONT color=3D#990000 size=3D-1=20
+      face=3D"Courier New,Courier">00 00 00 00-00 00 00 00-00 00 00 =
+00-00 00 00=20
+      00</FONT></B> <BR><B><FONT color=3D#990000 size=3D-1=20
+      face=3D"Courier New,Courier">00 00 00 00-00 00 00 00-00 00 00 =
+00-00 00 00=20
+      00</FONT></B> <BR><B><FONT color=3D#990000 size=3D-1=20
+      face=3D"Courier New,Courier">00 00 00 00-00 00 00 00-00 00 00 =
+00-00 00 00=20
+      00</FONT></B> <BR><B><FONT color=3D#990000 size=3D-1=20
+      face=3D"Courier New,Courier">00 00 00 00-00 00 00 00-00 00 00 =
+00-00 00 00=20
+      00</FONT></B> <BR><B><FONT color=3D#990000 size=3D-1=20
+      face=3D"Courier New,Courier">00 00 00 00-00 00 00 00-00 00 00 =
+00-00 00 00=20
+      00</FONT></B> <BR><B><FONT color=3D#990000 size=3D-1=20
+      face=3D"Courier New,Courier">00 00 00 00-00 00 00 00-00 00 00 =
+00-00 00 00=20
+      00</FONT></B> <BR><B><FONT color=3D#990000 size=3D-1=20
+      face=3D"Courier New,Courier">00 00 00 00-00 00 00 00-00 00 00 =
+00-00 00 00=20
+      00</FONT></B> <BR><B><FONT color=3D#990000 size=3D-1=20
+      face=3D"Courier New,Courier">00 00 00 00-00 00 00 00-00 00 00 =
+00-00 00 00=20
+      00</FONT></B> <BR><B><FONT color=3D#990000 size=3D-1=20
+      face=3D"Courier New,Courier">00 00 00 00-00 00 00 00-00 00 00 =
+00-00 00 00=20
+      00</FONT></B> <BR><B><FONT color=3D#990000 size=3D-1=20
+      face=3D"Courier New,Courier">00 00 00 00-00 00 00 00-00 00 00 =
+00-00 00 00=20
+      00</FONT></B> <BR><B><FONT color=3D#000000 size=3D-1=20
+      face=3D"Courier New,Courier">00 00 00 00-00 00 00 00-00 00 00 =
+00-00 00 00=20
+      00</FONT></B> <BR><B><FONT color=3D#000000 size=3D-1=20
+      face=3D"Courier New,Courier">00 00 00 00-00 00 00 00-00 00 00 =
+00-00 00 00=20
+      00</FONT></B> <BR><B><FONT color=3D#000000 size=3D-1=20
+      face=3D"Courier New,Courier">00</FONT></B></TD>
+    <TD><B><FONT color=3D#000000 size=3D-1=20
+      face=3DArial,Helvetica>&nbsp;?=C3=89d</FONT></B>=20
+      <P><B><FONT size=3D-1 face=3DArial,Helvetica><FONT =
+color=3D#000000>&nbsp;=20
+      </FONT><FONT color=3D#009900>Xing&nbsp;&nbsp; ?&nbsp;&nbsp;=20
+      t</FONT></FONT></B> <BR><B><FONT color=3D#009900 size=3D-1=20
+      face=3DArial,Helvetica>&nbsp; 0? =
+?=E2=80=A2????=C2=B6????</FONT></B> <BR><B><FONT=20
+      color=3D#009900 size=3D-1=20
+      face=3DArial,Helvetica>?#&amp;(*,.3579&lt;&gt;@DG</FONT></B> =
+<BR><B><FONT=20
+      color=3D#009900 size=3D-1 =
+face=3DArial,Helvetica>IKMOTVXZ]_cfhjln</FONT></B>=20
+      <BR><B><FONT color=3D#009900 size=3D-1=20
+      =
+face=3DArial,Helvetica>suwy|~=C3=87=C3=A4=C3=A7=C3=AB=C3=AF=C3=AC=C3=85=C3=
+=B6=C3=BB=C3=BF</FONT></B> <BR><B><FONT=20
+      color=3D#009900 size=3D-1 =
+face=3DArial,Helvetica>=C3=9C=C2=A5=C6=92=C3=BA=C2=AA=C2=BF=C2=AC=C2=BC=C2=
+=AB???????</FONT></B>=20
+      <BR><B><FONT color=3D#009900 size=3D-1=20
+      face=3DArial,Helvetica>?????????????=C2=B5??</FONT></B> =
+<BR><B><FONT size=3D-1=20
+      face=3DArial,Helvetica><FONT color=3D#009900>????????&nbsp;&nbsp;=20
+      X</FONT><FONT color=3D#3333ff>LAME</FONT></FONT></B> <BR><B><FONT=20
+      color=3D#3333ff size=3D-1 face=3DArial,Helvetica>3.88 =
+(beta)</FONT></B>=20
+      <BR>&nbsp; <BR>&nbsp; <BR>&nbsp; <BR>&nbsp; <BR>&nbsp; <BR>&nbsp;=20
+      <BR>&nbsp; <BR>&nbsp; <BR>&nbsp; <BR>&nbsp; <BR>&nbsp; <BR>&nbsp;=20
+      <BR>&nbsp; <BR>&nbsp;=20
+      <P><FONT size=3D-1 face=3DArial,Helvetica></FONT>=20
+</P></TD></TR></TBODY></TABLE></CENTER>
+<P><FONT color=3D#000000 size=3D-1 face=3DArial,Helvetica>/*</FONT>=20
+<P><FONT color=3D#009900 size=3D-1 =
+face=3DArial,Helvetica>//&nbsp;&nbsp;&nbsp; ZONE A=20
+- <U>Traditional Xing VBR Tag data</U></FONT> <BR><FONT color=3D#009900 =
+size=3D-1=20
+face=3DArial,Helvetica>//&nbsp;&nbsp;&nbsp; 4 bytes for Header =
+Tag</FONT>=20
+<BR><FONT color=3D#009900 size=3D-1 =
+face=3DArial,Helvetica>//&nbsp;&nbsp;&nbsp; 4=20
+bytes for Header Flags</FONT> <BR><FONT color=3D#009900 size=3D-1=20
+face=3DArial,Helvetica>//&nbsp; 100 bytes for entry =
+(NUMTOCENTRIES)</FONT>=20
+<BR><FONT color=3D#009900 size=3D-1 =
+face=3DArial,Helvetica>//&nbsp;&nbsp;&nbsp; 4=20
+bytes for FRAME SIZE</FONT> <BR><FONT color=3D#009900 size=3D-1=20
+face=3DArial,Helvetica>//&nbsp;&nbsp;&nbsp; 4 bytes for =
+STREAM_SIZE</FONT>=20
+<BR><FONT color=3D#009900 size=3D-1 =
+face=3DArial,Helvetica>//&nbsp;&nbsp;&nbsp; 4=20
+bytes for VBR SCALE. a VBR quality indicator: 0=3Dbest =
+100=3Dworst</FONT>=20
+<P><FONT color=3D#3333ff size=3D-1 face=3DArial,Helvetica>//&nbsp;&nbsp; =
+ZONE B -=20
+<U>Initial LAME info</U></FONT> <BR><FONT color=3D#3333ff size=3D-1=20
+face=3DArial,Helvetica>//&nbsp;&nbsp; 20 bytes for LAME tag.&nbsp; for =
+example,=20
+"LAME3.12 (beta 6)"</FONT> <BR><FONT color=3D#000000 size=3D-1=20
+face=3DArial,Helvetica>// ___________</FONT> <BR><FONT color=3D#000000 =
+size=3D-1=20
+face=3DArial,Helvetica>//&nbsp; 140 bytes</FONT> <BR><FONT =
+color=3D#000000 size=3D-1=20
+face=3DArial,Helvetica>//</FONT>=20
+<P><FONT color=3D#cc0000 size=3D-1 face=3DArial,Helvetica>//&nbsp;&nbsp; =
+ZONE C -=20
+<U>LAME Tag</U></FONT> <BR><FONT color=3D#cc0000 size=3D-1=20
+face=3DArial,Helvetica>//&nbsp;&nbsp; 208 bytes unused in 128k frame (in =
+48kHz=20
+case)</FONT> <BR><FONT color=3D#cc0000 size=3D-1 =
+face=3DArial,Helvetica>//</FONT>=20
+<BR><FONT color=3D#cc0000 size=3D-1 =
+face=3DArial,Helvetica>//&nbsp;&nbsp; using</FONT>=20
+<BR><FONT color=3D#cc0000 size=3D-1 =
+face=3DArial,Helvetica>//&nbsp;&nbsp;=20
+FrameLengthInBytes =3D 144 * BitRate / SampleRate + Padding</FONT> =
+<BR><FONT=20
+color=3D#cc0000 size=3D-1 face=3DArial,Helvetica>//</FONT> <BR><FONT =
+color=3D#cc0000=20
+size=3D-1 face=3DArial,Helvetica>//&nbsp;&nbsp; this gives</FONT> =
+<BR><FONT=20
+color=3D#cc0000 size=3D-1 face=3DArial,Helvetica>//&nbsp;&nbsp; Layer =
+III,=20
+BitRate=3D128000, SampleRate=3D44100, Padding=3D0</FONT> <BR><FONT =
+color=3D#cc0000=20
+size=3D-1 =
+face=3DArial,Helvetica>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+=3D=3D&gt;&nbsp; FrameSize=3D417 bytes</FONT> <BR><FONT color=3D#cc0000 =
+size=3D-1=20
+face=3DArial,Helvetica>//&nbsp;&nbsp; Layer III, BitRate=3D128000, =
+SampleRate=3D48000,=20
+Padding=3D0</FONT> <BR><FONT color=3D#cc0000 size=3D-1=20
+face=3DArial,Helvetica>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+=3D=3D&gt;&nbsp;=20
+FrameSize=3D384 bytes</FONT> <BR><FONT color=3D#cc0000 size=3D-1=20
+face=3DArial,Helvetica>//</FONT> <BR><FONT color=3D#cc0000 size=3D-1=20
+face=3DArial,Helvetica>//&nbsp;&nbsp; so this would make the minimal =
+frame size=20
+384 bytes ($0-$17F), hence the available bytes for this field are not =
+241 as in=20
+this 44100Hz case, but <U>at most 208</U> bytes.</FONT> <BR><FONT =
+color=3D#000000=20
+size=3D-1 face=3DArial,Helvetica>*/</FONT>=20
+<P><FONT color=3D#000000 size=3D-1 face=3DArial,Helvetica>frame at a =
+48.0kHz=20
+samplerate:</FONT> <BR>&nbsp;=20
+<CENTER>
+<TABLE border=3D1>
+  <TBODY>
+  <TR>
+    <TD><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0000:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0010:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0020:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0030:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0040:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0050:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0060:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0070:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0080:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0090:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">00A0:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">00B0:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">00C0:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">00D0:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">00E0:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">00F0:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0100:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0110:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0120:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0130:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0140:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0150:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0160:</FONT>=20
+      <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0170:</FONT></TD>
+    <TD><B><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">FF FB 94=20
+      64-00 00 00 00-00 00 00 00-00 00 00 00</FONT></B> <BR><B><FONT=20
+      color=3D#000000 size=3D-1 face=3D"Courier New,Courier">00 00 00 =
+00-00 00 00=20
+      00-00 00 00 00-00 00 00 00</FONT></B> <BR><B><FONT size=3D-1=20
+      face=3D"Courier New,Courier"><FONT color=3D#000000>00 00 00 =
+00-</FONT><FONT=20
+      color=3D#009900>58 69 6E 67-00 00 00 0F-00 00 00 =
+7E</FONT></FONT></B>=20
+      <BR><B><FONT color=3D#009900 size=3D-1 face=3D"Courier =
+New,Courier">00 00 30=20
+      C0-00 04 06 08-0C 0E 10 12-16 18 1A 1C</FONT></B> <BR><B><FONT=20
+      color=3D#009900 size=3D-1 face=3D"Courier New,Courier">21 23 25 =
+27-2B 2D 2F=20
+      31-35 37 39 3B-3F 41 43 47</FONT></B> <BR><B><FONT color=3D#009900 =
+size=3D-1=20
+      face=3D"Courier New,Courier">49 4B 4D 51-53 55 57 5B-5D 5F 62 =
+66-68 6A 6C=20
+      70</FONT></B> <BR><B><FONT color=3D#009900 size=3D-1=20
+      face=3D"Courier New,Courier">72 74 76 7A-7C 7E 80 84-86 88 8C =
+8E-90 92 96=20
+      98</FONT></B> <BR><B><FONT color=3D#009900 size=3D-1=20
+      face=3D"Courier New,Courier">9A 9C A1 A3-A5 A7 AB AD-AF B1 B5 =
+B7-B9 BB BF=20
+      C1</FONT></B> <BR><B><FONT color=3D#009900 size=3D-1=20
+      face=3D"Courier New,Courier">C3 C7 C9 CB-CD D1 D3 D5-D7 DB DD =
+DF-E2 E6 E8=20
+      EA</FONT></B> <BR><B><FONT size=3D-1 face=3D"Courier =
+New,Courier"><FONT=20
+      color=3D#009900>EC F0 F2 F4-F6 FA FC FE-00 00 00 58</FONT><FONT=20
+      color=3D#000000>-</FONT><FONT color=3D#3333ff>4C 41 4D =
+45</FONT></FONT></B>=20
+      <BR><B><FONT color=3D#3333ff size=3D-1 face=3D"Courier =
+New,Courier">33 2E 38=20
+      38-20 28 62 65-74 61 29 00-00 00 00 00</FONT></B> <BR><B><FONT=20
+      color=3D#990000 size=3D-1 face=3D"Courier New,Courier">00 00 00 =
+00-00 00 00=20
+      00-00 00 00 00-00 00 00 00</FONT></B> <BR><B><FONT color=3D#990000 =
+size=3D-1=20
+      face=3D"Courier New,Courier">00 00 00 00-00 00 00 00-00 00 00 =
+00-00 00 00=20
+      00</FONT></B> <BR><B><FONT color=3D#990000 size=3D-1=20
+      face=3D"Courier New,Courier">00 00 00 00-00 00 00 00-00 00 00 =
+00-00 00 00=20
+      00</FONT></B> <BR><B><FONT color=3D#990000 size=3D-1=20
+      face=3D"Courier New,Courier">00 00 00 00-00 00 00 00-00 00 00 =
+00-00 00 00=20
+      00</FONT></B> <BR><B><FONT color=3D#990000 size=3D-1=20
+      face=3D"Courier New,Courier">00 00 00 00-00 00 00 00-00 00 00 =
+00-00 00 00=20
+      00</FONT></B> <BR><B><FONT color=3D#990000 size=3D-1=20
+      face=3D"Courier New,Courier">00 00 00 00-00 00 00 00-00 00 00 =
+00-00 00 00=20
+      00</FONT></B> <BR><B><FONT color=3D#990000 size=3D-1=20
+      face=3D"Courier New,Courier">00 00 00 00-00 00 00 00-00 00 00 =
+00-00 00 00=20
+      00</FONT></B> <BR><B><FONT color=3D#990000 size=3D-1=20
+      face=3D"Courier New,Courier">00 00 00 00-00 00 00 00-00 00 00 =
+00-00 00 00=20
+      00</FONT></B> <BR><B><FONT color=3D#990000 size=3D-1=20
+      face=3D"Courier New,Courier">00 00 00 00-00 00 00 00-00 00 00 =
+00-00 00 00=20
+      00</FONT></B> <BR><B><FONT color=3D#990000 size=3D-1=20
+      face=3D"Courier New,Courier">00 00 00 00-00 00 00 00-00 00 00 =
+00-00 00 00=20
+      00</FONT></B> <BR><B><FONT color=3D#990000 size=3D-1=20
+      face=3D"Courier New,Courier">00 00 00 00-00 00 00 00-00 00 00 =
+00-00 00 00=20
+      00</FONT></B> <BR><B><FONT color=3D#990000 size=3D-1=20
+      face=3D"Courier New,Courier">00 00 00 00-00 00 00 00-00 00 00 =
+00-00 00 00=20
+      00</FONT></B> <BR><B><FONT color=3D#990000 size=3D-1=20
+      face=3D"Courier New,Courier">00 00 00 00-00 00 00 00-00 00 00 =
+00-00 00 00=20
+      00</FONT></B></TD>
+    <TD><B><FONT color=3D#000000 size=3D-1=20
+      face=3DArial,Helvetica>&nbsp;?=C3=B6d</FONT></B>=20
+      <P><B><FONT size=3D-1 face=3DArial,Helvetica><FONT =
+color=3D#000000>&nbsp;=20
+      </FONT><FONT color=3D#009900>Xing&nbsp;&nbsp; ?&nbsp;&nbsp;=20
+      ~</FONT></FONT></B> <BR><B><FONT color=3D#009900 size=3D-1=20
+      face=3DArial,Helvetica>&nbsp; 0? ???????????</FONT></B> =
+<BR><B><FONT=20
+      color=3D#009900 size=3D-1 =
+face=3DArial,Helvetica>!#%'+-/1579;?ACG</FONT></B>=20
+      <BR><B><FONT color=3D#009900 size=3D-1=20
+      face=3DArial,Helvetica>IKMQSUW[]_bfhjlp</FONT></B> <BR><B><FONT=20
+      color=3D#009900 size=3D-1 =
+face=3DArial,Helvetica>rtvz|~=C3=87=C3=A4=C3=A5=C3=AA=C3=AE=C3=84=C3=89=C3=
+=86=C3=BB=C3=BF</FONT></B>=20
+      <BR><B><FONT color=3D#009900 size=3D-1=20
+      =
+face=3DArial,Helvetica>=C3=9C=C2=A3=C3=AD=C3=BA=C3=91=C2=BA=C2=BD=C2=A1=C2=
+=BB???????</FONT></B> <BR><B><FONT=20
+      color=3D#009900 size=3D-1 =
+face=3DArial,Helvetica>?????????????=C2=B5??</FONT></B>=20
+      <BR><B><FONT size=3D-1 face=3DArial,Helvetica><FONT=20
+      color=3D#009900>????=C3=B7=C2=B7??&nbsp;&nbsp; X</FONT><FONT=20
+      color=3D#3333ff>LAME</FONT></FONT></B> <BR><B><FONT =
+color=3D#3333ff size=3D-1=20
+      face=3DArial,Helvetica>3.88 (beta)</FONT></B> <BR>&nbsp; =
+<BR>&nbsp;=20
+      <BR>&nbsp; <BR>&nbsp; <BR>&nbsp; <BR>&nbsp; <BR>&nbsp; <BR>&nbsp;=20
+      <BR>&nbsp; <BR>&nbsp; <BR>&nbsp;=20
+      <P><FONT size=3D-1 face=3DArial,Helvetica></FONT>=20
+</P></TD></TR></TBODY></TABLE></CENTER>
+<P>
+<HR width=3D"100%">
+<BR><A name=3Dlayout></A><FONT color=3D#000000 size=3D-1=20
+face=3DArial,Helvetica><U>Suggested Info Tag extension fields + =
+layout</U>=20
+:</FONT> <BR>&nbsp;=20
+<CENTER>
+<TABLE border=3D1>
+  <TBODY>
+  <TR>
+    <TD bgColor=3D#ff6666>
+      <CENTER><B><U><FONT size=3D-1 =
+face=3DArial,Helvetica>REMARK:</FONT></U></B>=20
+      <BR>
+      <HR width=3D"100%">
+
+      <DIV align=3Dleft><FONT size=3D-1 face=3DArial,Helvetica>In the =
+Info Tag, the=20
+      "<B>Xing</B>" identification string (mostly at 0x24) of the header =
+is=20
+      replaced by "<B>Info</B>" in case of a CBR file.&nbsp;</FONT> =
+<BR><FONT=20
+      size=3D-1 face=3DArial,Helvetica>This was done to avoid CBR files =
+to be=20
+      recognized as traditional Xing VBR files by some decoders.</FONT> =
+Although=20
+      the two identification strings "Xing" and "Info" are both valid, =
+it is=20
+      suggested that you keep the identification string "Xing" in case =
+of VBR=20
+      bistream in order to keep compatibility.</DIV>
+      <P><FONT size=3D-1 face=3DArial,Helvetica>now:&nbsp;</FONT>=20
+      <P><FONT size=3D-1 face=3DArial,Helvetica>LAME VBR &amp; =
+ABR:</FONT>=20
+      <P><FONT size=3D-1 face=3DArial,Helvetica>"Xing"</FONT>=20
+      <P><FONT size=3D-1 face=3DArial,Helvetica>LAME CBR:</FONT>=20
+      <P><FONT size=3D-1 face=3DArial,Helvetica>"Info"</FONT>=20
+  </CENTER></P></TD></TR></TBODY></TABLE></CENTER>
+<CENTER>
+<TABLE border=3D1 width=3D"100%" cols=3D16>
+  <TBODY>
+  <TR>
+    <TD bgColor=3D#000000>
+      <CENTER><B><FONT size=3D-1 face=3DArial,Helvetica></FONT></B> =
+</CENTER></TD>
+    <TD bgColor=3D#000000>
+      <CENTER><B><FONT size=3D-1 face=3DArial,Helvetica></FONT></B> =
+</CENTER></TD>
+    <TD bgColor=3D#000000>
+      <CENTER><B><FONT size=3D-1 face=3DArial,Helvetica></FONT></B> =
+</CENTER></TD>
+    <TD bgColor=3D#000000>
+      <CENTER><B><FONT size=3D-1 face=3DArial,Helvetica></FONT></B> =
+</CENTER></TD>
+    <TD bgColor=3D#000000>
+      <CENTER><B><FONT size=3D-1 face=3DArial,Helvetica></FONT></B> =
+</CENTER></TD>
+    <TD bgColor=3D#000000>
+      <CENTER><B><FONT size=3D-1 face=3DArial,Helvetica></FONT></B> =
+</CENTER></TD>
+    <TD bgColor=3D#000000>
+      <CENTER><B><FONT size=3D-1 face=3DArial,Helvetica></FONT></B> =
+</CENTER></TD>
+    <TD bgColor=3D#000000>
+      <CENTER><B><FONT size=3D-1 face=3DArial,Helvetica></FONT></B> =
+</CENTER></TD>
+    <TD bgColor=3D#ffccff>
+      <CENTER><B><FONT color=3D#000000 size=3D-1 =
+face=3DArial,Helvetica>00h</FONT></B>=20
+      </CENTER></TD>
+    <TD bgColor=3D#ffccff>
+      <CENTER><B><FONT color=3D#000000 size=3D-1 =
+face=3DArial,Helvetica>00h</FONT></B>=20
+      </CENTER></TD>
+    <TD bgColor=3D#ffccff>
+      <CENTER><B><FONT color=3D#000000 size=3D-1 =
+face=3DArial,Helvetica>00h</FONT></B>=20
+      </CENTER></TD>
+    <TD bgColor=3D#ffccff>
+      <CENTER><B><FONT color=3D#000000 size=3D-1 =
+face=3DArial,Helvetica><A=20
+      =
+href=3D"http://gabriel.mp3-tech.org/mp3infotag.html#quality">$9B</A></FON=
+T></B>=20
+      </CENTER></TD>
+    <TD bgColor=3D#ffffcc>
+      <CENTER><B><FONT color=3D#000000 size=3D-1 =
+face=3DArial,Helvetica>"L"</FONT></B>=20
+      </CENTER></TD>
+    <TD bgColor=3D#ffffcc>
+      <CENTER><B><FONT color=3D#000000 size=3D-1 =
+face=3DArial,Helvetica>"A"</FONT></B>=20
+      </CENTER></TD>
+    <TD bgColor=3D#ffffcc>
+      <CENTER><B><FONT color=3D#000000 size=3D-1 =
+face=3DArial,Helvetica>"M"</FONT></B>=20
+      </CENTER></TD>
+    <TD bgColor=3D#ffffcc>
+      <CENTER><B><FONT color=3D#000000 size=3D-1 =
+face=3DArial,Helvetica>"E"</FONT></B>=20
+      </CENTER></TD></TR>
+  <TR>
+    <TD bgColor=3D#ffffcc>
+      <CENTER><B><FONT size=3D-1 face=3DArial,Helvetica><A=20
+      =
+href=3D"http://gabriel.mp3-tech.org/mp3infotag.html#versionstring">$A0</A=
+></FONT></B>=20
+      </CENTER></TD>
+    <TD bgColor=3D#ffffcc>
+      <CENTER><B><FONT color=3D#000000 size=3D-1 =
+face=3DArial,Helvetica>"."</FONT></B>=20
+      </CENTER></TD>
+    <TD bgColor=3D#ffffcc>
+      <CENTER><B><FONT size=3D-1 face=3DArial,Helvetica><A=20
+      =
+href=3D"http://gabriel.mp3-tech.org/mp3infotag.html#versionstring">$A2</A=
+></FONT></B>=20
+      </CENTER></TD>
+    <TD bgColor=3D#ffffcc>
+      <CENTER><B><FONT size=3D-1 face=3DArial,Helvetica><A=20
+      =
+href=3D"http://gabriel.mp3-tech.org/mp3infotag.html#versionstring">$A3</A=
+></FONT></B>=20
+      </CENTER></TD>
+    <TD bgColor=3D#ffffcc>
+      <CENTER><B><FONT size=3D-1 face=3DArial,Helvetica><A=20
+      =
+href=3D"http://gabriel.mp3-tech.org/mp3infotag.html#versionstring">$A4</A=
+></FONT></B>=20
+      </CENTER></TD>
+    <TD bgColor=3D#33ccff>
+      <CENTER><B><FONT color=3D#000000 size=3D-1 =
+face=3DArial,Helvetica><A=20
+      =
+href=3D"http://gabriel.mp3-tech.org/mp3infotag.html#rev-method">$A5</A></=
+FONT></B>=20
+      </CENTER></TD>
+    <TD bgColor=3D#ff6666>
+      <CENTER><B><FONT color=3D#000000 size=3D-1 =
+face=3DArial,Helvetica><A=20
+      =
+href=3D"http://gabriel.mp3-tech.org/mp3infotag.html#lowpass">$A6</A></FON=
+T></B>=20
+      </CENTER></TD>
+    <TD bgColor=3D#ffffff>
+      <CENTER><B><FONT color=3D#000000 size=3D-1 =
+face=3DArial,Helvetica><A=20
+      =
+href=3D"http://gabriel.mp3-tech.org/mp3infotag.html#replaygain">$A7</A></=
+FONT></B>=20
+      </CENTER></TD>
+    <TD bgColor=3D#ffffff>
+      <CENTER><B><FONT color=3D#000000 size=3D-1 =
+face=3DArial,Helvetica><A=20
+      =
+href=3D"http://gabriel.mp3-tech.org/mp3infotag.html#replaygain">$A8</A></=
+FONT></B>=20
+      </CENTER></TD>
+    <TD bgColor=3D#ffffff>
+      <CENTER><B><FONT color=3D#000000 size=3D-1 =
+face=3DArial,Helvetica><A=20
+      =
+href=3D"http://gabriel.mp3-tech.org/mp3infotag.html#replaygain">$A9</A></=
+FONT></B>=20
+      </CENTER></TD>
+    <TD bgColor=3D#ffffff>
+      <CENTER><B><FONT color=3D#000000 size=3D-1 =
+face=3DArial,Helvetica><A=20
+      =
+href=3D"http://gabriel.mp3-tech.org/mp3infotag.html#replaygain">$AA</A></=
+FONT></B>=20
+      </CENTER></TD>
+    <TD bgColor=3D#ffffff>
+      <CENTER><B><FONT color=3D#000000 size=3D-1 =
+face=3DArial,Helvetica><A=20
+      =
+href=3D"http://gabriel.mp3-tech.org/mp3infotag.html#replaygain">$AB</A></=
+FONT></B>=20
+      </CENTER></TD>
+    <TD bgColor=3D#ffffff>
+      <CENTER><B><FONT color=3D#000000 size=3D-1 =
+face=3DArial,Helvetica><A=20
+      =
+href=3D"http://gabriel.mp3-tech.org/mp3infotag.html#replaygain">$AC</A></=
+FONT></B>=20
+      </CENTER></TD>
+    <TD bgColor=3D#ffffff>
+      <CENTER><B><FONT color=3D#000000 size=3D-1 =
+face=3DArial,Helvetica><A=20
+      =
+href=3D"http://gabriel.mp3-tech.org/mp3infotag.html#replaygain">$AD</A></=
+FONT></B>=20
+      </CENTER></TD>
+    <TD bgColor=3D#ffffff>
+      <CENTER><B><FONT color=3D#000000 size=3D-1 =
+face=3DArial,Helvetica><A=20
+      =
+href=3D"http://gabriel.mp3-tech.org/mp3infotag.html#replaygain">$AE</A></=
+FONT></B>=20
+      </CENTER></TD>
+    <TD bgColor=3D#ff9900>
+      <CENTER><B><FONT color=3D#000000 size=3D-1 =
+face=3DArial,Helvetica><A=20
+      =
+href=3D"http://gabriel.mp3-tech.org/mp3infotag.html#athtype-flags">$AF</A=
+></FONT></B>=20
+      </CENTER></TD></TR>
+  <TR>
+    <TD bgColor=3D#99ff99>
+      <CENTER><B><FONT color=3D#000000 size=3D-1 =
+face=3DArial,Helvetica><A=20
+      =
+href=3D"http://gabriel.mp3-tech.org/mp3infotag.html#abrbitrate">$B0</A></=
+FONT></B>=20
+      </CENTER></TD>
+    <TD bgColor=3D#cc0000>
+      <CENTER><B><FONT color=3D#000000 size=3D-1 =
+face=3DArial,Helvetica><A=20
+      =
+href=3D"http://gabriel.mp3-tech.org/mp3infotag.html#delays">$B1</A></FONT=
+></B>=20
+      </CENTER></TD>
+    <TD bgColor=3D#cc0000>
+      <CENTER><B><FONT color=3D#000000 size=3D-1 =
+face=3DArial,Helvetica><A=20
+      =
+href=3D"http://gabriel.mp3-tech.org/mp3infotag.html#delays">$B2</A></FONT=
+></B>=20
+      </CENTER></TD>
+    <TD bgColor=3D#cc0000>
+      <CENTER><B><FONT color=3D#000000 size=3D-1 =
+face=3DArial,Helvetica><A=20
+      =
+href=3D"http://gabriel.mp3-tech.org/mp3infotag.html#delays">$B3</A></FONT=
+></B>=20
+      </CENTER></TD>
+    <TD bgColor=3D#cc66cc>
+      <CENTER><B><FONT color=3D#000000 size=3D-1 =
+face=3DArial,Helvetica><A=20
+      =
+href=3D"http://gabriel.mp3-tech.org/mp3infotag.html#misc">$B4</A></FONT><=
+/B>=20
+      </CENTER></TD>
+    <TD bgColor=3D#ffff00>
+      <CENTER><B><FONT color=3D#000000 size=3D-1 =
+face=3DArial,Helvetica><A=20
+      =
+href=3D"http://gabriel.mp3-tech.org/mp3infotag.html#mp3gain">$B5</A></FON=
+T></B>=20
+      </CENTER></TD>
+    <TD bgColor=3D#999999>
+      <CENTER><B><FONT color=3D#000000 size=3D-1 =
+face=3DArial,Helvetica><A=20
+      =
+href=3D"http://gabriel.mp3-tech.org/mp3infotag.html#preset">$B6</A></FONT=
+></B>=20
+      </CENTER></TD>
+    <TD bgColor=3D#999999>
+      <CENTER><B><FONT color=3D#000000 size=3D-1 =
+face=3DArial,Helvetica><A=20
+      =
+href=3D"http://gabriel.mp3-tech.org/mp3infotag.html#preset">$B7</A></FONT=
+></B>=20
+      </CENTER></TD>
+    <TD bgColor=3D#66ffff>
+      <CENTER><B><FONT color=3D#000000 size=3D-1 =
+face=3DArial,Helvetica><A=20
+      =
+href=3D"http://gabriel.mp3-tech.org/mp3infotag.html#musiclength">$B8</A><=
+/FONT></B>=20
+      </CENTER></TD>
+    <TD bgColor=3D#66ffff>
+      <CENTER><B><FONT color=3D#000000 size=3D-1 =
+face=3DArial,Helvetica><A=20
+      =
+href=3D"http://gabriel.mp3-tech.org/mp3infotag.html#musiclength">$B9</A><=
+/FONT></B>=20
+      </CENTER></TD>
+    <TD bgColor=3D#66ffff>
+      <CENTER><B><FONT color=3D#000000 size=3D-1 =
+face=3DArial,Helvetica><A=20
+      =
+href=3D"http://gabriel.mp3-tech.org/mp3infotag.html#musiclength">$BA</A><=
+/FONT></B>=20
+      </CENTER></TD>
+    <TD bgColor=3D#66ffff>
+      <CENTER><B><FONT color=3D#000000 size=3D-1 =
+face=3DArial,Helvetica><A=20
+      =
+href=3D"http://gabriel.mp3-tech.org/mp3infotag.html#musiclength">$BB</A><=
+/FONT></B>=20
+      </CENTER></TD>
+    <TD bgColor=3D#33ff33>
+      <CENTER><B><FONT color=3D#000000 size=3D-1 =
+face=3DArial,Helvetica><A=20
+      =
+href=3D"http://gabriel.mp3-tech.org/mp3infotag.html#musiccrc">$BC</A></FO=
+NT></B>=20
+      </CENTER></TD>
+    <TD bgColor=3D#33ff33>
+      <CENTER><B><FONT color=3D#000000 size=3D-1 =
+face=3DArial,Helvetica><A=20
+      =
+href=3D"http://gabriel.mp3-tech.org/mp3infotag.html#musiccrc">$BD</A></FO=
+NT></B>=20
+      </CENTER></TD>
+    <TD bgColor=3D#00cc00>
+      <CENTER><B><FONT color=3D#000000 size=3D-1 =
+face=3DArial,Helvetica><A=20
+      =
+href=3D"http://gabriel.mp3-tech.org/mp3infotag.html#tagcrc">$BE</A></FONT=
+></B>=20
+      </CENTER></TD>
+    <TD bgColor=3D#00cc00>
+      <CENTER><B><FONT color=3D#000000 size=3D-1 =
+face=3DArial,Helvetica><A=20
+      =
+href=3D"http://gabriel.mp3-tech.org/mp3infotag.html#tagcrc">$BF</A></FONT=
+></B>=20
+      </CENTER></TD></TR></TBODY></TABLE></CENTER>
+<P>
+<HR width=3D"100%">
+
+<CENTER>
+<TABLE border=3D1>
+  <TBODY>
+  <TR bgColor=3D#ffccff>
+    <TD><A name=3Dquality></A><FONT size=3D-1 =
+face=3DArial,Helvetica>byte=20
+    $9B</FONT></TD>
+    <TD><FONT size=3D-1 face=3DArial,Helvetica>&nbsp;VBR=20
+  Quality&nbsp;</FONT></TD></TR></TBODY></TABLE></CENTER>
+<HR width=3D"100%">
+
+<CENTER>
+<P align=3Dleft>This field is there to indicate a quality level, =
+although the=20
+scale was not precised in the original Xing specifications.</P>
+<P align=3Dleft>In case of Lame, the meaning is the following:</P>
+<P><B><FONT size=3D-1 face=3DArial,Helvetica>int&nbsp;&nbsp;&nbsp; =
+Quality =3D (100 -=20
+10 * gfp-&gt;VBR_q - gfp-&gt;quality)h</FONT></B></P></CENTER>
+<P><U><FONT size=3D-1 face=3DArial,Helvetica>examples:</FONT></U>=20
+<P><FONT size=3D-1 face=3DArial,Helvetica>V0 and q0 =3D 100 - 10 * 0 - 0 =
+=3D 100 =3D&gt;=20
+64h</FONT> <BR><FONT size=3D-1 face=3DArial,Helvetica>V0 and q2 =3D 100 =
+- 10 * 0 - 2 =3D=20
+98 =3D&gt; 62h</FONT> <BR><FONT size=3D-1 face=3DArial,Helvetica>V2 and =
+q5 =3D 100 - 10=20
+* 2 - 5 =3D 75 =3D&gt; 4Bh</FONT> <BR><FONT size=3D-1 =
+face=3DArial,Helvetica>V9 and q9 =3D=20
+100 - 10 * 9 - 9 =3D 1 =3D&gt; 01h</FONT> <BR>
+<HR width=3D"100%">
+
+<CENTER>
+<TABLE border=3D1>
+  <TBODY>
+  <TR bgColor=3D#ffffcc>
+    <TD><A name=3Dversionstring></A><FONT size=3D-1 =
+face=3DArial,Helvetica>bytes=20
+      $9A-$A4</FONT></TD>
+    <TD><FONT size=3D-1 face=3DArial,Helvetica>&nbsp;Encoder short=20
+      VersionString&nbsp;</FONT></TD></TR></TBODY></TABLE></CENTER>
+<HR width=3D"100%">
+<BR><FONT size=3D-1 face=3DArial,Helvetica>9 characters</FONT>=20
+<P><U><FONT size=3D-1 face=3DArial,Helvetica>examples:</FONT></U>=20
+<P><FONT size=3D-1 face=3DArial,Helvetica>"LAME3.90a" : LAME version =
+3.90=20
+alpha</FONT> <BR><FONT size=3D-1 face=3DArial,Helvetica>"GOGO3.02b" : =
+GOGO version=20
+3.02 beta</FONT>=20
+<HR width=3D"100%">
+
+<CENTER>
+<TABLE border=3D1>
+  <TBODY>
+  <TR bgColor=3D#33ccff>
+    <TD><A name=3Drev-method></A><FONT size=3D-1 =
+face=3DArial,Helvetica>byte=20
+      $A5</FONT></TD>
+    <TD><FONT size=3D-1 face=3DArial,Helvetica>&nbsp;Info Tag revision + =
+VBR=20
+      method&nbsp;</FONT></TD></TR></TBODY></TABLE></CENTER>
+<HR width=3D"100%">
+<BR><FONT size=3D-1 face=3DArial,Helvetica>two 4 bits fields:</FONT>=20
+<UL>
+  <LI><FONT size=3D-1 face=3DArial,Helvetica>4 MSB: Info Tag revision, =
+range=20
+  0d-15d</FONT><BR>Possible values:<BR>0: rev0<BR>1: rev1<BR>15:=20
+  reserved<BR><BR><BR>
+  <LI><FONT size=3D-1 face=3DArial,Helvetica>4 LSB: VBR Method, range=20
+  0d-15d<BR>Indicate the VBR method used for encoding.<BR>Possible=20
+  values:<BR><BR></FONT>
+  <TABLE border=3D1>
+    <TBODY>
+    <TR>
+      <TD><FONT size=3D-1 face=3DArial,Helvetica>0d</FONT></TD>
+      <TD><FONT size=3D-1 =
+face=3DArial,Helvetica>unknown</FONT></TD></TR>
+    <TR>
+      <TD><FONT size=3D-1 face=3DArial,Helvetica>1d</FONT></TD>
+      <TD><FONT size=3D-1 face=3DArial,Helvetica>constant =
+bitrate</FONT></TD></TR>
+    <TR>
+      <TD><FONT size=3D-1 face=3DArial,Helvetica>2d</FONT></TD>
+      <TD><FONT size=3D-1 face=3DArial,Helvetica>restricted VBR =
+targetting a given=20
+        average bitrate (ABR)</FONT></TD></TR>
+    <TR>
+      <TD><FONT size=3D-1 face=3DArial,Helvetica>3d</FONT></TD>
+      <TD><FONT size=3D-1 face=3DArial,Helvetica>full VBR =
+method1</FONT></TD></TR>
+    <TR>
+      <TD><FONT size=3D-1 face=3DArial,Helvetica>4d</FONT></TD>
+      <TD><FONT size=3D-1 face=3DArial,Helvetica>full VBR =
+method2</FONT></TD></TR>
+    <TR>
+      <TD><FONT size=3D-1 face=3DArial,Helvetica>5d</FONT></TD>
+      <TD><FONT size=3D-1 face=3DArial,Helvetica>full VBR =
+method3</FONT></TD></TR>
+    <TR>
+      <TD><FONT size=3D-1 face=3DArial,Helvetica>6d</FONT></TD>
+      <TD><FONT size=3D-1 face=3DArial,Helvetica>full VBR =
+method4</FONT></TD></TR>
+    <TR>
+      <TD><FONT size=3D-1 face=3DArial,Helvetica>7d</FONT></TD>
+      <TD></TD></TR>
+    <TR>
+      <TD><FONT size=3D-1 face=3DArial,Helvetica>8d</FONT></TD>
+      <TD><FONT size=3D-1 face=3DArial,Helvetica>constant bitrate 2=20
+    pass</FONT></TD></TR>
+    <TR>
+      <TD><FONT size=3D-1 face=3DArial,Helvetica>9d</FONT></TD>
+      <TD><FONT size=3D-1 face=3DArial,Helvetica>abr 2 =
+pass</FONT></TD></TR>
+    <TR>
+      <TD><FONT size=3D-1 face=3DArial,Helvetica>10d</FONT></TD>
+      <TD></TD></TR>
+    <TR>
+      <TD><FONT size=3D-1 face=3DArial,Helvetica>11d</FONT></TD>
+      <TD></TD></TR>
+    <TR>
+      <TD><FONT size=3D-1 face=3DArial,Helvetica>12d</FONT></TD>
+      <TD></TD></TR>
+    <TR>
+      <TD><FONT size=3D-1 face=3DArial,Helvetica>13d</FONT></TD>
+      <TD></TD></TR>
+    <TR>
+      <TD><FONT size=3D-1 face=3DArial,Helvetica>14d</FONT></TD>
+      <TD></TD></TR>
+    <TR>
+      <TD><FONT size=3D-1 face=3DArial,Helvetica>15d</FONT></TD>
+      <TD><FONT size=3D-1=20
+  =
+face=3DArial,Helvetica>reserved</FONT></TD></TR></TBODY></TABLE></LI></UL=
+>
+<P>In case of Lame, the meaning is the following:<BR>2: abr<BR>3: vbr =
+old / vbr=20
+rh<BR>4: vbr mtrh<BR>5: vbr mt</P>
+<P><U><FONT size=3D-1 face=3DArial,Helvetica>examples:</FONT></U> </P>
+<P><B><U><FONT size=3D-1 face=3DArial,Helvetica>byte $A5 =3D =
+03h</FONT></U></B>=20
+<P><FONT size=3D-1 face=3DArial,Helvetica>=3D 0001 0011b =3D&gt;</FONT>=20
+<UL>
+  <LI><FONT size=3D-1 face=3DArial,Helvetica>4 MSB =3D 0001b =3D1d : =
+LAME Tag revision=20
+  1</FONT>=20
+  <LI><FONT size=3D-1 face=3DArial,Helvetica>4 LSB =3D 0011b =3D 3d : =
+vbr-old /=20
+  vbr-rh</FONT> </LI></UL><B><U><FONT size=3D-1 =
+face=3DArial,Helvetica>byte $A5 =3D=20
+35h</FONT></U></B>=20
+<P><FONT size=3D-1 face=3DArial,Helvetica>=3D 0011 0101b =3D&gt;</FONT>=20
+<UL>
+  <LI><FONT size=3D-1 face=3DArial,Helvetica>4 MSB =3D 0011b =3D 3d : =
+LAME Tag revision=20
+  3</FONT>=20
+  <LI><FONT size=3D-1 face=3DArial,Helvetica>4 LSB =3D 0101b =3D 5d : =
+vbr-new /=20
+  vbr-mt</FONT> </LI></UL>
+<HR width=3D"100%">
+
+<CENTER>
+<TABLE border=3D1>
+  <TBODY>
+  <TR bgColor=3D#ff6666>
+    <TD><A name=3Dlowpass></A><FONT size=3D-1 =
+face=3DArial,Helvetica>byte=20
+    $A6</FONT></TD>
+    <TD><FONT size=3D-1 face=3DArial,Helvetica>&nbsp;Lowpass filter=20
+      value&nbsp;</FONT></TD></TR></TBODY></TABLE></CENTER>
+<HR width=3D"100%">
+
+<CENTER><B><FONT size=3D-1 face=3DArial,Helvetica>int&nbsp;&nbsp;&nbsp; =
+lowpass =3D=20
+(lowpass value) / 100</FONT></B> </CENTER>
+<P><FONT size=3D-1 face=3DArial,Helvetica><U>range</U>: 01h =3D 01d : =
+100Hz -&gt; FFh=20
+=3D 255d : 25500Hz</FONT>=20
+<P><FONT size=3D-1 face=3DArial,Helvetica>value 00h =3D&gt; =
+unknown</FONT>=20
+<P><U><FONT size=3D-1 face=3DArial,Helvetica>examples:</FONT></U>=20
+<P><B><U><FONT size=3D-1 face=3DArial,Helvetica>byte $A6 =3D =
+C3h</FONT></U></B>=20
+<P><FONT size=3D-1 face=3DArial,Helvetica>C3h =3D 195d : 19500Hz</FONT>=20
+<P><B><U><FONT size=3D-1 face=3DArial,Helvetica>byte $A6 =3D =
+78h</FONT></U></B>=20
+<P><FONT size=3D-1 face=3DArial,Helvetica>78h =3D 120d : 12000Hz</FONT>=20
+<P>
+<HR width=3D"100%">
+
+<CENTER>
+<TABLE border=3D1>
+  <TBODY>
+  <TR bgColor=3D#ffffff>
+    <TD><A name=3Dreplaygain></A><FONT size=3D-1 =
+face=3DArial,Helvetica>bytes=20
+      $A7-$AF</FONT></TD>
+    <TD><FONT size=3D-1 face=3DArial,Helvetica>&nbsp;Replay=20
+  Gain&nbsp;</FONT></TD></TR></TBODY></TABLE></CENTER>
+<HR width=3D"100%">
+
+<P><FONT size=3D-1 face=3DArial,Helvetica>as defined here: <A=20
+href=3D"http://www.david.robinson.org/replaylevel/"=20
+target=3Dqsdkz>http://www.david.robinson.org/replaylevel/</A> by David=20
+Robinson</FONT>=20
+<P><FONT size=3D-1 face=3DArial,Helvetica>three fields:</FONT>=20
+<UL>
+  <LI><FONT size=3D-1 face=3DArial,Helvetica><U>bytes $A7-$AA</U> : 32 =
+bit floating=20
+  point <B><FONT color=3D#009900>"Peak signal =
+amplitude"</FONT></B>&nbsp; 32 bit=20
+  floating point. 00h00h00h00h : unknown</FONT> <BR>&nbsp;=20
+  <P>=20
+  <P><FONT size=3D-1 face=3DArial,Helvetica>1.0 is maximal signal =
+amplitude=20
+  storeable in decoding format.</FONT> <BR><FONT size=3D-1=20
+  face=3DArial,Helvetica>0.8 is 80% of maximal signal amplitude =
+storeable in=20
+  decoding format.</FONT> <BR><FONT size=3D-1 face=3DArial,Helvetica>1.5 =
+is 150% of=20
+  maximal signal amplitude storeable in decoding format.</FONT>=20
+  <P><FONT size=3D-1 face=3DArial,Helvetica>info + examples: will =
+follow</FONT> <BR>
+  <HR width=3D"100%">
+
+  <LI><FONT size=3D-1 face=3DArial,Helvetica><U>byte $AB-$AC</U> : 16 =
+bit <B><FONT=20
+  color=3D#009900>"Radio Replay Gain"</FONT></B> field, required to make =
+all=20
+  tracks equal loudness.</FONT> <BR>&nbsp; &nbsp;=20
+  <P><FONT size=3D-1 face=3DArial,Helvetica>from <A=20
+  =
+href=3D"http://privatewww.essex.ac.uk/~djmrob/replaygain/rg_data_format.h=
+tml"=20
+  =
+target=3Dsedn>http://privatewww.essex.ac.uk/~djmrob/replaygain/rg_data_fo=
+rmat.html</A></FONT>=20
+
+  <P><FONT size=3D-1 face=3DArial,Helvetica>bits 0h-2h: NAME of Gain=20
+  adjustment:</FONT> <BR><FONT size=3D-1 face=3DArial,Helvetica>000 =3D =
+not set</FONT>=20
+  <BR><FONT size=3D-1 face=3DArial,Helvetica>001 =3D radio</FONT> =
+<BR><FONT size=3D-1=20
+  face=3DArial,Helvetica>010 =3D audiophile</FONT> <BR><FONT size=3D-1=20
+  face=3DArial,Helvetica>(see - room for plenty more!)</FONT>=20
+  <P><FONT size=3D-1 face=3DArial,Helvetica>bits 3h-5h: ORIGINATOR of =
+Gain=20
+  adjustment:</FONT> <BR><FONT size=3D-1 face=3DArial,Helvetica>000 =3D =
+not set</FONT>=20
+  <BR><FONT size=3D-1 face=3DArial,Helvetica>001 =3D set by =
+artist</FONT> <BR><FONT=20
+  size=3D-1 face=3DArial,Helvetica>010 =3D set by user</FONT> <BR><FONT =
+size=3D-1=20
+  face=3DArial,Helvetica>011 =3D set by my model</FONT> <BR><FONT =
+size=3D-1=20
+  face=3DArial,Helvetica>100 =3D set by simple RMS average</FONT> =
+<BR><FONT size=3D-1=20
+  face=3DArial,Helvetica>etc etc (see - room for plenty more =
+again!)</FONT>=20
+  <P><FONT size=3D-1 face=3DArial,Helvetica>bit 6h: Sign bit</FONT> =
+<BR><FONT=20
+  size=3D-1 face=3DArial,Helvetica>bits 7h-Fh: ABSOLUTE GAIN =
+ADJUSTMENT</FONT>=20
+  <BR><FONT size=3D-1 face=3DArial,Helvetica>storing 10x the adjustment =
+(to give the=20
+  extra decimal place).</FONT>=20
+  <P>
+  <HR width=3D"100%">
+
+  <LI><FONT size=3D-1 face=3DArial,Helvetica><U>byte $AD-AE</U> : 16 bit =
+<B><FONT=20
+  color=3D#009900>"Audiophile Replay Gain"</FONT></B> field, required to =
+give=20
+  ideal listening loudness</FONT> <BR>&nbsp;=20
+  <P><FONT size=3D-1 face=3DArial,Helvetica>from <A=20
+  =
+href=3D"http://privatewww.essex.ac.uk/~djmrob/replaygain/rg_data_format.h=
+tml"=20
+  =
+target=3Dsedn>http://privatewww.essex.ac.uk/~djmrob/replaygain/rg_data_fo=
+rmat.html</A></FONT>=20
+
+  <P><FONT size=3D-1 face=3DArial,Helvetica>bits 0h-2h: NAME of Gain=20
+  adjustment:</FONT> <BR><FONT size=3D-1 face=3DArial,Helvetica>000 =3D =
+not set</FONT>=20
+  <BR><FONT size=3D-1 face=3DArial,Helvetica>001 =3D radio</FONT> =
+<BR><FONT size=3D-1=20
+  face=3DArial,Helvetica>010 =3D audiophile</FONT> <BR><FONT size=3D-1=20
+  face=3DArial,Helvetica>(see - room for plenty more!)</FONT>=20
+  <P><FONT size=3D-1 face=3DArial,Helvetica>bits 3h-5h: ORIGINATOR of =
+Gain=20
+  adjustment:</FONT> <BR><FONT size=3D-1 face=3DArial,Helvetica>000 =3D =
+not set</FONT>=20
+  <BR><FONT size=3D-1 face=3DArial,Helvetica>001 =3D set by =
+artist</FONT> <BR><FONT=20
+  size=3D-1 face=3DArial,Helvetica>010 =3D set by user</FONT> <BR><FONT =
+size=3D-1=20
+  face=3DArial,Helvetica>011 =3D set by my model</FONT> <BR><FONT =
+size=3D-1=20
+  face=3DArial,Helvetica>100 =3D set by simple RMS average</FONT> =
+<BR><FONT size=3D-1=20
+  face=3DArial,Helvetica>etc etc (see - room for plenty more =
+again!)</FONT>=20
+  <P><FONT size=3D-1 face=3DArial,Helvetica>bit 6h: Sign bit</FONT> =
+<BR><FONT=20
+  size=3D-1 face=3DArial,Helvetica>bits 7h-Fh: ABSOLUTE GAIN =
+ADJUSTMENT</FONT>=20
+  <BR><FONT size=3D-1 face=3DArial,Helvetica>storing 10x the adjustment =
+(to give the=20
+  extra decimal place).</FONT> </P></LI></UL>
+<HR width=3D"100%">
+
+<CENTER>
+<TABLE border=3D1>
+  <TBODY>
+  <TR bgColor=3D#ff9900>
+    <TD><A name=3Dathtype-flags></A><FONT size=3D-1 =
+face=3DArial,Helvetica>byte=20
+      $AF</FONT></TD>
+    <TD><FONT size=3D-1 face=3DArial,Helvetica>&nbsp;Encoding flags + =
+ATH=20
+      Type&nbsp;</FONT></TD></TR></TBODY></TABLE></CENTER>
+<HR width=3D"100%">
+<BR><FONT size=3D-1 face=3DArial,Helvetica>two 4 bits fields:</FONT>=20
+<UL>
+  <LI><FONT size=3D-1 face=3DArial,Helvetica>4 MSB: 4 encoding =
+flags</FONT>=20
+  <TABLE border=3D1>
+    <TBODY>
+    <TR>
+      <TD><FONT size=3D-1 face=3DArial,Helvetica>000?</FONT></TD>
+      <TD><FONT size=3D-1 face=3DArial,Helvetica>LAME uses=20
+        "--nspsytune",&nbsp;</FONT> <BR><FONT size=3D-1 =
+face=3DArial,Helvetica>? =3D 0=20
+        : false</FONT> <BR><FONT size=3D-1 face=3DArial,Helvetica>? =3D =
+1 :=20
+        true&nbsp;</FONT></TD></TR>
+    <TR>
+      <TD><FONT size=3D-1 face=3DArial,Helvetica>00?0</FONT></TD>
+      <TD><FONT size=3D-1 face=3DArial,Helvetica>LAME uses =
+"--nssafejoint"</FONT>=20
+        <BR><FONT size=3D-1 face=3DArial,Helvetica>? =3D 0 : =
+false</FONT> <BR><FONT=20
+        size=3D-1 face=3DArial,Helvetica>? =3D 1 : true</FONT></TD></TR>
+    <TR>
+      <TD><FONT size=3D-1 face=3DArial,Helvetica>0?00</FONT></TD>
+      <TD><FONT size=3D-1 face=3DArial,Helvetica>This track is --nogap =
+continued=20
+        in a next track</FONT> <BR><FONT size=3D-1 =
+face=3DArial,Helvetica>? =3D 0 :=20
+        false</FONT> <BR><FONT size=3D-1 face=3DArial,Helvetica>? =3D 1 =
+: true</FONT>=20
+        <P><FONT size=3D-1 face=3DArial,Helvetica>is true for all but =
+the=20
+        <B>last</B> track in a --nogap album</FONT> </P></TD></TR>
+    <TR>
+      <TD><FONT size=3D-1 face=3DArial,Helvetica>?000</FONT></TD>
+      <TD><FONT size=3D-1 face=3DArial,Helvetica>This track is the =
+--nogap=20
+        continuation of an earlier one</FONT> <BR><FONT size=3D-1=20
+        face=3DArial,Helvetica>? =3D 0 : false</FONT> <BR><FONT =
+size=3D-1=20
+        face=3DArial,Helvetica>? =3D 1 : true</FONT>=20
+        <P><FONT size=3D-1 face=3DArial,Helvetica>is true for all but =
+the=20
+        <B>first</B> track in a --nogap album</FONT> =
+</P></TD></TR></TBODY></TABLE>
+  <LI><FONT size=3D-1 face=3DArial,Helvetica>4 LSB: LAME ATH Type, range =
+
+  0d-15d</FONT> </LI></UL><U><FONT size=3D-1=20
+face=3DArial,Helvetica>examples:</FONT></U>=20
+<P><B><U><FONT size=3D-1 face=3DArial,Helvetica>byte $AF =3D =
+03h</FONT></U></B>=20
+<P><FONT size=3D-1 face=3DArial,Helvetica>=3D 0000 0011b =3D&gt;</FONT>=20
+<UL>
+  <LI><FONT size=3D-1 face=3DArial,Helvetica>4 MSB =3D 0000b =3D 0d : =
+LAME does NOT use=20
+  --nspsytune, LAME does NOT use --nssafejoint</FONT>=20
+  <LI><FONT size=3D-1 face=3DArial,Helvetica>4 LSB =3D 0011b =3D 3d : =
+ATH type 3=20
+  used</FONT> </LI></UL><B><U><FONT size=3D-1 =
+face=3DArial,Helvetica>byte $AF =3D=20
+15h</FONT></U></B>=20
+<P><FONT size=3D-1 face=3DArial,Helvetica>=3D 0001 0101b =3D&gt;</FONT>=20
+<UL>
+  <LI><FONT size=3D-1 face=3DArial,Helvetica>4 MSB =3D 0001b =3D 3d : =
+LAME does use=20
+  --nspsytune, LAME does NOT use --nssafejoint</FONT>=20
+  <LI><FONT size=3D-1 face=3DArial,Helvetica>4 LSB =3D 0101b =3D 5d : =
+ATH type 5=20
+  used</FONT> </LI></UL>
+<HR width=3D"100%">
+
+<CENTER>
+<TABLE border=3D1>
+  <TBODY>
+  <TR bgColor=3D#99ff99>
+    <TD><A name=3Dabrbitrate></A><FONT size=3D-1 =
+face=3DArial,Helvetica>byte=20
+      $B0</FONT></TD>
+    <TD><FONT size=3D-1 face=3DArial,Helvetica>&nbsp;if ABR {specified =
+bitrate}=20
+      else {minimal bitrate}</FONT></TD></TR></TBODY></TABLE></CENTER>
+<HR width=3D"100%">
+<BR><U><FONT size=3D-1 face=3DArial,Helvetica>IF the file is an ABR =
+file:</FONT></U>=20
+
+<P><FONT size=3D-1 face=3DArial,Helvetica><U>range</U>: 01h =3D 01d : 1 =
+kbit/s (--abr=20
+1)&nbsp; -&gt; FFh =3D 255d : 255 kbit/s <U>or larger</U> (--abr =
+255)</FONT>=20
+<P><FONT size=3D-1 face=3DArial,Helvetica>value 00h =3D&gt; =
+unknown</FONT>=20
+<P><U><FONT size=3D-1 face=3DArial,Helvetica>examples:</FONT></U>=20
+<P><B><U><FONT size=3D-1 face=3DArial,Helvetica>byte $B0 =3D =
+C3h</FONT></U></B>=20
+<P><FONT size=3D-1 face=3DArial,Helvetica>C3h =3D 195d : --abr =
+195</FONT>=20
+<P><B><U><FONT size=3D-1 face=3DArial,Helvetica>byte $B0 =3D =
+78h</FONT></U></B>=20
+<P><FONT size=3D-1 face=3DArial,Helvetica>78h =3D 128d : --abr =
+128</FONT>=20
+<P><B><U><FONT size=3D-1 face=3DArial,Helvetica>byte $B0 =3D =
+FEh</FONT></U></B>=20
+<P><FONT size=3D-1 face=3DArial,Helvetica>FEh =3D 254d : --abr =
+254</FONT>=20
+<P><B><U><FONT size=3D-1 face=3DArial,Helvetica>byte $B0 =3D =
+FFh</FONT></U></B>=20
+<P><FONT size=3D-1 face=3DArial,Helvetica>FEh =3D 255d : --abr 255 or =
+higher, eg:=20
+--abr 280</FONT>=20
+<P><U><FONT size=3D-1 face=3DArial,Helvetica>IF the file is NOT an ABR =
+file:=20
+(CBR/VBR)</FONT></U>=20
+<P><FONT size=3D-1 face=3DArial,Helvetica>the (CBR)/(minimal VBR (-b)) =
+bitrate is=20
+stored here 8-255. 255 if bigger.</FONT>=20
+<P><FONT size=3D-1 face=3DArial,Helvetica>examples:</FONT>=20
+<UL>
+  <LI><FONT size=3D-1 face=3DArial,Helvetica>"LAME -V0 -b224" will store =
+
+  (224)d=3D(E0)h</FONT>=20
+  <LI><FONT size=3D-1 face=3DArial,Helvetica>"LAME -b320" will store=20
+  (255)d=3D(FF)h</FONT> </LI></UL>
+<HR width=3D"100%">
+
+<CENTER>
+<TABLE border=3D1>
+  <TBODY>
+  <TR bgColor=3D#cc0000>
+    <TD><A name=3Ddelays></A><FONT size=3D-1 =
+face=3DArial,Helvetica>bytes=20
+      $B1-$B3</FONT></TD>
+    <TD><FONT size=3D-1 face=3DArial,Helvetica>&nbsp;Encoder=20
+  delays&nbsp;</FONT></TD></TR></TBODY></TABLE></CENTER>
+<HR width=3D"100%">
+<BR><FONT size=3D-1 face=3DArial,Helvetica>store in 3 bytes:</FONT>=20
+<P><FONT size=3D-1 =
+face=3DArial,Helvetica>[xxxxxxxx][xxxxyyyy][yyyyyyyy]</FONT>=20
+<P><FONT size=3D-1 face=3DArial,Helvetica>the 12 bit values (0-4095) of =
+how many=20
+samples were added at start (encoder delay) in X and how many 0-samples =
+were=20
+padded at the end in Y to complete the last frame.</FONT>=20
+<P><FONT size=3D-1 face=3DArial,Helvetica>so ideally you could do:=20
+#frames*(#samples/frame)-(these two values) =3D exact number of samples =
+in=20
+original wav.</FONT>=20
+<P><FONT size=3D-1 face=3DArial,Helvetica>so worst case scenario you'd =
+have a 48kHz=20
+file which would give it a range of 0.085s at the end and at the =
+start.</FONT>=20
+<P><FONT size=3D-1 face=3DArial,Helvetica>example:</FONT> <BR><FONT =
+size=3D-1=20
+face=3DArial,Helvetica>[01101100][00010010][11010010]</FONT>=20
+<P><FONT size=3D-1 face=3DArial,Helvetica>X =3D (011011000001)b =3D =
+(1729)d, so 1729=20
+samples is the encoder delay</FONT> <BR><FONT size=3D-1 =
+face=3DArial,Helvetica>Y =3D=20
+(001011010010)b =3D (722)d, so 722 samples have been padded at the end =
+of the=20
+file</FONT> <BR>
+<HR width=3D"100%">
+
+<CENTER>
+<TABLE border=3D1>
+  <TBODY>
+  <TR bgColor=3D#cc66cc>
+    <TD><A name=3Dmisc></A><FONT size=3D-1 face=3DArial,Helvetica>byte =
+$B4</FONT></TD>
+    <TD><FONT size=3D-1=20
+  =
+face=3DArial,Helvetica>&nbsp;Misc&nbsp;</FONT></TD></TR></TBODY></TABLE><=
+/CENTER>
+<HR width=3D"100%">
+
+<TABLE border=3D1>
+  <TBODY>
+  <TR>
+    <TD><FONT size=3D-1 face=3DArial,Helvetica>2 lsb</FONT></TD>
+    <TD><FONT size=3D-1 face=3DArial,Helvetica>I'd like to add the =
+different noise=20
+      shapings also in a 2-bit field (0-3)</FONT> <BR><FONT size=3D-1=20
+      face=3DArial,Helvetica>(00)b: noise shaping: 0</FONT> <BR><FONT =
+size=3D-1=20
+      face=3DArial,Helvetica>(01)b: noise shaping: 1</FONT> <BR><FONT =
+size=3D-1=20
+      face=3DArial,Helvetica>(10)b: noise shaping: 2</FONT> <BR><FONT =
+size=3D-1=20
+      face=3DArial,Helvetica>(11)b: noise shaping: 3</FONT></TD></TR>
+  <TR>
+    <TD><FONT size=3D-1 face=3DArial,Helvetica>3 bits</FONT></TD>
+    <TD><FONT size=3D-1 face=3DArial,Helvetica>Stereo mode</FONT>=20
+      <P><FONT size=3D-1 face=3DArial,Helvetica>msb fist:</FONT>=20
+      <P><FONT size=3D-1 face=3DArial,Helvetica>(000)b: (m)ono</FONT> =
+<BR><FONT=20
+      size=3D-1 face=3DArial,Helvetica>(001)b: (s)tereo</FONT> <BR><FONT =
+size=3D-1=20
+      face=3DArial,Helvetica>(010)b: (d)ual</FONT> <BR><FONT size=3D-1=20
+      face=3DArial,Helvetica>(011)b: (j)oint</FONT> <BR><FONT size=3D-1=20
+      face=3DArial,Helvetica>(100)b: (f)orce</FONT> <BR><FONT size=3D-1=20
+      face=3DArial,Helvetica>(101)b: (a)uto</FONT> <BR><FONT size=3D-1=20
+      face=3DArial,Helvetica>(110)b: (i)ntensity</FONT> <BR><FONT =
+size=3D-1=20
+      face=3DArial,Helvetica>(111)b: (x)undefined / different</FONT>=20
+    <BR>&nbsp;</P></TD></TR>
+  <TR>
+    <TD><FONT size=3D-1 face=3DArial,Helvetica>1 bit</FONT></TD>
+    <TD><FONT size=3D-1 face=3DArial,Helvetica>unwise settings =
+used</FONT>=20
+      <P><FONT size=3D-1 face=3DArial,Helvetica>(0)b: no</FONT> =
+<BR><FONT size=3D-1=20
+      face=3DArial,Helvetica>(1)b: yes (definition encoder =
+side(*))</FONT>=20
+  </P></TD></TR>
+  <TR>
+    <TD><FONT size=3D-1 face=3DArial,Helvetica>2 msb</FONT></TD>
+    <TD><FONT size=3D-1 face=3DArial,Helvetica><B><U>Source</U></B> (not =
+mp3)=20
+      sample frequency</FONT>=20
+      <P><FONT size=3D-1 face=3DArial,Helvetica>(00)b: 32kHz or =
+smaller</FONT>=20
+      <BR><FONT size=3D-1 face=3DArial,Helvetica>(01)b: 44.1kHz</FONT> =
+<BR><FONT=20
+      size=3D-1 face=3DArial,Helvetica>(10)b: 48kHz</FONT> <BR><FONT =
+size=3D-1=20
+      face=3DArial,Helvetica>(11)b: higher than 48kHz</FONT>=20
+</P></TD></TR></TBODY></TABLE>
+<P><FONT size=3D-1 face=3DArial,Helvetica>(*)some settings were used =
+which would=20
+likely damage quality in normal circumstances. (like disabling all use =
+of the=20
+ATH or forcing only short blocks, -b192 ...)</FONT>=20
+<P>
+<HR width=3D"100%">
+
+<CENTER>
+<TABLE border=3D1>
+  <TBODY>
+  <TR bgColor=3D#ffff00>
+    <TD><A name=3Dmp3gain></A><FONT size=3D-1 =
+face=3DArial,Helvetica>byte=20
+    $B5</FONT></TD>
+    <TD><FONT size=3D-1 face=3DArial,Helvetica>&nbsp;MP3=20
+  Gain&nbsp;</FONT></TD></TR></TBODY></TABLE></CENTER>
+<HR width=3D"100%">
+<BR><FONT size=3D-1 face=3DArial,Helvetica>any mp3 can be amplified by a =
+factor<FONT=20
+color=3D#000099> </FONT><B><FONT color=3D#009900>2 ^ ( x * =
+0.25)</FONT></B> in a=20
+<U>lossless</U> manner by a tool like eg. <A=20
+href=3D"http://www.geocities.com/mp3gain" =
+target=3Dsds>mp3gain</A></FONT>=20
+<P><FONT size=3D-1 face=3DArial,Helvetica>byte $B5 is set to (00)h by=20
+default.</FONT>=20
+<P><FONT size=3D-1 face=3DArial,Helvetica>if done so, this 8-bit field =
+can be used=20
+to log such transformation happened so that any given time it can be=20
+undone.</FONT> <BR>&nbsp;=20
+<CENTER>
+<TABLE border=3D1>
+  <TBODY>
+  <TR>
+    <TD bgColor=3D#ff6666>
+      <CENTER><B><U><FONT size=3D-1 =
+face=3DArial,Helvetica>WARNING:</FONT></U></B>=20
+      <BR>
+      <HR width=3D"100%">
+      <FONT size=3D-1 face=3DArial,Helvetica>Do <B>NOT</B> alter this =
+field if you=20
+      do not fully understand its use.&nbsp; You will damage the=20
+      Replaygain</FONT> <BR><FONT size=3D-1 =
+face=3DArial,Helvetica>fields and=20
+      musicCRC if you do not implement this correctly.</FONT> <BR>
+      <HR width=3D"100%">
+      <BR><FONT size=3D-1 face=3DArial,Helvetica>You can <B>only</B> =
+modify this=20
+      field if</FONT> </CENTER>
+      <OL>
+        <CENTER>
+        <LI><FONT size=3D-1 face=3DArial,Helvetica>the <A=20
+        =
+href=3D"http://gabriel.mp3-tech.org/mp3infotag.html#tagcrc">TagCRC</A>=20
+        checks out</FONT> </CENTER>
+        <CENTER>
+        <LI><FONT size=3D-1 face=3DArial,Helvetica>you update <B><U>all=20
+        three</U></B> the <A=20
+        =
+href=3D"http://gabriel.mp3-tech.org/mp3infotag.html#replaygain">ReplayGai=
+n</A>=20
+        fields with the correct number of 1.5dB steps</FONT> </CENTER>
+        <CENTER>
+        <LI><FONT size=3D-1 face=3DArial,Helvetica>the <A=20
+        =
+href=3D"http://gabriel.mp3-tech.org/mp3infotag.html#tagcrc">TagCRC</A> =
+is=20
+        updated after all this</FONT> </CENTER></LI></OL>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>Do NOT =
+change/update the=20
+      musicCRC.&nbsp; It will be invalid after you change this mp3gain=20
+      field.</FONT> <BR><FONT size=3D-1 face=3DArial,Helvetica>If an =
+application=20
+      like mp3gain changes the main music frames of the mp3 then the =
+musicCRC=20
+      <U>should</U> be invalid.&nbsp;</FONT> <BR><FONT size=3D-1=20
+      face=3DArial,Helvetica>The Lame Tag CRC should still be valid =
+however (it=20
+      could be updated by mp3gain).=20
+      <HR width=3D"100%">
+      only tools like mp3gain should use this field, as it is made for =
+making=20
+      lossless adjustments to the mp3</FONT> <BR><FONT size=3D-1=20
+      face=3DArial,Helvetica><U>after</U> encoding is finished.&nbsp; No =
+need to=20
+      support this in LAME or any decoder at all.</FONT>=20
+</CENTER></TD></TR></TBODY></TABLE></CENTER>
+<P><FONT size=3D-1 face=3DArial,Helvetica>2^(a/4) , range of "a" here:=20
+-127..0..127</FONT> <BR>&nbsp;=20
+<TABLE border=3D1>
+  <TBODY>
+  <TR bgColor=3D#ffff00>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>[byte $B5]b</FONT> =
+</CENTER></TD>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>a</FONT> =
+</CENTER></TD>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>dB change</FONT> =
+</CENTER></TD>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>amplification =
+factor used=20
+      was</FONT> </CENTER></TD></TR>
+  <TR>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>[11111111]</FONT> =
+</CENTER></TD>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>-127</FONT> =
+</CENTER></TD>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>-190.5dB</FONT> =
+</CENTER></TD>
+    <TD>
+      <CENTER><FONT size=3D-1 =
+face=3DArial,Helvetica>0.000000000276883</FONT>=20
+      </CENTER></TD></TR>
+  <TR>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>...</FONT> =
+</CENTER></TD>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>...</FONT> =
+</CENTER></TD>
+    <TD>&nbsp;</TD>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica></FONT> =
+</CENTER></TD></TR>
+  <TR>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>[10000011]</FONT> =
+</CENTER></TD>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>-3</FONT> =
+</CENTER></TD>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>-4.5dB</FONT> =
+</CENTER></TD>
+    <TD>
+      <CENTER><FONT size=3D-1 =
+face=3DArial,Helvetica>0.594603557501360533</FONT>=20
+      </CENTER></TD></TR>
+  <TR>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>[10000010]</FONT> =
+</CENTER></TD>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>-2</FONT> =
+</CENTER></TD>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>-3dB</FONT> =
+</CENTER></TD>
+    <TD>
+      <CENTER><FONT size=3D-1 =
+face=3DArial,Helvetica>0.707106781186547524</FONT>=20
+      </CENTER></TD></TR>
+  <TR>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>[10000001]</FONT> =
+</CENTER></TD>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>-1</FONT> =
+</CENTER></TD>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>-1.5dB</FONT> =
+</CENTER></TD>
+    <TD>
+      <CENTER><FONT size=3D-1 =
+face=3DArial,Helvetica>0.840896415253714543</FONT>=20
+      </CENTER></TD></TR>
+  <TR>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>[00000000]</FONT> =
+</CENTER></TD>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>0</FONT> =
+</CENTER></TD>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>0dB</FONT> =
+</CENTER></TD>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>1.0</FONT> =
+</CENTER></TD></TR>
+  <TR>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>[00000001]</FONT> =
+</CENTER></TD>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>1</FONT> =
+</CENTER></TD>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>+1.5dB</FONT> =
+</CENTER></TD>
+    <TD>
+      <CENTER><FONT size=3D-1 =
+face=3DArial,Helvetica>1.18920711500272107</FONT>=20
+      </CENTER></TD></TR>
+  <TR>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>[00000010]</FONT> =
+</CENTER></TD>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>2</FONT> =
+</CENTER></TD>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>+3dB</FONT> =
+</CENTER></TD>
+    <TD>
+      <CENTER><FONT size=3D-1 =
+face=3DArial,Helvetica>1.41421356237309505</FONT>=20
+      </CENTER></TD></TR>
+  <TR>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>[00000011]</FONT> =
+</CENTER></TD>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>3</FONT> =
+</CENTER></TD>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>+4.5dB</FONT> =
+</CENTER></TD>
+    <TD>
+      <CENTER><FONT size=3D-1 =
+face=3DArial,Helvetica>1.68179283050742909</FONT>=20
+      </CENTER></TD></TR>
+  <TR>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>[00000100]</FONT> =
+</CENTER></TD>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>4</FONT> =
+</CENTER></TD>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>+6dB</FONT> =
+</CENTER></TD>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>2.0</FONT> =
+</CENTER></TD></TR>
+  <TR>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>[00000101]</FONT> =
+</CENTER></TD>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>5</FONT> =
+</CENTER></TD>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>+7.5dB</FONT> =
+</CENTER></TD>
+    <TD>
+      <CENTER><FONT size=3D-1 =
+face=3DArial,Helvetica>2.37841423000544213</FONT>=20
+      </CENTER></TD></TR>
+  <TR>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>...</FONT> =
+</CENTER></TD>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>...</FONT> =
+</CENTER></TD>
+    <TD>&nbsp;</TD>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica></FONT> =
+</CENTER></TD></TR>
+  <TR>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>[00011111]</FONT> =
+</CENTER></TD>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>31</FONT> =
+</CENTER></TD>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>+46.5dB</FONT> =
+</CENTER></TD>
+    <TD>
+      <CENTER><FONT size=3D-1 =
+face=3DArial,Helvetica>215.269482304950923</FONT>=20
+      </CENTER></TD></TR>
+  <TR>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>...</FONT> =
+</CENTER></TD>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>...</FONT> =
+</CENTER></TD>
+    <TD>&nbsp;</TD>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica></FONT> =
+</CENTER></TD></TR>
+  <TR>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>[01111111]</FONT> =
+</CENTER></TD>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>127</FONT> =
+</CENTER></TD>
+    <TD>
+      <CENTER><FONT size=3D-1 face=3DArial,Helvetica>+190.5dB</FONT> =
+</CENTER></TD>
+    <TD>
+      <CENTER><FONT size=3D-1 =
+face=3DArial,Helvetica>3611622602.83833951</FONT>=20
+      </CENTER></TD></TR></TBODY></TABLE>
+<P><FONT size=3D-1 face=3DArial,Helvetica>the +-190.5dB range is too =
+large, but=20
+there was little else to do with the extra bits, so for uniformity we =
+took this=20
+range.</FONT> <BR>
+<HR width=3D"100%">
+
+<CENTER>
+<TABLE border=3D1>
+  <TBODY>
+  <TR bgColor=3D#999999>
+    <TD><FONT size=3D-1 face=3DArial,Helvetica><A =
+name=3Dpreset></A>bytes=20
+      $B6-$B7</FONT></TD>
+    <TD><FONT size=3D-1 face=3DArial,Helvetica>&nbsp;Preset and surround =
+
+      info</FONT></TD></TR></TBODY></TABLE>
+<P align=3Dleft>2 most significant bits: unused</P>
+<P align=3Dleft>&nbsp;</P>
+<P align=3Dleft>3 bits: surround info</P>
+<P align=3Dleft>0: no surround info<BR>1: DPL encoding<BR>2: DPL2 =
+encoding<BR>3:=20
+Ambisonic encoding<BR>8: reserved</P>
+<P align=3Dleft>&nbsp;</P>
+<P align=3Dleft>11 least significant bits: Preset used.</P>
+<P align=3Dleft>0: unknown/ no preset used<BR>This allows a range of =
+2047 presets.=20
+With Lame we would use the value of the internal preset =
+enum.</P></CENTER>
+<HR width=3D"100%">
+
+<CENTER>
+<TABLE border=3D1>
+  <TBODY>
+  <TR bgColor=3D#66ffff>
+    <TD><A name=3Dmusiclength></A><FONT size=3D-1 =
+face=3DArial,Helvetica>bytes=20
+      $B8-$BB</FONT></TD>
+    <TD><FONT size=3D-1=20
+  =
+face=3DArial,Helvetica>&nbsp;MusicLength&nbsp;</FONT></TD></TR></TBODY></=
+TABLE></CENTER>
+<HR width=3D"100%">
+<BR><FONT size=3D-1 face=3DArial,Helvetica>32 bit integer filed =
+containing the exact=20
+length in bytes of the mp3 file originally made by LAME <U>excluded</U> =
+ID3 tag=20
+info at the end.</FONT>=20
+<P><FONT size=3D-1 face=3DArial,Helvetica>The first byte it counts is =
+the <B>first=20
+byte of this LAME Tag</B> and the last byte it counts is the <B>last =
+byte of the=20
+last mp3 frame containing music</B>.</FONT>=20
+<P><FONT size=3D-1 face=3DArial,Helvetica>Should be filelength at the =
+time of LAME=20
+encoding, except when using ID3 tags.</FONT>=20
+<P><B><FONT size=3D-1 face=3DArial,Helvetica>practical =
+example:</FONT></B>=20
+<BR><B><FONT size=3D-1 face=3DArial,Helvetica><STRIKE><FONT=20
+color=3D#990000>[misc+ID3v2 tag info]</FONT></STRIKE><FONT =
+color=3D#009900>[LAME Tag=20
+frame][complete mp3 music data]</FONT><STRIKE><FONT =
+color=3D#990000>[misc+ID3v1/2=20
+tag info]</FONT></STRIKE></FONT></B>=20
+<P><FONT color=3D#000000 size=3D-1 face=3DArial,Helvetica><B>remark:</B> =
+applying=20
+<B>any</B> (ID3v2) kind of tagging or information in <U>FRONT</U> of the =
+
+LAME/Xing Tag frame is a <U>very bad</U> idea.&nbsp; You will disable =
+the=20
+functionality of all decoders to read the tag info correctly. (for =
+example: VBR=20
+mp3 seek info will no longer be usable)</FONT>=20
+<P><FONT size=3D-1 face=3DArial,Helvetica>range (1)d-(4,294,967,295)d [ =
+or about=20
+4294967295/(650*1024*1024)/320*1411 =3D 27.79 hours of 44.1kHz 320kbit/s =
+music.=20
+]</FONT>=20
+<P><FONT size=3D-1 face=3DArial,Helvetica>Musiclength not set / unknown =
+/ larger=20
+than 4G:</FONT>=20
+<TABLE border=3D1>
+  <TBODY>
+  <TR bgColor=3D#66ffff>
+    <TD><FONT size=3D-1 face=3DArial,Helvetica>$B8</FONT></TD>
+    <TD><FONT size=3D-1 face=3DArial,Helvetica>$B9</FONT></TD>
+    <TD><FONT size=3D-1 face=3DArial,Helvetica>$BA</FONT></TD>
+    <TD><FONT size=3D-1 face=3DArial,Helvetica>$BB</FONT></TD></TR>
+  <TR>
+    <TD><FONT size=3D-1 face=3DArial,Helvetica>00h</FONT></TD>
+    <TD><FONT size=3D-1 face=3DArial,Helvetica>00h</FONT></TD>
+    <TD><FONT size=3D-1 face=3DArial,Helvetica>00h</FONT></TD>
+    <TD><FONT size=3D-1 =
+face=3DArial,Helvetica>00h</FONT></TD></TR></TBODY></TABLE>
+<P><FONT size=3D-1 face=3DArial,Helvetica>use of this field: together =
+with the next=20
+field deliver</FONT>=20
+<UL>
+  <LI><FONT size=3D-1 face=3DArial,Helvetica>an effective verification =
+of music's=20
+  integrity</FONT>=20
+  <LI><FONT size=3D-1 face=3DArial,Helvetica>and effective shield from =
+TAGs.</FONT>=20
+  </LI></UL>
+<P><BR><B><FONT size=3D-1 face=3DArial,Helvetica>Examples:</FONT></B> =
+<BR>&nbsp;=20
+<TABLE border=3D1>
+  <TBODY>
+  <TR bgColor=3D#66ffff>
+    <TD><FONT size=3D-1 face=3DArial,Helvetica>$B8</FONT></TD>
+    <TD><FONT size=3D-1 face=3DArial,Helvetica>$B9</FONT></TD>
+    <TD><FONT size=3D-1 face=3DArial,Helvetica>$BA</FONT></TD>
+    <TD><FONT size=3D-1 face=3DArial,Helvetica>$BB</FONT></TD></TR>
+  <TR>
+    <TD><FONT size=3D-1 face=3DArial,Helvetica>(29)h</FONT></TD>
+    <TD><FONT size=3D-1 face=3DArial,Helvetica>(17)h</FONT></TD>
+    <TD><FONT size=3D-1 face=3DArial,Helvetica>(A3)h</FONT></TD>
+    <TD><FONT size=3D-1=20
+face=3DArial,Helvetica>(62)h</FONT></TD></TR></TBODY></TABLE><FONT =
+size=3D-1=20
+face=3DArial,Helvetica>would be (2917A362)h =3D (689,415,010)b =
+bytes</FONT>=20
+<TABLE border=3D1>
+  <TBODY>
+  <TR bgColor=3D#66ffff>
+    <TD><FONT size=3D-1 face=3DArial,Helvetica>$B8</FONT></TD>
+    <TD><FONT size=3D-1 face=3DArial,Helvetica>$B9</FONT></TD>
+    <TD><FONT size=3D-1 face=3DArial,Helvetica>$BA</FONT></TD>
+    <TD><FONT size=3D-1 face=3DArial,Helvetica>$BB</FONT></TD></TR>
+  <TR>
+    <TD><FONT size=3D-1 face=3DArial,Helvetica>(00)h</FONT></TD>
+    <TD><FONT size=3D-1 face=3DArial,Helvetica>(3B)h</FONT></TD>
+    <TD><FONT size=3D-1 face=3DArial,Helvetica>(82)h</FONT></TD>
+    <TD><FONT size=3D-1=20
+face=3DArial,Helvetica>(B5)h</FONT></TD></TR></TBODY></TABLE><FONT =
+size=3D-1=20
+face=3DArial,Helvetica>would be (3B82B5)h =3D (3,900,085)b bytes</FONT> =
+<BR>
+<HR width=3D"100%">
+
+<CENTER>
+<TABLE border=3D1>
+  <TBODY>
+  <TR bgColor=3D#33ff33>
+    <TD><A name=3Dmusiccrc></A><FONT size=3D-1 =
+face=3DArial,Helvetica>bytes=20
+      $BC-$BD</FONT></TD>
+    <TD><FONT size=3D-1=20
+  =
+face=3DArial,Helvetica>&nbsp;MusicCRC&nbsp;</FONT></TD></TR></TBODY></TAB=
+LE></CENTER>
+<HR width=3D"100%">
+<BR><FONT size=3D-1 face=3DArial,Helvetica>contains a CRC-16 of the =
+<U>complete mp3=20
+music data</U> as made originally by LAME.</FONT>=20
+<UL>
+  <LI><FONT size=3D-1 face=3DArial,Helvetica>with as first byte the =
+<B>first byte of=20
+  the first mp3 frame containing music</B>. (the frame right after this =
+LAME=20
+  Tag)</FONT>=20
+  <LI><FONT size=3D-1 face=3DArial,Helvetica>with as last byte the =
+<B>last byte of=20
+  the last mp3 frame containing music</B>. (so that additional tags at =
+the end=20
+  are not included.)</FONT> </LI></UL><FONT size=3D-1 =
+face=3DArial,Helvetica>reason :=20
+will guarantee that the actual mp3 music data is intact, unregardless =
+people=20
+adding ID3 tags to the end (or the start) of the file.</FONT>=20
+<P><B><FONT size=3D-1 face=3DArial,Helvetica>practical =
+example:</FONT></B>=20
+<BR><B><FONT size=3D-1 face=3DArial,Helvetica><STRIKE><FONT=20
+color=3D#990000>[misc+ID3v2 tag info][LAME Tag =
+frame]</FONT></STRIKE><FONT=20
+color=3D#009900>[complete mp3 music data as made by =
+LAME]</FONT><STRIKE><FONT=20
+color=3D#990000>[misc+ID3v1/2 tag info]</FONT></STRIKE></FONT></B>=20
+<P><FONT color=3D#000000 size=3D-1 face=3DArial,Helvetica><B>remark:</B> =
+applying=20
+<B>any</B> (ID3v2) kind of tagging or information in <U>FRONT</U> of the =
+
+LAME/Xing Tag frame is a <U>very bad</U> idea.&nbsp; You will disable =
+the=20
+functionality of all decoders to read the tag info correctly. (for =
+example: VBR=20
+mp3 seek info will no longer be usable)</FONT>=20
+<P><FONT size=3D-1 face=3DArial,Helvetica>Meaning of this =
+musicCRC:</FONT>=20
+<CENTER>
+<P><FONT size=3D-1 face=3DArial,Helvetica>"if the musicCRC is correct, =
+then this=20
+file (or the music data in it) are identical to when encoded by =
+LAME"</FONT>=20
+</CENTER>
+<P><FONT size=3D-1 face=3DArial,Helvetica>It does <U>not</U> say:</FONT> =
+
+<UL>
+  <LI><FONT size=3D-1 face=3DArial,Helvetica>this is a valid mp3</FONT>=20
+  <LI><FONT size=3D-1 face=3DArial,Helvetica>this mp3 sounds good</FONT> =
+
+  <LI><FONT size=3D-1 face=3DArial,Helvetica>this mp3 has been =
+downloaded correctly=20
+  off the internet</FONT>=20
+  <LI><FONT size=3D-1 face=3DArial,Helvetica>it has not been retagged =
+(very=20
+  possible)</FONT> </LI></UL><FONT size=3D-1 face=3DArial,Helvetica>This =
+will=20
+enable:</FONT>=20
+<UL>
+  <LI><FONT size=3D-1 face=3DArial,Helvetica>effective verification =
+method to see if=20
+  the <I>music data</I> is <U>exactly</U> what it was at time of =
+encoding</FONT>=20
+
+  <LI><FONT size=3D-1 face=3DArial,Helvetica>swift and accurate removal =
+of any sort=20
+  of ID3 or different tags</FONT>=20
+  <UL><FONT size=3D-1 face=3DArial,Helvetica>1) search for start of a =
+LAME Tag (=20
+    pos $xy )</FONT> <BR><FONT size=3D-1 face=3DArial,Helvetica>2) if=20
+    CRC($(xy+c0)..$(xy+MusicLength)) corrent then cut out=20
+    $(xy+c0)..$(xy+MusicLength)</FONT> </UL></LI></UL><FONT size=3D-1=20
+face=3DArial,Helvetica>CRC-16 should suffice since in the event of total =
+
+randomness every 65536th <B><U>defective</U></B> file on average will be =
+falsely=20
+identified as being not defective.&nbsp; Also, CRC-16 routines are =
+present in=20
+both mp3 encoder and decoders.</FONT>=20
+<P><FONT size=3D-1 face=3DArial,Helvetica>CRCInitValue :=3D =
+$0000;</FONT> <BR>
+<HR width=3D"100%">
+
+<CENTER>
+<TABLE border=3D1>
+  <TBODY>
+  <TR bgColor=3D#00cc00>
+    <TD><A name=3Dtagcrc></A><FONT size=3D-1 =
+face=3DArial,Helvetica>bytes=20
+      $BE-$BF</FONT></TD>
+    <TD><FONT size=3D-1 face=3DArial,Helvetica>&nbsp;CRC-16 of Info=20
+      Tag&nbsp;</FONT></TD></TR></TBODY></TABLE></CENTER>
+<HR width=3D"100%">
+<BR><FONT size=3D-1 face=3DArial,Helvetica>contains a CRC-16 of the =
+first 190 bytes=20
+($00-$BD) of the Info header frame. This field is calculated <U>at the =
+end</U>,=20
+once all other fields are completed.</FONT>=20
+<P><FONT size=3D-1 face=3DArial,Helvetica>reason : safeguards LAME VBR =
+header=20
+against easy tampering.&nbsp; Improving the header functionality as =
+quality=20
+control/verification tool for VBR files.</FONT>=20
+<P><FONT size=3D-1 face=3DArial,Helvetica>CRCInitValue :=3D =
+$0000;</FONT> <BR>
+<HR width=3D"100%">
+
+<P><FONT color=3D#000000 size=3D-1 face=3DArial,Helvetica>Remarks / =
+Ideas:</FONT>=20
+<UL>
+  <LI><FONT color=3D#000000 size=3D-1 face=3DArial,Helvetica>The idea =
+behind storing=20
+  all this specific (quality significant) LAME settings used to encode =
+in the=20
+  mp3 itself is to give some kind of quality assurance for (mainly) =
+non-CBR=20
+  files.&nbsp; You would download an mp3 from the web and know exactly =
+what kind=20
+  of setting was used on this file.&nbsp; Now there is no way to keep =
+find out=20
+  if your download is a "-V9 --lowpass 12" or a "-V1 --lowpass 19.5" =
+file.&nbsp;=20
+  Even though both have a significant quality difference.</FONT>=20
+  <LI><FONT color=3D#000000 size=3D-1 face=3DArial,Helvetica>These =
+headers should also=20
+  be placed in front of <B><U>CBR</U></B> files. Given the Bitrate is =
+&gt;=3D64=20
+  the frame could be housed in a CBR file using the same framesize as =
+the mp3=20
+  itself.</FONT>=20
+  <LI><FONT size=3D-1 face=3DArial,Helvetica><FONT color=3D#000000>If =
+limiting the=20
+  LAME string to 9 bytes "</FONT><FONT color=3D#3333ff>LAME =
+X.YZu</FONT><FONT=20
+  color=3D#000000>", the extension revision 0 could take <U>27 bytes</U> =
+and it=20
+  would still fit a 64 kbit 48kHz frame:</FONT></FONT>=20
+  <CENTER>
+  <TABLE border=3D1>
+    <TBODY>
+    <TR>
+      <TD><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0000:</FONT>=20
+        <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0010:</FONT>=20
+        <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0020:</FONT>=20
+        <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0030:</FONT>=20
+        <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0040:</FONT>=20
+        <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0050:</FONT>=20
+        <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0060:</FONT>=20
+        <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0070:</FONT>=20
+        <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0080:</FONT>=20
+        <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">0090:</FONT>=20
+        <BR><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">00A0:</FONT>=20
+        <BR><FONT color=3D#000000 size=3D-1=20
+      face=3D"Courier New,Courier">00B0:</FONT></TD>
+      <TD><B><FONT color=3D#000000 size=3D-1 face=3D"Courier =
+New,Courier">FF FB 54=20
+        04-00 00 00 00-00 00 00 00-00 00 00 00</FONT></B> <BR><B><FONT=20
+        color=3D#000000 size=3D-1 face=3D"Courier New,Courier">00 00 00 =
+00-00 00 00=20
+        00-00 00 00 00-00 00 00 00</FONT></B> <BR><B><FONT size=3D-1=20
+        face=3D"Courier New,Courier"><FONT color=3D#000000>00 00 00 =
+00-</FONT><FONT=20
+        color=3D#009900>58 69 6E 67-00 00 00 0F-00 00 00 =
+7E</FONT></FONT></B>=20
+        <BR><B><FONT color=3D#009900 size=3D-1 face=3D"Courier =
+New,Courier">00 00 2F=20
+        E1-00 04 04 04-04 04 04 05-09 0B 0D 0F</FONT></B> <BR><B><FONT=20
+        color=3D#009900 size=3D-1 face=3D"Courier New,Courier">13 15 17 =
+19-1D 1F 21=20
+        23-27 29 2B 2D-31 33 35 39</FONT></B> <BR><B><FONT =
+color=3D#009900 size=3D-1=20
+        face=3D"Courier New,Courier">3B 3D 3F 43-45 47 49 4D-4F 51 53 =
+57-59 5B 5D=20
+        61</FONT></B> <BR><B><FONT color=3D#009900 size=3D-1=20
+        face=3D"Courier New,Courier">63 65 67 6B-6D 6F 73 75-77 79 7D =
+7F-81 83 87=20
+        89</FONT></B> <BR><B><FONT color=3D#009900 size=3D-1=20
+        face=3D"Courier New,Courier">8B 8D 91 93-95 97 9B 9D-9F A1 A5 =
+A7-A9 AB AF=20
+        B1</FONT></B> <BR><B><FONT color=3D#009900 size=3D-1=20
+        face=3D"Courier New,Courier">B3 B7 B9 BB-BD C1 C3 C5-C7 CB CD =
+CF-D1 D5 D7=20
+        D9</FONT></B> <BR><B><FONT size=3D-1 face=3D"Courier =
+New,Courier"><FONT=20
+        color=3D#009900>DB DF E1 E3-E5 E9 EB ED-00 00 00 0B</FONT><FONT=20
+        color=3D#000000>-</FONT><FONT color=3D#3333ff>4C 41 4D =
+45</FONT></FONT></B>=20
+        <BR><B><FONT size=3D-1 face=3D"Courier New,Courier"><FONT =
+color=3D#3333ff>33=20
+        2E 37 30-00 </FONT><FONT color=3D#990000>00 00 00-00 00 00 00-00 =
+00 00=20
+        00</FONT></FONT></B> <BR><B><FONT color=3D#990000 size=3D-1=20
+        face=3D"Courier New,Courier">00 00 00 00-00 00 00 00-00 00 00 =
+00-00 00 00=20
+        00</FONT></B></TD>
+      <TD><B><FONT color=3D#000000 size=3D-1=20
+        face=3D"Courier New,Courier">&nbsp;?T?</FONT></B>=20
+        <P><B><FONT size=3D-1 face=3D"Courier New,Courier"><FONT=20
+        color=3D#000000>&nbsp; </FONT><FONT =
+color=3D#009900>Xing&nbsp;&nbsp;=20
+        ?&nbsp;&nbsp; ~</FONT></FONT></B> <BR><B><FONT color=3D#009900 =
+size=3D-1=20
+        face=3D"Courier New,Courier">&nbsp; /=C3=9F =
+???????????</FONT></B> <BR><B><FONT=20
+        color=3D#009900 size=3D-1=20
+        face=3D"Courier New,Courier">?=C2=A7????!#')+-1359</FONT></B> =
+<BR><B><FONT=20
+        color=3D#009900 size=3D-1=20
+        face=3D"Courier New,Courier">;=3D?CEGIMOQSWY[]a</FONT></B> =
+<BR><B><FONT=20
+        color=3D#009900 size=3D-1=20
+        face=3D"Courier =
+New,Courier">cegkmosuwy}?=C3=BC=C3=A2=C3=A7=C3=AB</FONT></B> =
+<BR><B><FONT=20
+        color=3D#009900 size=3D-1=20
+        face=3D"Courier =
+New,Courier">=C3=AF=C3=AC=C3=A6=C3=B4=C3=B2=C3=B9=C2=A2=C2=A5=C6=92=C3=AD=
+=C3=91=C2=BA?=C2=BD=C2=BB?</FONT></B> <BR><B><FONT=20
+        color=3D#009900 size=3D-1=20
+        face=3D"Courier New,Courier">????????????????</FONT></B> =
+<BR><B><FONT=20
+        size=3D-1 face=3D"Courier New,Courier"><FONT=20
+        color=3D#009900>??=C3=9F?????&nbsp;&nbsp; ?</FONT><FONT=20
+        color=3D#3333ff>LAME</FONT></FONT></B> <BR><B><FONT =
+color=3D#3333ff size=3D-1=20
+        face=3D"Courier New,Courier">3.70</FONT></B> <BR><FONT size=3D-1 =
+
+        face=3DArial,Helvetica>&nbsp;</FONT> =
+</P></TD></TR></TBODY></TABLE></CENTER>
+  <LI><FONT color=3D#000000 size=3D-1 face=3DArial,Helvetica>In these =
+last two cases,=20
+  instead of the now default 128kbit/s one, in case of non-CBR, LAME =
+could add=20
+  any (64 .. 320) sized tag to the mp3, being as close as possible to =
+the=20
+  <U>average bitrate</U> of the file.&nbsp; So a VBR file averaging 172 =
+kbit=20
+  would get a 160kbit/s LAME Tag, an ABR file averaging 253 kbit/s a =
+256kbit/s=20
+  LAME Tag...&nbsp; (useful for non-vbr compliant decoders guessing file =
+length=20
+  based on size first frame)</FONT> </LI></UL></BODY></HTML>

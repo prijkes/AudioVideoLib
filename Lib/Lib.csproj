@@ -1,0 +1,389 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{05060149-50BE-405D-8A3A-DFD41693FC93}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AudioVideoLib</RootNamespace>
+    <AssemblyName>AudioVideoLib</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>Lib.snk</AssemblyOriginatorKeyFile>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>bin\Debug\AudioLibrary.xml</DocumentationFile>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>
+    </DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Collections\CollectionItemAddedEventArgs.cs" />
+    <Compile Include="AudioInfo.cs" />
+    <Compile Include="IO\BitStream.cs" />
+    <Compile Include="Collections\CollectionItemRemoveEventArgs.cs" />
+    <Compile Include="Collections\CollectionItemRemovedEventArgs.cs" />
+    <Compile Include="Collections\ListItemRemovedEventArgs.cs" />
+    <Compile Include="Collections\ListItemRemoveEventArgs.cs" />
+    <Compile Include="Cryptography\Crc16.cs" />
+    <Compile Include="Cryptography\Crc8.cs" />
+    <Compile Include="IO\AudioStreams.cs" />
+    <Compile Include="IO\AudioStreamParsedEventArgs.cs" />
+    <Compile Include="IO\AudioStreamParseEventArgs.cs" />
+    <Compile Include="Formats\FlacRicePartition.cs" />
+    <Compile Include="Formats\FlacChannelAssignment.cs" />
+    <Compile Include="Formats\FlacResidualCodingMethod.cs" />
+    <Compile Include="Formats\FlacResidual.cs" />
+    <Compile Include="Formats\FlacLinearPredictorSubFrame.cs" />
+    <Compile Include="Formats\FlacFixedSubFrame.cs" />
+    <Compile Include="Formats\FlacVerbatimSubFrame.cs" />
+    <Compile Include="IO\StreamBufferWriter.cs" />
+    <Compile Include="IO\StreamBufferReader.cs" />
+    <Compile Include="IO\FlacStreamMetadataBlocks.cs" />
+    <Compile Include="Formats\FlacConstantSubFrame.cs" />
+    <Compile Include="Formats\FlacSubFrameType.cs" />
+    <Compile Include="Formats\FlacSubFrameHeader.cs" />
+    <Compile Include="Formats\FlacSubFrame.cs" />
+    <Compile Include="Formats\FlacFrameHeader.cs" />
+    <Compile Include="Formats\FlacBlockingStrategy.cs" />
+    <Compile Include="Formats\FlacVorbisCommentsMetadataBlock.cs" />
+    <Compile Include="Formats\FlacApplicationMetadataBlock.cs" />
+    <Compile Include="Formats\FlacCueSheetTrackIndexPoint.cs" />
+    <Compile Include="Formats\FlacCueSheetPreEmphasis.cs" />
+    <Compile Include="Formats\FlacCueSheetTrackType.cs" />
+    <Compile Include="Formats\FlacCueSheetTrack.cs" />
+    <Compile Include="Formats\FlacCueSheetMetadataBlock.cs" />
+    <Compile Include="Formats\FlacPaddingMetadataBlock.cs" />
+    <Compile Include="Formats\FlacSeekTableMetadataBlock.cs" />
+    <Compile Include="Formats\FlacStreamInfoMetadataBlock.cs" />
+    <Compile Include="Formats\FlacSeekPoint.cs" />
+    <Compile Include="Formats\FlacMetadataBlockType.cs" />
+    <Compile Include="Formats\FlacMetadataBlock.cs" />
+    <Compile Include="Formats\FlacFrame.cs" />
+    <Compile Include="IO\FlacStream.cs" />
+    <Compile Include="Formats\FlacPictureMetadataBlock.cs" />
+    <Compile Include="Formats\FlacPictureType.cs" />
+    <Compile Include="Formats\MpaBitAllocation.cs" />
+    <Compile Include="Formats\MpaSubbandQuantization.cs" />
+    <Compile Include="Formats\IAudioFrame.cs" />
+    <Compile Include="Formats\IAudioFormat.cs" />
+    <Compile Include="IO\IAudioStream.cs" />
+    <Compile Include="Formats\InfoTagRevision.cs" />
+    <Compile Include="Collections\ListItemReplacedEventArgs.cs" />
+    <Compile Include="Collections\ListItemAddedEventArgs.cs" />
+    <Compile Include="Collections\CollectionItemAddEventArgs.cs" />
+    <Compile Include="Collections\ListItemReplaceEventArgs.cs" />
+    <Compile Include="Cryptography\Crc32.cs" />
+    <Compile Include="InvalidVersonException.cs" />
+    <Compile Include="Formats\MpaAudioVersion.cs" />
+    <Compile Include="Formats\MpaChannelMode.cs" />
+    <Compile Include="Formats\MpaFrameEmphasis.cs" />
+    <Compile Include="Formats\MpaFrameLayerVersion.cs" />
+    <Compile Include="Collections\EventCollection.cs" />
+    <Compile Include="Tags\ApeItemType.cs" />
+    <Compile Include="Tags\ApeItemHeaderFlags.cs" />
+    <Compile Include="Tags\ApeHeaderFlags.cs" />
+    <Compile Include="Tags\ApeTag.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tags\ApeItem.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tags\ApeHeader.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tags\ApeItems.cs" />
+    <Compile Include="Tags\ApeVersion.cs" />
+    <Compile Include="Tags\ApeItemHeader.cs" />
+    <Compile Include="Tags\ApeUtf8Item.cs" />
+    <Compile Include="Tags\ApeHelpers.cs" />
+    <Compile Include="Tags\ApeItemKey.cs" />
+    <Compile Include="Tags\ApeLocatorItem.cs" />
+    <Compile Include="Tags\ApeBinaryItem.cs" />
+    <Compile Include="Tags\ApeItemKeys.cs" />
+    <Compile Include="Collections\EventList.cs" />
+    <Compile Include="Collections\ListItemAddEventArgs.cs" />
+    <Compile Include="Tags\AudioTagParseEventArgs.cs" />
+    <Compile Include="Tags\AudioTagParsedEventArgs.cs" />
+    <Compile Include="Tags\ApeItemParsedEventArgs.cs" />
+    <Compile Include="Tags\ApeItemParseEventArgs.cs" />
+    <Compile Include="Formats\FlacMetadataBlockHeaderFlags.cs" />
+    <Compile Include="Tags\AudioTagOffset.cs" />
+    <Compile Include="IO\IStreamOffset.cs" />
+    <Compile Include="Tags\ApeTagReader.cs" />
+    <Compile Include="Tags\ApeItemReader.cs" />
+    <Compile Include="Tags\ApeItemFactory.cs" />
+    <Compile Include="Tags\ApeItemHelpers.cs" />
+    <Compile Include="Tags\ApeTagReaderHeader.cs" />
+    <Compile Include="Tags\ApeTagReaderEvents.cs" />
+    <Compile Include="Tags\Id3v1Helpers.cs" />
+    <Compile Include="Tags\Id3v2TagReaderHeader.cs" />
+    <Compile Include="Tags\Id3v2TagReaderEvents.cs" />
+    <Compile Include="Tags\IId3v2FrameCompressor.cs" />
+    <Compile Include="Tags\IAudioTagWriter.cs" />
+    <Compile Include="Tags\Lyrics3v2FieldReader.cs" />
+    <Compile Include="Tags\Lyrics3v2FieldFactoryItem.cs" />
+    <Compile Include="Tags\Id3v2FrameFactoryItem.cs" />
+    <Compile Include="Tags\Id3v2FrameReader.cs" />
+    <Compile Include="Tags\Lyrics3TagReader.cs" />
+    <Compile Include="Tags\MusicMatchTagReader.cs" />
+    <Compile Include="Tags\Lyrics3v2TagReaderEvents.cs" />
+    <Compile Include="Tags\Lyrics3v2TagReader.cs" />
+    <Compile Include="Tags\Id3v2TagReader.cs" />
+    <Compile Include="Tags\Id3v1TagReader.cs" />
+    <Compile Include="Tags\IAudioTagReader.cs" />
+    <Compile Include="Tags\IAudioTagOffset.cs" />
+    <Compile Include="Tags\Id3v2TextList.cs" />
+    <Compile Include="Tags\Id3v2Events.cs" />
+    <Compile Include="Tags\Id3v2FrameCollection.cs" />
+    <Compile Include="Tags\TagOrigin.cs" />
+    <Compile Include="Tags\VorbisComments.cs" />
+    <Compile Include="Tags\VobisComment.cs" />
+    <Compile Include="Tags\Id3v2ImageEncodingRestriction.cs" />
+    <Compile Include="Tags\Id3v2ImageSizeRestriction.cs" />
+    <Compile Include="Tags\Id3v2TagRestrictions.cs" />
+    <Compile Include="Tags\Id3v2TagSizeRestriction.cs" />
+    <Compile Include="Tags\Id3v2TextEncodingRestriction.cs" />
+    <Compile Include="Tags\Id3v2TextFieldsSizeRestriction.cs" />
+    <Compile Include="Tags\Lyrics3v2FieldParsedEventArgs.cs" />
+    <Compile Include="Tags\Lyrics3v2FieldParseEventArgs.cs" />
+    <Compile Include="Tags\Id3v2FrameParsedEventArgs.cs" />
+    <Compile Include="Tags\Id3v2ExperimentalRelativeVolumeAdjustment2Frame.cs" />
+    <Compile Include="Tags\Id3v2ReplayGain.cs" />
+    <Compile Include="Tags\Id3v2ReplayGainSign.cs" />
+    <Compile Include="Tags\Id3v2NameCode.cs" />
+    <Compile Include="Tags\Id3v2OriginatorCode.cs" />
+    <Compile Include="Tags\Id3v2ReplayGainAdjustmentFrame.cs" />
+    <Compile Include="Tags\Id3v2FrameCountryCodes.cs" />
+    <Compile Include="Tags\Id3v2FrameHelpers.cs" />
+    <Compile Include="Tags\Id3v2KeyEvent.cs" />
+    <Compile Include="Tags\Id3v2FrameParseEventArgs.cs" />
+    <Compile Include="Tags\Lyrics3v2IndicationsField.cs" />
+    <Compile Include="Tags\Lyrics3v2ImageFile.cs" />
+    <Compile Include="Tags\Lyrics3v2TextFieldIdentifier.cs" />
+    <Compile Include="Tags\Lyrics3v2TextFieldIdentifiers.cs" />
+    <Compile Include="Tags\Lyrics3v2LyricsField.cs" />
+    <Compile Include="Tags\Lyrics3v2FieldFactory.cs" />
+    <Compile Include="Tags\Lyrics3v2TextField.cs" />
+    <Compile Include="Tags\Id3v2FrameFactory.cs" />
+    <Compile Include="Tags\Id3v2UrlLinkFrameIdentifiers.cs" />
+    <Compile Include="Tags\Id3v2TextFrameIdentifiers.cs" />
+    <Compile Include="Tags\Id3v2CompressedDataMetaFrame.cs" />
+    <Compile Include="Tags\Id3v2CompressionMethod.cs" />
+    <Compile Include="Tags\Id3v2PropertiesV221.cs" />
+    <Compile Include="Tags\Id3v2UrlLinkFrameIdentifier.cs" />
+    <Compile Include="Tags\Id3v2TextFrameIdentifier.cs" />
+    <Compile Include="Tags\Id3v1Genres.cs" />
+    <Compile Include="Tags\Id3v1TrackSpeed.cs" />
+    <Compile Include="Tags\Lyrics3v2LyricLine.cs" />
+    <Compile Include="Tags\Lyrics3v2Field.cs" />
+    <Compile Include="Tags\Id3v2Helpers.cs" />
+    <Compile Include="Tags\Lyrics3v2Fields.cs" />
+    <Compile Include="Tags\Lyrics3v2ImageFileField.cs" />
+    <Compile Include="Tags\Lyrics3v2Tag.cs" />
+    <Compile Include="Tags\Lyrics3Tag.cs" />
+    <Compile Include="Tags\MusicMatchTagReaderDataOffsets.cs" />
+    <Compile Include="Tags\MusicMatchFields.cs" />
+    <Compile Include="Tags\Id3v1Fields.cs" />
+    <Compile Include="Tags\MusicMatchImage.cs" />
+    <Compile Include="Tags\MusicMatchTagReaderHeader.cs" />
+    <Compile Include="Tags\Id3v2AttachedPictureType.cs" />
+    <Compile Include="Tags\Id3v2AudioDeliveryType.cs" />
+    <Compile Include="Tags\Id3v2ChannelType.cs" />
+    <Compile Include="Tags\Id3v2ContentType.cs" />
+    <Compile Include="Tags\Id3v2InterpolationMethod.cs" />
+    <Compile Include="Tags\Id3v2FrameEncodingType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tags\Id3v2RecommendedBufferSizeFlags.cs" />
+    <Compile Include="Tags\Id3v2FrameCurrencyCodes.cs" />
+    <Compile Include="Tags\Id3v1Version.cs" />
+    <Compile Include="Tags\IAudioTag.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tags\AudioTags.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tags\Id3v2AdjustmentPoint.cs" />
+    <Compile Include="Tags\Id3v2EqualisationBand.cs" />
+    <Compile Include="Tags\Id3v2KeyEventType.cs" />
+    <Compile Include="Tags\Id3v2MpegLookupTableItem.cs" />
+    <Compile Include="Tags\Id3v2ChannelInformation.cs" />
+    <Compile Include="Tags\Id3v2SeekFrame.cs" />
+    <Compile Include="Tags\Id3v2TempoCode.cs" />
+    <Compile Include="Tags\Id3v2TextFrame.cs" />
+    <Compile Include="Tags\Id3v2InvolvedPeople.cs" />
+    <Compile Include="Tags\Id3v2LyricSync.cs" />
+    <Compile Include="Tags\Id3v2UrlLinkFrame.cs" />
+    <Compile Include="Tags\Id3v2HeaderFlags.cs" />
+    <Compile Include="Tags\Id3v2FrameLanguageCodes.cs" />
+    <Compile Include="Tags\Id3v2PropertiesV240TextFrames.cs" />
+    <Compile Include="Tags\Id3v2SignatureFrame.cs" />
+    <Compile Include="Tags\Id3v2RelativeVolumeAdjustment2Frame.cs" />
+    <Compile Include="Tags\Id3v2Equalisation2Frame.cs" />
+    <Compile Include="Tags\Id3v2AudioSeekPointIndexFrame.cs" />
+    <Compile Include="Tags\Id3v2PropertiesV240.cs" />
+    <Compile Include="Tags\Id3v2PropertiesV230UrlFrames.cs" />
+    <Compile Include="Tags\Id3v2PropertiesV220UrlFrames.cs" />
+    <Compile Include="Tags\Id3v2PropertiesV230TextFrames.cs" />
+    <Compile Include="Tags\Id3v2PrivateFrame.cs" />
+    <Compile Include="Tags\Id3v2GroupIdentificationRegistrationFrame.cs" />
+    <Compile Include="Tags\Id3v2EncryptionMethodRegistrationFrame.cs" />
+    <Compile Include="Tags\Id3v2CommercialFrame.cs" />
+    <Compile Include="Tags\Id3v2OwnershipFrame.cs" />
+    <Compile Include="Tags\Id3v2TermsOfUseFrame.cs" />
+    <Compile Include="Tags\Id3v2PositionSynchronizationFrame.cs" />
+    <Compile Include="Tags\Id3v2PropertiesV230.cs" />
+    <Compile Include="Tags\Id3v2LinkedInformationFrame.cs" />
+    <Compile Include="Tags\Id3v2AudioEncryptionFrame.cs" />
+    <Compile Include="Tags\Id3v2EncryptedMetaFrame.cs" />
+    <Compile Include="Tags\Id3v2RecommendedBufferSizeFrame.cs" />
+    <Compile Include="Tags\Id3v2PopularimeterFrame.cs" />
+    <Compile Include="Tags\Id3v2PlayCounterFrame.cs" />
+    <Compile Include="Tags\Id3v2GeneralEncapsulatedObjectFrame.cs" />
+    <Compile Include="Tags\Id3v2AttachedPictureFrame.cs" />
+    <Compile Include="Tags\Id3v2ReverbFrame.cs" />
+    <Compile Include="Tags\Id3v2EqualisationFrame.cs" />
+    <Compile Include="Tags\Id3v2RelativeVolumeAdjustmentFrame.cs" />
+    <Compile Include="Tags\Id3v2CommentFrame.cs" />
+    <Compile Include="Tags\Id3v2MusicCdIdentifierFrame.cs" />
+    <Compile Include="Tags\Id3v2SynchronizedLyricsFrame.cs" />
+    <Compile Include="Tags\Id3v2UnsynchronizedLyricsFrame.cs" />
+    <Compile Include="Tags\Id3v2PropertiesV220.cs" />
+    <Compile Include="Tags\IAudioTagFrame.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tags\Id3v1Tag.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tags\Id3v2FrameHeaderFlags.cs" />
+    <Compile Include="Tags\Id3v2ExtendedHeaderFlags.cs" />
+    <Compile Include="Tags\Id3v2InvolvedPeopleListFrame.cs" />
+    <Compile Include="Tags\Id3v2Tag.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tags\Id3v2ExtendedHeader.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tags\Id3v2Frame.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tags\Id3v2FrameEncoding.cs" />
+    <Compile Include="Tags\Id3v2FrameHeader.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tags\Id3v2EventTimingCodesFrame.cs" />
+    <Compile Include="Tags\Id3v2MpegLocationLookupTableFrame.cs" />
+    <Compile Include="Tags\Id3v2SyncedTempoCodesFrame.cs" />
+    <Compile Include="Tags\Id3v2UserDefinedTextInformationFrame.cs" />
+    <Compile Include="Tags\Id3v2UniqueFileIdentifierFrame.cs" />
+    <Compile Include="Tags\Id3v2UserDefinedUrlLinkFrame.cs" />
+    <Compile Include="Tags\Id3v2Header.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tags\Id3v2PropertiesV220TextFrames.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tags\Id3v2TimeStampFormat.cs" />
+    <Compile Include="Tags\Id3v2Version.cs" />
+    <Compile Include="Tags\IId3v2FrameCryptor.cs" />
+    <Compile Include="Tags\MusicMatchTag.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Formats\LameTag.cs" />
+    <Compile Include="IO\StreamBuffer.cs" />
+    <Compile Include="Formats\MpaFrame.cs" />
+    <Compile Include="Formats\MpaFrameData.cs" />
+    <Compile Include="Formats\MpaFrameHeader.cs" />
+    <Compile Include="IO\MpaStream.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Formats\VbrHeader.cs" />
+    <Compile Include="Formats\VbrHeaderType.cs" />
+    <Compile Include="Formats\VbriHeader.cs" />
+    <Compile Include="Formats\XingHeader.cs" />
+    <Compile Include="Formats\XingHeaderFlags.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="CodeAnalysis\CodeAnalysisConfiguration.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Lib.snk" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Containers\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties DocumentXCommentEditorState="&lt;HtmlEditState&gt;&#xA;  &lt;Attributes&gt;&#xA;    &lt;Attribute key=&quot;dtscrollpos&quot; valuetype=&quot;integer&quot;&gt;0&lt;/Attribute&gt;&#xA;    &lt;Attribute key=&quot;lang_VB&quot; valuetype=&quot;string&quot;&gt;on&lt;/Attribute&gt;&#xA;    &lt;Attribute key=&quot;lang_VBUsage&quot; valuetype=&quot;string&quot;&gt;on&lt;/Attribute&gt;&#xA;    &lt;Attribute key=&quot;lang_CS&quot; valuetype=&quot;string&quot;&gt;on&lt;/Attribute&gt;&#xA;    &lt;Attribute key=&quot;lang_CPP2005&quot; valuetype=&quot;string&quot;&gt;on&lt;/Attribute&gt;&#xA;    &lt;Attribute key=&quot;inheritedMembers&quot; valuetype=&quot;string&quot;&gt;on&lt;/Attribute&gt;&#xA;    &lt;Attribute key=&quot;protectedMembers&quot; valuetype=&quot;string&quot;&gt;on&lt;/Attribute&gt;&#xA;  &lt;/Attributes&gt;&#xA;&lt;/HtmlEditState&gt;" />
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

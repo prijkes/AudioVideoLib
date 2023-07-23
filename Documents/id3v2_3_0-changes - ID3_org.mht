@@ -1,0 +1,2664 @@
+From: "Saved by Windows Internet Explorer 9"
+Subject: id3guide - ID3.org
+Date: Mon, 15 Aug 2011 19:19:29 +0200
+MIME-Version: 1.0
+Content-Type: multipart/related;
+	type="text/html";
+	boundary="----=_NextPart_000_0000_01CC5B80.41403450"
+X-MimeOLE: Produced By Microsoft MimeOLE V6.1.7601.17609
+
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_0000_01CC5B80.41403450
+Content-Type: text/html;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://www.id3.org/id3guide
+
+=EF=BB=BF<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" =
+"http://www.w3.org/TR/html4/strict.dtd"><HTML><HEAD>
+<META content=3D"text/html;charset=3Dutf-8" http-equiv=3D"Content-Type">
+<META name=3D"robots" content=3D"index,nofollow"><TITLE>id3guide - =
+ID3.org</TITLE>
+<SCRIPT type=3D"text/javascript" =
+src=3D"http://www.id3.org/wiki/common/js/common.js"></SCRIPT>
+
+<SCRIPT type=3D"text/javascript">=0A=
+<!--// common functions=0A=
+=0A=
+// We keep here the state of the search box=0A=
+searchIsDisabled =3D false;=0A=
+=0A=
+function searchChange(e) {=0A=
+    // Update search buttons status according to search box content.=0A=
+    // Ignore empty or whitespace search term.=0A=
+    var value =3D e.value.replace(/\s+/, '');=0A=
+    if (value =3D=3D '' || searchIsDisabled) { =0A=
+        searchSetDisabled(true);=0A=
+    } else {=0A=
+        searchSetDisabled(false);=0A=
+    }=0A=
+}=0A=
+=0A=
+function searchSetDisabled(flag) {=0A=
+    // Enable or disable search=0A=
+    document.getElementById('fullsearch').disabled =3D flag;=0A=
+    document.getElementById('titlesearch').disabled =3D flag;=0A=
+}=0A=
+=0A=
+function searchFocus(e) {=0A=
+    // Update search input content on focus=0A=
+    if (e.value =3D=3D '=E6=A4=9C=E7=B4=A2') {=0A=
+        e.value =3D '';=0A=
+        e.className =3D '';=0A=
+        searchIsDisabled =3D false;=0A=
+    }=0A=
+}=0A=
+=0A=
+function searchBlur(e) {=0A=
+    // Update search input content on blur=0A=
+    if (e.value =3D=3D '') {=0A=
+        e.value =3D '=E6=A4=9C=E7=B4=A2';=0A=
+        e.className =3D 'disabled';=0A=
+        searchIsDisabled =3D true;=0A=
+    }=0A=
+}=0A=
+=0A=
+function actionsMenuInit(title) {=0A=
+    // Initialize action menu=0A=
+    for (i =3D 0; i < document.forms.length; i++) {=0A=
+        var form =3D document.forms[i];=0A=
+        if (form.className =3D=3D 'actionsmenu') {=0A=
+            // Check if this form needs update=0A=
+            var div =3D form.getElementsByTagName('div')[0];=0A=
+            var label =3D div.getElementsByTagName('label')[0];=0A=
+            if (label) {=0A=
+                // This is the first time: remove label and do buton.=0A=
+                div.removeChild(label);=0A=
+                var dobutton =3D div.getElementsByTagName('input')[0];=0A=
+                div.removeChild(dobutton);=0A=
+                // and add menu title=0A=
+                var select =3D div.getElementsByTagName('select')[0];=0A=
+                var item =3D document.createElement('option');=0A=
+                item.appendChild(document.createTextNode(title));=0A=
+                item.value =3D 'show';=0A=
+                select.insertBefore(item, select.options[0]);=0A=
+                select.selectedIndex =3D 0;=0A=
+            }=0A=
+        }=0A=
+    }=0A=
+}=0A=
+//-->=0A=
+</SCRIPT>
+<LINK rel=3D"stylesheet" type=3D"text/css" =
+href=3D"http://www.id3.org/wiki/mentalwealth_id3/css/common.css"=20
+charset=3D"utf-8" media=3D"all"><LINK rel=3D"stylesheet" =
+type=3D"text/css" =
+href=3D"http://www.id3.org/wiki/mentalwealth_id3/css/screen.css"=20
+charset=3D"utf-8" media=3D"screen"><LINK rel=3D"stylesheet" =
+type=3D"text/css" =
+href=3D"http://www.id3.org/wiki/mentalwealth_id3/css/print.css"=20
+charset=3D"utf-8" media=3D"print"><LINK rel=3D"stylesheet" =
+type=3D"text/css" =
+href=3D"http://www.id3.org/wiki/mentalwealth_id3/css/projection.css"=20
+charset=3D"utf-8" media=3D"projection"><LINK title=3D"ID3.org Recent =
+Changes" rel=3D"alternate"=20
+type=3D"application/rss+xml" =
+href=3D"/RecentChanges?action=3Drss_rc&amp;ddiffs=3D1&amp;unique=3D1"><LI=
+NK=20
+rel=3D"Start" href=3D"/Home"><LINK =
+title=3D"Wiki=E3=83=9E=E3=83=BC=E3=82=AF=E3=82=A2=E3=83=83=E3=83=97" =
+rel=3D"Alternate" href=3D"/id3guide?action=3Draw">
+<LINK title=3D"=E5=8D=B0=E5=88=B7=E3=83=93=E3=83=A5=E3=83=BC" =
+rel=3D"Alternate" href=3D"/id3guide?action=3Dprint" media=3D"print">
+<LINK rel=3D"Search" href=3D"/FindPage"><LINK rel=3D"Index" =
+href=3D"/TitleIndex"><LINK=20
+rel=3D"Glossary" href=3D"/WordIndex"><LINK rel=3D"Help" =
+href=3D"/HelpOnFormatting">
+<META name=3D"GENERATOR" content=3D"MSHTML 9.00.8112.16434"></HEAD>
+<BODY dir=3D"ltr" lang=3D"ja">
+<CENTER>
+<SCRIPT type=3D"text/javascript"><!--=0A=
+google_ad_client =3D "pub-1408728402565238";=0A=
+google_ad_width =3D 728;=0A=
+google_ad_height =3D 90;=0A=
+google_ad_format =3D "728x90_as";=0A=
+google_ad_type =3D "text";=0A=
+google_ad_channel =3D "";=0A=
+google_color_border =3D "ffffff";=0A=
+google_color_bg =3D "FFFFFF";=0A=
+google_color_link =3D "DD6600";=0A=
+google_color_text =3D "000000";=0A=
+google_color_url =3D "DD6600";=0A=
+//--></SCRIPT>
+
+<SCRIPT type=3D"text/javascript" =
+src=3D"http://pagead2.googlesyndication.com/pagead/show_ads.js"></SCRIPT>=
+
+</CENTER>
+<DIV id=3D"header">
+<DIV id=3D"logo"><A href=3D"http://www.id3.org/Home"><IMG alt=3D"ID3.org =
+Logo" src=3D"http://www.id3.org/id3v2.gif">&nbsp;&nbsp;The=20
+Audience is informed</A></DIV></DIV>
+<DIV id=3D"sidebar">
+<DIV class=3D"sidepanel">
+<H1>=E6=A4=9C=E7=B4=A2</H1>
+<FORM id=3D"searchform" method=3D"get" action=3D"">
+<DIV><INPUT name=3D"action" value=3D"fullsearch" type=3D"hidden"><INPUT =
+name=3D"context"=20
+value=3D"180" type=3D"hidden"><LABEL =
+for=3D"searchinput">=E6=A4=9C=E7=B4=A2:</LABEL><INPUT =
+onblur=3D"searchBlur(this)"=20
+id=3D"searchinput" onchange=3D"searchChange(this)" =
+onfocus=3D"searchFocus(this)"=20
+onkeyup=3D"searchChange(this)" name=3D"value" alt=3D"Search" size=3D"20" =
+type=3D"text">
+<BR><INPUT id=3D"titlesearch" name=3D"titlesearch" alt=3D"Search Titles" =
+value=3D"=E3=82=BF=E3=82=A4=E3=83=88=E3=83=AB" type=3D"submit"><INPUT =
+id=3D"fullsearch" name=3D"fullsearch" alt=3D"Search Full Text" =
+value=3D"=E3=83=86=E3=82=AD=E3=82=B9=E3=83=88" type=3D"submit">
+</DIV></FORM>
+<SCRIPT type=3D"text/javascript">=0A=
+<!--// Initialize search form=0A=
+var f =3D document.getElementById('searchform');=0A=
+f.getElementsByTagName('label')[0].style.display =3D 'none';=0A=
+var e =3D document.getElementById('searchinput');=0A=
+searchChange(e);=0A=
+searchBlur(e);=0A=
+//-->=0A=
+</SCRIPT>
+</DIV>
+<DIV class=3D"sidepanel">
+<H1>Navigation</H1>
+<UL id=3D"navibar">
+  <LI class=3D"wikilink"><A =
+href=3D"http://www.id3.org/Home">Home</A></LI>
+  <LI class=3D"wikilink"><A=20
+  href=3D"http://www.id3.org/Introduction">Introduction</A></LI>
+  <LI class=3D"wikilink"><A=20
+  href=3D"http://www.id3.org/Developer_Information">Developer =
+Information</A></LI>
+  <LI class=3D"wikilink"><A=20
+  href=3D"http://www.id3.org/Implementations">Implementations</A></LI>
+  <LI class=3D"wikilink"><A =
+href=3D"http://www.id3.org/Compliance_Issues">Compliance=20
+  Issues</A></LI>
+  <LI class=3D"wikilink"><A=20
+  href=3D"http://www.id3.org/Contributors">Contributors</A></LI>
+  <LI class=3D"wikilink"><A href=3D"http://www.id3.org/FAQ">FAQ</A></LI>
+  <LI class=3D"wikilink"><A=20
+  href=3D"http://www.id3.org/MailingList">MailingList</A></LI>
+  <LI class=3D"wikilink"><A=20
+  href=3D"http://www.id3.org/RecentChanges">RecentChanges</A></LI>
+  <LI class=3D"wikilink"><A =
+href=3D"http://www.id3.org/FindPage">FindPage</A></LI>
+  <LI class=3D"wikilink"><A=20
+  href=3D"http://www.id3.org/HelpContents">HelpContents</A></LI>
+  <LI class=3D"current"><A =
+href=3D"http://www.id3.org/id3guide">id3guide</A></LI></UL>
+</DIV>
+<DIV class=3D"sidepanel">
+<H1>Recent</H1></DIV>
+<DIV class=3D"sidepanel">
+<H1>This Page</H1>
+<UL class=3D"editbar">
+  <LI><A href=3D"http://www.id3.org/id3guide?action=3Ddiff">show =
+changes</A></LI>
+  <LI><A href=3D"http://www.id3.org/id3guide?action=3Dinfo">get =
+info</A></LI>
+  <LI><A href=3D"http://www.id3.org/id3guide?action=3Draw">show raw =
+text</A></LI>
+  <LI><A href=3D"http://www.id3.org/id3guide?action=3Dprint">show print=20
+  view</A></LI>
+  <LI><A href=3D"http://www.id3.org/id3guide?action=3Drefresh">delete =
+cache</A></LI>
+  <LI><A href=3D"http://www.id3.org/id3guide?action=3DAttachFile">attach =
+
+  file</A></LI>
+  <LI><A href=3D"http://www.id3.org/id3guide?action=3DSpellCheck">check=20
+  spelling</A></LI>
+  <LI><A href=3D"http://www.id3.org/id3guide?action=3DLikePages">show =
+like=20
+  pages</A></LI>
+  <LI><A href=3D"http://www.id3.org/id3guide?action=3DLocalSiteMap">show =
+local site=20
+  map</A></LI></UL></DIV>
+<DIV class=3D"sidepanel">
+<H1>More Actions</H1>
+<UL class=3D"editbar">
+  <LI><A =
+href=3D"http://www.id3.org/id3guide?action=3DDespam">despam</A></LI>
+  <LI><A =
+href=3D"http://www.id3.org/id3guide?action=3DSubscribeUser">subscribe=20
+  user</A></LI>
+  <LI><A =
+href=3D"http://www.id3.org/id3guide?action=3DRenderAsDocbook">render as=20
+  docbook</A></LI>
+  <LI><A =
+href=3D"http://www.id3.org/id3guide?action=3DPackagePages">package=20
+  pages</A></LI>
+  <LI><A href=3D"http://www.id3.org/id3guide?action=3DMyPages">my =
+pages</A></LI></UL>
+</DIV>
+<DIV class=3D"sidepanel">
+<H1>=E3=83=A6=E3=83=BC=E3=82=B6</H1>
+<UL id=3D"username">
+  <LI><A id=3D"login"=20
+href=3D"http://www.id3.org/id3guide?action=3Dlogin">=E3=83=AD=E3=82=B0=E3=
+=82=A4=E3=83=B3</A></LI></UL></DIV>
+<UL id=3D"credits">
+  <LI><A href=3D"http://moinmoin.wikiwikiweb.de/">MoinMoin =
+Powered</A></LI>
+  <LI><A href=3D"http://www.python.org/">Python Powered</A></LI>
+  <LI><A href=3D"http://validator.w3.org/check?uri=3Dreferer">Valid HTML =
+
+  4.01</A></LI></UL></DIV>
+<DIV dir=3D"ltr" id=3D"page" lang=3D"en">
+<DIV dir=3D"ltr" id=3D"content" lang=3D"en"><SPAN id=3D"top" =
+class=3D"anchor"></SPAN><SPAN=20
+id=3D"line-1" class=3D"anchor"></SPAN>
+<P class=3D"line874">Applies to: ID3v2.3 Table of Contents <SPAN =
+id=3D"line-2"=20
+class=3D"anchor"></SPAN><SPAN id=3D"line-3" class=3D"anchor"></SPAN>
+<P class=3D"line867">
+<DIV class=3D"table-of-contents">
+<P class=3D"table-of-contents-heading">=E7=9B=AE=E6=AC=A1
+<OL>
+  <LI><A =
+href=3D"http://www.id3.org/id3guide#head-1c05161acdc77202bd029e3123aff073=
+4a57c272">Introduction</A>
+  <OL>
+    <LI><A =
+href=3D"http://www.id3.org/id3guide#head-8c67eae66eed56ee5605c90288bea094=
+0d60679d">Use=20
+    of this document</A></LI></OL>
+  <LI><A =
+href=3D"http://www.id3.org/id3guide#head-bb26c824c40023e0c47f9c31632318f2=
+e5df73d8">What's=20
+  new in ID3v2.3?</A>
+  <OL>
+    <LI><A =
+href=3D"http://www.id3.org/id3guide#head-76a5d9cc8d8bebdee30f2537203a779a=
+8f705567">Structural=20
+    changes:</A></LI>
+    <LI><A =
+href=3D"http://www.id3.org/id3guide#head-51efaba0f02284257eb188b45e1ea2af=
+8b5e2626">Clarifications:</A></LI>
+    <LI><A =
+href=3D"http://www.id3.org/id3guide#head-6fad86bd20b1921b830652c17295e666=
+f133b9d5">New=20
+    frames:</A></LI>
+    <LI><A =
+href=3D"http://www.id3.org/id3guide#head-0b34fd0f4fb477b6c2ae364ed19cdf72=
+a1502ffc">Deleted=20
+    frames:</A></LI></OL>
+  <LI><A =
+href=3D"http://www.id3.org/id3guide#head-25367a07f9ba90f3d0971ba094a87255=
+7c7f1788">Programming=20
+  Considerations</A>
+  <OL>
+    <LI><A =
+href=3D"http://www.id3.org/id3guide#head-4ce835e01efe347a4e8503b199c4d96f=
+0f589663">Padding</A>
+    <OL>
+      <LI><A =
+href=3D"http://www.id3.org/id3guide#head-92d08261ce5dd3a83c0c751d9f14eb4f=
+3e2c301d">Read-only=20
+      media</A></LI>
+      <LI><A =
+href=3D"http://www.id3.org/id3guide#head-897e05bdf5408736c3f4b3ab0d172aad=
+6d17bdd1">"Insignificant"=20
+      frames</A></LI>
+      <LI><A =
+href=3D"http://www.id3.org/id3guide#head-8c6aa22e73e5e7f02c071b774cc2365a=
+b96efb4f">Preferred=20
+      image formats</A></LI>
+      <LI><A =
+href=3D"http://www.id3.org/id3guide#head-9d00433c187d27c24005b1cd17965899=
+45b5d0aa">Multiple=20
+      tags</A></LI>
+      <LI><A =
+href=3D"http://www.id3.org/id3guide#head-68780114f515c6be266d4f967e84f2b3=
+5271e10e">Unsynchronization</A></LI></OL></LI></OL>
+  <LI><A =
+href=3D"http://www.id3.org/id3guide#head-f44688e7cd9f6637992ae43e911dc626=
+432be5e5">Pitfalls=20
+  &amp; General Advice</A>
+  <OL>
+    <LI><A =
+href=3D"http://www.id3.org/id3guide#head-c293db770cb8d02f4438c7d5b9e53d84=
+62891640">RTFM=20
+    (details are important!)</A></LI>
+    <LI><A =
+href=3D"http://www.id3.org/id3guide#head-1635f514f4b1ca10372990f52e94bc6e=
+4e3bcd1f">Compression=20
+    before encryption</A></LI>
+    <LI><A =
+href=3D"http://www.id3.org/id3guide#head-18d558d07ff7ad58810ef3d164ef0282=
+c419d44d">Validating=20
+    user input</A></LI></OL>
+  <LI><A =
+href=3D"http://www.id3.org/id3guide#head-13be6fea2861ade62d4804d49dc4afab=
+38cdf3c0">Credits=20
+  &amp; Contributors</A></LI>
+  <LI><A =
+href=3D"http://www.id3.org/id3guide#head-3d06f1646a45cf43eb300c72375ea367=
+c7fdd49a">References</A></LI>
+  <LI><A =
+href=3D"http://www.id3.org/id3guide#head-8586608ac51211cda7437ae2d089a7d0=
+bc196c6e">Copyright=20
+  &amp; Legal Notice</A></LI></OL></DIV> <SPAN id=3D"line-4"=20
+class=3D"anchor"></SPAN><SPAN id=3D"line-5" class=3D"anchor"></SPAN>
+<P class=3D"line867">
+<H2 =
+id=3D"head-1c05161acdc77202bd029e3123aff0734a57c272">Introduction</H2><SP=
+AN=20
+id=3D"line-6" class=3D"anchor"></SPAN>
+<P class=3D"line874">There are many people who enjoy .MP3 compressed =
+music. The=20
+MP3 specification only defined the storage of musical data and did not =
+provide=20
+the storage of metadata related to the musical composition; e.g., title, =
+
+composer and artist, publisher, etc. The ID3 tag standard was created to =
+remedy=20
+this need... <SPAN id=3D"line-7" class=3D"anchor"></SPAN><SPAN =
+id=3D"line-8" class=3D"anchor"></SPAN>
+<P class=3D"line867"><STRONG>Rationale</STRONG>: Specifications are like =
+grammar:=20
+they provide the rules of formatting data but few clues as to how to =
+speak=20
+concisely and efficiently. The goal of this document is to answer the =
+"Should I=20
+do..." and "Would doing X make it easier/faster/smaller..." type =
+questions.=20
+<SPAN id=3D"line-9" class=3D"anchor"></SPAN><SPAN id=3D"line-10"=20
+class=3D"anchor"></SPAN>
+<P class=3D"line867"><STRONG>Audience</STRONG>: This document is geared =
+toward=20
+programmers dealing directly with ID3v2.3 tags. There is a heavy slant =
+towards=20
+writing tags correctly since decoding is relatively straightforward. You =
+should=20
+familiarize yourself with the ID3v2 and related standards since this =
+document=20
+refers to and uses the terminology from those documents. <SPAN =
+id=3D"line-11"=20
+class=3D"anchor"></SPAN><SPAN id=3D"line-12" class=3D"anchor"></SPAN>
+<P class=3D"line867"><STRONG>Coverage</STRONG>: Although ID3v2 tags were =
+created=20
+for use with MPEG Layer-3 audio streams, flexibility was a goal from the =
+start.=20
+Even though much of this document refers to .MP3 files, the principles =
+are=20
+generally applicable to other formats. <SPAN id=3D"line-13"=20
+class=3D"anchor"></SPAN><SPAN id=3D"line-14" class=3D"anchor"></SPAN>
+<P class=3D"line867">
+<H3 id=3D"head-8c67eae66eed56ee5605c90288bea0940d60679d">Use of this =
+document</H3>
+<SPAN id=3D"line-15" class=3D"anchor"></SPAN>
+<P class=3D"line874">These are merely Guidelines and as such they are =
+not part of=20
+the ID3v2 standard. <SPAN id=3D"line-16" class=3D"anchor"></SPAN><SPAN =
+id=3D"line-17"=20
+class=3D"anchor"></SPAN>
+<OL type=3D"1">
+  <LI>If anything in this document contradicts the published ID3v2 =
+standard,=20
+  then the standard shall prevail. The ID3v2 standard always has the =
+final word.=20
+  <SPAN id=3D"line-18" class=3D"anchor"></SPAN></LI>
+  <LI>These Guidelines are not binding on anyone (whereas the standard =
+is=20
+  binding, for obvious reasons.) This means you, as a programmer, should =
+never=20
+  assume anyone else will abide by these guidelines. A protocol designer =
+once=20
+  said: <SPAN id=3D"line-19" class=3D"anchor"></SPAN>
+  <UL>
+    <LI style=3D"list-style-type: none;">
+    <P class=3D"line862">"<EM>Be flexible in what you accept, but strict =
+in what=20
+    you write.</EM>" <SPAN id=3D"line-20" =
+class=3D"anchor"></SPAN></P></LI></UL></LI>
+  <LI>Use your judgement and common sense. <SPAN id=3D"line-21"=20
+  class=3D"anchor"></SPAN></LI></OL>
+<P class=3D"line867">
+<H2 id=3D"head-bb26c824c40023e0c47f9c31632318f2e5df73d8">What's new in=20
+ID3v2.3?</H2><SPAN id=3D"line-22" class=3D"anchor"></SPAN>
+<P class=3D"line874">For starters, the naming convention changed. =
+"ID3v2" now=20
+refers to the family of frame-based tagging methods which utilize the =
+10-byte=20
+header beginning with "ID3" followed by version information. "ID3v2.3.0" =
+refers=20
+to the informal standard dated September 1998. The informal standard =
+formerly=20
+known as "ID3v2" has been renamed to "ID3v2.2" <SPAN id=3D"line-23"=20
+class=3D"anchor"></SPAN><SPAN id=3D"line-24" class=3D"anchor"></SPAN>
+<P class=3D"line874">This document concentrates on ID3v2.3. The previous =
+standard,=20
+ID3v2.2, is now obsolete. <SPAN id=3D"line-25" =
+class=3D"anchor"></SPAN><SPAN id=3D"line-26"=20
+class=3D"anchor"></SPAN>
+<P class=3D"line862">A summary of the differences between ID3v2.3.0 and =
+v2.2 is=20
+listed below. Section numbers match the <A=20
+href=3D"http://www.id3.org/id3v2.3.0">ID3v2.3.0 Informal Standard</A>. =
+<SPAN id=3D"line-27"=20
+class=3D"anchor"></SPAN><SPAN id=3D"line-28" class=3D"anchor"></SPAN>
+<P class=3D"line867">
+<H3 id=3D"head-76a5d9cc8d8bebdee30f2537203a779a8f705567">Structural =
+changes:</H3>
+<SPAN id=3D"line-29" class=3D"anchor"></SPAN>
+<UL>
+  <LI>The Frame Header has been expanded. The Frame ID and Frame Size =
+fields are=20
+  now four bytes long. Two bytes of Flags have been added. See =
+=C2=A73.3. <SPAN id=3D"line-30"=20
+  class=3D"anchor"></SPAN></LI>
+  <LI>An optional Extended Header can follow the ID3v2 tag header =
+=C2=A73.2. Among=20
+  other things, the extended header can store a CRC of the entire tag. =
+<SPAN id=3D"line-31"=20
+  class=3D"anchor"></SPAN></LI></UL>
+<P class=3D"line867">
+<H3 =
+id=3D"head-51efaba0f02284257eb188b45e1ea2af8b5e2626">Clarifications:</H3>=
+<SPAN=20
+id=3D"line-32" class=3D"anchor"></SPAN>
+<UL>
+  <LI>Pre-defined Frame IDs have been renamed to four characters long. =
+<SPAN id=3D"line-33"=20
+  class=3D"anchor"></SPAN></LI>
+  <LI>Unicode strings are now required to start with the Byte Order Mark =
+(BOM)=20
+  character. See =C2=A73.3. <SPAN id=3D"line-34" =
+class=3D"anchor"></SPAN></LI>
+  <LI>Compression and encryption are done on a frame-by-frame basis. The =
+
+  compression algorithm are those offered in zlib. =C2=A73.3 <SPAN =
+id=3D"line-35"=20
+  class=3D"anchor"></SPAN></LI>
+  <LI>Attached Picture [APIC] frame: the Image Format field has been =
+replaced=20
+  MIME Type =C2=A74.15. <SPAN id=3D"line-36" =
+class=3D"anchor"></SPAN></LI></UL>
+<P class=3D"line867">
+<H3 id=3D"head-6fad86bd20b1921b830652c17295e666f133b9d5">New =
+frames:</H3><SPAN id=3D"line-37"=20
+class=3D"anchor"></SPAN>
+<UL>
+  <LI>Position Synchronization frame [POSS] =C2=A74.22 <SPAN =
+id=3D"line-38" class=3D"anchor"></SPAN></LI>
+  <LI>Terms of Use frame [USER] =C2=A74.23 <SPAN id=3D"line-39"=20
+  class=3D"anchor"></SPAN></LI>
+  <LI>Ownership frame [OWNE] =C2=A74.24 <SPAN id=3D"line-40"=20
+class=3D"anchor"></SPAN></LI>
+  <LI>Commercial frame [COMR] =C2=A74.25 <SPAN id=3D"line-41"=20
+  class=3D"anchor"></SPAN></LI>
+  <LI>Private frame [PRIV] =C2=A74.28 <SPAN id=3D"line-42" =
+class=3D"anchor"></SPAN></LI>
+  <LI>Encryption Method Registration [ENCR] =C2=A74.25 <SPAN =
+id=3D"line-43" class=3D"anchor"></SPAN></LI>
+  <LI>Group ID Registration [GRID] =C2=A74.26.Used in conjunction with =
+new frame=20
+  features described in =C2=A73.3 <SPAN id=3D"line-44" =
+class=3D"anchor"></SPAN></LI>
+  <LI>Text frames: Internet Radio Station Name [TRSN] and Internet Radio =
+Station=20
+  Owner [TRSO] <SPAN id=3D"line-45" class=3D"anchor"></SPAN></LI>
+  <LI>URL link frames: Official internet radio station homepage [WORS] =
+and=20
+  Payment [WPAY] <SPAN id=3D"line-46" class=3D"anchor"></SPAN></LI></UL>
+<P class=3D"line867">
+<H3 id=3D"head-0b34fd0f4fb477b6c2ae364ed19cdf72a1502ffc">Deleted =
+frames:</H3><SPAN=20
+id=3D"line-47" class=3D"anchor"></SPAN>
+<UL>
+  <LI>Encrypted meta-frame. <SPAN id=3D"line-48" =
+class=3D"anchor"></SPAN></LI></UL>
+<P class=3D"line867">
+<H2 id=3D"head-25367a07f9ba90f3d0971ba094a872557c7f1788">Programming=20
+Considerations</H2><SPAN id=3D"line-49" class=3D"anchor"></SPAN>
+<P class=3D"line867">
+<H3 =
+id=3D"head-4ce835e01efe347a4e8503b199c4d96f0f589663">Padding</H3><SPAN =
+id=3D"line-50"=20
+class=3D"anchor"></SPAN>
+<P class=3D"line874">The use of padding and how much should be used has =
+been a=20
+matter of debate ever since the first draft of ID3v2. (Take a look in =
+the=20
+mailing list archives for arguments.) <SPAN id=3D"line-51"=20
+class=3D"anchor"></SPAN><SPAN id=3D"line-52" class=3D"anchor"></SPAN>
+<P class=3D"line874">Before making recommendations let's quantify the =
+issue: <SPAN=20
+id=3D"line-53" class=3D"anchor"></SPAN><SPAN id=3D"line-54" =
+class=3D"anchor"></SPAN>
+<UL>
+  <LI>A two minute song compressed at 44Khz and 128Kb/sec takes about =
+1990K=20
+  (slightly less than 2MB) of disk space. The average size of .MP3 files =
+in my=20
+  collection is 3.5MB <SPAN id=3D"line-55" class=3D"anchor"></SPAN></LI>
+  <LI>ID3v1 and Lyrics3 tags are only 128 bytes and 3K, respectively - =
+and they=20
+  served most songs just fine. <SPAN id=3D"line-56" =
+class=3D"anchor"></SPAN></LI>
+  <LI>An ID3v2 tag with basic information (title, artist/composer, =
+copyright) is=20
+  typically less than 1K in size. Toss in publisher information and =
+lyrics and=20
+  it comes out to 3K or so. <SPAN id=3D"line-57" =
+class=3D"anchor"></SPAN></LI>
+  <LI>Adding a 3K tag to a 2MB song will increase its size by 0.15% =
+<SPAN id=3D"line-58"=20
+  class=3D"anchor"></SPAN></LI>
+  <LI>Adding a 10K tag to a 2MB song increases its size by 0.5% <SPAN =
+id=3D"line-59"=20
+  class=3D"anchor"></SPAN></LI>
+  <LI>Suppose a CD-ROM holds 160 songs. Tagging all of them with 3K tags =
+
+  requires less than a megabyte. <SPAN id=3D"line-60"=20
+class=3D"anchor"></SPAN></LI></UL>
+<P class=3D"line874">So in reality tags are tiny compared to the amount =
+of audio=20
+data accompanying it. A few KB of padding will not increase the file =
+size=20
+noticeably. Remember also the padding is required to be 0's, which means =
+on a=20
+slow modem link the padding is compressed significantly. <SPAN =
+id=3D"line-61"=20
+class=3D"anchor"></SPAN><SPAN id=3D"line-62" class=3D"anchor"></SPAN>
+<P class=3D"line874">There is but one reason to use padding: since ID3v2 =
+tags are=20
+stored at the beginning of the file, it would be a major pain to rewrite =
+the=20
+entire multi-megabyte file to add a 50-byte frame. Padding reserves =
+space in=20
+advance. <SPAN id=3D"line-63" class=3D"anchor"></SPAN><SPAN =
+id=3D"line-64" class=3D"anchor"></SPAN>
+<P class=3D"line874">The issue then is how much padding should be used. =
+<SPAN id=3D"line-65"=20
+class=3D"anchor"></SPAN><SPAN id=3D"line-66" class=3D"anchor"></SPAN>
+<P class=3D"line867"><STRONG>James's</STRONG> recommendations: <SPAN =
+id=3D"line-67"=20
+class=3D"anchor"></SPAN><SPAN id=3D"line-68" class=3D"anchor"></SPAN>
+<UL>
+  <LI>What do most people care about? Probably title, artist, composer, =
+band,=20
+  publisher, lyrics and copyright. 4K will usually be enough for all =
+that plus=20
+  some miscellaneous information such as media type, file size, =
+playcounter,=20
+  time codes, etc. <SPAN id=3D"line-69" class=3D"anchor"></SPAN></LI>
+  <LI>If you are editing an existing tag and run out of room (meaning =
+you must=20
+  rewrite the entire file) then double the amount of space reserved for =
+the tag.=20
+  For example, a file has a 4K tag filled with 3K of data. User wants to =
+add 2K=20
+  of data, so you rewrite the file reserving 8K at the beginning; then =
+save the=20
+  5K of data and leaving 3K of padding. <SPAN id=3D"line-70"=20
+class=3D"anchor"></SPAN>
+  <UL>
+    <LI style=3D"list-style-type: none;">Obviously there should be an =
+upper bound=20
+    on doubling; a reasonable number would be 16K or 32K. For example, a =
+file=20
+    has a 25K tag but only 4K of padding left and the user wants to add =
+7K of=20
+    new data. Rewrite the file and reserve 41K: save 28K of tag data and =
+leave=20
+    13K of padding. <SPAN id=3D"line-71" =
+class=3D"anchor"></SPAN></LI></UL></LI>
+  <LI>Pictures are large and vary in size. If there are pictures then =
+you should=20
+  add more padding; use your judgement here. <SPAN id=3D"line-72"=20
+  class=3D"anchor"></SPAN></LI>
+  <LI>Do not forgo padding in files destined for read-only media or =
+streaming=20
+  applications. The user may want to save the file to another location =
+and edit=20
+  the tag. <SPAN id=3D"line-73" class=3D"anchor"></SPAN></LI>
+  <LI>Include an option to let the user disable padding if (s)he really =
+wants=20
+  to. <SPAN id=3D"line-74" class=3D"anchor"></SPAN></LI></UL>
+<P class=3D"line867"><STRONG>Martin </STRONG>has a good idea: Add enough =
+padding=20
+to round out the file to a full cluster. Obviously a minimum amount of =
+padding=20
+has to be added to be useful, but beyond the minimum, everything up to =
+the next=20
+cluster size will not occupy additional disk space. (Each operating =
+system has=20
+its own terminology; Microsoft uses cluster, Apple uses allocation =
+block. How=20
+files are stored on disk is beyond the scope of this document; consult =
+an OS=20
+book and API reference for details.) <SPAN id=3D"line-75"=20
+class=3D"anchor"></SPAN><SPAN id=3D"line-76" class=3D"anchor"></SPAN>
+<P class=3D"line874">Here are some common cluster sizes: <SPAN =
+id=3D"line-77" class=3D"anchor"></SPAN>
+<DIV>
+<TABLE>
+  <TBODY>
+  <TR>
+    <TD style=3D"text-align: center;" rowSpan=3D"2" colSpan=3D"1">
+      <P class=3D"line891"><STRONG>Operating system <BR>(file system=20
+      type)</STRONG> </P></TD>
+    <TD style=3D"text-align: center;" colSpan=3D"7">
+      <P class=3D"line891"><STRONG>Disk size</STRONG> </P></TD></TR>
+  <TR>
+    <TD style=3D"text-align: center;"><SPAN id=3D"line-78" =
+class=3D"anchor"></SPAN>
+      <P class=3D"line862"> &lt; 256MB </P></TD>
+    <TD style=3D"text-align: center;">
+      <P class=3D"line862"> up to 512MB </P></TD>
+    <TD style=3D"text-align: center;">
+      <P class=3D"line862"> up to 1GB </P></TD>
+    <TD style=3D"text-align: center;">
+      <P class=3D"line862"> up to 2GB </P></TD>
+    <TD style=3D"text-align: center;">
+      <P class=3D"line862"> up to 8GB </P></TD>
+    <TD style=3D"text-align: center;">
+      <P class=3D"line862"> up to 16GB </P></TD>
+    <TD style=3D"text-align: center;">
+      <P class=3D"line862"> &gt; 16GB </P></TD></TR>
+  <TR>
+    <TD><SPAN id=3D"line-79" class=3D"anchor"></SPAN>
+      <P class=3D"line862"> DOS &amp; Windows 95 <BR> (FAT16) </P></TD>
+    <TD style=3D"text-align: center;">
+      <P class=3D"line862"> 4K </P></TD>
+    <TD style=3D"text-align: center;">
+      <P class=3D"line862"> 8K </P></TD>
+    <TD style=3D"text-align: center;">
+      <P class=3D"line862"> 16K </P></TD>
+    <TD style=3D"text-align: center;">
+      <P class=3D"line862"> 32K </P></TD>
+    <TD style=3D"text-align: center;" colSpan=3D"3">
+      <P class=3D"line862">N/A <BR>(FAT16 can't handle drives &gt; 4GB) =
+</P></TD></TR>
+  <TR>
+    <TD><SPAN id=3D"line-80" class=3D"anchor"></SPAN>
+      <P class=3D"line862"> Win95 OSR2 &amp; Win98 <BR> (FAT32) =
+</P></TD>
+    <TD style=3D"text-align: center;">
+      <P class=3D"line862"> N/A </P></TD>
+    <TD style=3D"text-align: center;" colSpan=3D"4">
+      <P class=3D"line862"> 4K </P></TD>
+    <TD style=3D"text-align: center;">
+      <P class=3D"line862"> 8K </P></TD>
+    <TD style=3D"text-align: center;">
+      <P class=3D"line862"> 16K or 32K </P></TD></TR>
+  <TR>
+    <TD><SPAN id=3D"line-81" class=3D"anchor"></SPAN>
+      <P class=3D"line862"> Windows NT <BR> (NTFS) </P></TD>
+    <TD style=3D"text-align: center;" colSpan=3D"7">
+      <P class=3D"line862">0.5K to 64K <BR>(0.5K to 4K clusters are most =
+common)=20
+      </P></TD></TR>
+  <TR>
+    <TD><SPAN id=3D"line-82" class=3D"anchor"></SPAN>
+      <P class=3D"line862"> MacOS pre-8.1 <BR> (HFS) </P></TD>
+    <TD style=3D"text-align: center;">
+      <P class=3D"line862"> 0.5K - 4K </P></TD>
+    <TD style=3D"text-align: center;">
+      <P class=3D"line862"> 4.5K - 8K </P></TD>
+    <TD style=3D"text-align: center;">
+      <P class=3D"line862"> 8.5K - 16K </P></TD>
+    <TD style=3D"text-align: center;">
+      <P class=3D"line862"> 16.5K - 32K </P></TD>
+    <TD style=3D"text-align: center;" colSpan=3D"3">
+      <P class=3D"line862">N/A <BR>(HFS can't handle disks &gt; 2GB) =
+</P></TD></TR>
+  <TR>
+    <TD><SPAN id=3D"line-83" class=3D"anchor"></SPAN>
+      <P class=3D"line862"> MacOS 8.1 and later <BR> (HFS+) </P></TD>
+    <TD style=3D"text-align: center;">
+      <P class=3D"line862"> 0.5K </P></TD>
+    <TD style=3D"text-align: center;">
+      <P class=3D"line862"> 1K </P></TD>
+    <TD style=3D"text-align: center;">
+      <P class=3D"line862"> 2K </P></TD>
+    <TD style=3D"text-align: center;" colSpan=3D"4">
+      <P class=3D"line862"> Default is 4K; user-selectable up to 4K =
+</P></TD></TR>
+  <TR>
+    <TD><SPAN id=3D"line-84" class=3D"anchor"></SPAN>
+      <P class=3D"line862"> CD-ROM, 650MB <BR>(ISO 9660) </P></TD>
+    <TD style=3D"text-align: center;" colSpan=3D"7">
+      <P class=3D"line862">always 2K </P></TD></TR>
+  <TR>
+    <TD><SPAN id=3D"line-85" class=3D"anchor"></SPAN>
+      <P class=3D"line862"> DVD-ROM <BR>(UDF) </P></TD>
+    <TD style=3D"text-align: center;" colSpan=3D"7">
+      <P class=3D"line862">always 2K =
+</P></TD></TR></TBODY></TABLE></DIV><SPAN id=3D"line-86"=20
+class=3D"anchor"></SPAN><SPAN id=3D"line-87" =
+class=3D"anchor"></SPAN><SPAN id=3D"line-88"=20
+class=3D"anchor"></SPAN>
+<P class=3D"line862">Advanced operating systems employ tricks to =
+optimize disk=20
+space. For example, Novell NetWare 4 uses 64K disk blocks but can split =
+a block=20
+into 0.5K pieces, thus creating the illusion of 512-byte blocks. UNIX =
+file=20
+systems have their own methods to utilize disk space efficiently. <SPAN =
+id=3D"line-89"=20
+class=3D"anchor"></SPAN><SPAN id=3D"line-90" class=3D"anchor"></SPAN>
+<P class=3D"line867"><STRONG>James's</STRONG> shortcut on choosing an =
+appropriate=20
+cluster size: 2K (Nice even number, not too big, not too small) <SPAN =
+id=3D"line-91"=20
+class=3D"anchor"></SPAN><SPAN id=3D"line-92" class=3D"anchor"></SPAN>
+<P class=3D"line867">
+<H4 id=3D"head-92d08261ce5dd3a83c0c751d9f14eb4f3e2c301d">Read-only =
+media</H4><SPAN=20
+id=3D"line-93" class=3D"anchor"></SPAN>
+<P class=3D"line874">Never assume a .MP3 file is writable unless the =
+user is=20
+specifically editing the tag. MP3 files can be stored on read-only media =
+such as=20
+a CD-ROM or a network share. If the user is editing the tag, it is an =
+error if=20
+the file is write-protected because the user's changes cannot be saved. =
+If a=20
+player is merely updating the playcounter or popularity-meter, it should =
+not pop=20
+up a message complaining the file cannot be written to. <SPAN =
+id=3D"line-94"=20
+class=3D"anchor"></SPAN><SPAN id=3D"line-95" class=3D"anchor"></SPAN>
+<P class=3D"line867"><STRONG>James</STRONG>: Include a visual cue to =
+indicate=20
+whether the file is write-protected. For example, a small icon similar =
+in size=20
+and color to the stereo indicator in WinAMP. A quick glance will =
+determine=20
+whether certain settings will be saved. <SPAN id=3D"line-96"=20
+class=3D"anchor"></SPAN><SPAN id=3D"line-97" class=3D"anchor"></SPAN>
+<P class=3D"line867">
+<H4 id=3D"head-897e05bdf5408736c3f4b3ab0d172aad6d17bdd1">"Insignificant" =
+
+frames</H4><SPAN id=3D"line-98" class=3D"anchor"></SPAN>
+<P class=3D"line874">"Insignificant" frames are small frames that don't=20
+necessarily have meaning when a ID3v2 tag is created. The issue is =
+whether the=20
+tag editor should add these frames when they do not already exist. <SPAN =
+id=3D"line-99"=20
+class=3D"anchor"></SPAN><SPAN id=3D"line-100" class=3D"anchor"></SPAN>
+<P class=3D"line874">For example, if Joe is adding tags to a fresh batch =
+of .MP3=20
+files, should the tag editor include a playcounter [PCNT] frame in the =
+tag? The=20
+tag editor has no idea how many times the particular file has been =
+played;=20
+unless Joe tells it otherwise, the editor has to create a [PCNT] frame =
+with a=20
+count of 0. <SPAN id=3D"line-101" class=3D"anchor"></SPAN><SPAN =
+id=3D"line-102" class=3D"anchor"></SPAN>
+<P class=3D"line874">There are two ways to look at this. On the one =
+hand, the=20
+frame is so small it takes almost no effort to include it. Since there =
+will=20
+usually be a few hundred bytes of padding, the ten bytes used by the =
+counter=20
+frame is in a sense "free." A player will probably add it later anyway =
+when the=20
+file is used. <SPAN id=3D"line-103" class=3D"anchor"></SPAN><SPAN =
+id=3D"line-104"=20
+class=3D"anchor"></SPAN>
+<P class=3D"line874">On the other hand, if the frame is not holding =
+useful=20
+information, why bother adding it? Padding, if used, effectively =
+reserves space=20
+for these frames. Consider also the absence of a frame can be =
+meaningful: the=20
+lack of a playcounter frame may indicate "I do not know how many times =
+this=20
+piece has been played" as opposed to a count of 0, which indicates "This =
+song=20
+has never been played." <SPAN id=3D"line-105" =
+class=3D"anchor"></SPAN><SPAN id=3D"line-106"=20
+class=3D"anchor"></SPAN>
+<P class=3D"line874">These can be considered "insignificant" frames: =
+<SPAN id=3D"line-107"=20
+class=3D"anchor"></SPAN><SPAN id=3D"line-108" class=3D"anchor"></SPAN>
+<UL>
+  <LI>Playcounter [PCNT] <SPAN id=3D"line-109" class=3D"anchor"></SPAN>
+  <UL>
+    <LI style=3D"list-style-type: none;">
+    <P class=3D"line862">(<STRONG>James</STRONG>: an integrated=20
+    ripper-encoder-tagger can include a playcount of 0 in newly created =
+files,=20
+    since by definition they have never been used..) <SPAN =
+id=3D"line-110" class=3D"anchor"></SPAN></P></LI></UL></LI>
+  <LI>Others, anyone? <SPAN id=3D"line-111" =
+class=3D"anchor"></SPAN></LI></UL>
+<P class=3D"line867"><STRONG>Martin</STRONG>: It is considered good =
+manner to=20
+allow the user to disable writing of frames (s)he doesn't want. At least =
+in an=20
+advanced menu in a hidden place. Perhaps the user doesn't want the TSI, =
+TLE, TMT=20
+and MLL frame to be added automatically, even though it might be the =
+default=20
+setting. <SPAN id=3D"line-112" class=3D"anchor"></SPAN><SPAN =
+id=3D"line-113" class=3D"anchor"></SPAN>
+<P class=3D"line867">
+<H4 id=3D"head-8c6aa22e73e5e7f02c071b774cc2365ab96efb4f">Preferred image =
+
+formats</H4><SPAN id=3D"line-114" class=3D"anchor"></SPAN>
+<P class=3D"line874">A question Martin gets often is why the ID3v2 =
+document says=20
+"... PNG and JPEG picture format should be used..." Interoperability =
+means it is=20
+almost guaranteed another ID3v2 tag/picture decoder can handle the PNG =
+and JPEG=20
+formats. The chances a Macintosh application can display BMP files are =
+slim;=20
+likewise, the complexities of EPS and TIFF are best left out. <SPAN =
+id=3D"line-115"=20
+class=3D"anchor"></SPAN><SPAN id=3D"line-116" class=3D"anchor"></SPAN>
+<P class=3D"line874">Consider these other arguments favoring PNG and =
+JPEG: <SPAN=20
+id=3D"line-117" class=3D"anchor"></SPAN><SPAN id=3D"line-118" =
+class=3D"anchor"></SPAN>
+<UL>
+  <LI>PNG compresses better than BMP, GIF and most other lossless =
+formats. <SPAN=20
+  id=3D"line-119" class=3D"anchor"></SPAN></LI>
+  <LI>JPEG has superior compression to most formats, especially for =
+photographic=20
+  pictures. (JPEG is not suitable for line-art and computer-generated =
+graphics -=20
+  use PNG for these.) <SPAN id=3D"line-120" =
+class=3D"anchor"></SPAN></LI>
+  <LI>Both formats are patent- and royalty-free (which is not the case =
+with GIF,=20
+  whose LZW compression algorithm is patented by Unisys.) <SPAN =
+id=3D"line-121"=20
+  class=3D"anchor"></SPAN></LI></UL>
+<P class=3D"line867"><STRONG>Martin</STRONG>: The freedom to use =
+whatever format=20
+you like in the picture frame is of course a freedom under =
+responsibility. Do=20
+you want to make cross platform tags? Do you want to avoid legal =
+trouble, at=20
+least for the principle? If so, use PNG and JPEG. <SPAN id=3D"line-122" =
+class=3D"anchor"></SPAN><SPAN=20
+id=3D"line-123" class=3D"anchor"></SPAN>
+<P class=3D"line867"><STRONG>Dirk</STRONG>: Applications may want to =
+convert the=20
+incoming picture type to PNG or JPEG first, or failing that, at least =
+inform the=20
+user that they should be using PNG or JPEG, but allow the user to =
+override this=20
+if they insist on using, say, a PCX. <SPAN id=3D"line-124"=20
+class=3D"anchor"></SPAN><SPAN id=3D"line-125" class=3D"anchor"></SPAN>
+<P class=3D"line867">
+<H4 id=3D"head-9d00433c187d27c24005b1cd1796589945b5d0aa">Multiple =
+tags</H4><SPAN=20
+id=3D"line-126" class=3D"anchor"></SPAN>
+<P class=3D"line874">Decoders should be prepared to handle multiple =
+ID3v2 tags per=20
+stream. This is especially important for players/decoders wanting to =
+handle=20
+netradio-type applications since the notion of distinct files may not =
+apply.=20
+<SPAN id=3D"line-127" class=3D"anchor"></SPAN><SPAN id=3D"line-128"=20
+class=3D"anchor"></SPAN>
+<P class=3D"line867"><STRONG>Dirk</STRONG>: An easy way to achieve this =
+would be=20
+to use a central 'frame dispatch' routine, kind of like a demultiplexer. =
+<SPAN=20
+id=3D"line-129" class=3D"anchor"></SPAN><SPAN id=3D"line-130" =
+class=3D"anchor"></SPAN>
+<P class=3D"line867">
+<H4 =
+id=3D"head-68780114f515c6be266d4f967e84f2b35271e10e">Unsynchronization</H=
+4>
+<SPAN id=3D"line-131" class=3D"anchor"></SPAN>
+<P class=3D"line862">The ID3v2 standard states "The only purpose of the=20
+'unsychronisation scheme' is to make the ID3v2 tag as compatible as =
+possible=20
+with existing software <EM>[at the time the ID3v2.2 standard was =
+drafted]</EM>"=20
+What are the implications? <SPAN id=3D"line-132" =
+class=3D"anchor"></SPAN><SPAN id=3D"line-133"=20
+class=3D"anchor"></SPAN>
+<OL type=3D"1">
+  <LI>MP3 decoders, regardless of age, will not be affected by =
+extraneous data=20
+  (i.e., tags) that does not contain a MPEG sync sequence. <SPAN =
+id=3D"line-134"=20
+  class=3D"anchor"></SPAN></LI>
+  <LI>There is minimal impact if a decoder does not recognize ID3v2 tags =
+but=20
+  encounters something with a sync sequence. At worst a click or pop =
+will be=20
+  heard at the beginning of the piece, as if some data corruption has =
+occurred.=20
+  <SPAN id=3D"line-135" class=3D"anchor"></SPAN></LI>
+  <LI>New software is expected to take advantage of ID3v2. =
+Unsynchronization is=20
+  not necessary with ID3v2 compliant software. <SPAN id=3D"line-136" =
+class=3D"anchor"></SPAN></LI></OL>
+<P class=3D"line874">(Software which does not behave according to items =
+1 and 2=20
+above are categorically deemed "broken." Microsoft's Media Player is an =
+example=20
+of such software.) <SPAN id=3D"line-137" class=3D"anchor"></SPAN><SPAN =
+id=3D"line-138"=20
+class=3D"anchor"></SPAN>
+<P class=3D"line867"><STRONG>Martin</STRONG>: I believe that =
+unsynchronization=20
+should be done as seldom as possible since it increases the size of the =
+tag as=20
+well as the parsing time. In other words, I think unsynchronization =
+should be=20
+turned off as default. <SPAN id=3D"line-139" =
+class=3D"anchor"></SPAN><SPAN id=3D"line-140"=20
+class=3D"anchor"></SPAN>
+<P class=3D"line874">However, it is important to be able to undo =
+unsynchronization=20
+when reading tags; otherwise unsynchronized tags will not be read =
+correctly.=20
+<SPAN id=3D"line-141" class=3D"anchor"></SPAN><SPAN id=3D"line-142"=20
+class=3D"anchor"></SPAN>
+<P class=3D"line867">
+<H2 id=3D"head-f44688e7cd9f6637992ae43e911dc626432be5e5">Pitfalls &amp; =
+General=20
+Advice</H2><SPAN id=3D"line-143" class=3D"anchor"></SPAN>
+<P class=3D"line867">
+<H3 id=3D"head-c293db770cb8d02f4438c7d5b9e53d8462891640">RTFM (details =
+are=20
+important!)</H3><SPAN id=3D"line-144" class=3D"anchor"></SPAN>
+<P class=3D"line862">When the ID3v2 document refers to another standard =
+it is=20
+assumed that the implementor is familiar with that standard as well. =
+When it=20
+says URL it does not mean 'www.buymusic.com', it means '<A =
+class=3D"http" =
+href=3D"http://www.buymusic.com/">http://www.buymusic.com/</A>'=20
+A "URL containing an e-mail address" must include the 'mailto:' =
+qualifier. Those=20
+who at least take a quick look at the related standards will not make =
+these=20
+kinds of mistakes. <SPAN id=3D"line-145" class=3D"anchor"></SPAN><SPAN =
+id=3D"line-146"=20
+class=3D"anchor"></SPAN>
+<P class=3D"line862">If these details are so important, why aren't they =
+spelled=20
+out in the ID3v2 standard? According to Martin, "There has been people =
+who said=20
+to me, 'You must write these kind of things in the document, or else =
+people will=20
+make these mistakes.' The latest ID3 v2.01 draft is <EM>only </EM>74,657 =
+bytes=20
+of pure text because I did not. Guess why there are references to the =
+standards=20
+in the document!" <SPAN id=3D"line-147" class=3D"anchor"></SPAN><SPAN =
+id=3D"line-148"=20
+class=3D"anchor"></SPAN>
+<P class=3D"line867">
+<H3 id=3D"head-1635f514f4b1ca10372990f52e94bc6e4e3bcd1f">Compression =
+before=20
+encryption</H3><SPAN id=3D"line-149" class=3D"anchor"></SPAN>
+<P class=3D"line874">Encryption works by scrambling data to produce what =
+amounts=20
+to random bits for an attacker. Data compression works by replacing or =
+removing=20
+redundant information. It follows that the output of any decent crypto =
+algorithm=20
+will not be compressible; therefore if you wish to use both compression =
+and=20
+encryption, you must compress the data before encrypting it. <SPAN =
+id=3D"line-150"=20
+class=3D"anchor"></SPAN><SPAN id=3D"line-151" class=3D"anchor"></SPAN>
+<P class=3D"line874">Compressing before encryption also affords better =
+security,=20
+since predictable headers and such will be hidden by compression. <SPAN =
+id=3D"line-152"=20
+class=3D"anchor"></SPAN><SPAN id=3D"line-153" class=3D"anchor"></SPAN>
+<P class=3D"line862">Remember: <EM>compression </EM>comes before =
+<EM>encryption=20
+</EM>in the dictionary (at least in English) and that is how it should =
+be in=20
+your application. <SPAN id=3D"line-154" class=3D"anchor"></SPAN><SPAN =
+id=3D"line-155"=20
+class=3D"anchor"></SPAN>
+<P class=3D"line867">
+<H3 id=3D"head-18d558d07ff7ad58810ef3d164ef0282c419d44d">Validating user =
+
+input</H3><SPAN id=3D"line-156" class=3D"anchor"></SPAN>
+<P class=3D"line874">Never trust the input from the user to be sensible =
+or=20
+formatted correctly. Is the ISRC a valid one? Does the month 13 exist? =
+Could=20
+this piece of music be from disc 5 out of a 3 disc set? <SPAN =
+id=3D"line-157"=20
+class=3D"anchor"></SPAN><SPAN id=3D"line-158" class=3D"anchor"></SPAN>
+<P class=3D"line867"><STRONG>Dirk</STRONG>: Personally, I think having =
+input=20
+validation occur when the user signifies that the tag is "finished" is a =
+good=20
+way of going about it, if only because I know I'll get half way through=20
+something and want to stop and do something else before I forget. <SPAN =
+id=3D"line-159"=20
+class=3D"anchor"></SPAN><SPAN id=3D"line-160" class=3D"anchor"></SPAN>
+<P class=3D"line867"><STRONG>James</STRONG>: Extremely strict validation =
+becomes=20
+restrictions on versatility and usability. An option to turn off or =
+accept=20
+potentially invalid data can be included somewhere. For example, by =
+default=20
+Microsoft Visual Basic checks for syntax errors as code is entered; =
+however,=20
+users can disable that feature if they wish to delay syntax checking =
+until=20
+compile time. <SPAN id=3D"line-161" class=3D"anchor"></SPAN><SPAN =
+id=3D"line-162"=20
+class=3D"anchor"></SPAN>
+<P class=3D"line874">Things to watch out for (this is by no means an =
+all-inclusive=20
+list): <SPAN id=3D"line-163" class=3D"anchor"></SPAN><SPAN =
+id=3D"line-164" class=3D"anchor"></SPAN>
+<UL>
+  <LI>Properly formatted URLs (see RTFM, above.) But should your =
+application=20
+  verify whether the URL actually exists? That may be too complicated; =
+Martin=20
+  and James's opinion is no verification. <SPAN id=3D"line-165"=20
+  class=3D"anchor"></SPAN></LI>
+  <LI>Proper MIME types. <SPAN id=3D"line-166" =
+class=3D"anchor"></SPAN></LI>
+  <LI>Are characters valid? Most text fields forbid control characters, =
+even=20
+  newlines. NULs are not allowed except in Unicode strings or to =
+indicate=20
+  end-of-string for terminated strings. <SPAN id=3D"line-167"=20
+  class=3D"anchor"></SPAN></LI>
+  <LI>Numerical strings must consist solely of the characters '0' =
+through '9'=20
+  <SPAN id=3D"line-168" class=3D"anchor"></SPAN></LI>
+  <LI>Are lists handled properly? The list separator is a slash: / What =
+happens=20
+  if the user enters a / in an item? <SPAN id=3D"line-169"=20
+  class=3D"anchor"></SPAN></LI>
+  <LI>Are characters such as ( escaped where necessary? <SPAN =
+id=3D"line-170"=20
+  class=3D"anchor"></SPAN></LI>
+  <LI>Do dates and times make sense? Years must be four digits long and =
+be in=20
+  the right century. (No Y2K problems here!) <SPAN id=3D"line-171"=20
+  class=3D"anchor"></SPAN></LI>
+  <LI>Is an image really the format the user claims it is? Some people =
+believe=20
+  renaming a .BMP file to .PNG will change its format accordingly. <SPAN =
+id=3D"line-172"=20
+  class=3D"anchor"></SPAN></LI></UL>
+<P class=3D"line874">Your application should never crash because the =
+user does=20
+something stupid. Likewise, your application should not crash because of =
+
+erroneous or malformed data in a tag. It is particularly important your=20
+application can recognize Unicode text frames and ignore them if the =
+operating=20
+system or your program cannot handle Unicode. <SPAN id=3D"line-173"=20
+class=3D"anchor"></SPAN><SPAN id=3D"line-174" class=3D"anchor"></SPAN>
+<P class=3D"line867">
+<H2 id=3D"head-13be6fea2861ade62d4804d49dc4afab38cdf3c0">Credits &amp;=20
+Contributors</H2><SPAN id=3D"line-175" class=3D"anchor"></SPAN>
+<UL>
+  <LI>Dirk Mahoney, creator of the ID3Lib C++ tag processing library. =
+<SPAN id=3D"line-176"=20
+  class=3D"anchor"></SPAN></LI>
+  <LI>James Lin, author of these Guidelines. <SPAN id=3D"line-177"=20
+  class=3D"anchor"></SPAN></LI>
+  <LI>Martin Nilsson, author of the ID3v2 standard. <SPAN =
+id=3D"line-178" class=3D"anchor"></SPAN></LI></UL>
+<P class=3D"line867">
+<H2 =
+id=3D"head-3d06f1646a45cf43eb300c72375ea367c7fdd49a">References</H2><SPAN=
+ id=3D"line-179"=20
+class=3D"anchor"></SPAN>
+<UL>
+  <LI>
+  <P class=3D"line891"><A class=3D"nonexistent"=20
+  =
+href=3D"http://www.id3.org/id3guide/">http://www.id3.org/id3guide/</A>: =
+Home of=20
+  the <A href=3D"http://www.id3.org/Developer_Information">ID3v2 =
+Informal=20
+  Standard</A> and lots of other useful material. <SPAN id=3D"line-180" =
+class=3D"anchor"></SPAN></P></LI></UL>
+<P class=3D"line867">
+<H2 id=3D"head-8586608ac51211cda7437ae2d089a7d0bc196c6e">Copyright &amp; =
+Legal=20
+Notice</H2><SPAN id=3D"line-181" class=3D"anchor"></SPAN>
+<P class=3D"line874">Copyright =C2=A9 1998 James Lin and Merlin's =
+Workshop. <SPAN id=3D"line-182"=20
+class=3D"anchor"></SPAN><SPAN id=3D"line-183" class=3D"anchor"></SPAN>
+<P class=3D"line874">The goal of this document is to provide hints on =
+how to=20
+implement the ID3v2 standard(s) correctly and efficiently. Distribution =
+of this=20
+document is unlimited as long as no changes are made to its content: =
+<SPAN id=3D"line-184"=20
+class=3D"anchor"></SPAN><SPAN id=3D"line-185" class=3D"anchor"></SPAN>
+<P class=3D"line874">This document and translations of it may be copied =
+and=20
+furnished to others, in any format or medium, provided no modifications =
+are made=20
+to the content unless written permission has been obtained from the =
+author.=20
+<SPAN id=3D"line-186" class=3D"anchor"></SPAN><SPAN id=3D"line-187"=20
+class=3D"anchor"></SPAN>
+<P class=3D"line874">This document is provided "AS IS" without warranty =
+of any=20
+kind, either expressed or implied, including but not limited to, the =
+implied=20
+warranties of merchantability and fitness for a particular purpose. =
+<SPAN id=3D"line-188"=20
+class=3D"anchor"></SPAN><SPAN id=3D"line-189" class=3D"anchor"></SPAN>
+<P class=3D"line874">In no event unless required by applicable law will =
+the author=20
+of this document be liable for damages, including any general, special,=20
+incidental or consequential damages arising out of the use or inability =
+to use=20
+any information (including but not limited to loss or corruption of data =
+or=20
+losses sustained by third parties), even if the author has been advised =
+of the=20
+possibility of such damages. <SPAN id=3D"line-190" =
+class=3D"anchor"></SPAN><SPAN id=3D"bottom"=20
+class=3D"anchor"></SPAN></P></DIV>
+<DIV id=3D"pagebottom"></DIV>
+<P dir=3D"ltr" id=3D"pageinfo" lang=3D"ja" class=3D"info">id3guide  =
+(=E6=9C=80=E7=B5=82=E6=9B=B4=E6=96=B0=E6=97=A5=E6=99=82 2006-10-30=20
+15:55:03 =E6=9B=B4=E6=96=B0=E8=80=85 <SPAN title=3D"DanONeill"><A =
+title=3D"DanONeill" href=3D"http://www.id3.org/DanONeill"=20
+generated=3D"True">DanONeill</A></SPAN>)</P>
+<DIV id=3D"pagebottom"></DIV></DIV>
+<CENTER><A href=3D"http://www.id3.org/Copyright">Copyright</A> =C2=A9 =
+1998-2009 by=20
+their respective owners</CENTER></BODY></HTML>
+
+------=_NextPart_000_0000_01CC5B80.41403450
+Content-Type: image/gif
+Content-Transfer-Encoding: base64
+Content-Location: http://www.id3.org/id3v2.gif
+
+R0lGODlhOAA2ANUAAAAAABEJCRcXFyIREScnJzc3N0EsLE45OUhISFxKSldXV2VOTmJiYnRjY29w
+cHd3d/9bAP9pAPtyDvqAJf+OO/+URv+lY4KCgpmZma2fn6emprW0tP+6h8q7u8jIyNvNzc/Q0NnZ
+2ebm5vLy8v///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACwAAAAAOAA2AAAG/8CJZEgcRiyk5EbB
+aDoZjwtmExolr9isdiuJeL9fZPICKJvPZkFBgRFt3+8uGCwmkdF4NOHihvtJcnNedXd5hmUCGH9w
+gYKEh5BlCH2LWI1zj5GQCCGVloJhV4WahgRWnoCgg6KkkQWUi6oREJmthw+oFbq7uxQcVx5RFxcP
+TQgFArYAGqjNWyIhGgqkBc7WWxoFmorX3VfTkAKdfxcFCOfox8zXCJG4f+B5F90eyYfVfwyH890Y
+keNw9Bnidy1EJIJvBMrzRiJeHnwB9zHcEAmWFoV4EFoTYc+QBz8Y0Wj0I41AgQfjCEBaR8IDBikb
+rIQ8M/LNKAAE3LQ7xO0BGv8FJGaaqanFIAAEHu4waAhpHkUABcqVaSJxkYcCBD6KkBQUEq52OUlw
+xCm0DFE/HqZ2PbT0AgOC7QSUBXB2SwgFyRS40bdhw4AyCkD4BJolRDIEc+tqeUo3iQMAHUg0KBN5
+MoIsIwRiSNwsxIY7QH0eIEExAYkPXLGAW8rZmkARPgGE2KpoQWqxO/WuXbgoGjcS/gAEK1Pbg4gA
+qUWsvtL6T/ANScCJEGhALAkNZpYybcy86p+0OB+AuxwvQ5IEZnBhn/qgmFvvztEU+LgTANAONEmo
+xCMX/p8QDyDAxinapIGGBoblQUBz14ywnyHQiTDChBROyOBGkXwU0UAMBXeGiEVZXOhMfXlcBpJ/
+nUXCUkIoouJhHgKAGGKLlYTwYB6EncjhNQ7l8duGvDUzQo94mJgPjW+MINU/lczFgAhQRiklNB54
+oMGSkeR4pDJc6iHjFnN1qQl0noQpJpJgnsnlO6iYqeYZP5b5piYFkOmMm2cm4g2eXDKgwZdyvimA
+Goi1wdAVQQAAOw==
+
+------=_NextPart_000_0000_01CC5B80.41403450
+Content-Type: text/css;
+	charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://www.id3.org/wiki/mentalwealth_id3/css/common.css
+
+html {
+	color: black; line-height: 1.25em; font-family: Arial, Lucida Grande, =
+sans-serif; font-size: 0.85em; background-color: white;
+}
+a:hover {
+	color: rgb(0, 68, 179);
+}
+a {
+	color: rgb(89, 123, 179);
+}
+a.nonexistent {
+	color: gray;
+}
+a.badinterwiki {
+	color: gray;
+}
+h1 a {
+	color: black; text-decoration: none;
+}
+li p {
+	margin: 0.25em 0px;
+}
+li.gap {
+	margin-top: 0.5em;
+}
+a {
+	border: 0px currentColor;
+}
+img {
+	border: 0px currentColor;
+}
+img.drawing {
+	border: 0px currentColor;
+}
+dt {
+	font-weight: bold;
+}
+pre {
+	background: rgb(240, 236, 230); padding: 0.5em; border: 1pt solid =
+rgb(192, 192, 192); font-family: courier, monospace; white-space: =
+pre-wrap; word-wrap: break-word;
+}
+table {
+	margin: 0.5em 0px; border-collapse: collapse;
+}
+td {
+	padding: 0.25em; border: 1px solid rgb(173, 185, 204);
+}
+td p {
+	margin: 0px; padding: 0px;
+}
+hr {
+	border: currentColor; height: 1px; background-color: rgb(192, 192, =
+192);
+}
+.hr1 {
+	height: 2px;
+}
+.hr2 {
+	height: 3px;
+}
+.hr3 {
+	height: 4px;
+}
+.hr4 {
+	height: 5px;
+}
+.hr5 {
+	height: 6px;
+}
+.hr6 {
+	height: 7px;
+}
+.u {
+	text-decoration: underline;
+}
+.strike {
+	text-decoration: line-through;
+}
+.table-of-contents {
+	margin: 0.5em; width: 50%; text-align: left; padding-left: 2em; =
+font-size: small;
+}
+.table-of-contents ol {
+	margin: 0px 0px 0px 1em; list-style-type: decimal;
+}
+.table-of-contents ul {
+	margin: 0px; list-style-type: none;
+}
+.table-of-contents-heading {
+	margin: 0px; padding: 0px; font-weight: bold;
+}
+footnotes ul {
+	margin: 0px 0px 1em; padding: 0px 2em;
+}
+.footnotes li {
+	list-style: none;
+}
+.info {
+	color: gray; font-size: 0.85em;
+}
+.warning {
+	color: red;
+}
+.error {
+	color: red;
+}
+strong.highlight {
+	padding: 1pt; background-color: rgb(204, 224, 255);
+}
+.recentchanges p {
+	margin: 0.25em;
+}
+.recentchanges td {
+	background: rgb(247, 246, 242); border-width: medium medium 1pt; =
+border-style: none none solid; border-color: currentColor currentColor =
+rgb(240, 236, 230); vertical-align: top;
+}
+.rcdaybreak td {
+	background: rgb(184, 197, 217); border: currentColor;
+}
+.rcdaybreak td a {
+	font-size: 0.88em;
+}
+.rcicon1 {
+	text-align: center;
+}
+.rcicon2 {
+	text-align: center;
+}
+.rcpagelink {
+	width: 33%;
+}
+.rctime {
+	font-size: 0.88em; white-space: nowrap;
+}
+.rceditor {
+	font-size: 0.88em; white-space: nowrap;
+}
+.rccomment {
+	width: 66%; color: gray; font-size: 0.88em;
+}
+.rcrss {
+	float: right;
+}
+[dir=3D'rtl'].recentchanges .rcrss {
+	float: left;
+}
+.userpref table {
+	border: currentColor;
+}
+.userpref td {
+	border: currentColor;
+}
+div.codearea {
+	margin: 0.5em 0px; padding: 0px; border: 1pt solid rgb(174, 189, 204); =
+color: black; background-color: rgb(243, 245, 247);
+}
+div.codearea pre {
+	margin: 0px; padding: 10pt; border: currentColor;
+}
+a.codenumbers {
+	margin: 0px 10pt; color: gray; font-size: 0.85em;
+}
+div.codearea pre span.LineNumber {
+	color: gray;
+}
+div.codearea pre span.ID {
+	color: rgb(0, 0, 0);
+}
+div.codearea pre span.Operator {
+	color: rgb(0, 0, 192);
+}
+div.codearea pre span.Char {
+	color: rgb(0, 64, 128);
+}
+div.codearea pre span.Comment {
+	color: rgb(0, 128, 0);
+}
+div.codearea pre span.Number {
+	color: rgb(0, 128, 192);
+}
+div.codearea pre span.String {
+	color: rgb(0, 64, 128);
+}
+div.codearea pre span.SPChar {
+	color: rgb(0, 0, 192);
+}
+div.codearea pre span.ResWord {
+	color: rgb(160, 0, 0);
+}
+div.codearea pre span.ConsWord {
+	color: rgb(0, 128, 128); font-weight: bold;
+}
+div.codearea pre span.Error {
+	border: 1.5pt solid rgb(255, 0, 0); color: rgb(255, 128, 128);
+}
+div.codearea pre span.ResWord2 {
+	color: rgb(0, 128, 255); font-weight: bold;
+}
+div.codearea pre span.Special {
+	color: rgb(0, 0, 255);
+}
+div.codearea pre span.Preprc {
+	color: rgb(128, 57, 153);
+}
+#pageinfo {
+	margin-top: 2em;
+}
+#credits img {
+	vertical-align: middle;
+}
+#preview {
+	background: url("../img/draft.png"); padding: 0.5em; border: 2px solid =
+rgb(229, 229, 229);
+}
+.diff {
+	width: 99%;
+}
+.diff-title {
+	background-color: rgb(192, 192, 192);
+}
+.diff-added {
+	vertical-align: sub; background-color: rgb(224, 255, 224);
+}
+.diff-removed {
+	vertical-align: sub; background-color: rgb(255, 255, 224);
+}
+.diff-added span {
+	background-color: rgb(128, 255, 128);
+}
+.diff-removed span {
+	background-color: rgb(255, 255, 128);
+}
+form.dialog {
+	margin: 0px 15px;
+}
+.dialog td {
+	padding: 5px; border: currentColor;
+}
+.dialog td.label {
+	width: 25%; text-align: right; font-weight: bold;
+}
+*[dir=3D'rtl'] .dialog td.label {
+	text-align: left;
+}
+.dialog td.content input {
+	width: 100%;
+}
+#message p {
+	margin: 5px 0px; padding: 0px; font-weight: bold;
+}
+#message div.buttons {
+	font-weight: normal;
+}
+
+------=_NextPart_000_0000_01CC5B80.41403450
+Content-Type: text/css;
+	charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://www.id3.org/base.css
+
+html {
+	font-size: 81%;
+}
+html {
+	margin: 0px; padding: 0px;
+}
+body {
+	margin: 0px; padding: 0px;
+}
+body {
+	font: 1em/normal Verdana, Arial, Helvetica, sans-serif; vertical-align: =
+text-top; font-size-adjust: none; font-stretch: normal;
+}
+p {
+	font-size: 1em;
+}
+ol {
+	font-size: 1em;
+}
+ul {
+	font-size: 1em;
+}
+li {
+	font-size: 1em;
+}
+table {
+	font-size: 1em;
+}
+p {
+	margin: 1.2em 0px 0px;
+}
+h1 {
+	margin: 1.2em 0px 0px;
+}
+h2 {
+	margin: 1.2em 0px 0px;
+}
+h3 {
+	margin: 1.2em 0px 0px;
+}
+h4 {
+	margin: 1.2em 0px 0px;
+}
+h5 {
+	margin: 1.2em 0px 0px;
+}
+h6 {
+	margin: 1.2em 0px 0px;
+}
+input {
+	font-size: 1em;
+}
+select {
+	font-size: 1em;
+}
+th {
+	font-size: 1em;
+}
+tr {
+	font-size: 1em;
+}
+td {
+	font-size: 1em;
+}
+pre {
+	font-family: monospace, courier; font-size: 1.1em;
+}
+tt {
+	font-family: monospace, courier; font-size: 1.1em;
+}
+strong {
+	font-weight: bold;
+}
+b {
+	font-weight: bold;
+}
+small {
+	font-size: 0.8em;
+}
+img {
+	border: 0px currentColor;
+}
+table {
+	margin: 0px; padding: 0px; width: 99%;
+}
+th {
+	text-align: left; font-weight: bold;
+}
+tr {
+	text-align: left;
+}
+th {
+	vertical-align: top;
+}
+tr {
+	vertical-align: top;
+}
+td {
+	vertical-align: top;
+}
+:root code {
+	font-size: 120%;
+}
+h1 {
+	font-size: 1.7em; margin-top: 0px;
+}
+h2 {
+	font-size: 1.4em; border-bottom-color: black; border-bottom-width: 2px; =
+border-bottom-style: solid;
+}
+h3 {
+	padding-left: 0.3em; font-size: 1.4em; border-left-color: black; =
+border-left-width: 10px; border-left-style: solid;
+}
+h4 {
+	padding-left: 0.3em; font-size: 1em; border-left-color: black; =
+border-left-width: 3px; border-left-style: solid;
+}
+h5 {
+	font-size: 1em; font-weight: bold;
+}
+h6 {
+	font-size: 1em; font-weight: bold;
+}
+h6 {
+	margin-bottom: -1em;
+}
+#sidebar {
+	margin: 0px 8px 0px 12px; padding: 0px; width: 160px; font-size: =
+0.88em; float: left; display: inline;
+}
+#page {
+	border-width: 1px 1px 2px; border-style: solid; border-color: black; =
+margin: 10px 10px 10px 185px; padding: 15px 30px;
+}
+#credits {
+	margin: 5px 0px; padding: 0px; width: 160px; text-align: center; =
+font-size: 0.9em; float: left; list-style-type: none;
+}
+#version {
+	margin: 5px 0px; padding: 0px; width: 160px; text-align: center; =
+font-size: 0.9em; float: left; list-style-type: none;
+}
+#timings {
+	margin: 5px 0px; padding: 0px; width: 160px; text-align: center; =
+font-size: 0.9em; float: left; list-style-type: none;
+}
+#message {
+	border-width: 1px 1px 2px; border-style: solid; border-color: black; =
+margin: 10px 10px 10px 185px; padding: 5px 10px;
+}
+#header {
+	margin: 10px;
+}
+#logo {
+	margin: 0px; padding: 5px; font-size: 1.7em; font-weight: bold; =
+white-space: nowrap;
+}
+#logo img {
+	vertical-align: middle;
+}
+#logo a {
+	text-decoration: none;
+}
+#searchform {
+	margin: 5px; padding: 0px; float: right; white-space: nowrap;
+}
+*[dir=3D'rtl'] #searchform {
+	float: left;
+}
+#searchform form div {
+	display: inline;
+}
+.sidepanel {
+	border-width: 1px 2px 2px 1px; border-style: solid; border-color: =
+black; margin: 0px 0px 10px; width: 160px; font-size: 1em; float: right;
+}
+.sidepanel h1 {
+	border-width: medium medium 1px; border-style: none none solid; =
+border-color: currentColor currentColor black; margin: 0px; padding: =
+0.2em 10px; font-size: 1em;
+}
+.sidepanel ul {
+	margin: 0px; padding: 0px; list-style-type: none;
+}
+.sidepanel li {
+	margin: 0px; padding: 2px 10px; border-bottom-color: black; =
+border-bottom-width: 1px; border-bottom-style: solid;
+}
+.sidepanel li form {
+	margin: 0px;
+}
+.sidepanel a {
+	text-decoration: none; display: block;
+}
+.sidepanel a:hover {
+	text-decoration: underline;
+}
+span.sep {
+	display: none;
+}
+.footnotes div {
+	width: 5em; border-top-color: black; border-top-width: 1px; =
+border-top-style: solid;
+}
+.info {
+	font-size: 0.8em;
+}
+div.codearea pre {
+	margin: 0px; padding: 0.9em; border: currentColor;
+}
+#navibar li.current {
+	border-width: medium medium 1px; border-style: none none solid; =
+border-color: currentColor currentColor black;
+}
+.editbar form {
+	margin: 0px; display: inline;
+}
+.editbar form div {
+	margin: 0px; display: inline;
+}
+#editor-textarea {
+	width: 95%;
+}
+#editor-comment {
+	width: 95%;
+}
+#pagebottom {
+	clear: both;
+}
+.searchresult dd span {
+	font-weight: bold;
+}
+
+------=_NextPart_000_0000_01CC5B80.41403450
+Content-Type: text/css;
+	charset="iso-2022-jp"
+Content-Transfer-Encoding: 7bit
+Content-Location: http://www.id3.org/skin-id3.css
+
+html {
+	background-color: rgb(255, 255, 255);
+}
+body {
+	background-color: rgb(255, 255, 255);
+}
+body {
+	color: rgb(0, 0, 0);
+}
+#page {
+	border-color: rgb(156, 156, 156);
+}
+#message {
+	border-color: rgb(156, 156, 156);
+}
+#header {
+	border-color: rgb(156, 156, 156);
+}
+.sidepanel {
+	border-color: rgb(156, 156, 156);
+}
+.sidepanel h1 {
+	border-color: rgb(156, 156, 156);
+}
+.sidepanel li {
+	border-color: rgb(156, 156, 156);
+}
+#navibar li.current {
+	border-color: rgb(156, 156, 156);
+}
+.footnotes div {
+	border-color: rgb(156, 156, 156);
+}
+#header {
+	background: rgb(255, 255, 255);
+}
+.sidepanel {
+	background: rgb(255, 255, 255);
+}
+.sidepanel h1 {
+	color: rgb(255, 102, 0);
+}
+#navibar li.current {
+	background: rgb(255, 102, 0);
+}
+h2 {
+	border-color: rgb(255, 102, 0);
+}
+h3 {
+	border-color: rgb(255, 102, 0);
+}
+h4 {
+	border-color: rgb(255, 102, 0);
+}
+#credits {
+	color: rgb(119, 119, 119);
+}
+#version {
+	color: rgb(119, 119, 119);
+}
+#timings {
+	color: rgb(119, 119, 119);
+}
+.info {
+	color: rgb(119, 119, 119);
+}
+#logo a {
+	color: rgb(255, 102, 0);
+}
+
+------=_NextPart_000_0000_01CC5B80.41403450
+Content-Type: text/css;
+	charset="iso-2022-jp"
+Content-Transfer-Encoding: 7bit
+Content-Location: http://www.id3.org/wiki/mentalwealth_id3/css/screen.css
+
+@import url( base.css );
+@import url( skin-id3.css );
+
+------=_NextPart_000_0000_01CC5B80.41403450
+Content-Type: text/css;
+	charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://www.id3.org/wiki/mentalwealth_id3/css/print.css
+
+html {
+	background-color: rgb(255, 255, 255);
+}
+body {
+	margin: 1.5cm; padding: 0px; border: 0px currentColor; font-family: =
+Arial, sans-serif; font-size: 12pt;
+}
+table {
+	width: 99%;
+}
+.footnotes div {
+	width: 5em; border-top-color: rgb(238, 238, 238); border-top-width: =
+1pt; border-top-style: solid;
+}
+pre {
+	font-family: monospace, courier; font-size: 10pt;
+}
+h1 {
+	margin: 0px;
+}
+h2 {
+	margin: 0px;
+}
+h3 {
+	margin: 0px;
+}
+h4 {
+	margin: 0px;
+}
+h5 {
+	margin: 0px;
+}
+h6 {
+	margin: 0px;
+}
+h1 {
+	font-size: 14pt;
+}
+h2 {
+	line-height: 1.2em; padding-bottom: 0.3em; font-size: 14pt; margin-top: =
+1.5em; border-bottom-color: rgb(0, 0, 0); border-bottom-width: 2px; =
+border-bottom-style: solid;
+}
+h3 {
+	padding-left: 0.3em; font-size: 14pt; margin-top: 1.5em; =
+border-left-color: rgb(0, 0, 0); border-left-width: 10px; =
+border-left-style: solid;
+}
+h4 {
+	padding-left: 0.3em; font-size: 12pt; margin-top: 1.5em; =
+border-left-color: rgb(0, 0, 0); border-left-width: 3px; =
+border-left-style: solid;
+}
+h5 {
+	font-size: 12pt;
+}
+h6 {
+	font-size: 12pt;
+}
+a.interwiki::before {
+	content: attr(title) ":";
+}
+a.badinterwiki::before {
+	content: attr(title) ":";
+}
+a.interwiki img {
+	display: none;
+}
+a.badinterwiki img {
+	display: none;
+}
+#header {
+	display: none;
+}
+#sidebar {
+	display: none;
+}
+#footer {
+	display: none;
+}
+#timings {
+	display: none;
+}
+#credits {
+	display: none;
+}
+#message {
+	display: none;
+}
+
+------=_NextPart_000_0000_01CC5B80.41403450
+Content-Type: text/css;
+	charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://www.id3.org/base.css
+
+html {
+	font-size: 81%;
+}
+html {
+	margin: 0px; padding: 0px;
+}
+body {
+	margin: 0px; padding: 0px;
+}
+body {
+	font: 1em/normal Verdana, Arial, Helvetica, sans-serif; vertical-align: =
+text-top; font-size-adjust: none; font-stretch: normal;
+}
+p {
+	font-size: 1em;
+}
+ol {
+	font-size: 1em;
+}
+ul {
+	font-size: 1em;
+}
+li {
+	font-size: 1em;
+}
+table {
+	font-size: 1em;
+}
+p {
+	margin: 1.2em 0px 0px;
+}
+h1 {
+	margin: 1.2em 0px 0px;
+}
+h2 {
+	margin: 1.2em 0px 0px;
+}
+h3 {
+	margin: 1.2em 0px 0px;
+}
+h4 {
+	margin: 1.2em 0px 0px;
+}
+h5 {
+	margin: 1.2em 0px 0px;
+}
+h6 {
+	margin: 1.2em 0px 0px;
+}
+input {
+	font-size: 1em;
+}
+select {
+	font-size: 1em;
+}
+th {
+	font-size: 1em;
+}
+tr {
+	font-size: 1em;
+}
+td {
+	font-size: 1em;
+}
+pre {
+	font-family: monospace, courier; font-size: 1.1em;
+}
+tt {
+	font-family: monospace, courier; font-size: 1.1em;
+}
+strong {
+	font-weight: bold;
+}
+b {
+	font-weight: bold;
+}
+small {
+	font-size: 0.8em;
+}
+img {
+	border: 0px currentColor;
+}
+table {
+	margin: 0px; padding: 0px; width: 99%;
+}
+th {
+	text-align: left; font-weight: bold;
+}
+tr {
+	text-align: left;
+}
+th {
+	vertical-align: top;
+}
+tr {
+	vertical-align: top;
+}
+td {
+	vertical-align: top;
+}
+:root code {
+	font-size: 120%;
+}
+h1 {
+	font-size: 1.7em; margin-top: 0px;
+}
+h2 {
+	font-size: 1.4em; border-bottom-color: black; border-bottom-width: 2px; =
+border-bottom-style: solid;
+}
+h3 {
+	padding-left: 0.3em; font-size: 1.4em; border-left-color: black; =
+border-left-width: 10px; border-left-style: solid;
+}
+h4 {
+	padding-left: 0.3em; font-size: 1em; border-left-color: black; =
+border-left-width: 3px; border-left-style: solid;
+}
+h5 {
+	font-size: 1em; font-weight: bold;
+}
+h6 {
+	font-size: 1em; font-weight: bold;
+}
+h6 {
+	margin-bottom: -1em;
+}
+#sidebar {
+	margin: 0px 8px 0px 12px; padding: 0px; width: 160px; font-size: =
+0.88em; float: left; display: inline;
+}
+#page {
+	border-width: 1px 1px 2px; border-style: solid; border-color: black; =
+margin: 10px 10px 10px 185px; padding: 15px 30px;
+}
+#credits {
+	margin: 5px 0px; padding: 0px; width: 160px; text-align: center; =
+font-size: 0.9em; float: left; list-style-type: none;
+}
+#version {
+	margin: 5px 0px; padding: 0px; width: 160px; text-align: center; =
+font-size: 0.9em; float: left; list-style-type: none;
+}
+#timings {
+	margin: 5px 0px; padding: 0px; width: 160px; text-align: center; =
+font-size: 0.9em; float: left; list-style-type: none;
+}
+#message {
+	border-width: 1px 1px 2px; border-style: solid; border-color: black; =
+margin: 10px 10px 10px 185px; padding: 5px 10px;
+}
+#header {
+	margin: 10px;
+}
+#logo {
+	margin: 0px; padding: 5px; font-size: 1.7em; font-weight: bold; =
+white-space: nowrap;
+}
+#logo img {
+	vertical-align: middle;
+}
+#logo a {
+	text-decoration: none;
+}
+#searchform {
+	margin: 5px; padding: 0px; float: right; white-space: nowrap;
+}
+*[dir=3D'rtl'] #searchform {
+	float: left;
+}
+#searchform form div {
+	display: inline;
+}
+.sidepanel {
+	border-width: 1px 2px 2px 1px; border-style: solid; border-color: =
+black; margin: 0px 0px 10px; width: 160px; font-size: 1em; float: right;
+}
+.sidepanel h1 {
+	border-width: medium medium 1px; border-style: none none solid; =
+border-color: currentColor currentColor black; margin: 0px; padding: =
+0.2em 10px; font-size: 1em;
+}
+.sidepanel ul {
+	margin: 0px; padding: 0px; list-style-type: none;
+}
+.sidepanel li {
+	margin: 0px; padding: 2px 10px; border-bottom-color: black; =
+border-bottom-width: 1px; border-bottom-style: solid;
+}
+.sidepanel li form {
+	margin: 0px;
+}
+.sidepanel a {
+	text-decoration: none; display: block;
+}
+.sidepanel a:hover {
+	text-decoration: underline;
+}
+span.sep {
+	display: none;
+}
+.footnotes div {
+	width: 5em; border-top-color: black; border-top-width: 1px; =
+border-top-style: solid;
+}
+.info {
+	font-size: 0.8em;
+}
+div.codearea pre {
+	margin: 0px; padding: 0.9em; border: currentColor;
+}
+#navibar li.current {
+	border-width: medium medium 1px; border-style: none none solid; =
+border-color: currentColor currentColor black;
+}
+.editbar form {
+	margin: 0px; display: inline;
+}
+.editbar form div {
+	margin: 0px; display: inline;
+}
+#editor-textarea {
+	width: 95%;
+}
+#editor-comment {
+	width: 95%;
+}
+#pagebottom {
+	clear: both;
+}
+.searchresult dd span {
+	font-weight: bold;
+}
+
+------=_NextPart_000_0000_01CC5B80.41403450
+Content-Type: text/css;
+	charset="iso-2022-jp"
+Content-Transfer-Encoding: 7bit
+Content-Location: http://www.id3.org/skin-id3.css
+
+html {
+	background-color: rgb(255, 255, 255);
+}
+body {
+	background-color: rgb(255, 255, 255);
+}
+body {
+	color: rgb(0, 0, 0);
+}
+#page {
+	border-color: rgb(156, 156, 156);
+}
+#message {
+	border-color: rgb(156, 156, 156);
+}
+#header {
+	border-color: rgb(156, 156, 156);
+}
+.sidepanel {
+	border-color: rgb(156, 156, 156);
+}
+.sidepanel h1 {
+	border-color: rgb(156, 156, 156);
+}
+.sidepanel li {
+	border-color: rgb(156, 156, 156);
+}
+#navibar li.current {
+	border-color: rgb(156, 156, 156);
+}
+.footnotes div {
+	border-color: rgb(156, 156, 156);
+}
+#header {
+	background: rgb(255, 255, 255);
+}
+.sidepanel {
+	background: rgb(255, 255, 255);
+}
+.sidepanel h1 {
+	color: rgb(255, 102, 0);
+}
+#navibar li.current {
+	background: rgb(255, 102, 0);
+}
+h2 {
+	border-color: rgb(255, 102, 0);
+}
+h3 {
+	border-color: rgb(255, 102, 0);
+}
+h4 {
+	border-color: rgb(255, 102, 0);
+}
+#credits {
+	color: rgb(119, 119, 119);
+}
+#version {
+	color: rgb(119, 119, 119);
+}
+#timings {
+	color: rgb(119, 119, 119);
+}
+.info {
+	color: rgb(119, 119, 119);
+}
+#logo a {
+	color: rgb(255, 102, 0);
+}
+
+------=_NextPart_000_0000_01CC5B80.41403450
+Content-Type: text/css;
+	charset="iso-2022-jp"
+Content-Transfer-Encoding: 7bit
+Content-Location: http://www.id3.org/screen.css
+
+@import url( base.css );
+@import url( skin-id3.css );
+
+------=_NextPart_000_0000_01CC5B80.41403450
+Content-Type: text/css;
+	charset="iso-2022-jp"
+Content-Transfer-Encoding: 7bit
+Content-Location: http://www.id3.org/wiki/mentalwealth_id3/css/projection.css
+
+@import url( screen.css );
+html {
+	line-height: 1.8em;
+}
+body {
+	font-size: 22pt;
+}
+b {
+	font-size: 22pt;
+}
+em {
+	font-size: 22pt;
+}
+a {
+	font-size: 22pt;
+}
+span {
+	font-size: 22pt;
+}
+div {
+	font-size: 22pt;
+}
+p {
+	font-size: 22pt;
+}
+td {
+	font-size: 22pt;
+}
+h2 {
+	font-size: 24pt;
+}
+h3 {
+	font-size: 22pt;
+}
+h4 {
+	font-size: 20pt;
+}
+h5 {
+	font-size: 18pt;
+}
+h6 {
+	font-size: 16pt;
+}
+tt {
+	font-size: 18pt;
+}
+pre {
+	font-size: 18pt;
+}
+sup {
+	font-size: 14pt;
+}
+sub {
+	font-size: 14pt;
+}
+.navigation {
+	padding-top: 8pt; padding-bottom: 8pt; font-size: 16pt;
+}
+
+------=_NextPart_000_0000_01CC5B80.41403450
+Content-Type: application/octet-stream
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://www.id3.org/wiki/common/js/common.js
+
+//=0A=
+// MoinMoin commonly used JavaScript functions=0A=
+//=0A=
+=0A=
+// use this instead of assigning to window.onload directly:=0A=
+function addLoadEvent(func) {=0A=
+  // alert("addLoadEvent " + func)=0A=
+  var oldonload =3D window.onload;=0A=
+  if (typeof window.onload !=3D 'function') {=0A=
+    window.onload =3D func;=0A=
+  } else {=0A=
+    window.onload =3D function() {=0A=
+      oldonload();=0A=
+      func();=0A=
+    }=0A=
+  }=0A=
+}=0A=
+=0A=
+function can_use_gui_editor() {=0A=
+    var sAgent =3D navigator.userAgent.toLowerCase();=0A=
+ =0A=
+    if (sAgent.indexOf("msie") !=3D -1 && sAgent.indexOf("mac") =3D=3D =
+-1 &&=0A=
+        sAgent.indexOf("opera") =3D=3D -1 ) {=0A=
+        // Internet Explorer=0A=
+        var sBrowserVersion =3D navigator.appVersion.match(/MSIE =
+(.\..)/)[1];=0A=
+        return ( sBrowserVersion >=3D 5.5 );=0A=
+    } else if (navigator.product =3D=3D "Gecko" && =0A=
+               navigator.productSub >=3D 20030210) {=0A=
+        // Gecko=0A=
+        return true;=0A=
+    }=0A=
+    // else if (sAgent.indexOf("safari") !=3D -1 ) {=0A=
+    //    // Safari - build must be at least 312 (1.3)=0A=
+    //    return (sAgent.match( /safari\/(\d+)/ )[1] >=3D 312 );=0A=
+    // } =0A=
+    else {=0A=
+        // Unknown browser, assume gui editor is not compatible=0A=
+        return false;=0A=
+    }=0A=
+}=0A=
+=0A=
+=0A=
+function update_edit_links() {=0A=
+    // Update editlink according if if the browser is compatible=0A=
+    if (can_use_gui_editor() =3D=3D false){=0A=
+        //alert("update_edit_links: can't use gui editor");=0A=
+        return;=0A=
+    }=0A=
+    var editlinks =3D document.getElementsByName("editlink");=0A=
+    for (i =3D 0; i < editlinks.length; i++) {=0A=
+        var link =3D editlinks[i];=0A=
+        href =3D =
+link.href.replace('editor=3Dtextonly','editor=3Dguipossible');=0A=
+        link.href =3D href;=0A=
+        //alert("update_edit_links: modified to guipossible");=0A=
+    }=0A=
+}=0A=
+=0A=
+=0A=
+function add_gui_editor_links() {=0A=
+    // Add gui editor link after the text editor link=0A=
+    =0A=
+    // If the variable is not set or browser is not compatible, exit=0A=
+    try {gui_editor_link_href}=0A=
+    catch (e) {=0A=
+        //alert("add_gui_editor_links: gui_editor_link_href not here");=0A=
+        return=0A=
+    }=0A=
+    if (can_use_gui_editor() =3D=3D false){=0A=
+        //alert("add_gui_editor_links: can't use gui_editor");=0A=
+        return;=0A=
+    }=0A=
+    var all =3D document.getElementsByName('texteditlink');=0A=
+    for (i =3D 0; i < all.length; i++) {=0A=
+        var textEditorLink =3D all[i];=0A=
+        // Create a list item with a link=0A=
+        var guiEditorLink =3D document.createElement('a');=0A=
+        guiEditorLink.href =3D gui_editor_link_href;=0A=
+        var text =3D document.createTextNode(gui_editor_link_text);=0A=
+        guiEditorLink.appendChild(text);=0A=
+        var listItem =3D document.createElement('li')=0A=
+        listItem.appendChild(guiEditorLink);=0A=
+        // Insert in the editbar=0A=
+        var editbar =3D textEditorLink.parentNode.parentNode=0A=
+        var nextListItem =3D textEditorLink.parentNode.nextSibling;=0A=
+        editbar.insertBefore(listItem, nextListItem);=0A=
+        //alert("add_gui_editor_links: added gui editor link");=0A=
+    }=0A=
+}=0A=
+ =0A=
+=0A=
+function show_switch2gui() {=0A=
+    // Show switch to gui editor link if the browser is compatible=0A=
+    if (can_use_gui_editor() =3D=3D false) return;=0A=
+    =0A=
+    var switch2gui =3D document.getElementById('switch2gui')=0A=
+    if (switch2gui) {=0A=
+        switch2gui.style.display =3D 'inline';=0A=
+    }=0A=
+}=0A=
+=0A=
+=0A=
+function load() {=0A=
+    // Do not name this "onload", it does not work with IE :-)=0A=
+    // TODO: create separate onload for each type of view and set the=0A=
+    // correct function name in the html. =0A=
+    // e.g <body onlod=3D'editor_onload()'>=0A=
+    =0A=
+    // Page view stuff=0A=
+    update_edit_links();=0A=
+    add_gui_editor_links();=0A=
+    =0A=
+    // Editor stuff=0A=
+    show_switch2gui();=0A=
+}=0A=
+=0A=
+=0A=
+function before_unload(evt) {=0A=
+    // TODO: Better to set this in the editor html, as it does not make=0A=
+    // sense elsehwere.=0A=
+    // confirmleaving is available when editing=0A=
+    try {return confirmleaving();}=0A=
+    catch (e) {}=0A=
+}=0A=
+=0A=
+// Initialize after loading the page=0A=
+addLoadEvent(load)=0A=
+=0A=
+// Catch before unloading the page=0A=
+window.onbeforeunload =3D before_unload=0A=
+=0A=
+
+------=_NextPart_000_0000_01CC5B80.41403450
+Content-Type: application/octet-stream
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://pagead2.googlesyndication.com/pagead/show_ads.js
+
+=0A=
+(function(){var g=3Dnull,h=3D(new Date).getTime();var =
+i=3Dthis,aa=3Dfunction(a,b){var c=3Da.split("."),d=3Di;!(c[0]in =
+d)&&d.execScript&&d.execScript("var "+c[0]);for(var =
+e;c.length&&(e=3Dc.shift());)!c.length&&b!=3D=3Dvoid =
+0?d[e]=3Db:d=3Dd[e]?d[e]:d[e]=3D{}},ba=3Dfunction(a,b,c){return =
+a.call.apply(a.bind,arguments)},ca=3Dfunction(a,b,c){if(!a)throw =
+Error();if(arguments.length>2){var =
+d=3DArray.prototype.slice.call(arguments,2);return function(){var =
+c=3DArray.prototype.slice.call(arguments);Array.prototype.unshift.apply(c=
+,d);return a.apply(b,c)}}else return function(){return a.apply(b,=0A=
+arguments)}},j=3Dfunction(a,b,c){j=3DFunction.prototype.bind&&Function.pr=
+ototype.bind.toString().indexOf("native code")!=3D-1?ba:ca;return =
+j.apply(g,arguments)};var =
+ea=3D/&/g,fa=3D/</g,ga=3D/>/g,ha=3D/\"/g,k=3D{"\x00":"\\0","\u0008":"\\b"=
+,"\u000c":"\\f","\n":"\\n","\r":"\\r","\t":"\\t","\u000b":"\\x0B",'"':'\\=
+"',"\\":"\\\\"},p=3D{"'":"\\'"},ja=3Dfunction(a){for(var =
+b=3D0,c=3DString(ia).replace(/^[\s\xa0]+|[\s\xa0]+$/g,"").split("."),a=3D=
+String(a).replace(/^[\s\xa0]+|[\s\xa0]+$/g,"").split("."),d=3DMath.max(c.=
+length,a.length),e=3D0;b=3D=3D0&&e<d;e++){var =
+f=3Dc[e]||"",oa=3Da[e]||"",r=3DRegExp("(\\d*)(\\D*)","g"),l=3DRegExp("(\\=
+d*)(\\D*)","g");do{var m=3Dr.exec(f)||["","",""],n=3Dl.exec(oa)||["",=0A=
+"",""];if(m[0].length=3D=3D0&&n[0].length=3D=3D0)break;b=3Dq(m[1].length=3D=
+=3D0?0:parseInt(m[1],10),n[1].length=3D=3D0?0:parseInt(n[1],10))||q(m[2].=
+length=3D=3D0,n[2].length=3D=3D0)||q(m[2],n[2])}while(b=3D=3D0)}return =
+b},q=3Dfunction(a,b){if(a<b)return-1;else if(a>b)return 1;return 0};var =
+ka=3Ddocument,s=3Dwindow;var t=3Dfunction(a){a=3DparseFloat(a);return =
+isNaN(a)||a>1||a<0?0:a},w=3Dfunction(a){return =
+a=3D=3D"true"?!0:a=3D=3D"false"?!1:!1},la=3D/^([\w-]+\.)*([\w-]{2,})(\:[0=
+-9]+)?$/,x=3Dfunction(a){return!a?"pagead2.googlesyndication.com":(a=3Da.=
+match(la))?a[0]:"pagead2.googlesyndication.com"};var =
+ma=3Dt("0"),na=3Dt("0"),pa=3Dt("0");var =
+qa=3Dw("false"),ra=3Dw("false"),sa=3Dw("false");var =
+ta=3Dfunction(){return x("")};var y,z,B,C,ua=3Dfunction(){return =
+i.navigator?i.navigator.userAgent:g};C=3DB=3Dz=3Dy=3D!1;var =
+D;if(D=3Dua()){var =
+va=3Di.navigator;y=3DD.indexOf("Opera")=3D=3D0;z=3D!y&&D.indexOf("MSIE")!=
+=3D-1;B=3D!y&&D.indexOf("WebKit")!=3D-1;C=3D!y&&!B&&va.product=3D=3D"Geck=
+o"}var E=3Dz,F=3DC,wa=3DB,G;=0A=
+a:{var H=3D"",I;if(y&&i.opera)var J=3Di.opera.version,H=3Dtypeof =
+J=3D=3D"function"?J():J;else =
+if(F?I=3D/rv\:([^\);]+)(\)|;)/:E?I=3D/MSIE\s+([^\);]+)(\)|;)/:wa&&(I=3D/W=
+ebKit\/(\S+)/),I)var xa=3DI.exec(ua()),H=3Dxa?xa[1]:"";if(E){var =
+K,ya=3Di.document;K=3Dya?ya.documentMode:void =
+0;if(K>parseFloat(H)){G=3DString(K);break a}}G=3DH}var =
+ia=3DG,L=3D{},za=3D{},Aa=3Dfunction(){return =
+za[9]||(za[9]=3DE&&document.documentMode&&document.documentMode>=3D9)};!E=
+||Aa();if(F||E)if(!E||!Aa())F&&(L["1.9.1"]||(L["1.9.1"]=3Dja("1.9.1")>=3D=
+0));E&&(L["9"]||(L["9"]=3Dja("9")>=3D0));x("");var =
+N=3Dfunction(a){return!!a&&typeof =
+a=3D=3D"function"&&!!a.call},Ba=3Dfunction(a,b){if(!(arguments.length<2))=
+for(var =
+c=3D1,d=3Darguments.length;c<d;++c)a.push(arguments[c])};function =
+O(a){return typeof =
+encodeURIComponent=3D=3D"function"?encodeURIComponent(a):escape(a)}functi=
+on =
+Ca(a,b){a.attachEvent?a.attachEvent("onload",b):a.addEventListener&&a.add=
+EventListener("load",b,!1)};aa("google_protectAndRun",function(a,b,c){a=3D=
+j(b,i,a);b=3Dwindow.onerror;window.onerror=3Da;try{c()}catch(d){var =
+c=3Dd.toString(),e=3D"";d.fileName&&(e=3Dd.fileName);var =
+f=3D-1;if(d.lineNumber)f=3Dd.lineNumber;if(!a(c,e,f))throw =
+d;}window.onerror=3Db});=0A=
+aa("google_handleError",function(a,b,c,d){if(Math.random()<0.01)a=3D["htt=
+p://",ta(),"/pagead/gen_204","?id=3Djserror","&jscb=3D",qa?1:0,"&jscd=3D"=
+,ra?1:0,"&context=3D",O(a),"&msg=3D",O(b),"&file=3D",O(c),"&line=3D",O(d.=
+toString()),"&url=3D",O(ka.URL.substring(0,512)),"&ref=3D",O(ka.referrer.=
+substring(0,512))],a.push(["&client=3D",O(s.google_ad_client),"&format=3D=
+",O(s.google_ad_format),"&slotname=3D",O(s.google_ad_slot),"&output=3D",O=
+(s.google_ad_output),"&ad_type=3D",O(s.google_ad_type)].join("")),a=3Da.j=
+oin(""),s.google_image_requests||=0A=
+(s.google_image_requests=3D[]),b=3Dnew =
+Image,b.src=3Da,s.google_image_requests.push(b);return!sa});var =
+Da=3Dfunction(a){try{var =
+b=3Da.google_test;a.google_test=3D!b;if(a.google_test=3D=3D=3D!b)return =
+a.google_test=3Db,!0}catch(c){}return!1},P=3Dg,Ea=3Dfunction(){if(!P){for=
+(var a=3Dwindow;a!=3Da.parent&&Da(a.parent);)a=3Da.parent;P=3Da}return =
+P};var =
+Q,R=3Dfunction(a){this.c=3D[];this.a=3Da||window;this.b=3D0;this.d=3Dg},F=
+a=3Dfunction(a,b){this.l=3Da;this.i=3Db};R.prototype.n=3Dfunction(a,b){th=
+is.b=3D=3D0&&this.c.length=3D=3D0&&(!b||b=3D=3Dwindow)?(this.b=3D2,this.g=
+(new =
+Fa(a,window))):this.h(a,b)};R.prototype.h=3Dfunction(a,b){this.c.push(new=
+ =
+Fa(a,b||this.a));S(this)};R.prototype.o=3Dfunction(a){this.b=3D1;if(a)thi=
+s.d=3Dthis.a.setTimeout(j(this.f,this),a)};R.prototype.f=3Dfunction(){if(=
+this.b=3D=3D1){if(this.d!=3Dg)this.a.clearTimeout(this.d),this.d=3Dg;this=
+.b=3D0}S(this)};R.prototype.p=3Dfunction(){return!0};=0A=
+R.prototype.nq=3DR.prototype.n;R.prototype.nqa=3DR.prototype.h;R.prototyp=
+e.al=3DR.prototype.o;R.prototype.rl=3DR.prototype.f;R.prototype.sz=3DR.pr=
+ototype.p;var =
+S=3Dfunction(a){a.a.setTimeout(j(a.m,a),0)};R.prototype.m=3Dfunction(){if=
+(this.b=3D=3D0&&this.c.length){var =
+a=3Dthis.c.shift();this.b=3D2;a.i.setTimeout(j(this.g,this,a),0);S(this)}=
+};R.prototype.g=3Dfunction(a){this.b=3D0;a.l()};=0A=
+var Ga=3Dfunction(a){try{return =
+a.sz()}catch(b){return!1}},Ia=3Dfunction(a){return!!a&&(typeof =
+a=3D=3D"object"||typeof =
+a=3D=3D"function")&&Ga(a)&&N(a.nq)&&N(a.nqa)&&N(a.al)&&N(a.rl)},Ja=3Dfunc=
+tion(){if(Q&&Ga(Q))return Q;var a=3DEa(),b=3Da.google_jobrunner;return =
+Ia(b)?Q=3Db:a.google_jobrunner=3DQ=3Dnew =
+R(a)},Ka=3Dfunction(a,b){Ja().nq(a,b)},La=3Dfunction(a,b){Ja().nqa(a,b)};=
+var Ma=3D/MSIE =
+[2-7]|PlayStation|Gecko\/20090226/i,Na=3D/Android|Opera/,Oa=3Dfunction(){=
+var =
+a=3DT,b=3DU.google_ad_width,c=3DU.google_ad_height,d=3D["<iframe"],e;for(=
+e in =
+a)a.hasOwnProperty(e)&&Ba(d,e+"=3D"+a[e]);d.push('style=3D"left:0;positio=
+n:absolute;top:0;"');d.push("></iframe>");b=3D"border:none;height:"+c+"px=
+;margin:0;padding:0;position:relative;visibility:visible;width:"+b+"px";r=
+eturn['<ins style=3D"display:inline-table;',b,'"><ins =
+id=3D"',a.id+"_anchor",'" style=3D"display:block;',b,'">',d.join(" =
+"),"</ins></ins>"].join("")};var =
+Pa=3Dfunction(){},Ra=3Dfunction(a,b,c){switch(typeof b){case =
+"string":Qa(b,c);break;case =
+"number":c.push(isFinite(b)&&!isNaN(b)?b:"null");break;case =
+"boolean":c.push(b);break;case "undefined":c.push("null");break;case =
+"object":if(b=3D=3Dg){c.push("null");break}if(b instanceof Array){var =
+d=3Db.length;c.push("[");for(var =
+e=3D"",f=3D0;f<d;f++)c.push(e),Ra(a,b[f],c),e=3D",";c.push("]");break}c.p=
+ush("{");d=3D"";for(e in b)b.hasOwnProperty(e)&&(f=3Db[e],typeof =
+f!=3D"function"&&(c.push(d),Qa(e,c),c.push(":"),Ra(a,f,c),d=3D=0A=
+","));c.push("}");break;case "function":break;default:throw =
+Error("Unknown type: "+typeof =
+b);}},Sa=3D{'"':'\\"',"\\":"\\\\","/":"\\/","\u0008":"\\b","\u000c":"\\f"=
+,"\n":"\\n","\r":"\\r","\t":"\\t","\u000b":"\\u000b"},Ta=3D/\uffff/.test(=
+"\uffff")?/[\\\"\x00-\x1f\x7f-\uffff]/g:/[\\\"\x00-\x1f\x7f-\xff]/g,Qa=3D=
+function(a,b){b.push('"');b.push(a.replace(Ta,function(a){if(a in =
+Sa)return Sa[a];var =
+b=3Da.charCodeAt(0),e=3D"\\u";b<16?e+=3D"000":b<256?e+=3D"00":b<4096&&(e+=
+=3D"0");return Sa[a]=3De+b.toString(16)}));b.push('"')};var =
+V=3D"google_ad_block,google_ad_channel,google_ad_client,google_ad_format,=
+google_ad_height,google_ad_host,google_ad_host_channel,google_ad_host_tie=
+r_id,google_ad_output,google_ad_override,google_ad_region,google_ad_secti=
+on,google_ad_slot,google_ad_type,google_ad_width,google_adtest,google_all=
+ow_expandable_ads,google_alternate_ad_url,google_alternate_color,google_a=
+nalytics_domain_name,google_analytics_uacct,google_bid,google_city,google=
+_color_bg,google_color_border,google_color_line,google_color_link,google_=
+color_text,google_color_url,google_container_id,google_contents,google_co=
+untry,google_cpm,google_ctr_threshold,google_cust_age,google_cust_ch,goog=
+le_cust_gender,google_cust_id,google_cust_interests,google_cust_job,googl=
+e_cust_l,google_cust_lh,google_cust_u_url,google_disable_video_autoplay,g=
+oogle_ed,google_eids,google_enable_osd,google_enable_ose,google_encoding,=
+google_font_face,google_font_size,google_frame_id,google_gl,google_hints,=
+google_image_size,google_kw,google_kw_type,google_language,google_max_num=
+_ads,google_max_radlink_len,google_num_radlinks,google_num_radlinks_per_u=
+nit,google_num_slots_to_rotate,google_only_ads_with_video,google_only_pyv=
+_ads,google_only_userchoice_ads,google_override_format,google_page_url,go=
+ogle_previous_watch,google_previous_searches,google_referrer_url,google_r=
+egion,google_reuse_colors,google_rl_dest_url,google_rl_filtering,google_r=
+l_mode,google_rt,google_safe,google_scs,google_skip,google_tag_info,googl=
+e_targeting,google_ui_features,google_ui_version,google_video_doc_id,goog=
+le_video_product_type,google_with_pyv_ads".split(",");var =
+W=3Dfunction(a){this.a=3Da;a.google_iframe_oncopy||(a.google_iframe_oncop=
+y=3D{handlers:{},log:[],img:Math.random()<0.01?[]:g});this.e=3Da.google_i=
+frame_oncopy;a.setTimeout(j(this.k,this),3E4)},Ua;var X=3D"var =
+i=3Dthis.id,s=3Dwindow.google_iframe_oncopy,H=3Ds&&s.handlers,h=3DH&&H[i]=
+,w=3Dthis.contentWindow,d;try{d=3Dw.document}catch(e){}if(h&&d&&(!d.body|=
+|!d.body.firstChild)){if(h.call){i+=3D'.call';setTimeout(h,0)}else =
+if(h.match){i+=3D'.nav';w.location.replace(h)}s.log&&s.log.push(i)}";=0A=
+/[&<>\"]/.test(X)&&(X.indexOf("&")!=3D-1&&(X=3DX.replace(ea,"&amp;")),X.i=
+ndexOf("<")!=3D-1&&(X=3DX.replace(fa,"&lt;")),X.indexOf(">")!=3D-1&&(X=3D=
+X.replace(ga,"&gt;")),X.indexOf('"')!=3D-1&&(X=3DX.replace(ha,"&quot;")))=
+;Ua=3DX;W.prototype.set=3Dfunction(a,b){this.e.handlers[a]=3Db;this.a.add=
+EventListener&&this.a.addEventListener("load",j(this.j,this,a),!1)};W.pro=
+totype.j=3Dfunction(a){var =
+a=3Dthis.a.document.getElementById(a),b=3Da.contentWindow.document;if(a.o=
+nload&&b&&(!b.body||!b.body.firstChild))a.onload()};=0A=
+W.prototype.k=3Dfunction(){if(this.e.img){var =
+a=3Dthis.e.log,b=3Dthis.a.document;if(a.length)b=3D["http://",ta(),"/page=
+ad/gen_204?id=3Diframecopy&log=3D",O(a.join("-")),"&url=3D",O(b.URL.subst=
+ring(0,512)),"&ref=3D",O(b.referrer.substring(0,512))].join(""),a.length=3D=
+0,a=3Dnew Image,this.e.img.push(a),a.src=3Db}};var Va=3Dfunction(){var =
+a=3D"script";return["<",a,' =
+src=3D"http://',x(""),'/pagead/js/r20110803/r20110719/show_ads_impl.js"><=
+/',a,">"].join("")},Wa=3Dfunction(a,b,c,d){return function(){var =
+e=3D!1;d&&Ja().al(3E4);try{var =
+f;try{f=3D!!a.document.getElementById(b).contentWindow.document}catch(oa)=
+{f=3D!1}if(f){var r=3Da.document.getElementById(b).contentWindow,=0A=
+l=3Dr.document;if(!l.body||!l.body.firstChild)l.open(),r.google_async_ifr=
+ame_close=3D!0,l.write(c)}else{var =
+m=3Da.document.getElementById(b).contentWindow,n;f=3Dc;f=3DString(f);if(f=
+.quote)n=3Df.quote();else{r=3D['"'];for(l=3D0;l<f.length;l++){var =
+M=3Df.charAt(l),Ha=3DM.charCodeAt(0),pb=3Dr,qb=3Dl+1,da;if(!(da=3Dk[M])){=
+var A;if(Ha>31&&Ha<127)A=3DM;else{var o=3DM;if(o in p)A=3Dp[o];else if(o =
+in k)A=3Dp[o]=3Dk[o];else{var =
+u=3Do,v=3Do.charCodeAt(0);if(v>31&&v<127)u=3Do;else{if(v<256){if(u=3D"\\x=
+",v<16||v>256)u+=3D"0"}else u=3D"\\u",v<4096&&(u+=3D"0");=0A=
+u+=3Dv.toString(16).toUpperCase()}A=3Dp[o]=3Du}}da=3DA}pb[qb]=3Dda}r.push=
+('"');n=3Dr.join("")}m.location.replace("javascript:"+n)}e=3D!0}catch(xb)=
+{m=3DEa().google_jobrunner,Ia(m)&&m.rl()}e&&(new =
+W(a)).set(b,Wa(a,b,c,!1))}},Xa=3Dfunction(){return ma&&na/ma||typeof =
+window.google_hash_ratio=3D=3D"number"&&window.google_hash_ratio||g};wind=
+ow.google_loader_used=3D!0;(function(a){if(!("google_onload_fired"in =
+a))a.google_onload_fired=3D!1,Ca(a,function(){a.google_onload_fired=3D!0}=
+)})(window);if(!window.google_loader_experiment){var Ya;a:{var =
+Za=3D["async_bad_black","block_bad_black"];if(!(Math.random()<1.0E-4)){va=
+r =
+$a=3DMath.random();if($a<pa){Ya=3DZa[Math.floor($a/pa*Za.length)];break =
+a}}Ya=3Dg}window.google_loader_experiment=3DYa||""||"launch"}var ab;=0A=
+a:{try{if(window.google_enable_async!=3D=3D!0&&window.google_loader_exper=
+iment=3D=3D"blockodd"&&window.top.location.hostname.length%2=3D=3D1){ab=3D=
+!1;break a}}catch(bb){}ab=3D!0}var cb;if(cb=3Dab){var =
+db;if(window.google_enable_async=3D=3D=3D!1)db=3D0;else{var =
+eb=3Dnavigator.userAgent,fb=3Dwindow.google_loader_experiment;db=3D(Ma.te=
+st(eb)?!1:Na.test(eb)?fb=3D=3D"async_bad_black":!0)&&!window.google_conta=
+iner_id&&(!window.google_ad_output||window.google_ad_output=3D=3D"html")}=
+cb=3Ddb}=0A=
+if(cb){var =
+gb=3Dwindow;gb.google_unique_id?++gb.google_unique_id:gb.google_unique_id=
+=3D1;for(var =
+Y=3Dwindow,_script$$inline_161=3D"script",Z,U=3DY,T=3D{allowtransparency:=
+'"true"',frameborder:'"0"',height:'"'+Y.google_ad_height+'"',hspace:'"0"'=
+,marginwidth:'"0"',marginheight:'"0"',onload:'"'+Ua+'"',scrolling:'"no"',=
+vspace:'"0"',width:'"'+Y.google_ad_width+'"'},hb=3DU.document,$=3DT.id,ib=
+=3D0;!$||U.document.getElementById($);)$=3D"aswift_"+ib++;T.id=3D$;T.name=
+=3D$;hb.write(Oa());Z=3D$;var jb;Y.google_page_url&&(Y.google_page_url=3D=0A=
+String(Y.google_page_url));for(var =
+kb=3D[],lb=3D0,mb=3DV.length;lb<mb;lb++){var =
+nb=3DV[lb];if(Y[nb]!=3Dg){var ob;try{var rb=3D[];Ra(new =
+Pa,Y[nb],rb);ob=3Drb.join("")}catch(sb){}ob&&Ba(kb,nb,"=3D",ob,";")}}jb=3D=
+kb.join("");for(var tb=3D0,ub=3DV.length;tb<ub;tb++)Y[V[tb]]=3Dg;var =
+vb=3D(new =
+Date).getTime(),wb=3DXa(),yb=3Dwindow.google_loader_experiment,zb=3D["<!d=
+octype =
+html><html><body><",_script$$inline_161,">",jb,"google_show_ads_impl=3Dtr=
+ue;google_unique_id=3D",Y.google_unique_id,';google_async_iframe_id=3D"',=
+Z,'";google_start_time=3D',=0A=
+h,";",wb?"google_hash_ratio=3D"+wb+";":"",yb?'google_loader_experiment=3D=
+"'+yb+'";':"","google_bpp=3D",vb>h?vb-h:1,";</",_script$$inline_161,">",V=
+a(),"</body></html>"].join("");(Y.document.getElementById(Z)?Ka:La)(Wa(Y,=
+Z,zb,!0))}else =
+window.google_start_time=3Dh,window.google_hash_ratio=3DXa(),document.wri=
+te(Va());})();=0A=
+
+------=_NextPart_000_0000_01CC5B80.41403450--

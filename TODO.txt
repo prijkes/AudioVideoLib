@@ -1,0 +1,170 @@
+- ApeLocatorItem [x]
+Fix comments + add value checking
+
+- ApeTag [x]
+Move ReadFrame() functionality (below StreamBuffer sb = new StreamBuffer(stream);) into a private function to separate it from the public function, just like in the Id3v2Frame class?
+
+- ApeItem [x]
+Make sure that every 'unique' value entry in ItemKeys is being caught as that enum when reading a frame.
+Album Artist and ALBUMARTIST should both return (and point to) the same frame.
+
+- Id3v2Tag [x]
+1. Fix exception throwing in data-specific functions (called within the different frame types when setting the value). The property set-accessor should throw the exception; not the function it calls.
+The function should be something like 'IsValidX', and return true or false. If false, the set-property should throw an exception.
+
+2. Move Id3v2TagFrameFactory code into Id3v2Frame? The tag shouldn't know about frame names; the Id3v2Frame, however, should.
+Parsing could be done using a static Id3v2Frame.ReadFrame() method just like in the ApeTag?
+
+- Id3v2TextFrame [x]
+Add validation of the identifier supplied in the parameter as string.
+It should start with T, be 3 -or- 4 chars long, contain only valid ASCII chars, etc.
+
+- Id3v2Frames and ApeItems [x]
+Change all IEnumerable<> values to List<>. IEnumerable implies a lazy load; this could mean crashes later on. I.e. if someone gives us a IEnumerable from a database which we try to query at a later point;
+the connection could be closed by then and thus throw an exception, which eventually bubbles from the library as if we caused it.
+We're doing a .ToList() now (see Id3v2TextFrame.Informations) to store the IEnumerable locally as a list; which could trigger a query in response, which could be unwanted by the user.
+
+- Everything
+See if the ArgumentNullException being thrown is justified. Why is null not valid? Maybe someone wants to reset the property, internal value or a setting.
+Maybe someone wants to remove data from a property such he deems is not needed; a null exception shouldn't happen in such case.
+
+- StreamBuffer (suggestive, needs review)
+Every read function should have an out parameter to set its value, and the return value of every read action should be the amount of bytes read. Or the other way around. ?
+
+- Id3v2Tag [x]
+The CalculateCrc32() function in the Id3v2ExtendedHeader.cs file seems whacky; re-check if the checks are properly implemented.
+
+- ApeTag
+Fix comments for all properties in ApeItems.cs; make it more clear which property represents what.
+
+- StreamBuffer
+Fix comments to explain what exactly happens to the position in the stream when reading bytes.
+
+- Id3v2CompressedDataMeta [x]
+The compressed data is actually an Id3v2Frame. It needs to be decompressed and properly read again depending on the Identifier.
+Think of the best way to do this, since the frame parsing function is within the Id3v2Tag class and not the Id3v2Frame class.
+
+- Id3v2Tag [x]
+Add the 2 missing (not implemented) frames from the Id3v2Tag homepage.
+
+- All [x]
+Think of something of an encapsulating list class which can be consumed by users in order to iterate and possible remove / delete items on a class.
+ApeTag and Id3v2Tag implement something like a SetItem() function to add items; maybe we can write an interface for this, and a custom list class to use this interface
+so people can add / remove items using this custom list class, while maintaining tag integrity. People can also iterate those items when implementing this on the list class.
+See: http://stackoverflow.com/a/1931338/1872680
+Hint: Implement this first using the Id3v2 Tag.
+
+- Id3v2Tag [x]
+Fix the SetFrame()/SetFrames() functions. When 'resetting' / 'adding' frames, the check on frame sameness is wrong; 
+TextFrames can have the same identifier yet could have different requirements to be considered equal, while the AttachedPicture frame should be unique.
+Maybe relate this with a the general list class to implement a check for sameness as an required interface function?
+
+- Id3v2Frames
+Make a custom function to compare frames based on the frame equality requirement instead of the difference in each field. Implement this function in the IId3v2Frame interface,
+and change the .Equals() function/overloads to compare by each field instead. This because some frames are only allowed 1 of a kind in each tag; while the user might compare
+the same frame from 2 sources but same tag version and stuff. Call this function Matches or anything?
+
+- All
+Remove all throw exceptions() on places which validate a tag (i.e. amount of bytes read is hdr.Size), and return null or skip the rest of data parsing when this occurs, to minimize error throwing?
+
+- StreamBuffer [x]
+When checking for known preambles, use a list of all preambles for every encoding which has one. Make this field a static field so this is only filled once.
+We can then loop the field, and check for each preamble with that of the bytes read. The preamble buffer length should be that of the longest preamble length + 1.
+After this is done, ask http://codereview.stackexchange.com/ for help on performance optimizations.
+
+- Id3v2Tag and Id3v2Frames [x]
+Move all the 'There may be more than one frame in each tag, but only one with the same...' comments to the property within the Id3v2Tag itself.
+Add comments to the Equal() function within the frame to explain what is being compared.
+
+- Id3v2Tag and Id3v2Frames [x]
+Fix all comments; replace the byte representation style to hex representation.
+
+- ApeBinaryItem
+SetData(byte[] data)... really?
+
+- Comparing strings [x]
+Use String.Equals() instead of <instance>.Equals(); if <instance> is null, we'll get a null crash. We won't have that with String.Equals.
+
+- All
+Check if we're checking all possible values on NULL before writing them to a streambuffer. Just do a search for .WriteString( and .Write(
+
+- All [x]
+We should be checking string properties with String.IsNullOrEmpty; some have requirements that will fail when the string is empty.
+Since empty is basically the same as null, as nothing will get written, there's no need to bail out due the requirements.
+
+- Most? [x]
+All get properties with return type IList or ICollection etc. should not have a set; items should be added by doing Property.Add();
+
+- Id3v2Frames [x]
+Rename all "str" parameters to something more meaningful.
+
+- Id3v2Frames [x]
+Remove all string initializations to String.Empty; null is now valid.
+
+- Id3v2Frames [x]
+Remove all byte array initializations to an empty byte array; null is now valid.
+
+- Id3v2Frames [x]
+Check for value.length > 0 check; this shouldn't exist anymore.
+
+- Id3v2Frames [x]
+I think most public byte[] properties can be made auto-properties now if they don't have any data checks associated.
+
+- All [x]
+Make all private List<> and Collection<> instances EventList<> ?
+
+- All [x]
+Make sure to return IList<> instead of List<> everywhere so we can change it to EventList<> if needed later on.
+
+- All [x]
+When adding items in the override Data[] property, we first need to clear the instance List<> and Collection<> before adding the data.
+This is because when we call the Data[] setter twice, the items are appended, instead of 'set' as the new list/collection content.
+
+- All
+Move all constructor functionality into a private Initialize() function and call that from every constructor of the class.
+Do this only for classes with more than one constructor which all have the same initialization routine.
+
+- All [x]
+In every class which assigns event callbacks to EventList, throw exception when adding a null value.
+
+- All
+Make an event for each tag (add it to an interface?) which receives all exceptions. This in order for the user to have at least an idea what is wrong with a tag and where.
+In most cases, a user can not prevent the exception from being thrown, as the tag is read from a stream, and could be corrupted in the stream. If we throw an exception,
+and stop processing a tag, a user will never be able to read a tag from a stream. Maybe add an enum to the event class about what kind of exception has occurred,
+so users can categorize the exceptions.
+
+- All tags which use footer and/or header
+All UseFooter and UseHeader and IsHeader variables should have a private set instead of a public one.
+Only when writing the tag, the useHeader and isHeader and useFooter come into play. And it depends on where the user will want to write the tag; if this is at the
+beginning, we should manually set UseHeader etc. to true.
+
+- Id3v2Frames [x]
+Throw InvalidDataException() in the constructor of each frame type when the version is not supported. This is currently not done.
+
+- Id3v2Frames [x]
+Change each 'and will thrown an exception when initialized with <version> or earlier/later' to 'and will thrown an exception when initialized with earlier/later version' instead.
+I.e. remove the reference and specific versions so we're not limited to specific start and end version.
+
+- Id3v2Frames [?]
+Add the proper terms and wording for deprecated frames. These frames can still be used for those versions, but should be noted as deprecated.
+
+- Id3v2Tag
+Read the specs again, this time carefully, and update the documentation with each version spec individually. This so we have 'up-to-date' and 'accurate' descriptions for everything.
+
+ - Id3v2Frames [x]
+ For each class overriding the IsVersionSupported() function, change the documentation to specify which version is supported when. I.e. remove the inheritdoc tag and add proper documentation.
+
+ - Id3v2ReplayGainAdjustmentFrame
+ Add proper documentation and frame is version supported code.
+ See http://wiki.hydrogenaudio.org/index.php?title=ReplayGain_1.0_specification#Metadata_format
+ and http://wiki.hydrogenaudio.org/index.php?title=ReplayGain_legacy_metadata_formats#cite_note-0
+
+ - Id3v2Frames [x]
+ See if all IsVersionSupported function return values are equal to the checks in the constructors.
+
+- Id3v2Tag
+Remove all null-terminated string references in the public XML comments; there's no such thing as null-terminated strings in .NET, and the library will handle the string termination itself.
+
+- All
+Document all Exceptions thrown in each function/constructor/property; i.e. when and why the Exception is thrown.
+

@@ -1,0 +1,2066 @@
+From: "Saved by Windows Internet Explorer 8"
+Subject: id3v2.4.0-changes - ID3.org
+Date: Fri, 13 May 2011 21:13:53 +0200
+MIME-Version: 1.0
+Content-Type: multipart/related;
+	type="text/html";
+	boundary="----=_NextPart_000_0000_01CC11B2.A9BA1FE0"
+X-MimeOLE: Produced By Microsoft MimeOLE V6.1.7601.17574
+
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_0000_01CC11B2.A9BA1FE0
+Content-Type: text/html;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://www.id3.org/id3v2.4.0-changes
+
+=EF=BB=BF<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><TITLE>id3v2.4.0-changes - ID3.org</TITLE>
+<META content=3Dtext/html;charset=3Dutf-8 http-equiv=3DContent-Type>
+<META name=3Drobots content=3Dindex,nofollow>
+<SCRIPT type=3Dtext/javascript=20
+src=3D"http://www.id3.org/wiki/common/js/common.js"></SCRIPT>
+
+<SCRIPT type=3Dtext/javascript>=0A=
+<!--// common functions=0A=
+=0A=
+// We keep here the state of the search box=0A=
+searchIsDisabled =3D false;=0A=
+=0A=
+function searchChange(e) {=0A=
+    // Update search buttons status according to search box content.=0A=
+    // Ignore empty or whitespace search term.=0A=
+    var value =3D e.value.replace(/\s+/, '');=0A=
+    if (value =3D=3D '' || searchIsDisabled) { =0A=
+        searchSetDisabled(true);=0A=
+    } else {=0A=
+        searchSetDisabled(false);=0A=
+    }=0A=
+}=0A=
+=0A=
+function searchSetDisabled(flag) {=0A=
+    // Enable or disable search=0A=
+    document.getElementById('fullsearch').disabled =3D flag;=0A=
+    document.getElementById('titlesearch').disabled =3D flag;=0A=
+}=0A=
+=0A=
+function searchFocus(e) {=0A=
+    // Update search input content on focus=0A=
+    if (e.value =3D=3D '=E6=A4=9C=E7=B4=A2') {=0A=
+        e.value =3D '';=0A=
+        e.className =3D '';=0A=
+        searchIsDisabled =3D false;=0A=
+    }=0A=
+}=0A=
+=0A=
+function searchBlur(e) {=0A=
+    // Update search input content on blur=0A=
+    if (e.value =3D=3D '') {=0A=
+        e.value =3D '=E6=A4=9C=E7=B4=A2';=0A=
+        e.className =3D 'disabled';=0A=
+        searchIsDisabled =3D true;=0A=
+    }=0A=
+}=0A=
+=0A=
+function actionsMenuInit(title) {=0A=
+    // Initialize action menu=0A=
+    for (i =3D 0; i < document.forms.length; i++) {=0A=
+        var form =3D document.forms[i];=0A=
+        if (form.className =3D=3D 'actionsmenu') {=0A=
+            // Check if this form needs update=0A=
+            var div =3D form.getElementsByTagName('div')[0];=0A=
+            var label =3D div.getElementsByTagName('label')[0];=0A=
+            if (label) {=0A=
+                // This is the first time: remove label and do buton.=0A=
+                div.removeChild(label);=0A=
+                var dobutton =3D div.getElementsByTagName('input')[0];=0A=
+                div.removeChild(dobutton);=0A=
+                // and add menu title=0A=
+                var select =3D div.getElementsByTagName('select')[0];=0A=
+                var item =3D document.createElement('option');=0A=
+                item.appendChild(document.createTextNode(title));=0A=
+                item.value =3D 'show';=0A=
+                select.insertBefore(item, select.options[0]);=0A=
+                select.selectedIndex =3D 0;=0A=
+            }=0A=
+        }=0A=
+    }=0A=
+}=0A=
+//-->=0A=
+</SCRIPT>
+<LINK rel=3Dstylesheet type=3Dtext/css=20
+href=3D"http://www.id3.org/wiki/mentalwealth_id3/css/common.css" =
+charset=3Dutf-8=20
+media=3Dall><LINK rel=3Dstylesheet type=3Dtext/css=20
+href=3D"http://www.id3.org/wiki/mentalwealth_id3/css/screen.css" =
+charset=3Dutf-8=20
+media=3Dscreen><LINK rel=3Dstylesheet type=3Dtext/css=20
+href=3D"http://www.id3.org/wiki/mentalwealth_id3/css/print.css" =
+charset=3Dutf-8=20
+media=3Dprint><LINK rel=3Dstylesheet type=3Dtext/css=20
+href=3D"http://www.id3.org/wiki/mentalwealth_id3/css/projection.css" =
+charset=3Dutf-8=20
+media=3Dprojection><LINK title=3D"ID3.org Recent Changes" =
+rel=3Dalternate=20
+type=3Dapplication/rss+xml=20
+href=3D"/RecentChanges?action=3Drss_rc&amp;ddiffs=3D1&amp;unique=3D1"><LI=
+NK rel=3DStart=20
+href=3D"/Home"><LINK =
+title=3DWiki=E3=83=9E=E3=83=BC=E3=82=AF=E3=82=A2=E3=83=83=E3=83=97 =
+rel=3DAlternate=20
+href=3D"/id3v2.4.0-changes?action=3Draw"><LINK =
+title=3D=E5=8D=B0=E5=88=B7=E3=83=93=E3=83=A5=E3=83=BC rel=3DAlternate=20
+href=3D"/id3v2.4.0-changes?action=3Dprint" media=3Dprint><LINK =
+rel=3DSearch=20
+href=3D"/FindPage"><LINK rel=3DIndex href=3D"/TitleIndex"><LINK =
+rel=3DGlossary=20
+href=3D"/WordIndex"><LINK rel=3DHelp href=3D"/HelpOnFormatting">
+<META name=3DGENERATOR content=3D"MSHTML 8.00.7601.17573"></HEAD>
+<BODY dir=3Dltr lang=3Dja>
+<CENTER>
+<SCRIPT type=3Dtext/javascript><!--=0A=
+google_ad_client =3D "pub-1408728402565238";=0A=
+google_ad_width =3D 728;=0A=
+google_ad_height =3D 90;=0A=
+google_ad_format =3D "728x90_as";=0A=
+google_ad_type =3D "text";=0A=
+google_ad_channel =3D "";=0A=
+google_color_border =3D "ffffff";=0A=
+google_color_bg =3D "FFFFFF";=0A=
+google_color_link =3D "DD6600";=0A=
+google_color_text =3D "000000";=0A=
+google_color_url =3D "DD6600";=0A=
+//--></SCRIPT>
+
+<SCRIPT type=3Dtext/javascript=20
+src=3D"http://pagead2.googlesyndication.com/pagead/show_ads.js">=0A=
+  </SCRIPT>
+</CENTER>
+<DIV id=3Dheader>
+<DIV id=3Dlogo><A href=3D"http://www.id3.org/Home"><IMG alt=3D"ID3.org =
+Logo"=20
+src=3D"http://www.id3.org/id3v2.gif">&nbsp;&nbsp;The Audience is=20
+informed</A></DIV></DIV>
+<DIV id=3Dsidebar>
+<DIV class=3Dsidepanel>
+<H1>=E6=A4=9C=E7=B4=A2</H1>
+<FORM id=3Dsearchform method=3Dget action=3D"">
+<DIV><INPUT value=3Dfullsearch type=3Dhidden name=3Daction> <INPUT =
+value=3D180=20
+type=3Dhidden name=3Dcontext> <LABEL =
+for=3Dsearchinput>=E6=A4=9C=E7=B4=A2:</LABEL> <INPUT=20
+onblur=3DsearchBlur(this) id=3Dsearchinput onfocus=3DsearchFocus(this)=20
+onkeyup=3DsearchChange(this) onchange=3DsearchChange(this) alt=3DSearch =
+size=3D20=20
+type=3Dtext name=3Dvalue> <BR><INPUT id=3Dtitlesearch =
+value=3D=E3=82=BF=E3=82=A4=E3=83=88=E3=83=AB alt=3D"Search Titles" =
+type=3Dsubmit name=3Dtitlesearch>=20
+<INPUT id=3Dfullsearch value=3D=E3=83=86=E3=82=AD=E3=82=B9=E3=83=88 =
+alt=3D"Search Full Text" type=3Dsubmit name=3Dfullsearch>=20
+</DIV></FORM>
+<SCRIPT type=3Dtext/javascript>=0A=
+<!--// Initialize search form=0A=
+var f =3D document.getElementById('searchform');=0A=
+f.getElementsByTagName('label')[0].style.display =3D 'none';=0A=
+var e =3D document.getElementById('searchinput');=0A=
+searchChange(e);=0A=
+searchBlur(e);=0A=
+//-->=0A=
+</SCRIPT>
+</DIV>
+<DIV class=3Dsidepanel>
+<H1>Navigation</H1>
+<UL id=3Dnavibar>
+  <LI class=3Dwikilink><A href=3D"http://www.id3.org/Home">Home</A></LI>
+  <LI class=3Dwikilink><A=20
+  href=3D"http://www.id3.org/Introduction">Introduction</A></LI>
+  <LI class=3Dwikilink><A=20
+  href=3D"http://www.id3.org/Developer_Information">Developer =
+Information</A></LI>
+  <LI class=3Dwikilink><A=20
+  href=3D"http://www.id3.org/Implementations">Implementations</A></LI>
+  <LI class=3Dwikilink><A =
+href=3D"http://www.id3.org/Compliance_Issues">Compliance=20
+  Issues</A></LI>
+  <LI class=3Dwikilink><A=20
+  href=3D"http://www.id3.org/Contributors">Contributors</A></LI>
+  <LI class=3Dwikilink><A href=3D"http://www.id3.org/FAQ">FAQ</A></LI>
+  <LI class=3Dwikilink><A=20
+  href=3D"http://www.id3.org/MailingList">MailingList</A></LI>
+  <LI class=3Dwikilink><A=20
+  href=3D"http://www.id3.org/RecentChanges">RecentChanges</A></LI>
+  <LI class=3Dwikilink><A =
+href=3D"http://www.id3.org/FindPage">FindPage</A></LI>
+  <LI class=3Dwikilink><A=20
+  href=3D"http://www.id3.org/HelpContents">HelpContents</A></LI>
+  <LI class=3Dcurrent><A=20
+  =
+href=3D"http://www.id3.org/id3v2.4.0-changes">id3v2.4.0-changes</A></LI><=
+/UL></DIV>
+<DIV class=3Dsidepanel>
+<H1>Recent</H1></DIV>
+<DIV class=3Dsidepanel>
+<H1>This Page</H1>
+<UL class=3Deditbar>
+  <LI><A =
+href=3D"http://www.id3.org/id3v2.4.0-changes?action=3Ddiff">show=20
+  changes</A></LI>
+  <LI><A href=3D"http://www.id3.org/id3v2.4.0-changes?action=3Dinfo">get =
+
+  info</A></LI>
+  <LI><A href=3D"http://www.id3.org/id3v2.4.0-changes?action=3Draw">show =
+raw=20
+  text</A></LI>
+  <LI><A =
+href=3D"http://www.id3.org/id3v2.4.0-changes?action=3Dprint">show print=20
+  view</A></LI>
+  <LI><A =
+href=3D"http://www.id3.org/id3v2.4.0-changes?action=3Drefresh">delete=20
+  cache</A></LI>
+  <LI><A =
+href=3D"http://www.id3.org/id3v2.4.0-changes?action=3DAttachFile">attach =
+
+  file</A></LI>
+  <LI><A =
+href=3D"http://www.id3.org/id3v2.4.0-changes?action=3DSpellCheck">check=20
+  spelling</A></LI>
+  <LI><A =
+href=3D"http://www.id3.org/id3v2.4.0-changes?action=3DLikePages">show =
+like=20
+  pages</A></LI>
+  <LI><A =
+href=3D"http://www.id3.org/id3v2.4.0-changes?action=3DLocalSiteMap">show =
+
+  local site map</A></LI></UL></DIV>
+<DIV class=3Dsidepanel>
+<H1>More Actions</H1>
+<UL class=3Deditbar>
+  <LI><A=20
+  =
+href=3D"http://www.id3.org/id3v2.4.0-changes?action=3DDespam">despam</A><=
+/LI>
+  <LI><A=20
+  =
+href=3D"http://www.id3.org/id3v2.4.0-changes?action=3DSubscribeUser">subs=
+cribe=20
+  user</A></LI>
+  <LI><A=20
+  =
+href=3D"http://www.id3.org/id3v2.4.0-changes?action=3DRenderAsDocbook">re=
+nder as=20
+  docbook</A></LI>
+  <LI><A =
+href=3D"http://www.id3.org/id3v2.4.0-changes?action=3DPackagePages">packa=
+ge=20
+  pages</A></LI>
+  <LI><A =
+href=3D"http://www.id3.org/id3v2.4.0-changes?action=3DMyPages">my=20
+  pages</A></LI></UL></DIV>
+<DIV class=3Dsidepanel>
+<H1>=E3=83=A6=E3=83=BC=E3=82=B6</H1>
+<UL id=3Dusername>
+  <LI><A id=3Dlogin=20
+  =
+href=3D"http://www.id3.org/id3v2.4.0-changes?action=3Dlogin">=E3=83=AD=E3=
+=82=B0=E3=82=A4=E3=83=B3</A></LI></UL></DIV>
+<UL id=3Dcredits>
+  <LI><A href=3D"http://moinmoin.wikiwikiweb.de/">MoinMoin =
+Powered</A></LI>
+  <LI><A href=3D"http://www.python.org/">Python Powered</A></LI>
+  <LI><A href=3D"http://validator.w3.org/check?uri=3Dreferer">Valid HTML =
+
+  4.01</A></LI></UL></DIV>
+<DIV dir=3Dltr id=3Dpage lang=3Den>
+<DIV dir=3Dltr id=3Dcontent lang=3Den><SPAN id=3Dtop =
+class=3Danchor></SPAN><SPAN id=3Dline-2=20
+class=3Danchor></SPAN>
+<P class=3Dline867><SPAN id=3Dline-3 class=3Danchor></SPAN><PRE>$Id: =
+id3v2.4.0-changes.txt,v 1.1 2003/07/27 18:28:34 id3 Exp $
+<SPAN id=3Dline-4 class=3Danchor></SPAN>
+<SPAN id=3Dline-5 class=3Danchor></SPAN>Informational                    =
+                             M. Nilsson
+<SPAN id=3Dline-6 class=3Danchor></SPAN>Document: id3v2.4.0-changes.txt  =
+                     21st December 2000
+<SPAN id=3Dline-7 class=3Danchor></SPAN>
+<SPAN id=3Dline-8 class=3Danchor></SPAN>
+<SPAN id=3Dline-9 class=3Danchor></SPAN>                    ID3 tag =
+version 2.4.0 - Changes
+<SPAN id=3Dline-10 class=3Danchor></SPAN>
+<SPAN id=3Dline-11 class=3Danchor></SPAN>Status of this document
+<SPAN id=3Dline-12 class=3Danchor></SPAN>
+<SPAN id=3Dline-13 class=3Danchor></SPAN>   This document describes the =
+changes between ID3v2.3.0 [ID3v2.3.0] and
+<SPAN id=3Dline-14 class=3Danchor></SPAN>   ID3v2.4.0 =
+[ID3v2.4.0-strct][ID3v2.4.0-frames]. This document does not
+<SPAN id=3Dline-15 class=3Danchor></SPAN>   claim to be complete nor =
+correct.=20
+<SPAN id=3Dline-16 class=3Danchor></SPAN>
+<SPAN id=3Dline-17 class=3Danchor></SPAN>   Distribution of this =
+document is unlimited.
+<SPAN id=3Dline-18 class=3Danchor></SPAN>
+<SPAN id=3Dline-19 class=3Danchor></SPAN>
+<SPAN id=3Dline-20 class=3Danchor></SPAN>Abstract
+<SPAN id=3Dline-21 class=3Danchor></SPAN>
+<SPAN id=3Dline-22 class=3Danchor></SPAN>   This document outlines the =
+more important differences between
+<SPAN id=3Dline-23 class=3Danchor></SPAN>   ID3v2.3.0 and ID3v2.4.0. In =
+general ID3v.2.4.0 can be said to be more
+<SPAN id=3Dline-24 class=3Danchor></SPAN>   consistent and easier to =
+implement and more suitable to real world
+<SPAN id=3Dline-25 class=3Danchor></SPAN>   conditions than the previous =
+versions.
+<SPAN id=3Dline-26 class=3Danchor></SPAN>
+<SPAN id=3Dline-27 class=3Danchor></SPAN>
+<SPAN id=3Dline-28 class=3Danchor></SPAN>1.   Table of contents
+<SPAN id=3Dline-29 class=3Danchor></SPAN>
+<SPAN id=3Dline-30 class=3Danchor></SPAN>        Status of this document
+<SPAN id=3Dline-31 class=3Danchor></SPAN>        Abstract
+<SPAN id=3Dline-32 class=3Danchor></SPAN>   1.   Table of contents
+<SPAN id=3Dline-33 class=3Danchor></SPAN>   2.   Conventions in this =
+document
+<SPAN id=3Dline-34 class=3Danchor></SPAN>   3.   Tag structure changes
+<SPAN id=3Dline-35 class=3Danchor></SPAN>   4.   Deprecated ID3v2 frames
+<SPAN id=3Dline-36 class=3Danchor></SPAN>   5.   New frames
+<SPAN id=3Dline-37 class=3Danchor></SPAN>   6.   References
+<SPAN id=3Dline-38 class=3Danchor></SPAN>
+<SPAN id=3Dline-39 class=3Danchor></SPAN>
+<SPAN id=3Dline-40 class=3Danchor></SPAN>2.   Conventions in this =
+document
+<SPAN id=3Dline-41 class=3Danchor></SPAN>
+<SPAN id=3Dline-42 class=3Danchor></SPAN>   References to sections in =
+the ID3v2.4.0 Main Structure
+<SPAN id=3Dline-43 class=3Danchor></SPAN>   [ID3v2.4.0-strct] document =
+will be given as [S:x.y] where x is the
+<SPAN id=3Dline-44 class=3Danchor></SPAN>   section and y is the =
+subsection. In a similar fashion references to
+<SPAN id=3Dline-45 class=3Danchor></SPAN>   sections in the ID3v2.4.0 =
+Native Frames [ID3v2.4.0-frames] document
+<SPAN id=3Dline-46 class=3Danchor></SPAN>   will be given as [F:x.y].
+<SPAN id=3Dline-47 class=3Danchor></SPAN>
+<SPAN id=3Dline-48 class=3Danchor></SPAN>
+<SPAN id=3Dline-49 class=3Danchor></SPAN>3.   Tag structure changes
+<SPAN id=3Dline-50 class=3Danchor></SPAN>
+<SPAN id=3Dline-51 class=3Danchor></SPAN>   The location of tags in a =
+file as well as methods to find and merge
+<SPAN id=3Dline-52 class=3Danchor></SPAN>   tags are far better defined =
+in ID3v2.4.0 [S:5] than previous
+<SPAN id=3Dline-53 class=3Danchor></SPAN>   versions. A reverse search =
+for tags are improved by the addition of a
+<SPAN id=3Dline-54 class=3Danchor></SPAN>   tag footer [S:3.4]. A tag =
+footer flag has been added to the header
+<SPAN id=3Dline-55 class=3Danchor></SPAN>   flags to indicate the =
+presence of a ID3v2 footer, hence the size
+<SPAN id=3Dline-56 class=3Danchor></SPAN>   field is not affected by the =
+footer [S:3.1].
+<SPAN id=3Dline-57 class=3Danchor></SPAN>
+<SPAN id=3Dline-58 class=3Danchor></SPAN>   The extended header has been =
+completely rewritten [S:3.2] and can not
+<SPAN id=3Dline-59 class=3Danchor></SPAN>   produce false synchs. It is =
+also possible to indicate artificial tag
+<SPAN id=3Dline-60 class=3Danchor></SPAN>   restrictions in the extended =
+header, for use with thinner clients.
+<SPAN id=3Dline-61 class=3Danchor></SPAN>  =20
+<SPAN id=3Dline-62 class=3Danchor></SPAN>   Unsynchronisation [S:6.1] is =
+done on frame level, instead of on tag
+<SPAN id=3Dline-63 class=3Danchor></SPAN>   level, making it easier to =
+skip frames, increasing the streamability
+<SPAN id=3Dline-64 class=3Danchor></SPAN>   of the tag. The =
+unsynchronisation flag in the header [S:3.1]
+<SPAN id=3Dline-65 class=3Danchor></SPAN>   indicates if all frames has =
+been unsynchronized, while the new
+<SPAN id=3Dline-66 class=3Danchor></SPAN>   unsynchronisation flag in =
+the frame header [S:4.1.2] indicates
+<SPAN id=3Dline-67 class=3Danchor></SPAN>   unsynchronisation. To avoid =
+false synchronisations in the frame
+<SPAN id=3Dline-68 class=3Danchor></SPAN>   header the size description =
+and flag field has been rewritten [S:4].
+<SPAN id=3Dline-69 class=3Danchor></SPAN>   Resynchronisation of the =
+complete tag when the unsynchronisation flag
+<SPAN id=3Dline-70 class=3Danchor></SPAN>   in the tag header is set =
+might result in a corrupt tag.
+<SPAN id=3Dline-71 class=3Danchor></SPAN>
+<SPAN id=3Dline-72 class=3Danchor></SPAN>   The character encodings =
+UTF-16BE and UTF-8 has been added to the list
+<SPAN id=3Dline-73 class=3Danchor></SPAN>   of valid encodings [S:4].
+<SPAN id=3Dline-74 class=3Danchor></SPAN>
+<SPAN id=3Dline-75 class=3Danchor></SPAN>
+<SPAN id=3Dline-76 class=3Danchor></SPAN>4.   Deprecated ID3v2 frames
+<SPAN id=3Dline-77 class=3Danchor></SPAN>
+<SPAN id=3Dline-78 class=3Danchor></SPAN>  EQUA - Equalization
+<SPAN id=3Dline-79 class=3Danchor></SPAN>    This frame is replaced by =
+the EQU2 frame, 'Equalisation (2)'
+<SPAN id=3Dline-80 class=3Danchor></SPAN>    [F:4.12].
+<SPAN id=3Dline-81 class=3Danchor></SPAN>
+<SPAN id=3Dline-82 class=3Danchor></SPAN>  IPLS - Involved people list
+<SPAN id=3Dline-83 class=3Danchor></SPAN>    This frame is replaced by =
+the two frames TMCL, 'Musician credits
+<SPAN id=3Dline-84 class=3Danchor></SPAN>    list' [F:4.2.2], and TIPL, =
+'Involved people list' [F:4.2.2].
+<SPAN id=3Dline-85 class=3Danchor></SPAN>
+<SPAN id=3Dline-86 class=3Danchor></SPAN>  RVAD - Relative volume =
+adjustment
+<SPAN id=3Dline-87 class=3Danchor></SPAN>    This frame is replaced by =
+the RVA2 frame, 'Relative volume
+<SPAN id=3Dline-88 class=3Danchor></SPAN>    adjustment (2)' [F:4.11].
+<SPAN id=3Dline-89 class=3Danchor></SPAN>   =20
+<SPAN id=3Dline-90 class=3Danchor></SPAN>  TDAT - Date
+<SPAN id=3Dline-91 class=3Danchor></SPAN>    This frame is replaced by =
+the TDRC frame, 'Recording time'
+<SPAN id=3Dline-92 class=3Danchor></SPAN>    [F:4.2.5].
+<SPAN id=3Dline-93 class=3Danchor></SPAN>   =20
+<SPAN id=3Dline-94 class=3Danchor></SPAN>  TIME - Time
+<SPAN id=3Dline-95 class=3Danchor></SPAN>    This frame is replaced by =
+the TDRC frame, 'Recording time'
+<SPAN id=3Dline-96 class=3Danchor></SPAN>    [F:4.2.5].
+<SPAN id=3Dline-97 class=3Danchor></SPAN>   =20
+<SPAN id=3Dline-98 class=3Danchor></SPAN>  TORY - Original release year
+<SPAN id=3Dline-99 class=3Danchor></SPAN>    This frame is replaced by =
+the TDOR frame, 'Original release time'
+<SPAN id=3Dline-100 class=3Danchor></SPAN>    [F:4.2.5].
+<SPAN id=3Dline-101 class=3Danchor></SPAN>   =20
+<SPAN id=3Dline-102 class=3Danchor></SPAN>  TRDA - Recording dates
+<SPAN id=3Dline-103 class=3Danchor></SPAN>    This frame is replaced by =
+the TDRC frame, 'Recording time'
+<SPAN id=3Dline-104 class=3Danchor></SPAN>    [F:4.2.5].
+<SPAN id=3Dline-105 class=3Danchor></SPAN>   =20
+<SPAN id=3Dline-106 class=3Danchor></SPAN>  TSIZ - Size
+<SPAN id=3Dline-107 class=3Danchor></SPAN>    The information contained =
+in this frame is in the general case
+<SPAN id=3Dline-108 class=3Danchor></SPAN>    either trivial to =
+calculate for the player or impossible for the
+<SPAN id=3Dline-109 class=3Danchor></SPAN>    tagger to calculate. There =
+is however no good use for such
+<SPAN id=3Dline-110 class=3Danchor></SPAN>    information. The frame is =
+therefore completely deprecated.
+<SPAN id=3Dline-111 class=3Danchor></SPAN>   =20
+<SPAN id=3Dline-112 class=3Danchor></SPAN>  TYER - Year
+<SPAN id=3Dline-113 class=3Danchor></SPAN>    This frame is replaced by =
+the TDRC frame, 'Recording time'
+<SPAN id=3Dline-114 class=3Danchor></SPAN>    [F:4.2.5].
+<SPAN id=3Dline-115 class=3Danchor></SPAN>
+<SPAN id=3Dline-116 class=3Danchor></SPAN>
+<SPAN id=3Dline-117 class=3Danchor></SPAN>5.   New frames
+<SPAN id=3Dline-118 class=3Danchor></SPAN>
+<SPAN id=3Dline-119 class=3Danchor></SPAN>   ASPI Audio seek point index =
+[F:4.30]
+<SPAN id=3Dline-120 class=3Danchor></SPAN>   EQU2 Equalisation (2) =
+[F:4.12]
+<SPAN id=3Dline-121 class=3Danchor></SPAN>   RVA2 Relative volume =
+adjustment (2) [F:4.11]
+<SPAN id=3Dline-122 class=3Danchor></SPAN>   SEEK Seek frame [F:4.29]
+<SPAN id=3Dline-123 class=3Danchor></SPAN>   SIGN Signature frame =
+[F:4.28]
+<SPAN id=3Dline-124 class=3Danchor></SPAN>   TDEN Encoding time =
+[F:4.2.5]
+<SPAN id=3Dline-125 class=3Danchor></SPAN>   TDOR Original release time =
+[F:4.2.5]
+<SPAN id=3Dline-126 class=3Danchor></SPAN>   TDRC Recording time =
+[F:4.2.5]
+<SPAN id=3Dline-127 class=3Danchor></SPAN>   TDRL Release time [F:4.2.5]
+<SPAN id=3Dline-128 class=3Danchor></SPAN>   TDTG Tagging time [F:4.2.5]
+<SPAN id=3Dline-129 class=3Danchor></SPAN>   TIPL Involved people list =
+[F:4.2.2]
+<SPAN id=3Dline-130 class=3Danchor></SPAN>   TMCL Musician credits list =
+[F:4.2.2]
+<SPAN id=3Dline-131 class=3Danchor></SPAN>   TMOO Mood [F:4.2.3]
+<SPAN id=3Dline-132 class=3Danchor></SPAN>   TPRO Produced notice =
+[F:4.2.4]
+<SPAN id=3Dline-133 class=3Danchor></SPAN>   TSOA Album sort order =
+[F:4.2.5]
+<SPAN id=3Dline-134 class=3Danchor></SPAN>   TSOP Performer sort order =
+[F:4.2.5]
+<SPAN id=3Dline-135 class=3Danchor></SPAN>   TSOT Title sort order =
+[F:4.2.5]
+<SPAN id=3Dline-136 class=3Danchor></SPAN>   TSST Set subtitle [F:4.2.1]
+<SPAN id=3Dline-137 class=3Danchor></SPAN>
+<SPAN id=3Dline-138 class=3Danchor></SPAN>
+<SPAN id=3Dline-139 class=3Danchor></SPAN>6.   References
+<SPAN id=3Dline-140 class=3Danchor></SPAN>
+<SPAN id=3Dline-141 class=3Danchor></SPAN>      [ID3v2.3.0] Martin =
+Nilsson, "ID3v2 informal standard".
+<SPAN id=3Dline-142 class=3Danchor></SPAN>  =20
+<SPAN id=3Dline-143 class=3Danchor></SPAN>         =
+&lt;url:http://www.id3.org/id3v2.3.0.txt&gt;
+<SPAN id=3Dline-144 class=3Danchor></SPAN>  =20
+<SPAN id=3Dline-145 class=3Danchor></SPAN>      [ID3v2-frames] Martin =
+Nilsson,
+<SPAN id=3Dline-146 class=3Danchor></SPAN>      "ID3 tag version 2.4.0 - =
+Native Frames"
+<SPAN id=3Dline-147 class=3Danchor></SPAN>     =20
+<SPAN id=3Dline-148 class=3Danchor></SPAN>         =
+&lt;url:http//www.id3.org/id3v2.4.0-frames.txt&gt;
+<SPAN id=3Dline-149 class=3Danchor></SPAN>
+<SPAN id=3Dline-150 class=3Danchor></SPAN>      [ID3v2-strct] Martin =
+Nilsson,
+<SPAN id=3Dline-151 class=3Danchor></SPAN>      "ID3 tag version 2.4.0 - =
+Main Structure"
+<SPAN id=3Dline-152 class=3Danchor></SPAN>     =20
+<SPAN id=3Dline-153 class=3Danchor></SPAN>         =
+&lt;url:http//www.id3.org/id3v2.4.0-structure.txt&gt;
+<SPAN id=3Dline-154 class=3Danchor></SPAN></PRE><SPAN id=3Dline-155=20
+class=3Danchor></SPAN><SPAN id=3Dbottom class=3Danchor></SPAN></DIV>
+<DIV id=3Dpagebottom></DIV>
+<P dir=3Dltr id=3Dpageinfo lang=3Dja class=3Dinfo>id3v2.4.0-changes =
+(=E6=9C=80=E7=B5=82=E6=9B=B4=E6=96=B0=E6=97=A5=E6=99=82 2006-12-18=20
+06:24:25 =E6=9B=B4=E6=96=B0=E8=80=85 <SPAN title=3DDanONeill><A =
+title=3DDanONeill=20
+href=3D"http://www.id3.org/DanONeill" =
+generated=3D"True">DanONeill</A></SPAN>)</P>
+<DIV id=3Dpagebottom></DIV></DIV>
+<CENTER><A href=3D"http://www.id3.org/Copyright">Copyright</A> =C2=A9 =
+1998-2009 by=20
+their respective owners</CENTER></BODY></HTML>
+
+------=_NextPart_000_0000_01CC11B2.A9BA1FE0
+Content-Type: image/gif
+Content-Transfer-Encoding: base64
+Content-Location: http://www.id3.org/id3v2.gif
+
+R0lGODlhOAA2ANUAAAAAABEJCRcXFyIREScnJzc3N0EsLE45OUhISFxKSldXV2VOTmJiYnRjY29w
+cHd3d/9bAP9pAPtyDvqAJf+OO/+URv+lY4KCgpmZma2fn6emprW0tP+6h8q7u8jIyNvNzc/Q0NnZ
+2ebm5vLy8v///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACwAAAAAOAA2AAAG/8CJZEgcRiyk5EbB
+aDoZjwtmExolr9isdiuJeL9fZPICKJvPZkFBgRFt3+8uGCwmkdF4NOHihvtJcnNedXd5hmUCGH9w
+gYKEh5BlCH2LWI1zj5GQCCGVloJhV4WahgRWnoCgg6KkkQWUi6oREJmthw+oFbq7uxQcVx5RFxcP
+TQgFArYAGqjNWyIhGgqkBc7WWxoFmorX3VfTkAKdfxcFCOfox8zXCJG4f+B5F90eyYfVfwyH890Y
+keNw9Bnidy1EJIJvBMrzRiJeHnwB9zHcEAmWFoV4EFoTYc+QBz8Y0Wj0I41AgQfjCEBaR8IDBikb
+rIQ8M/LNKAAE3LQ7xO0BGv8FJGaaqanFIAAEHu4waAhpHkUABcqVaSJxkYcCBD6KkBQUEq52OUlw
+xCm0DFE/HqZ2PbT0AgOC7QSUBXB2SwgFyRS40bdhw4AyCkD4BJolRDIEc+tqeUo3iQMAHUg0KBN5
+MoIsIwRiSNwsxIY7QH0eIEExAYkPXLGAW8rZmkARPgGE2KpoQWqxO/WuXbgoGjcS/gAEK1Pbg4gA
+qUWsvtL6T/ANScCJEGhALAkNZpYybcy86p+0OB+AuxwvQ5IEZnBhn/qgmFvvztEU+LgTANAONEmo
+xCMX/p8QDyDAxinapIGGBoblQUBz14ywnyHQiTDChBROyOBGkXwU0UAMBXeGiEVZXOhMfXlcBpJ/
+nUXCUkIoouJhHgKAGGKLlYTwYB6EncjhNQ7l8duGvDUzQo94mJgPjW+MINU/lczFgAhQRiklNB54
+oMGSkeR4pDJc6iHjFnN1qQl0noQpJpJgnsnlO6iYqeYZP5b5piYFkOmMm2cm4g2eXDKgwZdyvimA
+Goi1wdAVQQAAOw==
+
+------=_NextPart_000_0000_01CC11B2.A9BA1FE0
+Content-Type: text/css;
+	charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://www.id3.org/wiki/mentalwealth_id3/css/common.css
+
+HTML {
+	LINE-HEIGHT: 1.25em; BACKGROUND-COLOR: white; FONT-FAMILY: Arial, =
+Lucida Grande, sans-serif; COLOR: black; FONT-SIZE: 0.85em
+}
+A:hover {
+	COLOR: #0044b3
+}
+A {
+	COLOR: #597bb3
+}
+A.nonexistent {
+	COLOR: gray
+}
+A.badinterwiki {
+	COLOR: gray
+}
+H1 A {
+	COLOR: black; TEXT-DECORATION: none
+}
+LI P {
+	MARGIN: 0.25em 0px
+}
+LI.gap {
+	MARGIN-TOP: 0.5em
+}
+A {
+	BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; BORDER-TOP: 0px; BORDER-RIGHT: =
+0px
+}
+IMG {
+	BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; BORDER-TOP: 0px; BORDER-RIGHT: =
+0px
+}
+IMG.drawing {
+	BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; BORDER-TOP: 0px; BORDER-RIGHT: =
+0px
+}
+DT {
+	FONT-WEIGHT: bold
+}
+PRE {
+	BORDER-BOTTOM: #c0c0c0 1pt solid; BORDER-LEFT: #c0c0c0 1pt solid; =
+PADDING-BOTTOM: 0.5em; PADDING-LEFT: 0.5em; PADDING-RIGHT: 0.5em; =
+FONT-FAMILY: courier, monospace; WORD-WRAP: break-word; WHITE-SPACE: =
+pre-wrap; BACKGROUND: #f0ece6; BORDER-TOP: #c0c0c0 1pt solid; =
+BORDER-RIGHT: #c0c0c0 1pt solid; PADDING-TOP: 0.5em
+}
+TABLE {
+	MARGIN: 0.5em 0px; BORDER-COLLAPSE: collapse
+}
+TD {
+	BORDER-BOTTOM: #adb9cc 1px solid; BORDER-LEFT: #adb9cc 1px solid; =
+PADDING-BOTTOM: 0.25em; PADDING-LEFT: 0.25em; PADDING-RIGHT: 0.25em; =
+BORDER-TOP: #adb9cc 1px solid; BORDER-RIGHT: #adb9cc 1px solid; =
+PADDING-TOP: 0.25em
+}
+TD P {
+	PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: =
+0px; PADDING-TOP: 0px
+}
+HR {
+	BORDER-BOTTOM: medium none; BORDER-LEFT: medium none; BACKGROUND-COLOR: =
+#c0c0c0; HEIGHT: 1px; BORDER-TOP: medium none; BORDER-RIGHT: medium none
+}
+.hr1 {
+	HEIGHT: 2px
+}
+.hr2 {
+	HEIGHT: 3px
+}
+.hr3 {
+	HEIGHT: 4px
+}
+.hr4 {
+	HEIGHT: 5px
+}
+.hr5 {
+	HEIGHT: 6px
+}
+.hr6 {
+	HEIGHT: 7px
+}
+.u {
+	TEXT-DECORATION: underline
+}
+.strike {
+	TEXT-DECORATION: line-through
+}
+.table-of-contents {
+	TEXT-ALIGN: left; MARGIN: 0.5em; PADDING-LEFT: 2em; WIDTH: 50%; =
+FONT-SIZE: small
+}
+.table-of-contents OL {
+	LIST-STYLE-TYPE: decimal; MARGIN: 0px 0px 0px 1em
+}
+.table-of-contents UL {
+	LIST-STYLE-TYPE: none; MARGIN: 0px
+}
+.table-of-contents-heading {
+	PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: =
+0px; FONT-WEIGHT: bold; PADDING-TOP: 0px
+}
+footnotes UL {
+	PADDING-BOTTOM: 0px; MARGIN: 0px 0px 1em; PADDING-LEFT: 2em; =
+PADDING-RIGHT: 2em; PADDING-TOP: 0px
+}
+.footnotes LI {
+	LIST-STYLE-TYPE: none; LIST-STYLE-IMAGE: none
+}
+.info {
+	COLOR: gray; FONT-SIZE: 0.85em
+}
+.warning {
+	COLOR: red
+}
+.error {
+	COLOR: red
+}
+STRONG.highlight {
+	PADDING-BOTTOM: 1pt; BACKGROUND-COLOR: #cce0ff; PADDING-LEFT: 1pt; =
+PADDING-RIGHT: 1pt; PADDING-TOP: 1pt
+}
+.recentchanges P {
+	MARGIN: 0.25em
+}
+.recentchanges TD {
+	BORDER-BOTTOM: #f0ece6 1pt solid; BORDER-LEFT: medium none; BACKGROUND: =
+#f7f6f2; VERTICAL-ALIGN: top; BORDER-TOP: medium none; BORDER-RIGHT: =
+medium none
+}
+.rcdaybreak TD {
+	BORDER-BOTTOM: medium none; BORDER-LEFT: medium none; BACKGROUND: =
+#b8c5d9; BORDER-TOP: medium none; BORDER-RIGHT: medium none
+}
+.rcdaybreak TD A {
+	FONT-SIZE: 0.88em
+}
+.rcicon1 {
+	TEXT-ALIGN: center
+}
+.rcicon2 {
+	TEXT-ALIGN: center
+}
+.rcpagelink {
+	WIDTH: 33%
+}
+.rctime {
+	WHITE-SPACE: nowrap; FONT-SIZE: 0.88em
+}
+.rceditor {
+	WHITE-SPACE: nowrap; FONT-SIZE: 0.88em
+}
+.rccomment {
+	WIDTH: 66%; COLOR: gray; FONT-SIZE: 0.88em
+}
+.rcrss {
+	FLOAT: right
+}
+[dir=3D'rtl'].recentchanges .rcrss {
+	FLOAT: left
+}
+.userpref TABLE {
+	BORDER-BOTTOM: medium none; BORDER-LEFT: medium none; BORDER-TOP: =
+medium none; BORDER-RIGHT: medium none
+}
+.userpref TD {
+	BORDER-BOTTOM: medium none; BORDER-LEFT: medium none; BORDER-TOP: =
+medium none; BORDER-RIGHT: medium none
+}
+DIV.codearea {
+	BORDER-BOTTOM: #aebdcc 1pt solid; BORDER-LEFT: #aebdcc 1pt solid; =
+PADDING-BOTTOM: 0px; BACKGROUND-COLOR: #f3f5f7; MARGIN: 0.5em 0px; =
+PADDING-LEFT: 0px; PADDING-RIGHT: 0px; COLOR: black; BORDER-TOP: #aebdcc =
+1pt solid; BORDER-RIGHT: #aebdcc 1pt solid; PADDING-TOP: 0px
+}
+DIV.codearea PRE {
+	BORDER-BOTTOM: medium none; BORDER-LEFT: medium none; PADDING-BOTTOM: =
+10pt; MARGIN: 0px; PADDING-LEFT: 10pt; PADDING-RIGHT: 10pt; BORDER-TOP: =
+medium none; BORDER-RIGHT: medium none; PADDING-TOP: 10pt
+}
+A.codenumbers {
+	MARGIN: 0px 10pt; COLOR: gray; FONT-SIZE: 0.85em
+}
+DIV.codearea PRE SPAN.LineNumber {
+	COLOR: gray
+}
+DIV.codearea PRE SPAN.ID {
+	COLOR: #000000
+}
+DIV.codearea PRE SPAN.Operator {
+	COLOR: #0000c0
+}
+DIV.codearea PRE SPAN.Char {
+	COLOR: #004080
+}
+DIV.codearea PRE SPAN.Comment {
+	COLOR: #008000
+}
+DIV.codearea PRE SPAN.Number {
+	COLOR: #0080c0
+}
+DIV.codearea PRE SPAN.String {
+	COLOR: #004080
+}
+DIV.codearea PRE SPAN.SPChar {
+	COLOR: #0000c0
+}
+DIV.codearea PRE SPAN.ResWord {
+	COLOR: #a00000
+}
+DIV.codearea PRE SPAN.ConsWord {
+	COLOR: #008080; FONT-WEIGHT: bold
+}
+DIV.codearea PRE SPAN.Error {
+	BORDER-BOTTOM: #ff0000 1.5pt solid; BORDER-LEFT: #ff0000 1.5pt solid; =
+COLOR: #ff8080; BORDER-TOP: #ff0000 1.5pt solid; BORDER-RIGHT: #ff0000 =
+1.5pt solid
+}
+DIV.codearea PRE SPAN.ResWord2 {
+	COLOR: #0080ff; FONT-WEIGHT: bold
+}
+DIV.codearea PRE SPAN.Special {
+	COLOR: #0000ff
+}
+DIV.codearea PRE SPAN.Preprc {
+	COLOR: #803999
+}
+#pageinfo {
+	MARGIN-TOP: 2em
+}
+#credits IMG {
+	VERTICAL-ALIGN: middle
+}
+#preview {
+	BORDER-BOTTOM: #e5e5e5 2px solid; BORDER-LEFT: #e5e5e5 2px solid; =
+PADDING-BOTTOM: 0.5em; PADDING-LEFT: 0.5em; PADDING-RIGHT: 0.5em; =
+BACKGROUND: url(../img/draft.png); BORDER-TOP: #e5e5e5 2px solid; =
+BORDER-RIGHT: #e5e5e5 2px solid; PADDING-TOP: 0.5em
+}
+.diff {
+	WIDTH: 99%
+}
+.diff-title {
+	BACKGROUND-COLOR: #c0c0c0
+}
+.diff-added {
+	BACKGROUND-COLOR: #e0ffe0; VERTICAL-ALIGN: sub
+}
+.diff-removed {
+	BACKGROUND-COLOR: #ffffe0; VERTICAL-ALIGN: sub
+}
+.diff-added SPAN {
+	BACKGROUND-COLOR: #80ff80
+}
+.diff-removed SPAN {
+	BACKGROUND-COLOR: #ffff80
+}
+FORM.dialog {
+	MARGIN: 0px 15px
+}
+.dialog TD {
+	BORDER-BOTTOM: medium none; BORDER-LEFT: medium none; PADDING-BOTTOM: =
+5px; PADDING-LEFT: 5px; PADDING-RIGHT: 5px; BORDER-TOP: medium none; =
+BORDER-RIGHT: medium none; PADDING-TOP: 5px
+}
+.dialog TD.label {
+	TEXT-ALIGN: right; WIDTH: 25%; FONT-WEIGHT: bold
+}
+*[dir=3D'rtl'] .dialog TD.label {
+	TEXT-ALIGN: left
+}
+.dialog TD.content INPUT {
+	WIDTH: 100%
+}
+#message P {
+	PADDING-BOTTOM: 0px; MARGIN: 5px 0px; PADDING-LEFT: 0px; PADDING-RIGHT: =
+0px; FONT-WEIGHT: bold; PADDING-TOP: 0px
+}
+#message DIV.buttons {
+	FONT-WEIGHT: normal
+}
+
+------=_NextPart_000_0000_01CC11B2.A9BA1FE0
+Content-Type: text/css;
+	charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://www.id3.org/base.css
+
+HTML {
+	FONT-SIZE: 81%
+}
+HTML {
+	PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: =
+0px; PADDING-TOP: 0px
+}
+BODY {
+	PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: =
+0px; PADDING-TOP: 0px
+}
+BODY {
+	FONT: 1em Verdana, Arial, Helvetica, sans-serif; VERTICAL-ALIGN: =
+text-top
+}
+P {
+	FONT-SIZE: 1em
+}
+OL {
+	FONT-SIZE: 1em
+}
+UL {
+	FONT-SIZE: 1em
+}
+LI {
+	FONT-SIZE: 1em
+}
+TABLE {
+	FONT-SIZE: 1em
+}
+P {
+	MARGIN: 1.2em 0px 0px
+}
+H1 {
+	MARGIN: 1.2em 0px 0px
+}
+H2 {
+	MARGIN: 1.2em 0px 0px
+}
+H3 {
+	MARGIN: 1.2em 0px 0px
+}
+H4 {
+	MARGIN: 1.2em 0px 0px
+}
+H5 {
+	MARGIN: 1.2em 0px 0px
+}
+H6 {
+	MARGIN: 1.2em 0px 0px
+}
+INPUT {
+	FONT-SIZE: 1em
+}
+SELECT {
+	FONT-SIZE: 1em
+}
+TH {
+	FONT-SIZE: 1em
+}
+TR {
+	FONT-SIZE: 1em
+}
+TD {
+	FONT-SIZE: 1em
+}
+PRE {
+	FONT-FAMILY: monospace, courier; FONT-SIZE: 1.1em
+}
+TT {
+	FONT-FAMILY: monospace, courier; FONT-SIZE: 1.1em
+}
+STRONG {
+	FONT-WEIGHT: bold
+}
+B {
+	FONT-WEIGHT: bold
+}
+SMALL {
+	FONT-SIZE: 0.8em
+}
+IMG {
+	BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; BORDER-TOP: 0px; BORDER-RIGHT: =
+0px
+}
+TABLE {
+	PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-LEFT: 0px; WIDTH: 99%; =
+PADDING-RIGHT: 0px; PADDING-TOP: 0px
+}
+TH {
+	TEXT-ALIGN: left; FONT-WEIGHT: bold
+}
+TR {
+	TEXT-ALIGN: left
+}
+TH {
+	VERTICAL-ALIGN: top
+}
+TR {
+	VERTICAL-ALIGN: top
+}
+TD {
+	VERTICAL-ALIGN: top
+}
+H1 {
+	MARGIN-TOP: 0px; FONT-SIZE: 1.7em
+}
+H2 {
+	BORDER-BOTTOM: black 2px solid; FONT-SIZE: 1.4em
+}
+H3 {
+	BORDER-LEFT: black 10px solid; PADDING-LEFT: 0.3em; FONT-SIZE: 1.4em
+}
+H4 {
+	BORDER-LEFT: black 3px solid; PADDING-LEFT: 0.3em; FONT-SIZE: 1em
+}
+H5 {
+	FONT-SIZE: 1em; FONT-WEIGHT: bold
+}
+H6 {
+	FONT-SIZE: 1em; FONT-WEIGHT: bold
+}
+H6 {
+	MARGIN-BOTTOM: -1em
+}
+#sidebar {
+	PADDING-BOTTOM: 0px; MARGIN: 0px 8px 0px 12px; PADDING-LEFT: 0px; =
+WIDTH: 160px; PADDING-RIGHT: 0px; DISPLAY: inline; FLOAT: left; =
+FONT-SIZE: 0.88em; PADDING-TOP: 0px
+}
+#page {
+	BORDER-BOTTOM: black 2px solid; BORDER-LEFT: black 1px solid; =
+PADDING-BOTTOM: 15px; MARGIN: 10px 10px 10px 185px; PADDING-LEFT: 30px; =
+PADDING-RIGHT: 30px; BORDER-TOP: black 1px solid; BORDER-RIGHT: black =
+1px solid; PADDING-TOP: 15px
+}
+#credits {
+	TEXT-ALIGN: center; PADDING-BOTTOM: 0px; LIST-STYLE-TYPE: none; MARGIN: =
+5px 0px; PADDING-LEFT: 0px; WIDTH: 160px; PADDING-RIGHT: 0px; FLOAT: =
+left; FONT-SIZE: 0.9em; PADDING-TOP: 0px
+}
+#version {
+	TEXT-ALIGN: center; PADDING-BOTTOM: 0px; LIST-STYLE-TYPE: none; MARGIN: =
+5px 0px; PADDING-LEFT: 0px; WIDTH: 160px; PADDING-RIGHT: 0px; FLOAT: =
+left; FONT-SIZE: 0.9em; PADDING-TOP: 0px
+}
+#timings {
+	TEXT-ALIGN: center; PADDING-BOTTOM: 0px; LIST-STYLE-TYPE: none; MARGIN: =
+5px 0px; PADDING-LEFT: 0px; WIDTH: 160px; PADDING-RIGHT: 0px; FLOAT: =
+left; FONT-SIZE: 0.9em; PADDING-TOP: 0px
+}
+#message {
+	BORDER-BOTTOM: black 2px solid; BORDER-LEFT: black 1px solid; =
+PADDING-BOTTOM: 5px; MARGIN: 10px 10px 10px 185px; PADDING-LEFT: 10px; =
+PADDING-RIGHT: 10px; BORDER-TOP: black 1px solid; BORDER-RIGHT: black =
+1px solid; PADDING-TOP: 5px
+}
+#header {
+	MARGIN: 10px
+}
+#logo {
+	PADDING-BOTTOM: 5px; MARGIN: 0px; PADDING-LEFT: 5px; PADDING-RIGHT: =
+5px; WHITE-SPACE: nowrap; FONT-SIZE: 1.7em; FONT-WEIGHT: bold; =
+PADDING-TOP: 5px
+}
+#logo IMG {
+	VERTICAL-ALIGN: middle
+}
+#logo A {
+	TEXT-DECORATION: none
+}
+#searchform {
+	PADDING-BOTTOM: 0px; MARGIN: 5px; PADDING-LEFT: 0px; PADDING-RIGHT: =
+0px; WHITE-SPACE: nowrap; FLOAT: right; PADDING-TOP: 0px
+}
+*[dir=3D'rtl'] #searchform {
+	FLOAT: left
+}
+#searchform FORM DIV {
+	DISPLAY: inline
+}
+.sidepanel {
+	BORDER-BOTTOM: black 2px solid; BORDER-LEFT: black 1px solid; MARGIN: =
+0px 0px 10px; WIDTH: 160px; FLOAT: right; FONT-SIZE: 1em; BORDER-TOP: =
+black 1px solid; BORDER-RIGHT: black 2px solid
+}
+.sidepanel H1 {
+	BORDER-BOTTOM: black 1px solid; BORDER-LEFT: medium none; =
+PADDING-BOTTOM: 0.2em; MARGIN: 0px; PADDING-LEFT: 10px; PADDING-RIGHT: =
+10px; FONT-SIZE: 1em; BORDER-TOP: medium none; BORDER-RIGHT: medium =
+none; PADDING-TOP: 0.2em
+}
+.sidepanel UL {
+	PADDING-BOTTOM: 0px; LIST-STYLE-TYPE: none; MARGIN: 0px; PADDING-LEFT: =
+0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px
+}
+.sidepanel LI {
+	BORDER-BOTTOM: black 1px solid; PADDING-BOTTOM: 2px; MARGIN: 0px; =
+PADDING-LEFT: 10px; PADDING-RIGHT: 10px; PADDING-TOP: 2px
+}
+.sidepanel LI FORM {
+	MARGIN: 0px
+}
+.sidepanel A {
+	DISPLAY: block; TEXT-DECORATION: none
+}
+.sidepanel A:hover {
+	TEXT-DECORATION: underline
+}
+SPAN.sep {
+	DISPLAY: none
+}
+.footnotes DIV {
+	WIDTH: 5em; BORDER-TOP: black 1px solid
+}
+.info {
+	FONT-SIZE: 0.8em
+}
+DIV.codearea PRE {
+	BORDER-BOTTOM: medium none; BORDER-LEFT: medium none; PADDING-BOTTOM: =
+0.9em; MARGIN: 0px; PADDING-LEFT: 0.9em; PADDING-RIGHT: 0.9em; =
+BORDER-TOP: medium none; BORDER-RIGHT: medium none; PADDING-TOP: 0.9em
+}
+#navibar LI.current {
+	BORDER-BOTTOM: black 1px solid; BORDER-LEFT: medium none; BORDER-TOP: =
+medium none; BORDER-RIGHT: medium none
+}
+.editbar FORM {
+	MARGIN: 0px; DISPLAY: inline
+}
+.editbar FORM DIV {
+	MARGIN: 0px; DISPLAY: inline
+}
+#editor-textarea {
+	WIDTH: 95%
+}
+#editor-comment {
+	WIDTH: 95%
+}
+#pagebottom {
+	CLEAR: both
+}
+.searchresult DD SPAN {
+	FONT-WEIGHT: bold
+}
+
+------=_NextPart_000_0000_01CC11B2.A9BA1FE0
+Content-Type: text/css;
+	charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://www.id3.org/skin-id3.css
+
+HTML {
+	BACKGROUND-COLOR: #fff
+}
+BODY {
+	BACKGROUND-COLOR: #fff
+}
+BODY {
+	COLOR: #000
+}
+#page {
+	BORDER-BOTTOM-COLOR: #9c9c9c; BORDER-TOP-COLOR: #9c9c9c; =
+BORDER-RIGHT-COLOR: #9c9c9c; BORDER-LEFT-COLOR: #9c9c9c
+}
+#message {
+	BORDER-BOTTOM-COLOR: #9c9c9c; BORDER-TOP-COLOR: #9c9c9c; =
+BORDER-RIGHT-COLOR: #9c9c9c; BORDER-LEFT-COLOR: #9c9c9c
+}
+#header {
+	BORDER-BOTTOM-COLOR: #9c9c9c; BORDER-TOP-COLOR: #9c9c9c; =
+BORDER-RIGHT-COLOR: #9c9c9c; BORDER-LEFT-COLOR: #9c9c9c
+}
+.sidepanel {
+	BORDER-BOTTOM-COLOR: #9c9c9c; BORDER-TOP-COLOR: #9c9c9c; =
+BORDER-RIGHT-COLOR: #9c9c9c; BORDER-LEFT-COLOR: #9c9c9c
+}
+.sidepanel H1 {
+	BORDER-BOTTOM-COLOR: #9c9c9c; BORDER-TOP-COLOR: #9c9c9c; =
+BORDER-RIGHT-COLOR: #9c9c9c; BORDER-LEFT-COLOR: #9c9c9c
+}
+.sidepanel LI {
+	BORDER-BOTTOM-COLOR: #9c9c9c; BORDER-TOP-COLOR: #9c9c9c; =
+BORDER-RIGHT-COLOR: #9c9c9c; BORDER-LEFT-COLOR: #9c9c9c
+}
+#navibar LI.current {
+	BORDER-BOTTOM-COLOR: #9c9c9c; BORDER-TOP-COLOR: #9c9c9c; =
+BORDER-RIGHT-COLOR: #9c9c9c; BORDER-LEFT-COLOR: #9c9c9c
+}
+.footnotes DIV {
+	BORDER-BOTTOM-COLOR: #9c9c9c; BORDER-TOP-COLOR: #9c9c9c; =
+BORDER-RIGHT-COLOR: #9c9c9c; BORDER-LEFT-COLOR: #9c9c9c
+}
+#header {
+	BACKGROUND: #ffffff
+}
+.sidepanel {
+	BACKGROUND: #ffffff
+}
+.sidepanel H1 {
+	COLOR: #ff6600
+}
+#navibar LI.current {
+	BACKGROUND: #ff6600
+}
+H2 {
+	BORDER-BOTTOM-COLOR: #ff6600; BORDER-TOP-COLOR: #ff6600; =
+BORDER-RIGHT-COLOR: #ff6600; BORDER-LEFT-COLOR: #ff6600
+}
+H3 {
+	BORDER-BOTTOM-COLOR: #ff6600; BORDER-TOP-COLOR: #ff6600; =
+BORDER-RIGHT-COLOR: #ff6600; BORDER-LEFT-COLOR: #ff6600
+}
+H4 {
+	BORDER-BOTTOM-COLOR: #ff6600; BORDER-TOP-COLOR: #ff6600; =
+BORDER-RIGHT-COLOR: #ff6600; BORDER-LEFT-COLOR: #ff6600
+}
+#credits {
+	COLOR: #777
+}
+#version {
+	COLOR: #777
+}
+#timings {
+	COLOR: #777
+}
+.info {
+	COLOR: #777
+}
+#logo A {
+	COLOR: #ff6600
+}
+
+------=_NextPart_000_0000_01CC11B2.A9BA1FE0
+Content-Type: text/css;
+	charset="iso-2022-jp"
+Content-Transfer-Encoding: 7bit
+Content-Location: http://www.id3.org/wiki/mentalwealth_id3/css/screen.css
+
+@import url( base.css );
+@import url( skin-id3.css );
+
+------=_NextPart_000_0000_01CC11B2.A9BA1FE0
+Content-Type: text/css;
+	charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://www.id3.org/wiki/mentalwealth_id3/css/print.css
+
+HTML {
+	BACKGROUND-COLOR: #fff
+}
+BODY {
+	BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: =
+1.5cm; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; FONT-FAMILY: Arial, =
+sans-serif; FONT-SIZE: 12pt; BORDER-TOP: 0px; BORDER-RIGHT: 0px; =
+PADDING-TOP: 0px
+}
+TABLE {
+	WIDTH: 99%
+}
+.footnotes DIV {
+	WIDTH: 5em; BORDER-TOP: #eee 1pt solid
+}
+PRE {
+	FONT-FAMILY: monospace, courier; FONT-SIZE: 10pt
+}
+H1 {
+	MARGIN: 0px
+}
+H2 {
+	MARGIN: 0px
+}
+H3 {
+	MARGIN: 0px
+}
+H4 {
+	MARGIN: 0px
+}
+H5 {
+	MARGIN: 0px
+}
+H6 {
+	MARGIN: 0px
+}
+H1 {
+	FONT-SIZE: 14pt
+}
+H2 {
+	BORDER-BOTTOM: #000 2px solid; PADDING-BOTTOM: 0.3em; LINE-HEIGHT: =
+1.2em; MARGIN-TOP: 1.5em; FONT-SIZE: 14pt
+}
+H3 {
+	BORDER-LEFT: #000 10px solid; MARGIN-TOP: 1.5em; PADDING-LEFT: 0.3em; =
+FONT-SIZE: 14pt
+}
+H4 {
+	BORDER-LEFT: #000 3px solid; MARGIN-TOP: 1.5em; PADDING-LEFT: 0.3em; =
+FONT-SIZE: 12pt
+}
+H5 {
+	FONT-SIZE: 12pt
+}
+H6 {
+	FONT-SIZE: 12pt
+}
+A.interwiki:before {
+	CONTENT: attr(title) ":"
+}
+A.badinterwiki:before {
+	CONTENT: attr(title) ":"
+}
+A.interwiki IMG {
+	DISPLAY: none
+}
+A.badinterwiki IMG {
+	DISPLAY: none
+}
+#header {
+	DISPLAY: none
+}
+#sidebar {
+	DISPLAY: none
+}
+#footer {
+	DISPLAY: none
+}
+#timings {
+	DISPLAY: none
+}
+#credits {
+	DISPLAY: none
+}
+#message {
+	DISPLAY: none
+}
+
+------=_NextPart_000_0000_01CC11B2.A9BA1FE0
+Content-Type: text/css;
+	charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://www.id3.org/base.css
+
+HTML {
+	FONT-SIZE: 81%
+}
+HTML {
+	PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: =
+0px; PADDING-TOP: 0px
+}
+BODY {
+	PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: =
+0px; PADDING-TOP: 0px
+}
+BODY {
+	FONT: 1em Verdana, Arial, Helvetica, sans-serif; VERTICAL-ALIGN: =
+text-top
+}
+P {
+	FONT-SIZE: 1em
+}
+OL {
+	FONT-SIZE: 1em
+}
+UL {
+	FONT-SIZE: 1em
+}
+LI {
+	FONT-SIZE: 1em
+}
+TABLE {
+	FONT-SIZE: 1em
+}
+P {
+	MARGIN: 1.2em 0px 0px
+}
+H1 {
+	MARGIN: 1.2em 0px 0px
+}
+H2 {
+	MARGIN: 1.2em 0px 0px
+}
+H3 {
+	MARGIN: 1.2em 0px 0px
+}
+H4 {
+	MARGIN: 1.2em 0px 0px
+}
+H5 {
+	MARGIN: 1.2em 0px 0px
+}
+H6 {
+	MARGIN: 1.2em 0px 0px
+}
+INPUT {
+	FONT-SIZE: 1em
+}
+SELECT {
+	FONT-SIZE: 1em
+}
+TH {
+	FONT-SIZE: 1em
+}
+TR {
+	FONT-SIZE: 1em
+}
+TD {
+	FONT-SIZE: 1em
+}
+PRE {
+	FONT-FAMILY: monospace, courier; FONT-SIZE: 1.1em
+}
+TT {
+	FONT-FAMILY: monospace, courier; FONT-SIZE: 1.1em
+}
+STRONG {
+	FONT-WEIGHT: bold
+}
+B {
+	FONT-WEIGHT: bold
+}
+SMALL {
+	FONT-SIZE: 0.8em
+}
+IMG {
+	BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; BORDER-TOP: 0px; BORDER-RIGHT: =
+0px
+}
+TABLE {
+	PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-LEFT: 0px; WIDTH: 99%; =
+PADDING-RIGHT: 0px; PADDING-TOP: 0px
+}
+TH {
+	TEXT-ALIGN: left; FONT-WEIGHT: bold
+}
+TR {
+	TEXT-ALIGN: left
+}
+TH {
+	VERTICAL-ALIGN: top
+}
+TR {
+	VERTICAL-ALIGN: top
+}
+TD {
+	VERTICAL-ALIGN: top
+}
+H1 {
+	MARGIN-TOP: 0px; FONT-SIZE: 1.7em
+}
+H2 {
+	BORDER-BOTTOM: black 2px solid; FONT-SIZE: 1.4em
+}
+H3 {
+	BORDER-LEFT: black 10px solid; PADDING-LEFT: 0.3em; FONT-SIZE: 1.4em
+}
+H4 {
+	BORDER-LEFT: black 3px solid; PADDING-LEFT: 0.3em; FONT-SIZE: 1em
+}
+H5 {
+	FONT-SIZE: 1em; FONT-WEIGHT: bold
+}
+H6 {
+	FONT-SIZE: 1em; FONT-WEIGHT: bold
+}
+H6 {
+	MARGIN-BOTTOM: -1em
+}
+#sidebar {
+	PADDING-BOTTOM: 0px; MARGIN: 0px 8px 0px 12px; PADDING-LEFT: 0px; =
+WIDTH: 160px; PADDING-RIGHT: 0px; DISPLAY: inline; FLOAT: left; =
+FONT-SIZE: 0.88em; PADDING-TOP: 0px
+}
+#page {
+	BORDER-BOTTOM: black 2px solid; BORDER-LEFT: black 1px solid; =
+PADDING-BOTTOM: 15px; MARGIN: 10px 10px 10px 185px; PADDING-LEFT: 30px; =
+PADDING-RIGHT: 30px; BORDER-TOP: black 1px solid; BORDER-RIGHT: black =
+1px solid; PADDING-TOP: 15px
+}
+#credits {
+	TEXT-ALIGN: center; PADDING-BOTTOM: 0px; LIST-STYLE-TYPE: none; MARGIN: =
+5px 0px; PADDING-LEFT: 0px; WIDTH: 160px; PADDING-RIGHT: 0px; FLOAT: =
+left; FONT-SIZE: 0.9em; PADDING-TOP: 0px
+}
+#version {
+	TEXT-ALIGN: center; PADDING-BOTTOM: 0px; LIST-STYLE-TYPE: none; MARGIN: =
+5px 0px; PADDING-LEFT: 0px; WIDTH: 160px; PADDING-RIGHT: 0px; FLOAT: =
+left; FONT-SIZE: 0.9em; PADDING-TOP: 0px
+}
+#timings {
+	TEXT-ALIGN: center; PADDING-BOTTOM: 0px; LIST-STYLE-TYPE: none; MARGIN: =
+5px 0px; PADDING-LEFT: 0px; WIDTH: 160px; PADDING-RIGHT: 0px; FLOAT: =
+left; FONT-SIZE: 0.9em; PADDING-TOP: 0px
+}
+#message {
+	BORDER-BOTTOM: black 2px solid; BORDER-LEFT: black 1px solid; =
+PADDING-BOTTOM: 5px; MARGIN: 10px 10px 10px 185px; PADDING-LEFT: 10px; =
+PADDING-RIGHT: 10px; BORDER-TOP: black 1px solid; BORDER-RIGHT: black =
+1px solid; PADDING-TOP: 5px
+}
+#header {
+	MARGIN: 10px
+}
+#logo {
+	PADDING-BOTTOM: 5px; MARGIN: 0px; PADDING-LEFT: 5px; PADDING-RIGHT: =
+5px; WHITE-SPACE: nowrap; FONT-SIZE: 1.7em; FONT-WEIGHT: bold; =
+PADDING-TOP: 5px
+}
+#logo IMG {
+	VERTICAL-ALIGN: middle
+}
+#logo A {
+	TEXT-DECORATION: none
+}
+#searchform {
+	PADDING-BOTTOM: 0px; MARGIN: 5px; PADDING-LEFT: 0px; PADDING-RIGHT: =
+0px; WHITE-SPACE: nowrap; FLOAT: right; PADDING-TOP: 0px
+}
+*[dir=3D'rtl'] #searchform {
+	FLOAT: left
+}
+#searchform FORM DIV {
+	DISPLAY: inline
+}
+.sidepanel {
+	BORDER-BOTTOM: black 2px solid; BORDER-LEFT: black 1px solid; MARGIN: =
+0px 0px 10px; WIDTH: 160px; FLOAT: right; FONT-SIZE: 1em; BORDER-TOP: =
+black 1px solid; BORDER-RIGHT: black 2px solid
+}
+.sidepanel H1 {
+	BORDER-BOTTOM: black 1px solid; BORDER-LEFT: medium none; =
+PADDING-BOTTOM: 0.2em; MARGIN: 0px; PADDING-LEFT: 10px; PADDING-RIGHT: =
+10px; FONT-SIZE: 1em; BORDER-TOP: medium none; BORDER-RIGHT: medium =
+none; PADDING-TOP: 0.2em
+}
+.sidepanel UL {
+	PADDING-BOTTOM: 0px; LIST-STYLE-TYPE: none; MARGIN: 0px; PADDING-LEFT: =
+0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px
+}
+.sidepanel LI {
+	BORDER-BOTTOM: black 1px solid; PADDING-BOTTOM: 2px; MARGIN: 0px; =
+PADDING-LEFT: 10px; PADDING-RIGHT: 10px; PADDING-TOP: 2px
+}
+.sidepanel LI FORM {
+	MARGIN: 0px
+}
+.sidepanel A {
+	DISPLAY: block; TEXT-DECORATION: none
+}
+.sidepanel A:hover {
+	TEXT-DECORATION: underline
+}
+SPAN.sep {
+	DISPLAY: none
+}
+.footnotes DIV {
+	WIDTH: 5em; BORDER-TOP: black 1px solid
+}
+.info {
+	FONT-SIZE: 0.8em
+}
+DIV.codearea PRE {
+	BORDER-BOTTOM: medium none; BORDER-LEFT: medium none; PADDING-BOTTOM: =
+0.9em; MARGIN: 0px; PADDING-LEFT: 0.9em; PADDING-RIGHT: 0.9em; =
+BORDER-TOP: medium none; BORDER-RIGHT: medium none; PADDING-TOP: 0.9em
+}
+#navibar LI.current {
+	BORDER-BOTTOM: black 1px solid; BORDER-LEFT: medium none; BORDER-TOP: =
+medium none; BORDER-RIGHT: medium none
+}
+.editbar FORM {
+	MARGIN: 0px; DISPLAY: inline
+}
+.editbar FORM DIV {
+	MARGIN: 0px; DISPLAY: inline
+}
+#editor-textarea {
+	WIDTH: 95%
+}
+#editor-comment {
+	WIDTH: 95%
+}
+#pagebottom {
+	CLEAR: both
+}
+.searchresult DD SPAN {
+	FONT-WEIGHT: bold
+}
+
+------=_NextPart_000_0000_01CC11B2.A9BA1FE0
+Content-Type: text/css;
+	charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://www.id3.org/skin-id3.css
+
+HTML {
+	BACKGROUND-COLOR: #fff
+}
+BODY {
+	BACKGROUND-COLOR: #fff
+}
+BODY {
+	COLOR: #000
+}
+#page {
+	BORDER-BOTTOM-COLOR: #9c9c9c; BORDER-TOP-COLOR: #9c9c9c; =
+BORDER-RIGHT-COLOR: #9c9c9c; BORDER-LEFT-COLOR: #9c9c9c
+}
+#message {
+	BORDER-BOTTOM-COLOR: #9c9c9c; BORDER-TOP-COLOR: #9c9c9c; =
+BORDER-RIGHT-COLOR: #9c9c9c; BORDER-LEFT-COLOR: #9c9c9c
+}
+#header {
+	BORDER-BOTTOM-COLOR: #9c9c9c; BORDER-TOP-COLOR: #9c9c9c; =
+BORDER-RIGHT-COLOR: #9c9c9c; BORDER-LEFT-COLOR: #9c9c9c
+}
+.sidepanel {
+	BORDER-BOTTOM-COLOR: #9c9c9c; BORDER-TOP-COLOR: #9c9c9c; =
+BORDER-RIGHT-COLOR: #9c9c9c; BORDER-LEFT-COLOR: #9c9c9c
+}
+.sidepanel H1 {
+	BORDER-BOTTOM-COLOR: #9c9c9c; BORDER-TOP-COLOR: #9c9c9c; =
+BORDER-RIGHT-COLOR: #9c9c9c; BORDER-LEFT-COLOR: #9c9c9c
+}
+.sidepanel LI {
+	BORDER-BOTTOM-COLOR: #9c9c9c; BORDER-TOP-COLOR: #9c9c9c; =
+BORDER-RIGHT-COLOR: #9c9c9c; BORDER-LEFT-COLOR: #9c9c9c
+}
+#navibar LI.current {
+	BORDER-BOTTOM-COLOR: #9c9c9c; BORDER-TOP-COLOR: #9c9c9c; =
+BORDER-RIGHT-COLOR: #9c9c9c; BORDER-LEFT-COLOR: #9c9c9c
+}
+.footnotes DIV {
+	BORDER-BOTTOM-COLOR: #9c9c9c; BORDER-TOP-COLOR: #9c9c9c; =
+BORDER-RIGHT-COLOR: #9c9c9c; BORDER-LEFT-COLOR: #9c9c9c
+}
+#header {
+	BACKGROUND: #ffffff
+}
+.sidepanel {
+	BACKGROUND: #ffffff
+}
+.sidepanel H1 {
+	COLOR: #ff6600
+}
+#navibar LI.current {
+	BACKGROUND: #ff6600
+}
+H2 {
+	BORDER-BOTTOM-COLOR: #ff6600; BORDER-TOP-COLOR: #ff6600; =
+BORDER-RIGHT-COLOR: #ff6600; BORDER-LEFT-COLOR: #ff6600
+}
+H3 {
+	BORDER-BOTTOM-COLOR: #ff6600; BORDER-TOP-COLOR: #ff6600; =
+BORDER-RIGHT-COLOR: #ff6600; BORDER-LEFT-COLOR: #ff6600
+}
+H4 {
+	BORDER-BOTTOM-COLOR: #ff6600; BORDER-TOP-COLOR: #ff6600; =
+BORDER-RIGHT-COLOR: #ff6600; BORDER-LEFT-COLOR: #ff6600
+}
+#credits {
+	COLOR: #777
+}
+#version {
+	COLOR: #777
+}
+#timings {
+	COLOR: #777
+}
+.info {
+	COLOR: #777
+}
+#logo A {
+	COLOR: #ff6600
+}
+
+------=_NextPart_000_0000_01CC11B2.A9BA1FE0
+Content-Type: text/css;
+	charset="iso-2022-jp"
+Content-Transfer-Encoding: 7bit
+Content-Location: http://www.id3.org/screen.css
+
+@import url( base.css );
+@import url( skin-id3.css );
+
+------=_NextPart_000_0000_01CC11B2.A9BA1FE0
+Content-Type: text/css;
+	charset="iso-2022-jp"
+Content-Transfer-Encoding: 7bit
+Content-Location: http://www.id3.org/wiki/mentalwealth_id3/css/projection.css
+
+@import url( screen.css );
+HTML {
+	LINE-HEIGHT: 1.8em
+}
+BODY {
+	FONT-SIZE: 22pt
+}
+B {
+	FONT-SIZE: 22pt
+}
+EM {
+	FONT-SIZE: 22pt
+}
+A {
+	FONT-SIZE: 22pt
+}
+SPAN {
+	FONT-SIZE: 22pt
+}
+DIV {
+	FONT-SIZE: 22pt
+}
+P {
+	FONT-SIZE: 22pt
+}
+TD {
+	FONT-SIZE: 22pt
+}
+H2 {
+	FONT-SIZE: 24pt
+}
+H3 {
+	FONT-SIZE: 22pt
+}
+H4 {
+	FONT-SIZE: 20pt
+}
+H5 {
+	FONT-SIZE: 18pt
+}
+H6 {
+	FONT-SIZE: 16pt
+}
+TT {
+	FONT-SIZE: 18pt
+}
+PRE {
+	FONT-SIZE: 18pt
+}
+SUP {
+	FONT-SIZE: 14pt
+}
+SUB {
+	FONT-SIZE: 14pt
+}
+.navigation {
+	PADDING-BOTTOM: 8pt; FONT-SIZE: 16pt; PADDING-TOP: 8pt
+}
+
+------=_NextPart_000_0000_01CC11B2.A9BA1FE0
+Content-Type: application/octet-stream
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://www.id3.org/wiki/common/js/common.js
+
+//=0A=
+// MoinMoin commonly used JavaScript functions=0A=
+//=0A=
+=0A=
+// use this instead of assigning to window.onload directly:=0A=
+function addLoadEvent(func) {=0A=
+  // alert("addLoadEvent " + func)=0A=
+  var oldonload =3D window.onload;=0A=
+  if (typeof window.onload !=3D 'function') {=0A=
+    window.onload =3D func;=0A=
+  } else {=0A=
+    window.onload =3D function() {=0A=
+      oldonload();=0A=
+      func();=0A=
+    }=0A=
+  }=0A=
+}=0A=
+=0A=
+function can_use_gui_editor() {=0A=
+    var sAgent =3D navigator.userAgent.toLowerCase();=0A=
+ =0A=
+    if (sAgent.indexOf("msie") !=3D -1 && sAgent.indexOf("mac") =3D=3D =
+-1 &&=0A=
+        sAgent.indexOf("opera") =3D=3D -1 ) {=0A=
+        // Internet Explorer=0A=
+        var sBrowserVersion =3D navigator.appVersion.match(/MSIE =
+(.\..)/)[1];=0A=
+        return ( sBrowserVersion >=3D 5.5 );=0A=
+    } else if (navigator.product =3D=3D "Gecko" && =0A=
+               navigator.productSub >=3D 20030210) {=0A=
+        // Gecko=0A=
+        return true;=0A=
+    }=0A=
+    // else if (sAgent.indexOf("safari") !=3D -1 ) {=0A=
+    //    // Safari - build must be at least 312 (1.3)=0A=
+    //    return (sAgent.match( /safari\/(\d+)/ )[1] >=3D 312 );=0A=
+    // } =0A=
+    else {=0A=
+        // Unknown browser, assume gui editor is not compatible=0A=
+        return false;=0A=
+    }=0A=
+}=0A=
+=0A=
+=0A=
+function update_edit_links() {=0A=
+    // Update editlink according if if the browser is compatible=0A=
+    if (can_use_gui_editor() =3D=3D false){=0A=
+        //alert("update_edit_links: can't use gui editor");=0A=
+        return;=0A=
+    }=0A=
+    var editlinks =3D document.getElementsByName("editlink");=0A=
+    for (i =3D 0; i < editlinks.length; i++) {=0A=
+        var link =3D editlinks[i];=0A=
+        href =3D =
+link.href.replace('editor=3Dtextonly','editor=3Dguipossible');=0A=
+        link.href =3D href;=0A=
+        //alert("update_edit_links: modified to guipossible");=0A=
+    }=0A=
+}=0A=
+=0A=
+=0A=
+function add_gui_editor_links() {=0A=
+    // Add gui editor link after the text editor link=0A=
+    =0A=
+    // If the variable is not set or browser is not compatible, exit=0A=
+    try {gui_editor_link_href}=0A=
+    catch (e) {=0A=
+        //alert("add_gui_editor_links: gui_editor_link_href not here");=0A=
+        return=0A=
+    }=0A=
+    if (can_use_gui_editor() =3D=3D false){=0A=
+        //alert("add_gui_editor_links: can't use gui_editor");=0A=
+        return;=0A=
+    }=0A=
+    var all =3D document.getElementsByName('texteditlink');=0A=
+    for (i =3D 0; i < all.length; i++) {=0A=
+        var textEditorLink =3D all[i];=0A=
+        // Create a list item with a link=0A=
+        var guiEditorLink =3D document.createElement('a');=0A=
+        guiEditorLink.href =3D gui_editor_link_href;=0A=
+        var text =3D document.createTextNode(gui_editor_link_text);=0A=
+        guiEditorLink.appendChild(text);=0A=
+        var listItem =3D document.createElement('li')=0A=
+        listItem.appendChild(guiEditorLink);=0A=
+        // Insert in the editbar=0A=
+        var editbar =3D textEditorLink.parentNode.parentNode=0A=
+        var nextListItem =3D textEditorLink.parentNode.nextSibling;=0A=
+        editbar.insertBefore(listItem, nextListItem);=0A=
+        //alert("add_gui_editor_links: added gui editor link");=0A=
+    }=0A=
+}=0A=
+ =0A=
+=0A=
+function show_switch2gui() {=0A=
+    // Show switch to gui editor link if the browser is compatible=0A=
+    if (can_use_gui_editor() =3D=3D false) return;=0A=
+    =0A=
+    var switch2gui =3D document.getElementById('switch2gui')=0A=
+    if (switch2gui) {=0A=
+        switch2gui.style.display =3D 'inline';=0A=
+    }=0A=
+}=0A=
+=0A=
+=0A=
+function load() {=0A=
+    // Do not name this "onload", it does not work with IE :-)=0A=
+    // TODO: create separate onload for each type of view and set the=0A=
+    // correct function name in the html. =0A=
+    // e.g <body onlod=3D'editor_onload()'>=0A=
+    =0A=
+    // Page view stuff=0A=
+    update_edit_links();=0A=
+    add_gui_editor_links();=0A=
+    =0A=
+    // Editor stuff=0A=
+    show_switch2gui();=0A=
+}=0A=
+=0A=
+=0A=
+function before_unload(evt) {=0A=
+    // TODO: Better to set this in the editor html, as it does not make=0A=
+    // sense elsehwere.=0A=
+    // confirmleaving is available when editing=0A=
+    try {return confirmleaving();}=0A=
+    catch (e) {}=0A=
+}=0A=
+=0A=
+// Initialize after loading the page=0A=
+addLoadEvent(load)=0A=
+=0A=
+// Catch before unloading the page=0A=
+window.onbeforeunload =3D before_unload=0A=
+=0A=
+
+------=_NextPart_000_0000_01CC11B2.A9BA1FE0
+Content-Type: application/octet-stream
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://pagead2.googlesyndication.com/pagead/show_ads.js
+
+=0A=
+(function(){var g=3Dnull,h=3D(new Date).getTime();var =
+i=3Dthis,aa=3Dfunction(a,b){var c=3Da.split("."),d=3Di;!(c[0]in =
+d)&&d.execScript&&d.execScript("var "+c[0]);for(var =
+e;c.length&&(e=3Dc.shift());)!c.length&&b!=3D=3Dvoid =
+0?d[e]=3Db:d=3Dd[e]?d[e]:d[e]=3D{}},ba=3Dfunction(a){return =
+a.call.apply(a.bind,arguments)},ca=3Dfunction(a,b){var =
+c=3Db||i;if(arguments.length>2){var =
+d=3DArray.prototype.slice.call(arguments,2);return function(){var =
+b=3DArray.prototype.slice.call(arguments);Array.prototype.unshift.apply(b=
+,d);return a.apply(c,b)}}else return function(){return =
+a.apply(c,arguments)}},=0A=
+j=3Dfunction(){j=3DFunction.prototype.bind&&Function.prototype.bind.toStr=
+ing().indexOf("native code")!=3D-1?ba:ca;return =
+j.apply(g,arguments)};var =
+da=3D/&/g,ea=3D/</g,fa=3D/>/g,ga=3D/\"/g,k=3D{"\0":"\\0","\u0008":"\\b","=
+\u000c":"\\f","\n":"\\n","\r":"\\r","\t":"\\t","\u000b":"\\x0B",'"':'\\"'=
+,"\\":"\\\\"},n=3D{"'":"\\'"},q=3Dfunction(a,b){if(a<b)return-1;else =
+if(a>b)return 1;return 0};var s,t,u,x,z=3Dfunction(){return =
+i.navigator?i.navigator.userAgent:g};x=3Du=3Dt=3Ds=3D!1;var =
+A;if(A=3Dz()){var =
+ia=3Di.navigator;s=3DA.indexOf("Opera")=3D=3D0;t=3D!s&&A.indexOf("MSIE")!=
+=3D-1;u=3D!s&&A.indexOf("WebKit")!=3D-1;x=3D!s&&!u&&ia.product=3D=3D"Geck=
+o"}var B=3Dt,D=3Dx,ja=3Du,E;=0A=
+a:{var F=3D"",G;if(s&&i.opera)var H=3Di.opera.version,F=3Dtypeof =
+H=3D=3D"function"?H():H;else =
+if(D?G=3D/rv\:([^\);]+)(\)|;)/:B?G=3D/MSIE\s+([^\);]+)(\)|;)/:ja&&(G=3D/W=
+ebKit\/(\S+)/),G)var ka=3DG.exec(z()),F=3Dka?ka[1]:"";if(B){var =
+I,la=3Di.document;I=3Dla?la.documentMode:void =
+0;if(I>parseFloat(F)){E=3DString(I);break a}}E=3DF}=0A=
+var ma=3DE,na=3D{},J=3Dfunction(a){var b;if(!(b=3Dna[a])){b=3D0;for(var =
+c=3DString(ma).replace(/^[\s\xa0]+|[\s\xa0]+$/g,"").split("."),d=3DString=
+(a).replace(/^[\s\xa0]+|[\s\xa0]+$/g,"").split("."),e=3DMath.max(c.length=
+,d.length),f=3D0;b=3D=3D0&&f<e;f++){var =
+ta=3Dc[f]||"",r=3Dd[f]||"",l=3DRegExp("(\\d*)(\\D*)","g"),y=3DRegExp("(\\=
+d*)(\\D*)","g");do{var =
+o=3Dl.exec(ta)||["","",""],m=3Dy.exec(r)||["","",""];if(o[0].length=3D=3D=
+0&&m[0].length=3D=3D0)break;b=3Dq(o[1].length=3D=3D0?0:parseInt(o[1],10),=
+m[1].length=3D=3D0?0:parseInt(m[1],10))||q(o[2].length=3D=3D=0A=
+0,m[2].length=3D=3D0)||q(o[2],m[2])}while(b=3D=3D0)}b=3Dna[a]=3Db>=3D0}re=
+turn b};var K,L;L=3DK=3D!1;var =
+M=3Dz();M&&(M.indexOf("Firefox")!=3D-1?K=3D!0:M.indexOf("Camino")!=3D-1||=
+M.indexOf("iPhone")!=3D-1||M.indexOf("iPod")!=3D-1||M.indexOf("iPad")!=3D=
+-1||M.indexOf("Android")!=3D-1||M.indexOf("Chrome")!=3D-1&&(L=3D!0));var =
+oa=3DK,pa=3DL;var qa=3Ddocument,N=3Dwindow;var =
+O=3Dfunction(a){a=3DparseFloat(a);return =
+isNaN(a)||a>1||a<0?0:a},ra=3Dfunction(a){if(a=3D=3D"true")return!0;return=
+!1},sa=3D/^([\w-]+\.)*([\w-]{2,})(\:[0-9]+)?$/,ua=3Dfunction(a){if(!a)ret=
+urn"pagead2.googlesyndication.com";return(a=3Da.match(sa))?a[0]:"pagead2.=
+googlesyndication.com"};var =
+va=3DO("0"),wa=3DO("0"),xa=3DO("0.2"),ya=3DO("0.002");var =
+za=3Dra("false"),Aa=3Dra("false"),Ba=3Dra("false");var =
+Ca=3Dfunction(){return =
+ua("")};!B||J("9");!D&&!B||B&&J("9")||D&&J("1.9.1");B&&J("9");ua("");var =
+P=3Dfunction(a){return!!a&&typeof =
+a=3D=3D"function"&&!!a.call},Da=3Dfunction(a){if(!(arguments.length<2))fo=
+r(var b=3D1,c=3Darguments.length;b<c;++b)a.push(arguments[b])};function =
+Q(a){return typeof =
+encodeURIComponent=3D=3D"function"?encodeURIComponent(a):escape(a)}functi=
+on =
+Ea(a,b){a.attachEvent?a.attachEvent("onload",b):a.addEventListener&&a.add=
+EventListener("load",b,!1)}=0A=
+function Fa(a,b){if(!(Math.random()<1.0E-4)){var =
+c=3DMath.random();if(c<b)return =
+a[Math.floor(c/b*a.length)]}return""};aa("google_protectAndRun",function(=
+a,b,c){a=3Dj(b,i,a);b=3Dwindow.onerror;window.onerror=3Da;try{c()}catch(d=
+){var c=3Dd.toString(),e=3D"";d.fileName&&(e=3Dd.fileName);var =
+f=3D-1;if(d.lineNumber)f=3Dd.lineNumber;if(!a(c,e,f))throw =
+d;}window.onerror=3Db});=0A=
+aa("google_handleError",function(a,b,c,d){if(Math.random()<0.01)a=3D["htt=
+p://",Ca(),"/pagead/gen_204","?id=3Djserror","&jscb=3D",za?1:0,"&jscd=3D"=
+,Aa?1:0,"&context=3D",Q(a),"&msg=3D",Q(b),"&file=3D",Q(c),"&line=3D",Q(d.=
+toString()),"&url=3D",Q(qa.URL.substring(0,512)),"&ref=3D",Q(qa.referrer.=
+substring(0,512))],a.push(["&client=3D",Q(N.google_ad_client),"&format=3D=
+",Q(N.google_ad_format),"&slotname=3D",Q(N.google_ad_slot),"&output=3D",Q=
+(N.google_ad_output),"&ad_type=3D",Q(N.google_ad_type)].join("")),a=3Da.j=
+oin(""),N.google_image_requests||=0A=
+(N.google_image_requests=3D[]),b=3Dnew =
+Image,b.src=3Da,N.google_image_requests.push(b);return!Ba});var =
+Ha=3Dfunction(a){try{var =
+b=3Da.google_test;a.google_test=3D!b;if(a.google_test=3D=3D=3D!b)return =
+a.google_test=3Db,!0}catch(c){}return!1},Ia=3Dg,Ja=3Dfunction(){if(!Ia){f=
+or(var =
+a=3Dwindow;a!=3Da.parent&&Ha(a.parent);)a=3Da.parent;Ia=3Da}return =
+Ia};var =
+R,S=3Dfunction(a){this.c=3D[];this.a=3Da||window;this.b=3D0;this.d=3Dg},K=
+a=3Dfunction(a,b){this.l=3Da;this.i=3Db};S.prototype.n=3Dfunction(a,b){th=
+is.b=3D=3D0&&this.c.length=3D=3D0&&(!b||b=3D=3Dwindow)?(this.b=3D2,this.g=
+(new =
+Ka(a,window))):this.h(a,b)};S.prototype.h=3Dfunction(a,b){this.c.push(new=
+ =
+Ka(a,b||this.a));La(this)};S.prototype.o=3Dfunction(a){this.b=3D1;if(a)th=
+is.d=3Dthis.a.setTimeout(j(this.f,this),a)};S.prototype.f=3Dfunction(){if=
+(this.b=3D=3D1){if(this.d!=3Dg)this.a.clearTimeout(this.d),this.d=3Dg;thi=
+s.b=3D0}La(this)};=0A=
+S.prototype.p=3Dfunction(){return!0};S.prototype.nq=3DS.prototype.n;S.pro=
+totype.nqa=3DS.prototype.h;S.prototype.al=3DS.prototype.o;S.prototype.rl=3D=
+S.prototype.f;S.prototype.sz=3DS.prototype.p;var =
+La=3Dfunction(a){a.a.setTimeout(j(a.m,a),0)};S.prototype.m=3Dfunction(){i=
+f(this.b=3D=3D0&&this.c.length){var =
+a=3Dthis.c.shift();this.b=3D2;a.i.setTimeout(j(this.g,this,a),0);La(this)=
+}};S.prototype.g=3Dfunction(a){this.b=3D0;a.l()};=0A=
+var Ma=3Dfunction(a){try{return =
+a.sz()}catch(b){return!1}},Na=3Dfunction(a){return!!a&&(typeof =
+a=3D=3D"object"||typeof =
+a=3D=3D"function")&&Ma(a)&&P(a.nq)&&P(a.nqa)&&P(a.al)&&P(a.rl)},Oa=3Dfunc=
+tion(){if(R&&Ma(R))return R;var =
+a=3DJa(),b=3Da.google_jobrunner;if(Na(b))return R=3Db;return =
+a.google_jobrunner=3DR=3Dnew =
+S(a)},Pa=3Dfunction(a,b){Oa().nq(a,b)},Qa=3Dfunction(a,b){Oa().nqa(a,b)};=
+var Ra=3Dfunction(){var =
+a=3DT,b=3DU.google_ad_width,c=3DU.google_ad_height,d=3D["<iframe"],e;for(=
+e in =
+a)a.hasOwnProperty(e)&&Da(d,e+"=3D"+a[e]);d.push('style=3D"left:0;positio=
+n:absolute;top:0;"');d.push("></iframe>");b=3D"border:none;height:"+c+"px=
+;margin:0;padding:0;position:relative;visibility:visible;width:"+b+"px";r=
+eturn['<ins style=3D"display:inline-table;',b,'"><ins =
+id=3D"',a.id+"_anchor",'" style=3D"display:block;',b,'">',d.join(" =
+"),"</ins></ins>"].join("")};var =
+Sa=3Dfunction(){},Ua=3Dfunction(a,b,c){switch(typeof b){case =
+"string":Ta(b,c);break;case =
+"number":c.push(isFinite(b)&&!isNaN(b)?b:"null");break;case =
+"boolean":c.push(b);break;case "undefined":c.push("null");break;case =
+"object":if(b=3D=3Dg){c.push("null");break}if(b instanceof Array){var =
+d=3Db.length;c.push("[");for(var =
+e=3D"",f=3D0;f<d;f++)c.push(e),Ua(a,b[f],c),e=3D",";c.push("]");break}c.p=
+ush("{");d=3D"";for(e in b)b.hasOwnProperty(e)&&(f=3Db[e],typeof =
+f!=3D"function"&&(c.push(d),Ta(e,c),c.push(":"),Ua(a,f,c),d=3D=0A=
+","));c.push("}");break;case "function":break;default:throw =
+Error("Unknown type: "+typeof =
+b);}},Va=3D{'"':'\\"',"\\":"\\\\","/":"\\/","\u0008":"\\b","\u000c":"\\f"=
+,"\n":"\\n","\r":"\\r","\t":"\\t","\u000b":"\\u000b"},Wa=3D/\uffff/.test(=
+"\uffff")?/[\\\"\x00-\x1f\x7f-\uffff]/g:/[\\\"\x00-\x1f\x7f-\xff]/g,Ta=3D=
+function(a,b){b.push('"');b.push(a.replace(Wa,function(a){if(a in =
+Va)return Va[a];var =
+b=3Da.charCodeAt(0),e=3D"\\u";b<16?e+=3D"000":b<256?e+=3D"00":b<4096&&(e+=
+=3D"0");return Va[a]=3De+b.toString(16)}));b.push('"')};var =
+V=3D["google_ad_block","google_ad_channel","google_ad_client","google_ad_=
+format","google_ad_height","google_ad_host","google_ad_host_channel","goo=
+gle_ad_host_tier_id","google_ad_output","google_ad_override","google_ad_r=
+egion","google_ad_section","google_ad_slot","google_ad_type","google_ad_w=
+idth","google_adtest","google_allow_expandable_ads","google_alternate_ad_=
+url","google_alternate_color","google_analytics_domain_name","google_anal=
+ytics_uacct","google_bid","google_city","google_color_bg","google_color_b=
+order",=0A=
+"google_color_line","google_color_link","google_color_text","google_color=
+_url","google_container_id","google_contents","google_country","google_cp=
+m","google_ctr_threshold","google_cust_age","google_cust_ch","google_cust=
+_gender","google_cust_id","google_cust_interests","google_cust_job","goog=
+le_cust_l","google_cust_lh","google_cust_u_url","google_disable_video_aut=
+oplay","google_ed","google_eids","google_enable_osd","google_encoding","g=
+oogle_font_face","google_font_size","google_frame_id","google_gl",=0A=
+"google_hints","google_image_size","google_kw","google_kw_type","google_l=
+anguage","google_max_num_ads","google_max_radlink_len","google_num_radlin=
+ks","google_num_radlinks_per_unit","google_num_slots_to_rotate","google_o=
+nly_ads_with_video","google_only_pyv_ads","google_only_userchoice_ads","g=
+oogle_override_format","google_page_url","google_referrer_url","google_re=
+gion","google_reuse_colors","google_rl_dest_url","google_rl_filtering","g=
+oogle_rl_mode","google_rt","google_safe","google_skip","google_tag_info",=0A=
+"google_targeting","google_ui_features","google_ui_version","google_video=
+_doc_id","google_video_product_type","google_with_pyv_ads"];var =
+W=3Dfunction(a){this.a=3Da;a.google_iframe_oncopy||(a.google_iframe_oncop=
+y=3D{handlers:{},log:[],img:Math.random()<0.01?[]:g});this.e=3Da.google_i=
+frame_oncopy;a.setTimeout(j(this.k,this),3E4)},Xa;var X=3D"var =
+i=3Dthis.id,s=3Dwindow.google_iframe_oncopy,H=3Ds&&s.handlers,h=3DH&&H[i]=
+,w=3Dthis.contentWindow,d;try{d=3Dw.document}catch(e){}if(h&&d&&(!d.body|=
+|!d.body.firstChild)){if(h.call){i+=3D'.call';setTimeout(h,0)}else =
+if(h.match){i+=3D'.nav';w.location.replace(h)}s.log&&s.log.push(i)}";=0A=
+/[&<>\"]/.test(X)&&(X.indexOf("&")!=3D-1&&(X=3DX.replace(da,"&amp;")),X.i=
+ndexOf("<")!=3D-1&&(X=3DX.replace(ea,"&lt;")),X.indexOf(">")!=3D-1&&(X=3D=
+X.replace(fa,"&gt;")),X.indexOf('"')!=3D-1&&(X=3DX.replace(ga,"&quot;")))=
+;Xa=3DX;W.prototype.set=3Dfunction(a,b){this.e.handlers[a]=3Db;this.a.add=
+EventListener&&this.a.addEventListener("load",j(this.j,this,a),!1)};W.pro=
+totype.j=3Dfunction(a){var =
+a=3Dthis.a.document.getElementById(a),b=3Da.contentWindow.document;if(a.o=
+nload&&b&&(!b.body||!b.body.firstChild))a.onload()};=0A=
+W.prototype.k=3Dfunction(){if(this.e.img){var =
+a=3Dthis.e.log,b=3Dthis.a.document;if(a.length)b=3D["http://",Ca(),"/page=
+ad/gen_204?id=3Diframecopy&log=3D",Q(a.join("-")),"&url=3D",Q(b.URL.subst=
+ring(0,512)),"&ref=3D",Q(b.referrer.substring(0,512))].join(""),a.length=3D=
+0,a=3Dnew Image,this.e.img.push(a),a.src=3Db}};var Ya=3Dfunction(){var =
+a=3D"script";return["<",a,' =
+src=3D"http://',ua(""),'/pagead/js/r20110509/r20110506/show_ads_impl.js">=
+</',a,">"].join("")},Za=3Dfunction(a,b,c,d){return function(){var =
+e=3D!1;d&&Oa().al(3E4);try{var =
+f;try{f=3D!!a.document.getElementById(b).contentWindow.document}catch(ta)=
+{f=3D!1}if(f){var r=3Da.document.getElementById(b).contentWindow,=0A=
+l=3Dr.document;if(!l.body||!l.body.firstChild)l.open(),r.google_async_ifr=
+ame_close=3D!0,l.write(c)}else{var =
+y=3Da.document.getElementById(b).contentWindow,o;f=3Dc;f=3DString(f);if(f=
+.quote)o=3Df.quote();else{r=3D['"'];for(l=3D0;l<f.length;l++){var =
+m=3Df.charAt(l),Ga=3Dm.charCodeAt(0),nb=3Dr,ob=3Dl+1,ha;if(!(ha=3Dk[m])){=
+var C;if(Ga>31&&Ga<127)C=3Dm;else{var p=3Dm;if(p in n)C=3Dn[p];else if(p =
+in k)C=3Dn[p]=3Dk[p];else{var =
+v=3Dp,w=3Dp.charCodeAt(0);if(w>31&&w<127)v=3Dp;else{if(w<256){if(v=3D"\\x=
+",w<16||w>256)v+=3D"0"}else v=3D"\\u",w<4096&&(v+=3D"0");=0A=
+v+=3Dw.toString(16).toUpperCase()}C=3Dn[p]=3Dv}}ha=3DC}nb[ob]=3Dha}r.push=
+('"');o=3Dr.join("")}y.location.replace("javascript:"+o)}e=3D!0}catch(ub)=
+{y=3DJa().google_jobrunner,Na(y)&&y.rl()}e&&(new =
+W(a)).set(b,Za(a,b,c,!1))}},$a=3Dfunction(){return va&&wa/va||typeof =
+window.google_hash_ratio=3D=3D"number"&&window.google_hash_ratio||g};wind=
+ow.google_loader_used=3D!0;(function(a){if(!("google_onload_fired"in =
+a))a.google_onload_fired=3D!1,Ea(a,function(){a.google_onload_fired=3D!0}=
+)})(window);if(!window.google_loader_experiment)window.google_loader_expe=
+riment=3DFa(["launch","blockodd"],xa)||Fa(["async2_black","async2_white"]=
+,ya)||"launch";var =
+ab,bb;a:{try{if(window.google_enable_async!=3D=3D!0&&window.google_loader=
+_experiment=3D=3D"blockodd"&&window.top.location.hostname.length%2=3D=3D1=
+){bb=3D!1;break a}}catch(cb){}bb=3D!0}=0A=
+if(ab=3Dbb)ab=3Dwindow.google_enable_async=3D=3D=3D!1?!1:(window.google_l=
+oader_experiment=3D=3D"async2_black"&&!/MSIE =
+[67]/.test(navigator.userAgent)||B&&/MSIE =
+8/.test(navigator.userAgent)||pa||oa&&!!window.document.body)&&!window.go=
+ogle_container_id&&(!window.google_ad_output||window.google_ad_output=3D=3D=
+"html");=0A=
+if(ab){var =
+db=3Dwindow;db.google_unique_id?++db.google_unique_id:db.google_unique_id=
+=3D1;for(var =
+Y=3Dwindow,_script$$inline_185=3D"script",Z,U=3DY,T=3D{allowtransparency:=
+'"true"',frameborder:'"0"',height:'"'+Y.google_ad_height+'"',hspace:'"0"'=
+,marginwidth:'"0"',marginheight:'"0"',onload:'"'+Xa+'"',scrolling:'"no"',=
+vspace:'"0"',width:'"'+Y.google_ad_width+'"'},eb=3DU.document,$=3DT.id,fb=
+=3D0;!$||U.document.getElementById($);)$=3D"aswift_"+fb++;T.id=3D$;T.name=
+=3D$;eb.write(Ra());Z=3D$;var gb;Y.google_page_url&&(Y.google_page_url=3D=0A=
+String(Y.google_page_url));for(var =
+hb=3D[],ib=3D0,jb=3DV.length;ib<jb;ib++){var =
+kb=3DV[ib];if(Y[kb]!=3Dg){var lb;try{var mb=3D[];Ua(new =
+Sa,Y[kb],mb);lb=3Dmb.join("")}catch(pb){}lb&&Da(hb,kb,"=3D",lb,";")}}gb=3D=
+hb.join("");for(var qb=3D0,rb=3DV.length;qb<rb;qb++)Y[V[qb]]=3Dg;var =
+sb=3D(new =
+Date).getTime(),tb=3D$a(),vb=3Dwindow.google_loader_experiment,wb=3D["<!d=
+octype =
+html><html><body><",_script$$inline_185,">",gb,"google_show_ads_impl=3Dtr=
+ue;google_unique_id=3D",Y.google_unique_id,';google_async_iframe_id=3D"',=
+Z,'";google_start_time=3D',=0A=
+h,";",tb?"google_hash_ratio=3D"+tb+";":"",vb?'google_loader_experiment=3D=
+"'+vb+'";':"","google_bpp=3D",sb>h?sb-h:1,";</",_script$$inline_185,">",Y=
+a(),"</body></html>"].join("");(Y.document.getElementById(Z)?Pa:Qa)(Za(Y,=
+Z,wb,!0))}else =
+window.google_start_time=3Dh,window.google_hash_ratio=3D$a(),document.wri=
+te(Ya());})();=0A=
+
+------=_NextPart_000_0000_01CC11B2.A9BA1FE0--
