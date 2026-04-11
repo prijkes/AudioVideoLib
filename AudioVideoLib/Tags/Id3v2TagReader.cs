@@ -208,7 +208,7 @@ namespace AudioVideoLib.Tags
                     break;
                 }
 
-                Id3v2Frame frame = Id3v2Frame.ReadFromStream(tag.Version, sb, totalSizeItems - bytesRead);
+                Id3v2Frame? frame = Id3v2Frame.ReadFromStream(tag.Version, sb, totalSizeItems - bytesRead);
                 if (frame != null)
                 {
                     Id3v2FrameParseEventArgs frameParseEventArgs = new Id3v2FrameParseEventArgs(frame);

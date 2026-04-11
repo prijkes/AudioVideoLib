@@ -128,7 +128,7 @@ namespace AudioVideoLib.Tags
         /// <value>
         /// The encrypted data block.
         /// </value>
-        public byte[] EncryptedDataBlock { get; set; }
+        public byte[] EncryptedDataBlock { get; set; } = null!;
 
         ////------------------------------------------------------------------------------------------------------------------------------
 

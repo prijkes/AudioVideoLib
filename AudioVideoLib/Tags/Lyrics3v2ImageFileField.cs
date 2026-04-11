@@ -130,7 +130,7 @@ namespace AudioVideoLib.Tags
         ////------------------------------------------------------------------------------------------------------------------------------
 
         /// <inheritdoc/>
-        public override bool Equals(Lyrics3v2Field audioFrame)
+        public override bool Equals(Lyrics3v2Field? audioFrame)
         {
             return Equals(audioFrame as Lyrics3v2ImageFileField);
         }

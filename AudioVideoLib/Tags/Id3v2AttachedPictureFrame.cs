@@ -182,7 +182,7 @@ namespace AudioVideoLib.Tags
         /// and having a complete URL [URL] instead of picture data.
         /// The use of linked files should however be used restrictively since there is the risk of separation of files.
         /// </remarks>
-        public byte[] PictureData { get; set; }
+        public byte[] PictureData { get; set; } = null!;
 
         ////------------------------------------------------------------------------------------------------------------------------------
 

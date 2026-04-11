@@ -317,7 +317,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// This field may be omitted if no picture is attached.
         /// </remarks>
-        public byte[] SellerLogo { get; set; }
+        public byte[] SellerLogo { get; set; } = null!;
 
         ////------------------------------------------------------------------------------------------------------------------------------
 

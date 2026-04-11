@@ -44,7 +44,7 @@ namespace AudioVideoLib.Tags
         /// <value>
         /// The identifier of the frame.
         /// </value>
-        public virtual string Identifier { get; private set; } = null!;
+        public virtual string? Identifier { get; private set; }
 
         /// <summary>
         /// Gets or sets the type of encryption.

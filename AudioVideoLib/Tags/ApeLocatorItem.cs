@@ -105,7 +105,7 @@ namespace AudioVideoLib.Tags
             _values.ItemReplace += ItemReplace;
         }
 
-        private static void ItemAdd(object sender, ListItemAddEventArgs<string> e)
+        private static void ItemAdd(object? sender, ListItemAddEventArgs<string> e)
         {
             if (e == null)
                 throw new ArgumentNullException("e");
@@ -117,7 +117,7 @@ namespace AudioVideoLib.Tags
                 throw new InvalidDataException("One or more URI values are invalid.");
         }
 
-        private static void ItemReplace(object sender, ListItemReplaceEventArgs<string> e)
+        private static void ItemReplace(object? sender, ListItemReplaceEventArgs<string> e)
         {
             if (e == null)
                 throw new ArgumentNullException("e");

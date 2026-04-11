@@ -168,7 +168,7 @@ namespace AudioVideoLib.Tags
         /// <value>
         /// The encapsulated object.
         /// </value>
-        public byte[] EncapsulatedObject { get; set; }
+        public byte[] EncapsulatedObject { get; set; } = null!;
 
         ////------------------------------------------------------------------------------------------------------------------------------
 

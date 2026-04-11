@@ -180,7 +180,7 @@ namespace AudioVideoLib.IO
             // Read all metadata blocks.
             while (((sb.Position + FlacMetadataBlock.MinimumSize) <= streamLength) && (spacing < MaxMetadataBlockSpacingLength))
             {
-                FlacMetadataBlock metadataBlock = FlacMetadataBlock.ReadBlock(sb);
+                FlacMetadataBlock? metadataBlock = FlacMetadataBlock.ReadBlock(sb);
                 if (metadataBlock != null)
                 {
                     spacing = 0;

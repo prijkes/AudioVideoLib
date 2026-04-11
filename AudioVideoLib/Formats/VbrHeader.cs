@@ -166,7 +166,7 @@ namespace AudioVideoLib.Formats
         /// </remarks>
         /// <param name="firstFrame">The first frame.</param>
         /// <returns>A VBR header if found; otherwise null.</returns>
-        public static VbrHeader FindHeader(MpaFrame firstFrame)
+        public static VbrHeader? FindHeader(MpaFrame firstFrame)
         {
             if (firstFrame == null)
                 throw new ArgumentNullException("firstFrame");

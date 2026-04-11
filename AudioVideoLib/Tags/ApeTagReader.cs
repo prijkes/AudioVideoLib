@@ -136,7 +136,7 @@ namespace AudioVideoLib.Tags
             {
                 long startPosition = sb.Position;
 
-                ApeItem item = ApeItem.ReadFromStream(tag.Version, sb, totalSizeItems - bytesRead);
+                ApeItem? item = ApeItem.ReadFromStream(tag.Version, sb, totalSizeItems - bytesRead);
                 if (item != null)
                 {
                     ApeItemParseEventArgs parseEventArgs = new ApeItemParseEventArgs(item);

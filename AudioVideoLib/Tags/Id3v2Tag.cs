@@ -592,7 +592,7 @@ namespace AudioVideoLib.Tags
                                 });
         }
 
-        private void ItemAdd<T>(object sender, CollectionItemAddEventArgs<T> e) where T : Id3v2Frame
+        private void ItemAdd<T>(object? sender, CollectionItemAddEventArgs<T> e) where T : Id3v2Frame
         {
             if (e == null)
                 throw new ArgumentNullException("e");
@@ -603,7 +603,7 @@ namespace AudioVideoLib.Tags
             SetFrame(e.Item);
         }
 
-        private void ItemRemove<T>(object sender, CollectionItemRemoveEventArgs<T> e) where T : Id3v2Frame
+        private void ItemRemove<T>(object? sender, CollectionItemRemoveEventArgs<T> e) where T : Id3v2Frame
         {
             if (e != null && e.Item != null)
                 RemoveFrame(e.Item);

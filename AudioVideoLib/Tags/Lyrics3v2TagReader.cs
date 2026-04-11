@@ -87,7 +87,7 @@ namespace AudioVideoLib.Tags
                 long startPosition = sb.Position;
 
                 // Read field if needed.
-                Lyrics3v2Field field = Lyrics3v2Field.ReadFromStream(sb, streamLength - bytesRead);
+                Lyrics3v2Field? field = Lyrics3v2Field.ReadFromStream(sb, streamLength - bytesRead);
                 if (field != null)
                 {
                     Lyrics3v2FieldParseEventArgs fieldParseEventArgs = new Lyrics3v2FieldParseEventArgs(field);

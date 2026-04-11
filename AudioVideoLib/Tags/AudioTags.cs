@@ -328,7 +328,7 @@ namespace AudioVideoLib.Tags
                 AudioTagParseEventArgs parseEventArgs = new AudioTagParseEventArgs(reader, tagOrigin);
                 OnAudioTagParse(parseEventArgs);
 
-                IAudioTagOffset tagOffset = reader.ReadFromStream(stream, tagOrigin);
+                IAudioTagOffset? tagOffset = reader.ReadFromStream(stream, tagOrigin);
                 if (tagOffset != null)
                 {
                     // Raise after parsing event.

@@ -89,7 +89,7 @@ namespace AudioVideoLib.Tags
         /// <value>
         /// The value of the field.
         /// </value>
-        public virtual byte[] Data
+        public virtual byte[]? Data
         {
             get
             {
