@@ -124,6 +124,11 @@ public sealed class VbriHeader : VbrHeader
     /// <inheritdoc/>
     public override int SeekPositionByTime(float entryTimeMilliseconds)
     {
+        if (Toc == null || Toc.Length == 0 || FrameCount <= 0)
+        {
+            return 0;
+        }
+
         var durationInMillisecondsPerTocEntry = (float)_totalLengthMilliseconds / (TableEntries + 1);
 
         if (entryTimeMilliseconds > _totalLengthMilliseconds)
@@ -133,10 +138,16 @@ public sealed class VbriHeader : VbrHeader
 
         int i = 0, seekPoint = 0;
         var accumaltedTimeMilliseconds = 0.0f;
-        while (accumaltedTimeMilliseconds <= entryTimeMilliseconds)
+        // Float rounding can leave accumulated time below target forever; clamp at Toc.Length.
+        while (i < Toc.Length && accumaltedTimeMilliseconds <= entryTimeMilliseconds)
         {
             seekPoint += Toc[i++];
             accumaltedTimeMilliseconds += durationInMillisecondsPerTocEntry;
+        }
+
+        if (i == 0)
+        {
+            return seekPoint;
         }
 
         // searched too far; correct result
@@ -151,16 +162,26 @@ public sealed class VbriHeader : VbrHeader
     /// <inheritdoc/>
     public override float SeekTimeByPosition(int entryPointInBytes)
     {
+        if (Toc == null || Toc.Length == 0 || FrameCount <= 0)
+        {
+            return 0f;
+        }
+
         int i = 0, accumulatedBytes = 0;
 
         var seekTime = 0.0f;
         var totalLengthSeconds = _totalLengthMilliseconds / 1000.0f;
         var lengthSecPerTocEntry = totalLengthSeconds / (TableEntries + 1);
 
-        while (accumulatedBytes <= entryPointInBytes)
+        while (i < Toc.Length && accumulatedBytes <= entryPointInBytes)
         {
             accumulatedBytes += Toc[i++];
             seekTime += lengthSecPerTocEntry;
+        }
+
+        if (i == 0 || Toc[i - 1] == 0)
+        {
+            return seekTime;
         }
 
         // searched too far; correct result

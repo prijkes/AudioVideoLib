@@ -123,12 +123,26 @@ public sealed class XingHeader : VbrHeader
     /// <inheritdoc/>
     public override long SeekPositionByPercent(float percentage)
     {
-        // Interpolate in TOC to get file seek point in bytes
-        var percent = (long)percentage;
-        double fa = Toc[percent];
-        double fb = percent < 99 ? Toc[percent + 1] : 256.0f;
+        if (Toc == null)
+        {
+            return 0;
+        }
+
+        percentage = Math.Clamp(percentage, 0f, 100f);
+
+        // Interpolate in TOC to get file seek point in bytes.
+        // Toc has 100 entries (0..99); the implicit fb=256 beyond the last entry lets
+        // percentage=100 map to the end of the file.
+        var percent = (int)percentage;
+        if (percent >= 100)
+        {
+            percent = 99;
+        }
+
+        var fa = (double)Toc[percent];
+        var fb = percent < 99 ? (double)Toc[percent + 1] : 256.0;
         var fx = fa + ((fb - fa) * (percentage - percent));
-        return (long)(1.0f / 256.0f * fx * FileSize);
+        return (long)(fx / 256.0 * FileSize);
     }
 
     /// <inheritdoc/>

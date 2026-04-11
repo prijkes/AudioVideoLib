@@ -90,7 +90,7 @@ public sealed partial class MpaFrame
     {
         get
         {
-            return FrameLength / SamplingRate * 8;
+            return SamplingRate == 0 ? 0 : FrameLength / SamplingRate * 8;
         }
     }
 
@@ -242,7 +242,7 @@ public sealed partial class MpaFrame
         {
             // I don't know how to calculate the bitrate yet if the free bitrate is used.
             // The bitrate should be calculated from the frame data and that bitrate should be used to calculate the frame length.
-            return (Bitrate == 0)
+            return (Bitrate == 0 || SamplingRate == 0)
                        ? FrameHeaderSize
                        : Convert.ToInt32((FrameSizeMultiplier * Bitrate * 1000 / SamplingRate) + Convert.ToByte(IsPadded)) * SlotSize;
         }
@@ -256,7 +256,7 @@ public sealed partial class MpaFrame
     /// </value>
     public long AudioLength
     {
-        get { return Convert.ToInt64((double)FrameSize / SamplingRate * 1000); }
+        get { return SamplingRate == 0 ? 0L : Convert.ToInt64((double)FrameSize / SamplingRate * 1000); }
     }
 
     /// <summary>
