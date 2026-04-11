@@ -603,7 +603,7 @@ public sealed class LameTag
 
         // If limiting the LAME string to 9 bytes "LAME X.YZu", the extension revision 0 could take 27 bytes and it would still fit a 64 kbit 48kHz frame.
         firstFrameBuffer.Seek(offset, SeekOrigin.Begin);
-        var tagName = firstFrameBuffer.ReadString(4, false, false);
+        var tagName = firstFrameBuffer.PeekString(4);
         return string.Compare(tagName, "LAME", StringComparison.OrdinalIgnoreCase) == 0 ? new LameTag(firstFrameBuffer) : null;
     }
 

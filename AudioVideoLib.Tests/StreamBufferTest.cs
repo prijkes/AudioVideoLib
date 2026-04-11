@@ -105,12 +105,12 @@ public class StreamBufferTest
     }
 
     [Fact]
-    public void ReadTestMovePositionFalse()
+    public void PeekReadDoesNotAdvancePosition()
     {
         byte[] msBuffer = [0x90, 0x10, 0xAA, 0x02, 0xFF];
         var target = new StreamBuffer(msBuffer);
         var buffer = new byte[msBuffer.Length];
-        target.Read(buffer, msBuffer.Length, false);
+        target.PeekRead(buffer, msBuffer.Length);
         Assert.True(target.Position == 0);
     }
 

@@ -41,7 +41,7 @@ public sealed partial class StreamBuffer
     /// This can be less than the number of bytes requested if that number of bytes are not currently available, 
     /// or zero if the end of the stream is reached before any bytes are read.
     /// </returns>
-    public int Read(byte[] buffer, int count, bool movePosition)
+    private int Read(byte[] buffer, int count, bool movePosition)
     {
         var bytesRead = Read(buffer, 0, count);
         if (!movePosition)
@@ -72,7 +72,7 @@ public sealed partial class StreamBuffer
     /// This can be less than the number of bytes requested if that number of bytes are not currently available, 
     /// or zero if the end of the stream is reached before any bytes are read.
     /// </returns>
-    public int Read(byte[] buffer, int offset, int count, bool movePosition)
+    private int Read(byte[] buffer, int offset, int count, bool movePosition)
     {
         int bytesRead;
         if (buffer == null)
@@ -136,6 +136,51 @@ public sealed partial class StreamBuffer
     }
 
     /// <summary>
+    /// Reads up to <paramref name="count"/> bytes into the supplied buffer <em>without</em>
+    /// advancing the stream position.
+    /// </summary>
+    /// <param name="buffer">The buffer to store the read data in.</param>
+    /// <param name="count">The maximum number of bytes to peek.</param>
+    /// <returns>The number of bytes actually read.</returns>
+    public int PeekRead(byte[] buffer, int count)
+    {
+        return Read(buffer, count, false);
+    }
+
+    /// <summary>
+    /// Reads a 32-bit big-endian integer from the stream <em>without</em> advancing the stream position.
+    /// </summary>
+    /// <returns>A 32-bit integer, or -1 if at the end of the stream.</returns>
+    public int PeekBigEndianInt32()
+    {
+        return ReadBigEndianInt32(false);
+    }
+
+    /// <summary>
+    /// Reads a string of the given byte length from the stream using <see cref="Encoding.ASCII"/>,
+    /// <em>without</em> advancing the stream position.
+    /// </summary>
+    /// <param name="lengthBytes">The number of bytes to peek.</param>
+    /// <param name="ignoreByteOrderMarker">
+    /// If set to <c>true</c>, ignores the byte order marker if found at the current position;
+    /// otherwise, uses it to determine the encoding to use.
+    /// </param>
+    /// <returns>The decoded ASCII string; empty if at end of stream.</returns>
+    public string PeekString(int lengthBytes, bool ignoreByteOrderMarker = false)
+    {
+        return ReadString(lengthBytes, ignoreByteOrderMarker, false);
+    }
+
+    /// <summary>
+    /// Reads a string of the given byte length from the stream using the specified encoding,
+    /// <em>without</em> advancing the stream position.
+    /// </summary>
+    public string PeekString(int lengthBytes, Encoding encoding, bool ignoreByteOrderMarker = false)
+    {
+        return ReadString(lengthBytes, encoding, ignoreByteOrderMarker, false);
+    }
+
+    /// <summary>
     /// Reads a 16-bit signed integer from the stream and advances the position within the stream by two bytes.
     /// </summary>
     /// <returns>
@@ -171,7 +216,7 @@ public sealed partial class StreamBuffer
     /// </returns>
     /// <exception cref="T:System.NotSupportedException">The stream does not support reading.</exception>
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    public short ReadInt16(bool movePosition)
+    private short ReadInt16(bool movePosition)
     {
         return ReadInt16(movePosition, out _);
     }
@@ -186,7 +231,7 @@ public sealed partial class StreamBuffer
     /// </returns>
     /// <exception cref="T:System.NotSupportedException">The stream does not support reading.</exception>
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    public short ReadInt16(bool movePosition, out int bytesRead)
+    private short ReadInt16(bool movePosition, out int bytesRead)
     {
         var buffer = new byte[Int16Size];
         bytesRead = Read(buffer, Int16Size, movePosition);
@@ -229,7 +274,7 @@ public sealed partial class StreamBuffer
     /// </returns>
     /// <exception cref="T:System.NotSupportedException">The stream does not support reading.</exception>
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    public int ReadInt32(bool movePosition)
+    private int ReadInt32(bool movePosition)
     {
         return ReadInt32(movePosition, out _);
     }
@@ -244,7 +289,7 @@ public sealed partial class StreamBuffer
     /// </returns>
     /// <exception cref="T:System.NotSupportedException">The stream does not support reading.</exception>
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    public int ReadInt32(bool movePosition, out int bytesRead)
+    private int ReadInt32(bool movePosition, out int bytesRead)
     {
         var value = new byte[Int32Size];
         bytesRead = Read(value, Int32Size, movePosition);
@@ -291,7 +336,7 @@ public sealed partial class StreamBuffer
     /// </returns>
     /// <exception cref="T:System.NotSupportedException">The stream does not support reading.</exception>
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    public int ReadInt(int length, bool movePosition)
+    private int ReadInt(int length, bool movePosition)
     {
         return ReadInt(length, movePosition, out _);
     }
@@ -308,7 +353,7 @@ public sealed partial class StreamBuffer
     /// </returns>
     /// <exception cref="T:System.NotSupportedException">The stream does not support reading.</exception>
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    public int ReadInt(int length, bool movePosition, out int bytesRead)
+    private int ReadInt(int length, bool movePosition, out int bytesRead)
     {
         if (length is > Int32Size or < 1)
         {
@@ -385,7 +430,7 @@ public sealed partial class StreamBuffer
     /// </returns>
     /// <exception cref="T:System.NotSupportedException">The stream does not support reading.</exception>
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    public long ReadInt64(bool movePosition)
+    private long ReadInt64(bool movePosition)
     {
         return ReadInt64(movePosition, out _);
     }
@@ -400,7 +445,7 @@ public sealed partial class StreamBuffer
     /// </returns>
     /// <exception cref="T:System.NotSupportedException">The stream does not support reading.</exception>
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    public long ReadInt64(int length, bool movePosition)
+    private long ReadInt64(int length, bool movePosition)
     {
         return ReadInt64(length, movePosition, out _);
     }
@@ -415,7 +460,7 @@ public sealed partial class StreamBuffer
     /// </returns>
     /// <exception cref="T:System.NotSupportedException">The stream does not support reading.</exception>
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    public long ReadInt64(bool movePosition, out int bytesRead)
+    private long ReadInt64(bool movePosition, out int bytesRead)
     {
         return ReadInt64(Int64Size, movePosition, out bytesRead);
     }
@@ -431,7 +476,7 @@ public sealed partial class StreamBuffer
     /// </returns>
     /// <exception cref="T:System.NotSupportedException">The stream does not support reading.</exception>
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    public long ReadInt64(int length, bool movePosition, out int bytesRead)
+    private long ReadInt64(int length, bool movePosition, out int bytesRead)
     {
         if (length > Int64Size)
         {
@@ -479,7 +524,7 @@ public sealed partial class StreamBuffer
     /// </returns>
     /// <exception cref="T:System.NotSupportedException">The stream does not support reading.</exception>
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    public float ReadFloat(bool movePosition)
+    private float ReadFloat(bool movePosition)
     {
         return ReadFloat(movePosition, out _);
     }
@@ -494,7 +539,7 @@ public sealed partial class StreamBuffer
     /// </returns>
     /// <exception cref="T:System.NotSupportedException">The stream does not support reading.</exception>
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    public float ReadFloat(bool movePosition, out int bytesRead)
+    private float ReadFloat(bool movePosition, out int bytesRead)
     {
         var value = new byte[Int32Size];
         bytesRead = Read(value, Int32Size, movePosition);
@@ -538,7 +583,7 @@ public sealed partial class StreamBuffer
     /// </returns>
     /// <exception cref="T:System.NotSupportedException">The stream does not support reading.</exception>
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    public double ReadDouble(bool movePosition)
+    private double ReadDouble(bool movePosition)
     {
         return ReadDouble(movePosition, out _);
     }
@@ -554,7 +599,7 @@ public sealed partial class StreamBuffer
     /// </returns>
     /// <exception cref="T:System.NotSupportedException">The stream does not support reading.</exception>
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    public double ReadDouble(bool movePosition, out int bytesRead)
+    private double ReadDouble(bool movePosition, out int bytesRead)
     {
         var value = new byte[Int64Size];
         bytesRead = Read(value, Int64Size, movePosition);
@@ -643,7 +688,7 @@ public sealed partial class StreamBuffer
     /// </returns>
     /// <exception cref="T:System.NotSupportedException">The stream does not support reading.</exception>
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    public string ReadString(int lengthBytes, bool ignoreByteOrderMarker, bool movePosition)
+    private string ReadString(int lengthBytes, bool ignoreByteOrderMarker, bool movePosition)
     {
         return ReadString(lengthBytes, Encoding.ASCII, ignoreByteOrderMarker, movePosition);
     }
@@ -663,7 +708,7 @@ public sealed partial class StreamBuffer
     /// </returns>
     /// <exception cref="T:System.NotSupportedException">The stream does not support reading.</exception>
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    public string ReadString(int lengthBytes, bool ignoreByteOrderMarker, bool movePosition, out int bytesRead)
+    private string ReadString(int lengthBytes, bool ignoreByteOrderMarker, bool movePosition, out int bytesRead)
     {
         return ReadString(lengthBytes, Encoding.ASCII, ignoreByteOrderMarker, movePosition, out bytesRead);
     }
@@ -762,7 +807,7 @@ public sealed partial class StreamBuffer
     /// <remarks>
     /// Returns an empty string if the end of file has been reached.
     /// </remarks>
-    public string ReadString(int lengthBytes, Encoding encoding, bool ignoreByteOrderMarker, bool movePosition)
+    private string ReadString(int lengthBytes, Encoding encoding, bool ignoreByteOrderMarker, bool movePosition)
     {
         return ReadString(lengthBytes, encoding, ignoreByteOrderMarker, movePosition, out _);
     }
@@ -786,7 +831,7 @@ public sealed partial class StreamBuffer
     /// <remarks>
     /// Returns an empty string if the end of file has been reached.
     /// </remarks>
-    public string ReadString(int lengthBytes, Encoding encoding, bool ignoreByteOrderMarker, bool movePosition, out int bytesRead)
+    private string ReadString(int lengthBytes, Encoding encoding, bool ignoreByteOrderMarker, bool movePosition, out int bytesRead)
     {
         var buffer = new byte[lengthBytes];
         bytesRead = Read(buffer, lengthBytes, movePosition);
@@ -953,7 +998,7 @@ public sealed partial class StreamBuffer
     /// The string NULL-terminator is also consumed but not appended to the string.
     /// The string NULL-terminator is the '\0' character encoded with the <paramref name="encoding"/>.
     /// </remarks>
-    public string ReadString(Encoding encoding, bool ignoreByteOrderMarker, bool movePosition)
+    private string ReadString(Encoding encoding, bool ignoreByteOrderMarker, bool movePosition)
     {
         return ReadString(encoding, '\0', ignoreByteOrderMarker, movePosition);
     }
@@ -977,7 +1022,7 @@ public sealed partial class StreamBuffer
     /// The string NULL-terminator is also consumed but not appended to the string.
     /// The string NULL-terminator is the '\0' character encoded with the <paramref name="encoding"/>.
     /// </remarks>
-    public string ReadString(Encoding encoding, bool ignoreByteOrderMarker, bool movePosition, out int bytesRead)
+    private string ReadString(Encoding encoding, bool ignoreByteOrderMarker, bool movePosition, out int bytesRead)
     {
         return ReadString(encoding, '\0', ignoreByteOrderMarker, movePosition, out bytesRead);
     }
@@ -1089,7 +1134,7 @@ public sealed partial class StreamBuffer
     /// </remarks>
     /// <exception cref="T:System.NotSupportedException">The stream does not support reading.</exception>
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    public string ReadString(Encoding encoding, char customStringTerminator, bool ignoreByteOrderMarker, bool movePosition)
+    private string ReadString(Encoding encoding, char customStringTerminator, bool ignoreByteOrderMarker, bool movePosition)
     {
         return ReadString(encoding, customStringTerminator.ToString(CultureInfo.InvariantCulture), ignoreByteOrderMarker, movePosition);
     }
@@ -1114,7 +1159,7 @@ public sealed partial class StreamBuffer
     /// The custom string terminator is also consumed but not appended to the string.
     /// The custom string terminator is the <paramref name="customStringTerminator"/> character encoded with the <paramref name="encoding"/>.
     /// </remarks>
-    public string ReadString(Encoding encoding, char customStringTerminator, bool ignoreByteOrderMarker, bool movePosition, out int bytesRead)
+    private string ReadString(Encoding encoding, char customStringTerminator, bool ignoreByteOrderMarker, bool movePosition, out int bytesRead)
     {
         return ReadString(encoding, customStringTerminator.ToString(CultureInfo.InvariantCulture), ignoreByteOrderMarker, movePosition, out bytesRead);
     }
@@ -1225,7 +1270,7 @@ public sealed partial class StreamBuffer
     /// </remarks>
     /// <exception cref="T:System.NotSupportedException">The stream does not support reading.</exception>
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    public string ReadString(Encoding encoding, string customStringTerminator, bool ignoreByteOrderMarker, bool movePosition)
+    private string ReadString(Encoding encoding, string customStringTerminator, bool ignoreByteOrderMarker, bool movePosition)
     {
         return ReadString(encoding, customStringTerminator, ignoreByteOrderMarker, movePosition, out _);
     }
@@ -1258,7 +1303,7 @@ public sealed partial class StreamBuffer
     /// Returns an empty string if the end of file has been reached.
     /// The custom string terminator is also consumed but not appended to the string.
     /// </remarks>
-    public string ReadString(Encoding encoding, string customStringTerminator, bool ignoreByteOrderMarker, bool movePosition, out int bytesRead)
+    private string ReadString(Encoding encoding, string customStringTerminator, bool ignoreByteOrderMarker, bool movePosition, out int bytesRead)
     {
         ArgumentNullException.ThrowIfNull(encoding);
 
@@ -1435,7 +1480,7 @@ public sealed partial class StreamBuffer
     /// </returns>
     /// <exception cref="T:System.NotSupportedException">The stream does not support reading.</exception>
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    public short ReadLittleEndianInt16(bool movePosition)
+    private short ReadLittleEndianInt16(bool movePosition)
     {
         return ReadLittleEndianInt16(movePosition, out _);
     }
@@ -1451,7 +1496,7 @@ public sealed partial class StreamBuffer
     /// </returns>
     /// <exception cref="T:System.NotSupportedException">The stream does not support reading.</exception>
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    public short ReadLittleEndianInt16(bool movePosition, out int bytesRead)
+    private short ReadLittleEndianInt16(bool movePosition, out int bytesRead)
     {
         var buffer = new byte[Int16Size];
         bytesRead = Read(buffer, Int16Size, movePosition);
@@ -1492,7 +1537,7 @@ public sealed partial class StreamBuffer
     /// </returns>
     /// <exception cref="T:System.NotSupportedException">The stream does not support reading.</exception>
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    public int ReadLittleEndianInt32(bool movePosition)
+    private int ReadLittleEndianInt32(bool movePosition)
     {
         return ReadLittleEndianInt32(movePosition, out _);
     }
@@ -1508,7 +1553,7 @@ public sealed partial class StreamBuffer
     /// </returns>
     /// <exception cref="T:System.NotSupportedException">The stream does not support reading.</exception>
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    public int ReadLittleEndianInt32(bool movePosition, out int bytesRead)
+    private int ReadLittleEndianInt32(bool movePosition, out int bytesRead)
     {
         var buffer = new byte[Int32Size];
         bytesRead = Read(buffer, Int32Size, movePosition);
@@ -1563,7 +1608,7 @@ public sealed partial class StreamBuffer
     /// </returns>
     /// <exception cref="T:System.NotSupportedException">The stream does not support reading.</exception>
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    public long ReadLittleEndianInt64(bool movePosition)
+    private long ReadLittleEndianInt64(bool movePosition)
     {
         return ReadLittleEndianInt64(movePosition, out _);
     }
@@ -1579,7 +1624,7 @@ public sealed partial class StreamBuffer
     /// </returns>
     /// <exception cref="T:System.NotSupportedException">The stream does not support reading.</exception>
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    public long ReadLittleEndianInt64(bool movePosition, out int bytesRead)
+    private long ReadLittleEndianInt64(bool movePosition, out int bytesRead)
     {
         var buffer = new byte[Int64Size];
         bytesRead = Read(buffer, Int64Size, movePosition);
@@ -1634,7 +1679,7 @@ public sealed partial class StreamBuffer
     /// </returns>
     /// <exception cref="T:System.NotSupportedException">The stream does not support reading.</exception>
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    public int ReadBigEndianInt16(bool movePosition)
+    private int ReadBigEndianInt16(bool movePosition)
     {
         return ReadBigEndianInt16(movePosition, out _);
     }
@@ -1650,7 +1695,7 @@ public sealed partial class StreamBuffer
     /// </returns>
     /// <exception cref="T:System.NotSupportedException">The stream does not support reading.</exception>
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    public int ReadBigEndianInt16(bool movePosition, out int bytesRead)
+    private int ReadBigEndianInt16(bool movePosition, out int bytesRead)
     {
         var buffer = new byte[Int16Size];
         bytesRead = Read(buffer, Int16Size, movePosition);
@@ -1705,7 +1750,7 @@ public sealed partial class StreamBuffer
     /// </returns>
     /// <exception cref="T:System.NotSupportedException">The stream does not support reading.</exception>
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    public int ReadBigEndianInt32(bool movePosition)
+    private int ReadBigEndianInt32(bool movePosition)
     {
         return ReadBigEndianInt(Int32Size, movePosition);
     }
@@ -1721,7 +1766,7 @@ public sealed partial class StreamBuffer
     /// </returns>
     /// <exception cref="T:System.NotSupportedException">The stream does not support reading.</exception>
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    public int ReadBigEndianInt32(bool movePosition, out int bytesRead)
+    private int ReadBigEndianInt32(bool movePosition, out int bytesRead)
     {
         return ReadBigEndianInt(Int32Size, movePosition, out bytesRead);
     }
@@ -1775,7 +1820,7 @@ public sealed partial class StreamBuffer
     /// </remarks>
     /// <exception cref="T:System.NotSupportedException">The stream does not support reading.</exception>
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    public int ReadBigEndianInt(int length, bool movePosition)
+    private int ReadBigEndianInt(int length, bool movePosition)
     {
         return ReadBigEndianInt(length, movePosition, out _);
     }
@@ -1795,7 +1840,7 @@ public sealed partial class StreamBuffer
     /// <remarks>
     /// If <paramref name="length"/> is bigger than four bytes, four bytes will be used as <paramref name="length"/>.
     /// </remarks>
-    public int ReadBigEndianInt(int length, bool movePosition, out int bytesRead)
+    private int ReadBigEndianInt(int length, bool movePosition, out int bytesRead)
     {
         if (length > Int32Size)
         {
@@ -1855,7 +1900,7 @@ public sealed partial class StreamBuffer
     /// </returns>
     /// <exception cref="T:System.NotSupportedException">The stream does not support reading.</exception>
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    public long ReadBigEndianInt64(bool movePosition)
+    private long ReadBigEndianInt64(bool movePosition)
     {
         return ReadBigEndianInt64(Int64Size, movePosition);
     }
@@ -1871,7 +1916,7 @@ public sealed partial class StreamBuffer
     /// </returns>
     /// <exception cref="T:System.NotSupportedException">The stream does not support reading.</exception>
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    public long ReadBigEndianInt64(bool movePosition, out int bytesRead)
+    private long ReadBigEndianInt64(bool movePosition, out int bytesRead)
     {
         return ReadBigEndianInt64(Int64Size, movePosition, out bytesRead);
     }
@@ -1925,7 +1970,7 @@ public sealed partial class StreamBuffer
     /// <remarks>
     /// If <paramref name="length"/> is bigger than eight bytes, eight bytes will be used as <paramref name="length"/>.
     /// </remarks>
-    public long ReadBigEndianInt64(int length, bool movePosition)
+    private long ReadBigEndianInt64(int length, bool movePosition)
     {
         return ReadBigEndianInt64(length, movePosition, out _);
     }
@@ -1945,7 +1990,7 @@ public sealed partial class StreamBuffer
     /// <remarks>
     /// If <paramref name="length"/> is bigger than eight bytes, eight bytes will be used as <paramref name="length"/>.
     /// </remarks>
-    public long ReadBigEndianInt64(int length, bool movePosition, out int bytesRead)
+    private long ReadBigEndianInt64(int length, bool movePosition, out int bytesRead)
     {
         if (length > Int64Size)
         {

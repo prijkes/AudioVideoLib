@@ -115,7 +115,7 @@ public sealed class VbriHeader : VbrHeader
         // 32 bytes = data indicating silence
         const long Offset = MpaFrame.FrameHeaderSize + SilenceDataSize;
         buffer.Seek(Offset, SeekOrigin.Begin);
-        var tagName = buffer.ReadString(4, false, false);
+        var tagName = buffer.PeekString(4);
         return string.Compare(tagName, HeaderIndicator, StringComparison.OrdinalIgnoreCase) == 0
                    ? new VbriHeader(firstFrame, buffer, Offset)
                    : null;

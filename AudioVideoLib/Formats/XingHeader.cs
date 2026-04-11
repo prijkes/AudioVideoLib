@@ -113,7 +113,7 @@ public sealed class XingHeader : VbrHeader
         buffer.Write(data);
 
         buffer.Seek(offset, SeekOrigin.Begin);
-        var tagName = buffer.ReadString(4, false, false);
+        var tagName = buffer.PeekString(4);
         return (string.Compare(tagName, VbrHeaderIndicator, StringComparison.OrdinalIgnoreCase) == 0)
             || (string.Compare(tagName, CbrHeaderIndicator, StringComparison.OrdinalIgnoreCase) == 0)
             ? new XingHeader(firstFrame, buffer, offset)

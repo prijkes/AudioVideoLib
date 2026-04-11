@@ -86,7 +86,7 @@ public partial class FlacSubFrame
 
         ArgumentNullException.ThrowIfNull(flacFrame);
 
-        var header = sb.ReadBigEndianInt32(false);
+        var header = sb.PeekBigEndianInt32();
         var type = (header >> 1) & 0x7E;
 
         var frame = type switch

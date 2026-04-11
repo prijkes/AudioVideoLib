@@ -36,7 +36,7 @@ public partial class Lyrics3v2Field
     {
         ArgumentNullException.ThrowIfNull(sb);
 
-        var identifier = sb.ReadString(FieldIdentifierLength, false, false);
+        var identifier = sb.PeekString(FieldIdentifierLength);
         var field = GetField(identifier);
         return field.ReadFieldInstance(sb, maximumFieldSize) ? field : null;
     }

@@ -108,7 +108,7 @@ public partial class Id3v2Frame
             var byteOrderMarker = new byte[2];
 
             // Not enough bytes available; probably little endian then.
-            if (streamBuffer.Read(byteOrderMarker, 2, false) < 2)
+            if (streamBuffer.PeekRead(byteOrderMarker, 2) < 2)
             {
                 return Id3v2FrameEncodingType.UTF16LittleEndian;
             }
