@@ -50,7 +50,7 @@ namespace AudioVideoLib.Tags
         ////------------------------------------------------------------------------------------------------------------------------------
 
         /// <inheritdoc />
-        public override byte[] Data
+        public override byte[]? Data
         {
             get
             {

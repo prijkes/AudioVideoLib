@@ -227,7 +227,9 @@ namespace AudioVideoLib.Tags
                     if (bytesUntilNextFrame > 0)
                     {
                         frameData = new byte[bytesUntilNextFrame];
-                        sb.Read(frameData, 0, frameData.Length);
+                        int extraBytesRead = sb.Read(frameData, 0, frameData.Length);
+                        if (extraBytesRead < frameData.Length)
+                            throw new EndOfStreamException("Unexpected end of stream while reading extra frame data.");
                         dataBuffer.Write(frameData);
                     }
                     frameData = dataBuffer.ToByteArray();
@@ -371,17 +373,17 @@ namespace AudioVideoLib.Tags
                     // This byte is part of the size field of the next frame.
                     // The first byte is the most left byte (size field length is an int)
                     int bits = ((identifierFieldLength + dataSizeFieldLength) - nextFrameHeaderLengthRead) - 1;
-                    nextFrameSizeValue |= b << (8 * bits);
+                    nextFrameSizeValue |= ((long)b) << (8 * bits);
                     nextFrameHeaderLengthRead++;
                     continue;
                 }
-                
+
                 // Flags field
                 if (nextFrameHeaderLengthRead < extraBytesToRead)
                 {
                     // This byte is part of the flags field of the next frame.
                     int bits = (extraBytesToRead - nextFrameHeaderLengthRead) - 1;
-                    nextFrameFlags |= b << (8 * bits);
+                    nextFrameFlags |= ((long)b) << (8 * bits);
                     nextFrameHeaderLengthRead++;
                     continue;
                 }

@@ -88,10 +88,12 @@ namespace AudioVideoLib.Tags
                         .ToArray();
 
                 // Grab the 'real' identifier for the version supplied.
-                identifier = pairs.Any() ? pairs[0].Value.Where(t => t.Value.Contains(version)).Select(t => t.Key).FirstOrDefault() : null;
+                string? resolved = pairs.Any() ? pairs[0].Value.Where(t => t.Value.Contains(version)).Select(t => t.Key).FirstOrDefault() : null;
 
-                if (String.IsNullOrEmpty(identifier))
+                if (String.IsNullOrEmpty(resolved))
                     throw new InvalidDataException("identifier is not a valid identifier.");
+
+                identifier = resolved!;
             }
             _identifier = identifier;
             BindValueListEvents();
@@ -109,7 +111,7 @@ namespace AudioVideoLib.Tags
                     // A string should look like this in byte form:
                     // TextEncoding + preamble + string1 + TextDelimiter + preamble + string2 + TextDelimiter + preamble + string3
                     Encoding encoding = Id3v2FrameEncoding.GetEncoding(TextEncoding);
-                    byte[] textDelimiterBytes;
+                    byte[]? textDelimiterBytes;
                     if (!EncodingTypeDelimiters.TryGetValue(_frameEncodingType, out textDelimiterBytes))
                         textDelimiterBytes = encoding.GetBytes(new[] { TextDelimiter });
 
@@ -170,14 +172,14 @@ namespace AudioVideoLib.Tags
         {
             get
             {
-                Dictionary<string, Id3v2Version[]> entry =
+                Dictionary<string, Id3v2Version[]>? entry =
                     Identifiers.Where(
                         i => i.Value != null && i.Value.Any(f => String.Equals(f.Key, base.Identifier, StringComparison.OrdinalIgnoreCase)))
                         .Select(i => i.Value)
                         .FirstOrDefault();
 
                 return (entry != null)
-                           ? entry.Where(d => d.Value != null && d.Value.Contains(Version)).Select(d => d.Key).FirstOrDefault() ?? base.Identifier
+                           ? (entry.Where(d => d.Value != null && d.Value.Contains(Version)).Select(d => d.Key).FirstOrDefault() ?? base.Identifier) ?? _identifier
                            : _identifier;
             }
         }
@@ -251,7 +253,7 @@ namespace AudioVideoLib.Tags
         /// </returns>
         public static string? GetIdentifier(Id3v2Version version, Id3v2TextFrameIdentifier identifier)
         {
-            Dictionary<string, Id3v2Version[]> identifiers;
+            Dictionary<string, Id3v2Version[]>? identifiers;
             return Identifiers.TryGetValue(identifier, out identifiers)
                        ? identifiers.Where(v => (v.Value == null) || v.Value.Contains(version)).Select(v => v.Key).FirstOrDefault()
                        : null;
@@ -322,7 +324,7 @@ namespace AudioVideoLib.Tags
         public override bool IsVersionSupported(Id3v2Version version)
         {
             // See if the identifier is a known identifier.
-            Dictionary<string, Id3v2Version[]> entry =
+            Dictionary<string, Id3v2Version[]>? entry =
                 Identifiers.Where(i => i.Value.Any(f => String.Equals(f.Key, base.Identifier, StringComparison.OrdinalIgnoreCase)))
                     .Select(i => i.Value)
                     .FirstOrDefault();

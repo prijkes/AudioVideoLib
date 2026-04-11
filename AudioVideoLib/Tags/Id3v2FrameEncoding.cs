@@ -58,7 +58,9 @@ namespace AudioVideoLib.Tags
                         return new UTF8Encoding(false);
 
                     case Id3v2FrameEncodingType.UTF7:
+#pragma warning disable SYSLIB0001
                         return new UTF7Encoding();
+#pragma warning restore SYSLIB0001
                 }
                 return Encoding.Default;
             }

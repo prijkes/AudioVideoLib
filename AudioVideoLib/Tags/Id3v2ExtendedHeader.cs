@@ -82,7 +82,7 @@ namespace AudioVideoLib.Tags
             set
             {
                 TagIsRestricted = (value != null);
-                _tagRestrictions = value;
+                _tagRestrictions = value!;
             }
         }
 

@@ -55,7 +55,7 @@ namespace AudioVideoLib.Tags
         ////------------------------------------------------------------------------------------------------------------------------------
 
         /// <inheritdoc />
-        public override byte[] Data
+        public override byte[]? Data
         {
             get
             {
@@ -85,7 +85,7 @@ namespace AudioVideoLib.Tags
             protected set
             {
                 if (value == null)
-                    throw new ArgumentNullException("value");
+                    throw new ArgumentNullException(nameof(value));
 
                 if (!IsValidData(value))
                     throw new InvalidDataException("Data contains one ore more invalid characters.");

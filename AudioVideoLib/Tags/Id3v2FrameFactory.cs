@@ -318,7 +318,7 @@ namespace AudioVideoLib.Tags
         {
             return
                 FrameFactories.Where(f => f.Type == typeof(T) && f.Identifiers != null && f.Identifiers.Values.Any(v => v != null && v.Contains(version)))
-                    .Select(f => f.Identifiers.Where(i => i.Value != null && i.Value.Contains(version)).Select(i => i.Key).FirstOrDefault())
+                    .Select(f => f.Identifiers!.Where(i => i.Value != null && i.Value.Contains(version)).Select(i => i.Key).FirstOrDefault())
                     .FirstOrDefault();
         }
 
@@ -340,8 +340,8 @@ namespace AudioVideoLib.Tags
                 foreach (Id3v2FrameFactoryItem factoryItem in FrameFactories.Where(f => f.Identifiers != null))
                 {
                     // See if a known identifier matches the given identifier, or partly does, anyway
-                    string realIdentifier =
-                        factoryItem.Identifiers.OrderByDescending(i => i.Key)
+                    string? realIdentifier =
+                        factoryItem.Identifiers!.OrderByDescending(i => i.Key)
                             .Where(i => i.Key.IndexOf(identifier, StringComparison.OrdinalIgnoreCase) >= 0)
                             .Select(i => i.Key)
                             .FirstOrDefault();
@@ -349,7 +349,7 @@ namespace AudioVideoLib.Tags
                     // If we found a matching identifier, grab the identifier for the specified version; otherwise, use the identifier as-is
                     if (!String.IsNullOrEmpty(realIdentifier))
                     {
-                        identifier = factoryItem.Identifiers.Where(i => i.Value.Contains(version)).Select(i => i.Key).FirstOrDefault() ?? realIdentifier;
+                        identifier = factoryItem.Identifiers!.Where(i => i.Value.Contains(version)).Select(i => i.Key).FirstOrDefault() ?? realIdentifier;
                         frame = FrameFactories.Where(f => f.IsMatch(version, identifier)).Select(f => f.Factory(version, identifier)).FirstOrDefault();
                         break;
                     }

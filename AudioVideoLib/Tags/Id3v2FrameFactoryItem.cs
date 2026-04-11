@@ -41,7 +41,7 @@ namespace AudioVideoLib.Tags
             /// <remarks>
             /// Each identifier is used for a <see cref="Id3v2Version"/>; multiple <see cref="Id3v2Version"/>s can use the same identifier.
             /// </remarks>
-            public Dictionary<string, Id3v2Version[]> Identifiers { get; set; } = null!;
+            public Dictionary<string, Id3v2Version[]>? Identifiers { get; set; }
 
             /// <summary>
             /// Gets or sets the factory for creating the <see cref="Id3v2Frame"/>.

@@ -98,7 +98,7 @@ namespace AudioVideoLib.Formats
         /// Gets or sets the LAME tag, if found.
         /// </summary>
         /// <value>The LAME tag in the firstFrame, if found.</value>
-        public LameTag LameTag { get; protected set; } = null!;
+        public LameTag? LameTag { get; protected set; }
 
         /// <summary>
         /// Gets or sets the frame which contains the VBR header.
@@ -114,7 +114,7 @@ namespace AudioVideoLib.Formats
         /// <value>
         /// The TOC table.
         /// </value>
-        protected int[] Toc { get; set; }
+        protected int[] Toc { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the number of entries in the <see cref="Toc"/> table.
@@ -171,7 +171,7 @@ namespace AudioVideoLib.Formats
             if (firstFrame == null)
                 throw new ArgumentNullException("firstFrame");
 
-            return XingHeader.FindHeader(firstFrame) ?? (VbrHeader)VbriHeader.FindHeader(firstFrame);
+            return XingHeader.FindHeader(firstFrame) ?? (VbrHeader?)VbriHeader.FindHeader(firstFrame);
         }
 
         /// <summary>

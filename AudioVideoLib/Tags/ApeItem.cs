@@ -61,7 +61,7 @@ namespace AudioVideoLib.Tags
         public ApeItem(ApeVersion version, ApeItemKey key)
         {
             Version = version;
-            Key = GetItemKeys(key).FirstOrDefault();
+            Key = GetItemKeys(key).FirstOrDefault() ?? string.Empty;
         }
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace AudioVideoLib.Tags
         /// </returns>
         public static IEnumerable<string> GetItemKeys(ApeItemKey key)
         {
-            string[] itemKeys;
+            string[]? itemKeys;
             return ItemKeys.TryGetValue(key, out itemKeys) ? itemKeys : Enumerable.Empty<string>();
         }
 

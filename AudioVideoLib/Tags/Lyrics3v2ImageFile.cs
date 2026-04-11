@@ -18,7 +18,7 @@ namespace AudioVideoLib.Tags
         // Description can be up to 250 chars long.
         private const int MaxDescriptionLength = 250;
 
-        private string _description = null!;
+        private string? _description;
         private readonly EventList<TimeSpan> _timeStamps = new EventList<TimeSpan>();
 
         ////------------------------------------------------------------------------------------------------------------------------------
@@ -38,7 +38,7 @@ namespace AudioVideoLib.Tags
         /// * Full path + Filename - when the image is located in a totally different path or drive.
         /// This will not work if the image is moved or drive letters has changed, and so should be avoided if possible (i.e. c:\images\artist.jpg) 
         /// </remarks>
-        public string Filename { get; set; } = null!;
+        public string? Filename { get; set; }
 
         /// <summary>
         /// Gets or sets the description.
@@ -51,7 +51,7 @@ namespace AudioVideoLib.Tags
         /// <para />
         /// The description can be up to 250 chars long, and will be truncated when longer.
         /// </remarks>
-        public string Description
+        public string? Description
         {
             get
             {
@@ -60,7 +60,7 @@ namespace AudioVideoLib.Tags
 
             set
             {
-                _description = (!String.IsNullOrEmpty(value) && value.Length > MaxDescriptionLength) ? value.Substring(0, MaxDescriptionLength) : value;
+                _description = (!String.IsNullOrEmpty(value) && value!.Length > MaxDescriptionLength) ? value.Substring(0, MaxDescriptionLength) : value;
             }
         }
 

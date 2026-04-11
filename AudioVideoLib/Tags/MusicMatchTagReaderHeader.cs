@@ -19,7 +19,7 @@ namespace AudioVideoLib.Tags
 
         ////------------------------------------------------------------------------------------------------------------------------------
 
-        private static void ValidateHeader(MusicMatchHeader header, MusicMatchHeader footer)
+        private static void ValidateHeader(MusicMatchHeader? header, MusicMatchHeader? footer)
         {
 #if DEBUG
             if (header != null && footer != null)

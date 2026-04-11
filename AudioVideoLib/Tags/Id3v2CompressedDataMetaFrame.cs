@@ -23,7 +23,7 @@ namespace AudioVideoLib.Tags
         private Id3v2CompressionMethod _compressionMethod;
 
         private byte[] _compressedData = null!;
-        private Id3v2Frame _frame = null!;
+
         ////------------------------------------------------------------------------------------------------------------------------------
 
         /// <summary>

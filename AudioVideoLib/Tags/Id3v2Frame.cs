@@ -339,7 +339,7 @@ namespace AudioVideoLib.Tags
             using (StreamBuffer buffer = new StreamBuffer())
             {
                 // identifier needs to match the IdentifierFieldLength; pad the identifier if needed (not legal, but some programs write incorrect identifiers).
-                string identifier = Identifier.PadRight(GetIdentifierFieldLength(Version), '\0');
+                string identifier = (Identifier ?? string.Empty).PadRight(GetIdentifierFieldLength(Version), '\0');
                 buffer.WriteString(identifier.Substring(0, IdentifierFieldLength));
                 if (Version >= Id3v2Version.Id3v240)
                     buffer.WriteBigEndianInt32(Id3v2Tag.GetSynchsafeValue(data.Length));

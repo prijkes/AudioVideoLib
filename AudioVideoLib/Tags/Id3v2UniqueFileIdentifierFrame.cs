@@ -108,7 +108,7 @@ namespace AudioVideoLib.Tags
 
             set
             {
-                _identifierData = (value != null) ? value.Take(64).ToArray() : null;
+                _identifierData = (value != null) ? value.Take(64).ToArray() : null!;
             }
         }
 

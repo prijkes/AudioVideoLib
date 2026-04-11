@@ -28,7 +28,7 @@ namespace AudioVideoLib.Tags
         /// The data should not include any header(s) and/or footer(s).
         /// The header(s) and/or footer(s) should be included when calling <see cref="ToByteArray()"/>, together with the data.
         /// </remarks>
-        byte[] Data { get; }
+        byte[]? Data { get; }
 
         ////------------------------------------------------------------------------------------------------------------------------------
 

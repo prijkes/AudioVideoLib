@@ -74,7 +74,7 @@ namespace AudioVideoLib.Tags
 
             set
             {
-                _tableOfContents = (value != null) ? value.Take(MaxTableOfContentsSize).ToArray() : null;
+                _tableOfContents = (value != null) ? value.Take(MaxTableOfContentsSize).ToArray() : null!;
             }
         }
 

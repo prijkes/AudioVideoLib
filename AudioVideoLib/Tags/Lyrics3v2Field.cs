@@ -101,7 +101,7 @@ namespace AudioVideoLib.Tags
                 if ((value != null) && !IsValidData(value))
                     throw new InvalidDataException("Data contains one or more invalid values.");
 
-                _data = value;
+                _data = value!;
             }
         }
 
@@ -207,7 +207,7 @@ namespace AudioVideoLib.Tags
             using (StreamBuffer sb = new StreamBuffer())
             {
                 sb.WriteString(Identifier, Encoding.ASCII, FieldIdentifierLength);
-                byte[] data = Data;
+                byte[]? data = Data;
                 if (data != null)
                 {
                     sb.WriteString(data.Length.ToString("D" + FieldSizeLength, CultureInfo.InvariantCulture));

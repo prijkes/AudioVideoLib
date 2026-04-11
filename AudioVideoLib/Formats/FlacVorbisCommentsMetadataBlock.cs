@@ -5,6 +5,7 @@
  *  http://py.thoulon.free.fr/
  */
 using System;
+using System.IO;
 
 using AudioVideoLib.IO;
 using AudioVideoLib.Tags;
@@ -38,7 +39,7 @@ namespace AudioVideoLib.Formats
                 if (value == null)
                     throw new ArgumentNullException("value");
 
-                VorbisComments = VorbisComments.ReadStream(new StreamBuffer(value));
+                VorbisComments = VorbisComments.ReadStream(new StreamBuffer(value)) ?? throw new InvalidDataException("Could not parse Vorbis comments block.");
             }
         }
 

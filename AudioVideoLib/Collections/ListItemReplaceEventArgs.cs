@@ -54,6 +54,6 @@ namespace AudioVideoLib.Collections
         /// <summary>
         /// Gets or sets the item to replace the <see cref="OldItem"/>.
         /// </summary>
-        public T NewItem { get; set; } = null!;
+        public T NewItem { get; set; } = default!;
     }
 }

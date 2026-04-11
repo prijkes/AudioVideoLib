@@ -21,7 +21,7 @@ namespace AudioVideoLib.Tags
         /// Initializes a new instance of the <see cref="Lyrics3v2TextField"/> class.
         /// </summary>
         /// <param name="identifier">The identifier of the field.</param>
-        public Lyrics3v2TextField(Lyrics3v2TextFieldIdentifier identifier) : base(GetIdentifier(identifier))
+        public Lyrics3v2TextField(Lyrics3v2TextFieldIdentifier identifier) : base(GetIdentifier(identifier) ?? throw new ArgumentException("Unknown identifier", nameof(identifier)))
         {
         }
 
@@ -85,7 +85,7 @@ namespace AudioVideoLib.Tags
         /// </returns>
         public static string? GetIdentifier(Lyrics3v2TextFieldIdentifier identifier)
         {
-            string id;
+            string? id;
             return Identifiers.TryGetValue(identifier, out id) ? id : null;
         }
 

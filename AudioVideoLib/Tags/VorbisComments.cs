@@ -69,7 +69,7 @@ namespace AudioVideoLib.Tags
         /// or
         /// stream can not be seeked
         /// </exception>
-        public static VorbisComments ReadStream(Stream stream)
+        public static VorbisComments? ReadStream(Stream stream)
         {
             if (stream == null)
                 throw new ArgumentNullException("stream");
@@ -168,7 +168,7 @@ namespace AudioVideoLib.Tags
             _comments.Clear();
             while ((commentsRead < length) && (sb.Position <= sb.Length))
             {
-                _comments.Add(VorbisComment.ReadStream(sb));
+                _comments.Add(VorbisComment.ReadStream(sb)!);
                 commentsRead++;
             }
             return true;

@@ -104,7 +104,7 @@ namespace AudioVideoLib.Tags
             set
             {
                 UseExtendedHeader = (value != null);
-                _extendedHeader = value;
+                _extendedHeader = value!;
             }
         }
 
@@ -379,7 +379,7 @@ namespace AudioVideoLib.Tags
         public void RemoveFrame(Id3v2Frame? frame)
         {
             // Try to remove by reference first before trying to remove by calling the Equal() on all frames
-            if ((frame != null) && !_frames.Remove(_frames.FirstOrDefault(f => ReferenceEquals(f, frame))))
+            if ((frame != null) && !_frames.Remove(_frames.FirstOrDefault(f => ReferenceEquals(f, frame))!))
                 _frames.Remove(frame);
         }
 

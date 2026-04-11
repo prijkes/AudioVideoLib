@@ -496,12 +496,12 @@ namespace AudioVideoLib.Collections
         private bool RemoveItem(int index)
         {
             T? item = _list.ElementAtOrDefault(index);
-            ListItemRemoveEventArgs<T> removeEventArgs = new ListItemRemoveEventArgs<T>(index, item);
+            ListItemRemoveEventArgs<T> removeEventArgs = new ListItemRemoveEventArgs<T>(index, item!);
             OnItemRemove(removeEventArgs);
 
             if (!removeEventArgs.Cancel)
             {
-                if (_list.Remove(item))
+                if (item != null && _list.Remove(item))
                 {
                     ListItemRemovedEventArgs<T> removedEventArgs = new ListItemRemovedEventArgs<T>(index, item);
                     OnItemRemoved(removedEventArgs);

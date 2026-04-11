@@ -16,8 +16,6 @@ namespace AudioVideoLib.Formats
     {
         private int _riceParameter;
 
-        private FlacResidualCodingMethod _codingMethod;
-
         public int Samples { get; private set; }
 
         public int EncodingResidual { get; private set; }
@@ -28,7 +26,7 @@ namespace AudioVideoLib.Formats
 
         public static FlacRicePartition Read(StreamBuffer sb, int partitionNumber, int partitionOrder, int predictOrder, int blockSize, FlacResidualCodingMethod codingMethod)
         {
-            FlacRicePartition ricePartition = new FlacRicePartition { _riceParameter = sb.ReadBigEndianInt32(), _codingMethod = codingMethod };
+            FlacRicePartition ricePartition = new FlacRicePartition { _riceParameter = sb.ReadBigEndianInt32() };
             int riceParameter = ricePartition._riceParameter & ((codingMethod == FlacResidualCodingMethod.PartitionedRice) ? 0x1F : 0xF);
             if (partitionOrder == 0)
                 ricePartition.Samples = blockSize - predictOrder;

@@ -176,11 +176,11 @@ namespace AudioVideoLib.Tags
         private void SetLyrics(string? value)
         {
             // The keywords "LYRICSBEGIN" and "LYRICSEND" must not be present in the lyrics.
-            if ((value.Contains(HeaderIdentifier) || value.Contains(FooterIdentifier)))
+            if (value != null && (value.Contains(HeaderIdentifier) || value.Contains(FooterIdentifier)))
                 throw new InvalidDataException(String.Format("The lyrics may not contain the string {0} or {1}", HeaderIdentifier, FooterIdentifier));
 
             // A byte in the text must not have the binary value 255.
-            _lyrics = StreamBuffer.GetTruncatedEncodedBytes(value, _encoding, MaxLyricsSize);
+            _lyrics = StreamBuffer.GetTruncatedEncodedBytes(value ?? string.Empty, _encoding, MaxLyricsSize);
 
             if (_lyrics.Any(l => l == 0xFF))
                 throw new InvalidDataException("A byte in the lyrics may not have the binary value 255");

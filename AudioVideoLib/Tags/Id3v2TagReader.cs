@@ -153,7 +153,7 @@ namespace AudioVideoLib.Tags
             if (tag.UseExtendedHeader)
             {
                 int crc;
-                tag.ExtendedHeader = ReadExtendedHeader(sb, tag, out crc);
+                tag.ExtendedHeader = ReadExtendedHeader(sb, tag, out crc)!;
                 if (tag.ExtendedHeader != null)
                 {
                     if (tag.UseFooter && (tag.ExtendedHeader.PaddingSize != 0))
@@ -540,16 +540,16 @@ namespace AudioVideoLib.Tags
                 return;
 
             string? trackNumberIdentifier = Id3v2TextFrame.GetIdentifier(version, Id3v2TextFrameIdentifier.TrackNumber);
-            Id3v2Frame trackNumberFrame =
+            Id3v2Frame? trackNumberFrame =
                 frames.OfType<Id3v2TextFrame>()
                     .FirstOrDefault(f => String.Equals(f.Identifier, trackNumberIdentifier, StringComparison.OrdinalIgnoreCase));
 
             string? musicCdIdentifier = Id3v2Frame.GetIdentifier<Id3v2MusicCdIdentifierFrame>(version);
-            Id3v2Frame musicCdFrame =
+            Id3v2Frame? musicCdFrame =
                 frames.FirstOrDefault(
                     f => f is Id3v2MusicCdIdentifierFrame || String.Equals(f.Identifier, musicCdIdentifier, StringComparison.OrdinalIgnoreCase));
 
-            if ((musicCdFrame != null) && (trackNumberFrame == null))
+            if ((musicCdFrame != null) && (trackNumberFrame == null) && (trackNumberIdentifier != null))
             {
                 // The 'Music CD Identifier' frame requires a present and valid TRCK frame.
                 frames.Add(new Id3v2TextFrame(version, trackNumberIdentifier));
@@ -558,18 +558,18 @@ namespace AudioVideoLib.Tags
             if (version >= Id3v2Version.Id3v240)
             {
                 string? lengthIdentifier = Id3v2TextFrame.GetIdentifier(version, Id3v2TextFrameIdentifier.Length);
-                Id3v2Frame lengthFrame =
+                Id3v2Frame? lengthFrame =
                     frames.OfType<Id3v2TextFrame>()
                         .FirstOrDefault(f => String.Equals(f.Identifier, lengthIdentifier, StringComparison.OrdinalIgnoreCase));
 
                 string? audioSeekPointIndexIdentifier = Id3v2Frame.GetIdentifier<Id3v2AudioSeekPointIndexFrame>(version);
-                Id3v2Frame audioSeekPointIndexFrame =
+                Id3v2Frame? audioSeekPointIndexFrame =
                     frames.FirstOrDefault(
                         f =>
                         f is Id3v2AudioSeekPointIndexFrame
                         || String.Equals(f.Identifier, audioSeekPointIndexIdentifier, StringComparison.OrdinalIgnoreCase));
 
-                if ((audioSeekPointIndexFrame != null) && (lengthFrame == null))
+                if ((audioSeekPointIndexFrame != null) && (lengthFrame == null) && (lengthIdentifier != null))
                 {
                     // The presence of an 'Audio seek point index' frame requires the existence of a TLEN frame, indicating the duration of the file in milliseconds.
                     frames.Add(new Id3v2TextFrame(version, lengthIdentifier));

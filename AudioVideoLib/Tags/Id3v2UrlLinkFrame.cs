@@ -51,10 +51,12 @@ namespace AudioVideoLib.Tags
                         .ToArray();
 
                 // Grab the 'real' identifier for the version supplied.
-                identifier = pairs.Any() ? pairs[0].Value.Where(t => t.Value.Contains(version)).Select(t => t.Key).FirstOrDefault() : null;
+                string? resolved = pairs.Any() ? pairs[0].Value.Where(t => t.Value.Contains(version)).Select(t => t.Key).FirstOrDefault() : null;
 
-                if (String.IsNullOrEmpty(identifier))
+                if (String.IsNullOrEmpty(resolved))
                     throw new InvalidDataException("identifier is not a valid identifier.");
+
+                identifier = resolved!;
             }
             _identifier = identifier;
         }
@@ -120,7 +122,7 @@ namespace AudioVideoLib.Tags
             get
             {
                 // Grab the version depending on the version
-                Dictionary<string, Id3v2Version[]> entry =
+                Dictionary<string, Id3v2Version[]>? entry =
                     Identifiers.Where(
                         i => i.Value != null && i.Value.Any(f => String.Equals(f.Key, base.Identifier, StringComparison.OrdinalIgnoreCase)))
                         .Select(i => i.Value)
@@ -144,7 +146,7 @@ namespace AudioVideoLib.Tags
         /// </returns>
         public static string? GetIdentifier(Id3v2Version version, Id3v2UrlLinkFrameIdentifier identifier)
         {
-            Dictionary<string, Id3v2Version[]> identifiers;
+            Dictionary<string, Id3v2Version[]>? identifiers;
             return Identifiers.TryGetValue(identifier, out identifiers)
                        ? identifiers.Where(v => v.Value != null && v.Value.Contains(version)).Select(i => i.Key).FirstOrDefault()
                        : null;
@@ -205,7 +207,7 @@ namespace AudioVideoLib.Tags
         {
             unchecked
             {
-                return (Version.GetHashCode() * 397) ^ (Identifier.GetHashCode() * 397);
+                return (Version.GetHashCode() * 397) ^ ((Identifier?.GetHashCode() ?? 0) * 397);
             }
         }
 
@@ -219,7 +221,7 @@ namespace AudioVideoLib.Tags
         public override bool IsVersionSupported(Id3v2Version version)
         {
             // See if the identifier is a known identifier.
-            Dictionary<string, Id3v2Version[]> entry =
+            Dictionary<string, Id3v2Version[]>? entry =
                 Identifiers.Where(i => i.Value != null && i.Value.Any(f => String.Equals(f.Key, base.Identifier, StringComparison.OrdinalIgnoreCase)))
                     .Select(i => i.Value)
                     .FirstOrDefault();
