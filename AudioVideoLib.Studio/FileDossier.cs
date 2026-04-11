@@ -26,6 +26,8 @@ public sealed class FileDossier : INotifyPropertyChanged
 {
     private List<IAudioTagOffset> _offsets = [];
     private readonly HashSet<IAudioTag> _newTags = new(ReferenceEqualityComparer.Instance);
+    private FlacStream? _flacStream;
+    private bool _isFlac;
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -165,6 +167,18 @@ public sealed class FileDossier : INotifyPropertyChanged
 
     public void Save()
     {
+        if (_isFlac)
+        {
+            SaveFlac();
+        }
+        else
+        {
+            SaveMp3Style();
+        }
+    }
+
+    private void SaveMp3Style()
+    {
         // Commit editable tab VMs back to their library tag instances, and snapshot
         // which tag instances have unsaved edits so we know which regions to
         // re-serialize vs preserve byte-for-byte.
@@ -297,6 +311,69 @@ public sealed class FileDossier : INotifyPropertyChanged
         }
     }
 
+    private void SaveFlac()
+    {
+        if (_flacStream == null)
+        {
+            throw new InvalidOperationException("FLAC stream not loaded.");
+        }
+
+        // The Vorbis block's Data getter re-serializes from its VorbisComments
+        // property on every read, so mutations via VorbisTabViewModel are
+        // automatically reflected when ToByteArray() is called below.
+
+        var fileBytes = File.ReadAllBytes(FilePath);
+        var audioStart = _flacStream.StartOffset;
+        if (audioStart < 4)
+        {
+            throw new InvalidDataException("FLAC audio stream offset is invalid.");
+        }
+
+        var blocks = _flacStream.MetadataBlocks.ToList();
+        if (blocks.Count == 0)
+        {
+            throw new InvalidDataException("FLAC file has no metadata blocks.");
+        }
+
+        // Recompute the last-block marker: exactly the final block in the list
+        // gets bit 7 set, all others clear it.
+        for (var i = 0; i < blocks.Count; i++)
+        {
+            blocks[i].IsLastBlock = i == blocks.Count - 1;
+        }
+
+        var tmp = FilePath + ".avs-tmp";
+        using (var outFile = File.Create(tmp))
+        {
+            // "fLaC" marker — 4 bytes at offset 0.
+            outFile.Write(fileBytes, 0, 4);
+
+            foreach (var block in blocks)
+            {
+                var bytes = block.ToByteArray();
+                outFile.Write(bytes, 0, bytes.Length);
+            }
+
+            // Audio frames — everything from the first frame's offset to EOF.
+            outFile.Write(fileBytes, (int)audioStart, fileBytes.Length - (int)audioStart);
+        }
+
+        File.Move(tmp, FilePath, overwrite: true);
+
+        foreach (var tab in TagTabs)
+        {
+            tab.ResetDirty();
+        }
+
+        // Re-read the FlacStream so _flacStream references the fresh blocks.
+        using (var fs = File.OpenRead(FilePath))
+        {
+            _flacStream = AudioStreams.ReadStream(fs).OfType<FlacStream>().FirstOrDefault();
+        }
+
+        Notify(nameof(HasUnsavedChanges));
+    }
+
     private static bool IsStartOrigin(IAudioTag tag) => tag is Id3v2Tag;
 
     private static bool IsEndOrigin(IAudioTag tag) => tag is Id3v1Tag or ApeTag or Lyrics3v2Tag or MusicMatchTag;
@@ -402,8 +479,21 @@ public sealed class FileDossier : INotifyPropertyChanged
 
         fs.Position = 0;
         var audio = AudioStreams.ReadStream(fs).FirstOrDefault();
+        _flacStream = audio as FlacStream;
+        _isFlac = _flacStream != null;
         BuildTechCards(audio);
         BuildEncoder(audio);
+
+        if (_flacStream != null)
+        {
+            var vorbisBlock = _flacStream.MetadataBlocks
+                .OfType<FlacVorbisCommentsMetadataBlock>()
+                .FirstOrDefault();
+            if (vorbisBlock?.VorbisComments != null)
+            {
+                TagTabs.Add(new VorbisTabViewModel(vorbisBlock.VorbisComments));
+            }
+        }
 
         BuildHexRegions(fs, tagOffsets);
 

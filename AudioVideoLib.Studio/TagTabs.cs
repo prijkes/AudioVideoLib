@@ -461,6 +461,79 @@ public sealed class Lyrics3v2FieldRow(Lyrics3v2Field source, Action markDirty) :
     };
 }
 
+public sealed class VorbisTabViewModel : TagTabViewModel
+{
+    public VorbisTabViewModel(VorbisComments comments)
+    {
+        Comments = comments;
+        Header = "Vorbis";
+        SourceBadge = "Vorbis";
+
+        foreach (var comment in comments.Comments)
+        {
+            Entries.Add(new VorbisCommentRow(comment, () => IsDirty = true));
+        }
+
+        ResetDirty();
+    }
+
+    public override bool IsEditable => true;
+
+    public VorbisComments Comments { get; }
+
+    public ObservableCollection<VorbisCommentRow> Entries { get; } = [];
+}
+
+public sealed class VorbisCommentRow(VorbisComment comment, Action markDirty) : INotifyPropertyChanged
+{
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    public string Name
+    {
+        get;
+        set
+        {
+            if (field == value)
+            {
+                return;
+            }
+
+            field = value ?? string.Empty;
+            try
+            {
+                comment.Name = field;
+            }
+            catch
+            {
+                // Validation rejects invalid chars; keep the VM value anyway so the
+                // grid doesn't revert silently, but don't mark dirty.
+                return;
+            }
+
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Name)));
+            markDirty();
+        }
+    } = comment.Name ?? string.Empty;
+
+    public string Value
+    {
+        get;
+        set
+        {
+            if (field == value)
+            {
+                return;
+            }
+
+            field = value ?? string.Empty;
+            comment.Value = field;
+
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Value)));
+            markDirty();
+        }
+    } = comment.Value ?? string.Empty;
+}
+
 public sealed class MusicMatchTabViewModel : TagTabViewModel
 {
     public MusicMatchTabViewModel(MusicMatchTag tag)

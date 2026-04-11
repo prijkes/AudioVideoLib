@@ -215,6 +215,24 @@
 
         <!-- ==================== MusicMatch editor template ==================== -->
 
+        <DataTemplate DataType="{x:Type local:VorbisTabViewModel}">
+            <Grid Margin="10">
+                <DataGrid ItemsSource="{Binding Entries}"
+                          AutoGenerateColumns="False"
+                          CanUserAddRows="False"
+                          CanUserDeleteRows="False"
+                          IsReadOnly="False"
+                          HeadersVisibility="Column"
+                          AlternatingRowBackground="#F7F7F7"
+                          MinHeight="300">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Name"  Binding="{Binding Name,  UpdateSourceTrigger=LostFocus}" Width="200" />
+                        <DataGridTextColumn Header="Value" Binding="{Binding Value, UpdateSourceTrigger=LostFocus}" Width="*" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </DataTemplate>
+
         <DataTemplate DataType="{x:Type local:MusicMatchTabViewModel}">
             <StackPanel Margin="10" MaxWidth="520" HorizontalAlignment="Left">
                 <TextBlock Text="Version"              Style="{StaticResource FieldLabel}" />
