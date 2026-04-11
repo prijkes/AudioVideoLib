@@ -49,11 +49,11 @@ public partial class FlacMetadataBlock
         {
             if (value)
             {
-                Flags &= ~HeaderFlags.IsLastBlock;
+                Flags |= HeaderFlags.IsLastBlock;
             }
             else
             {
-                Flags |= HeaderFlags.IsLastBlock;
+                Flags &= ~HeaderFlags.IsLastBlock;
             }
         }
     }
