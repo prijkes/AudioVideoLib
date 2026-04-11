@@ -24,7 +24,7 @@ public sealed class AudioStreams : IEnumerable<IAudioStream>
             { typeof(FlacStream), () => new FlacStream() }
         };
 
-    private readonly EventList<IAudioStream> _streams = [];
+    private readonly NotifyingList<IAudioStream> _streams = [];
 
     // Max length of spacing, in bytes, between 2 streams. If there is spacing between streams, this means that a stream is corrupted.
 

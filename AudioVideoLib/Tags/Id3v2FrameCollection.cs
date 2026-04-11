@@ -15,7 +15,7 @@ using AudioVideoLib.Collections;
 /// Collection for frames.
 /// </summary>
 /// <typeparam name="T">The type of frames in the collection.</typeparam>
-public sealed class Id3v2FrameCollection<T> : EventCollection<T> where T : Id3v2Frame
+public sealed class Id3v2FrameCollection<T> : NotifyingList<T> where T : Id3v2Frame
 {
     /// <summary>
     /// Sorts this instance.

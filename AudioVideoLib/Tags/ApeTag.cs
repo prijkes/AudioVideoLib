@@ -38,7 +38,7 @@ public sealed partial class ApeTag : IAudioTag
     /// </summary>
     public const int MaxAllowedSize = 1024 * 1024 * 16;
 
-    private readonly EventList<ApeItem> _items = [];
+    private readonly NotifyingList<ApeItem> _items = [];
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

@@ -19,7 +19,7 @@ using AudioVideoLib.IO;
 /// </summary>
 public sealed class VorbisComments
 {
-    private readonly EventList<VorbisComment> _comments = [];
+    private readonly NotifyingList<VorbisComment> _comments = [];
 
     /// <summary>
     /// Initializes a new instance of the <see cref="VorbisComments"/> class.

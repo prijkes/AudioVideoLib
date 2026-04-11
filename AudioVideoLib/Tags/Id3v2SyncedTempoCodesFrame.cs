@@ -26,7 +26,7 @@ using AudioVideoLib.IO;
 /// </remarks>
 public sealed class Id3v2SyncedTempoCodesFrame : Id3v2Frame
 {
-    private readonly EventList<Id3v2TempoCode> _tempoCodes = [];
+    private readonly NotifyingList<Id3v2TempoCode> _tempoCodes = [];
 
     private Id3v2TimeStampFormat _timeStampFormat;
 

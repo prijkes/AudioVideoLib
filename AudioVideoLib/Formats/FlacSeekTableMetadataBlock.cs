@@ -17,7 +17,7 @@ using AudioVideoLib.IO;
 /// </summary>
 public class FlacSeekTableMetadataBlock : FlacMetadataBlock
 {
-    private readonly EventList<FlacSeekPoint> _seekPoints = [];
+    private readonly NotifyingList<FlacSeekPoint> _seekPoints = [];
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

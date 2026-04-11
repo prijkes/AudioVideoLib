@@ -48,7 +48,7 @@ public sealed partial class Id3v2Tag : IAudioTag
     //// _totalFramesSize <= MaxAllowedSize
     public const int MaxAllowedSize = (1024 * 1024 * 256) - 1; // or 0x0FFFFFFF
 
-    private readonly EventList<Id3v2Frame> _frames = [];
+    private readonly NotifyingList<Id3v2Frame> _frames = [];
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
@@ -615,7 +615,7 @@ public sealed partial class Id3v2Tag : IAudioTag
                             });
     }
 
-    private void ItemAdd<T>(object? sender, CollectionItemAddEventArgs<T> e) where T : Id3v2Frame
+    private void ItemAdd<T>(object? sender, ListItemAddEventArgs<T> e) where T : Id3v2Frame
     {
         ArgumentNullException.ThrowIfNull(e);
 
@@ -627,7 +627,7 @@ public sealed partial class Id3v2Tag : IAudioTag
         SetFrame(e.Item);
     }
 
-    private void ItemRemove<T>(object? sender, CollectionItemRemoveEventArgs<T> e) where T : Id3v2Frame
+    private void ItemRemove<T>(object? sender, ListItemRemoveEventArgs<T> e) where T : Id3v2Frame
     {
         if (e != null && e.Item != null)
         {
@@ -635,7 +635,7 @@ public sealed partial class Id3v2Tag : IAudioTag
         }
     }
 
-    private void AddFrameCollectionEvents<T>(EventCollection<T> list) where T : Id3v2Frame
+    private void AddFrameCollectionEvents<T>(NotifyingList<T> list) where T : Id3v2Frame
     {
         // Remove a possible already added ItemAdd delegate
         list.ItemAdd -= ItemAdd;

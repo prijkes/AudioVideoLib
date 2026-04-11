@@ -29,7 +29,7 @@ using AudioVideoLib.IO;
 /// </remarks>
 public sealed class Id3v2SynchronizedLyricsFrame : Id3v2Frame
 {
-    private readonly EventList<Id3v2LyricSync> _lyricSyncs = [];
+    private readonly NotifyingList<Id3v2LyricSync> _lyricSyncs = [];
 
     private Id3v2FrameEncodingType _frameEncodingType;
 

@@ -32,7 +32,7 @@ using AudioVideoLib.IO;
 /// </remarks>
 public sealed class Id3v2InvolvedPeopleListFrame : Id3v2Frame
 {
-    private readonly EventList<Id3v2InvolvedPeople> _involvedPeople = [];
+    private readonly NotifyingList<Id3v2InvolvedPeople> _involvedPeople = [];
 
     private Id3v2FrameEncodingType _frameEncodingType;
 

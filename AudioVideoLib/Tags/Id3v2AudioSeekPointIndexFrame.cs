@@ -31,7 +31,7 @@ using AudioVideoLib.IO;
 /// </remarks>
 public sealed class Id3v2AudioSeekPointIndexFrame : Id3v2Frame
 {
-    private readonly EventList<short> _fractionAtIndex = [];
+    private readonly NotifyingList<short> _fractionAtIndex = [];
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

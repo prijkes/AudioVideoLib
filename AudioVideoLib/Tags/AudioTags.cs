@@ -49,7 +49,7 @@ public sealed class AudioTags : IEnumerable<IAudioTagOffset>
             { typeof(Lyrics3v2Tag), () => new Lyrics3v2TagReader() }
         };
 
-    private readonly EventList<IAudioTagOffset> _tags = [];
+    private readonly NotifyingList<IAudioTagOffset> _tags = [];
 
     // Max length of spacing, in bytes, between 2 tags. If there is spacing between frames, this means that a frame is corrupted.
 

@@ -29,7 +29,7 @@ using AudioVideoLib.IO;
 /// </remarks>
 public sealed class Id3v2ExperimentalRelativeVolumeAdjustment2Frame : Id3v2Frame
 {
-    private readonly EventList<Id3v2ChannelInformation> _channelInformation = [];
+    private readonly NotifyingList<Id3v2ChannelInformation> _channelInformation = [];
 
     private string _identification = null!;
     ////------------------------------------------------------------------------------------------------------------------------------

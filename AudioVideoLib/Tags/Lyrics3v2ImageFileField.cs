@@ -25,7 +25,7 @@ public sealed class Lyrics3v2ImageFileField : Lyrics3v2Field
 
     private static readonly Regex TimeStampRegEx = new(@"\[(\d+):(\d+)\]");
 
-    private readonly EventList<Lyrics3v2ImageFile> _imageFiles = [];
+    private readonly NotifyingList<Lyrics3v2ImageFile> _imageFiles = [];
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

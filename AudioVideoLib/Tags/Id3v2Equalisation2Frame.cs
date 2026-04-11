@@ -27,7 +27,7 @@ using AudioVideoLib.IO;
 /// </remarks>
 public sealed class Id3v2Equalisation2Frame : Id3v2Frame
 {
-    private readonly EventList<Id3v2AdjustmentPoint> _adjustmentPoints = [];
+    private readonly NotifyingList<Id3v2AdjustmentPoint> _adjustmentPoints = [];
 
     private Id3v2InterpolationMethod _interpolationMethod;
 

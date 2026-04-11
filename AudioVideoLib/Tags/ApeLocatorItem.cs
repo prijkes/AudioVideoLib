@@ -23,7 +23,7 @@ using AudioVideoLib.Collections;
 /// </summary>
 public sealed class ApeLocatorItem : ApeUtf8Item
 {
-    private readonly EventList<string> _values = [];
+    private readonly NotifyingList<string> _values = [];
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

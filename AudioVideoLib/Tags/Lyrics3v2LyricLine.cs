@@ -16,7 +16,7 @@ using AudioVideoLib.Collections;
 /// </summary>
 public sealed class Lyrics3v2LyricLine
 {
-    private readonly EventList<TimeSpan> _timeStamps = [];
+    private readonly NotifyingList<TimeSpan> _timeStamps = [];
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

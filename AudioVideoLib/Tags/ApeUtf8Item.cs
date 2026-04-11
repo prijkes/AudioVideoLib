@@ -24,7 +24,7 @@ using AudioVideoLib.IO;
 /// </summary>
 public class ApeUtf8Item : ApeItem
 {
-    private readonly EventList<string> _values = [];
+    private readonly NotifyingList<string> _values = [];
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

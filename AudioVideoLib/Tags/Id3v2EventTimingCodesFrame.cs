@@ -27,7 +27,7 @@ using AudioVideoLib.IO;
 /// </remarks>
 public sealed class Id3v2EventTimingCodesFrame : Id3v2Frame
 {
-    private readonly EventList<Id3v2KeyEvent> _keyEvents = [];
+    private readonly NotifyingList<Id3v2KeyEvent> _keyEvents = [];
 
     private Id3v2TimeStampFormat _timeStampFormat;
 

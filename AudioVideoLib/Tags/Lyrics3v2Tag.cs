@@ -44,7 +44,7 @@ public sealed partial class Lyrics3v2Tag : IAudioTag
 
     private static readonly byte[] FooterIdentifierBytes = System.Text.Encoding.ASCII.GetBytes(FooterIdentifier);
 
-    private readonly EventList<Lyrics3v2Field> _fields = [];
+    private readonly NotifyingList<Lyrics3v2Field> _fields = [];
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

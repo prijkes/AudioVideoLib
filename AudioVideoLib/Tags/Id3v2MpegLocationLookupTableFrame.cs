@@ -28,7 +28,7 @@ using AudioVideoLib.IO;
 /// </remarks>
 public sealed class Id3v2MpegLocationLookupTableFrame : Id3v2Frame
 {
-    private readonly EventList<Id3v2MpegLookupTableItem> _references = [];
+    private readonly NotifyingList<Id3v2MpegLookupTableItem> _references = [];
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

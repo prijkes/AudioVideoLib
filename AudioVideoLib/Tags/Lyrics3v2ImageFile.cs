@@ -17,7 +17,7 @@ public sealed class Lyrics3v2ImageFile
 {
     // Description can be up to 250 chars long.
     private const int MaxDescriptionLength = 250;
-    private readonly EventList<TimeSpan> _timeStamps = [];
+    private readonly NotifyingList<TimeSpan> _timeStamps = [];
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

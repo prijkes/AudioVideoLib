@@ -25,7 +25,7 @@ public sealed class Lyrics3v2LyricsField : Lyrics3v2Field
 
     private readonly Regex _regex = new(@"\[(\d+):(\d+)\]");
 
-    private readonly EventList<Lyrics3v2LyricLine> _lyricLines = [];
+    private readonly NotifyingList<Lyrics3v2LyricLine> _lyricLines = [];
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
