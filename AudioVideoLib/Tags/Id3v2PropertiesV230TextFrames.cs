@@ -29,27 +29,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2TextFrame? FileOwner
     {
-        get
-        {
-            return (Version >= Id3v2Version.Id3v230) ? GetTextFrame(Id3v2TextFrameIdentifier.FileOwner) : null;
-        }
-
-        set
-        {
-            if (Version < Id3v2Version.Id3v230)
-            {
-                return;
-            }
-
-            if (value == null)
-            {
-                RemoveFrame(FileOwner);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedTextFrame(Id3v2TextFrameIdentifier.FileOwner, Id3v2Version.Id3v230);
+        set => SetVersionedTextFrame(value, Id3v2TextFrameIdentifier.FileOwner, Id3v2Version.Id3v230);
     }
 
     /// <summary>
@@ -65,27 +46,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2TextFrame? InternetRadioStationName
     {
-        get
-        {
-            return (Version >= Id3v2Version.Id3v230) ? GetTextFrame(Id3v2TextFrameIdentifier.InternetRadioStationName) : null;
-        }
-
-        set
-        {
-            if (Version < Id3v2Version.Id3v230)
-            {
-                return;
-            }
-
-            if (value == null)
-            {
-                RemoveFrame(InternetRadioStationName);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedTextFrame(Id3v2TextFrameIdentifier.InternetRadioStationName, Id3v2Version.Id3v230);
+        set => SetVersionedTextFrame(value, Id3v2TextFrameIdentifier.InternetRadioStationName, Id3v2Version.Id3v230);
     }
 
     /// <summary>
@@ -102,26 +64,7 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2TextFrame? InternetRadioStationOwner
     {
-        get
-        {
-            return (Version >= Id3v2Version.Id3v230) ? GetTextFrame(Id3v2TextFrameIdentifier.InternetRadioStationOwner) : null;
-        }
-
-        set
-        {
-            if (Version < Id3v2Version.Id3v230)
-            {
-                return;
-            }
-
-            if (value == null)
-            {
-                RemoveFrame(InternetRadioStationOwner);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedTextFrame(Id3v2TextFrameIdentifier.InternetRadioStationOwner, Id3v2Version.Id3v230);
+        set => SetVersionedTextFrame(value, Id3v2TextFrameIdentifier.InternetRadioStationOwner, Id3v2Version.Id3v230);
     }
 }

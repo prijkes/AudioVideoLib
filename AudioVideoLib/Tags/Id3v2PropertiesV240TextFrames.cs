@@ -30,27 +30,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2TextFrame? AlbumSortOrder
     {
-        get
-        {
-            return (Version >= Id3v2Version.Id3v240) ? GetTextFrame(Id3v2TextFrameIdentifier.AlbumSortOrder) : null;
-        }
-
-        set
-        {
-            if (Version < Id3v2Version.Id3v240)
-            {
-                return;
-            }
-
-            if (value == null)
-            {
-                RemoveFrame(AlbumSortOrder);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedTextFrame(Id3v2TextFrameIdentifier.AlbumSortOrder, Id3v2Version.Id3v240);
+        set => SetVersionedTextFrame(value, Id3v2TextFrameIdentifier.AlbumSortOrder, Id3v2Version.Id3v240);
     }
 
     /// <summary>
@@ -66,27 +47,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2TextFrame? EncodingTime
     {
-        get
-        {
-            return (Version >= Id3v2Version.Id3v240) ? GetTextFrame(Id3v2TextFrameIdentifier.EncodingTime) : null;
-        }
-
-        set
-        {
-            if (Version < Id3v2Version.Id3v240)
-            {
-                return;
-            }
-
-            if (value == null)
-            {
-                RemoveFrame(EncodingTime);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedTextFrame(Id3v2TextFrameIdentifier.EncodingTime, Id3v2Version.Id3v240);
+        set => SetVersionedTextFrame(value, Id3v2TextFrameIdentifier.EncodingTime, Id3v2Version.Id3v240);
     }
 
     /// <summary>
@@ -102,27 +64,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2TextFrame? InvolvedPeopleList2
     {
-        get
-        {
-            return (Version >= Id3v2Version.Id3v240) ? GetTextFrame(Id3v2TextFrameIdentifier.InvolvedPeopleList) : null;
-        }
-
-        set
-        {
-            if (Version < Id3v2Version.Id3v240)
-            {
-                return;
-            }
-
-            if (value == null)
-            {
-                RemoveFrame(InvolvedPeopleList2);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedTextFrame(Id3v2TextFrameIdentifier.InvolvedPeopleList, Id3v2Version.Id3v240);
+        set => SetVersionedTextFrame(value, Id3v2TextFrameIdentifier.InvolvedPeopleList, Id3v2Version.Id3v240);
     }
 
     /// <summary>
@@ -138,27 +81,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2TextFrame? Mood
     {
-        get
-        {
-            return (Version >= Id3v2Version.Id3v240) ? GetTextFrame(Id3v2TextFrameIdentifier.Mood) : null;
-        }
-
-        set
-        {
-            if (Version < Id3v2Version.Id3v240)
-            {
-                return;
-            }
-
-            if (value == null)
-            {
-                RemoveFrame(Mood);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedTextFrame(Id3v2TextFrameIdentifier.Mood, Id3v2Version.Id3v240);
+        set => SetVersionedTextFrame(value, Id3v2TextFrameIdentifier.Mood, Id3v2Version.Id3v240);
     }
 
     /// <summary>
@@ -175,27 +99,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2TextFrame? MusicianCreditsList
     {
-        get
-        {
-            return (Version >= Id3v2Version.Id3v240) ? GetTextFrame(Id3v2TextFrameIdentifier.MusicianCreditsList) : null;
-        }
-
-        set
-        {
-            if (Version < Id3v2Version.Id3v240)
-            {
-                return;
-            }
-
-            if (value == null)
-            {
-                RemoveFrame(MusicianCreditsList);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedTextFrame(Id3v2TextFrameIdentifier.MusicianCreditsList, Id3v2Version.Id3v240);
+        set => SetVersionedTextFrame(value, Id3v2TextFrameIdentifier.MusicianCreditsList, Id3v2Version.Id3v240);
     }
 
     /// <summary>
@@ -211,27 +116,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2TextFrame? OriginalReleaseTime
     {
-        get
-        {
-            return (Version >= Id3v2Version.Id3v240) ? GetTextFrame(Id3v2TextFrameIdentifier.OriginalReleaseTime) : null;
-        }
-
-        set
-        {
-            if (Version < Id3v2Version.Id3v240)
-            {
-                return;
-            }
-
-            if (value == null)
-            {
-                RemoveFrame(OriginalReleaseTime);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedTextFrame(Id3v2TextFrameIdentifier.OriginalReleaseTime, Id3v2Version.Id3v240);
+        set => SetVersionedTextFrame(value, Id3v2TextFrameIdentifier.OriginalReleaseTime, Id3v2Version.Id3v240);
     }
 
     /// <summary>
@@ -247,27 +133,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2TextFrame? PerformerSortOrder
     {
-        get
-        {
-            return (Version >= Id3v2Version.Id3v240) ? GetTextFrame(Id3v2TextFrameIdentifier.PerformerSortOrder) : null;
-        }
-
-        set
-        {
-            if (Version < Id3v2Version.Id3v240)
-            {
-                return;
-            }
-
-            if (value == null)
-            {
-                RemoveFrame(PerformerSortOrder);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedTextFrame(Id3v2TextFrameIdentifier.PerformerSortOrder, Id3v2Version.Id3v240);
+        set => SetVersionedTextFrame(value, Id3v2TextFrameIdentifier.PerformerSortOrder, Id3v2Version.Id3v240);
     }
 
     /// <summary>
@@ -288,27 +155,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2TextFrame? ProducedNote
     {
-        get
-        {
-            return (Version >= Id3v2Version.Id3v240) ? GetTextFrame(Id3v2TextFrameIdentifier.ProducedNote) : null;
-        }
-
-        set
-        {
-            if (Version < Id3v2Version.Id3v240)
-            {
-                return;
-            }
-
-            if (value == null)
-            {
-                RemoveFrame(ProducedNote);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedTextFrame(Id3v2TextFrameIdentifier.ProducedNote, Id3v2Version.Id3v240);
+        set => SetVersionedTextFrame(value, Id3v2TextFrameIdentifier.ProducedNote, Id3v2Version.Id3v240);
     }
 
     /// <summary>
@@ -324,27 +172,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2TextFrame? RecordingTime
     {
-        get
-        {
-            return (Version >= Id3v2Version.Id3v240) ? GetTextFrame(Id3v2TextFrameIdentifier.RecordingTime) : null;
-        }
-
-        set
-        {
-            if (Version < Id3v2Version.Id3v240)
-            {
-                return;
-            }
-
-            if (value == null)
-            {
-                RemoveFrame(RecordingTime);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedTextFrame(Id3v2TextFrameIdentifier.RecordingTime, Id3v2Version.Id3v240);
+        set => SetVersionedTextFrame(value, Id3v2TextFrameIdentifier.RecordingTime, Id3v2Version.Id3v240);
     }
 
     /// <summary>
@@ -360,27 +189,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2TextFrame? ReleaseTime
     {
-        get
-        {
-            return (Version >= Id3v2Version.Id3v240) ? GetTextFrame(Id3v2TextFrameIdentifier.ReleaseTime) : null;
-        }
-
-        set
-        {
-            if (Version < Id3v2Version.Id3v240)
-            {
-                return;
-            }
-
-            if (value == null)
-            {
-                RemoveFrame(ReleaseTime);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedTextFrame(Id3v2TextFrameIdentifier.ReleaseTime, Id3v2Version.Id3v240);
+        set => SetVersionedTextFrame(value, Id3v2TextFrameIdentifier.ReleaseTime, Id3v2Version.Id3v240);
     }
 
     /// <summary>
@@ -396,27 +206,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2TextFrame? SetSubtitle
     {
-        get
-        {
-            return (Version >= Id3v2Version.Id3v240) ? GetTextFrame(Id3v2TextFrameIdentifier.SetSubtitle) : null;
-        }
-
-        set
-        {
-            if (Version < Id3v2Version.Id3v240)
-            {
-                return;
-            }
-
-            if (value == null)
-            {
-                RemoveFrame(SetSubtitle);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedTextFrame(Id3v2TextFrameIdentifier.SetSubtitle, Id3v2Version.Id3v240);
+        set => SetVersionedTextFrame(value, Id3v2TextFrameIdentifier.SetSubtitle, Id3v2Version.Id3v240);
     }
 
     /// <summary>
@@ -432,27 +223,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2TextFrame? TaggingTime
     {
-        get
-        {
-            return (Version >= Id3v2Version.Id3v240) ? GetTextFrame(Id3v2TextFrameIdentifier.TaggingTime) : null;
-        }
-
-        set
-        {
-            if (Version < Id3v2Version.Id3v240)
-            {
-                return;
-            }
-
-            if (value == null)
-            {
-                RemoveFrame(TaggingTime);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedTextFrame(Id3v2TextFrameIdentifier.TaggingTime, Id3v2Version.Id3v240);
+        set => SetVersionedTextFrame(value, Id3v2TextFrameIdentifier.TaggingTime, Id3v2Version.Id3v240);
     }
 
     /// <summary>
@@ -468,26 +240,7 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2TextFrame? TitleSortOrder
     {
-        get
-        {
-            return (Version >= Id3v2Version.Id3v240) ? GetTextFrame(Id3v2TextFrameIdentifier.TitleSortOrder) : null;
-        }
-
-        set
-        {
-            if (Version < Id3v2Version.Id3v240)
-            {
-                return;
-            }
-
-            if (value == null)
-            {
-                RemoveFrame(TitleSortOrder);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedTextFrame(Id3v2TextFrameIdentifier.TitleSortOrder, Id3v2Version.Id3v240);
+        set => SetVersionedTextFrame(value, Id3v2TextFrameIdentifier.TitleSortOrder, Id3v2Version.Id3v240);
     }
 }

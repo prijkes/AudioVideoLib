@@ -250,6 +250,38 @@ public sealed partial class Id3v2Tag : IAudioTag
     }
 
     /// <summary>
+    /// Shared helper for the per-version text-frame property accessors. Returns the frame
+    /// only when the tag's current version is at least <paramref name="minVersion"/>;
+    /// otherwise returns <c>null</c>.
+    /// </summary>
+    private Id3v2TextFrame? GetVersionedTextFrame(Id3v2TextFrameIdentifier identifier, Id3v2Version minVersion = Id3v2Version.Id3v220)
+    {
+        return Version >= minVersion ? GetTextFrame(identifier) : null;
+    }
+
+    /// <summary>
+    /// Shared helper for the per-version text-frame property setters. No-op when the tag's
+    /// current version is below <paramref name="minVersion"/>; otherwise clears the existing
+    /// frame (when <paramref name="value"/> is <c>null</c>) or writes it.
+    /// </summary>
+    private void SetVersionedTextFrame(Id3v2TextFrame? value, Id3v2TextFrameIdentifier identifier, Id3v2Version minVersion = Id3v2Version.Id3v220)
+    {
+        if (Version < minVersion)
+        {
+            return;
+        }
+
+        if (value == null)
+        {
+            RemoveFrame(GetTextFrame(identifier));
+        }
+        else
+        {
+            SetFrame(value);
+        }
+    }
+
+    /// <summary>
     /// Gets the <see cref="Id3v2UrlLinkFrame"/>.
     /// </summary>
     /// <param name="identifier">The identifier.</param>

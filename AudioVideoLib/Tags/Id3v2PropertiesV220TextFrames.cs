@@ -30,22 +30,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2TextFrame? AlbumTitle
     {
-        get
-        {
-            return GetTextFrame(Id3v2TextFrameIdentifier.AlbumTitle);
-        }
-
-        set
-        {
-            if (value == null)
-            {
-                RemoveFrame(AlbumTitle);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedTextFrame(Id3v2TextFrameIdentifier.AlbumTitle);
+        set => SetVersionedTextFrame(value, Id3v2TextFrameIdentifier.AlbumTitle);
     }
 
     /// <summary>
@@ -59,22 +45,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2TextFrame? Artist
     {
-        get
-        {
-            return GetTextFrame(Id3v2TextFrameIdentifier.Artist);
-        }
-
-        set
-        {
-            if (value == null)
-            {
-                RemoveFrame(Artist);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedTextFrame(Id3v2TextFrameIdentifier.Artist);
+        set => SetVersionedTextFrame(value, Id3v2TextFrameIdentifier.Artist);
     }
 
     /// <summary>
@@ -88,22 +60,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2TextFrame? ArtistExtra
     {
-        get
-        {
-            return GetTextFrame(Id3v2TextFrameIdentifier.ArtistExtra);
-        }
-
-        set
-        {
-            if (value == null)
-            {
-                RemoveFrame(ArtistExtra);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedTextFrame(Id3v2TextFrameIdentifier.ArtistExtra);
+        set => SetVersionedTextFrame(value, Id3v2TextFrameIdentifier.ArtistExtra);
     }
 
     /// <summary>
@@ -208,22 +166,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2TextFrame? ComposerName
     {
-        get
-        {
-            return GetTextFrame(Id3v2TextFrameIdentifier.ComposerName);
-        }
-
-        set
-        {
-            if (value == null)
-            {
-                RemoveFrame(ComposerName);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedTextFrame(Id3v2TextFrameIdentifier.ComposerName);
+        set => SetVersionedTextFrame(value, Id3v2TextFrameIdentifier.ComposerName);
     }
 
     /// <summary>
@@ -237,22 +181,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2TextFrame? ConductorName
     {
-        get
-        {
-            return GetTextFrame(Id3v2TextFrameIdentifier.ConductorName);
-        }
-
-        set
-        {
-            if (value == null)
-            {
-                RemoveFrame(ConductorName);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedTextFrame(Id3v2TextFrameIdentifier.ConductorName);
+        set => SetVersionedTextFrame(value, Id3v2TextFrameIdentifier.ConductorName);
     }
 
     /// <summary>
@@ -267,22 +197,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2TextFrame? ContentGroupDescription
     {
-        get
-        {
-            return GetTextFrame(Id3v2TextFrameIdentifier.ContentGroupDescription);
-        }
-
-        set
-        {
-            if (value == null)
-            {
-                RemoveFrame(ContentGroupDescription);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedTextFrame(Id3v2TextFrameIdentifier.ContentGroupDescription);
+        set => SetVersionedTextFrame(value, Id3v2TextFrameIdentifier.ContentGroupDescription);
     }
 
     /// <summary>
@@ -310,22 +226,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2TextFrame? ContentType
     {
-        get
-        {
-            return GetTextFrame(Id3v2TextFrameIdentifier.ContentType);
-        }
-
-        set
-        {
-            if (value == null)
-            {
-                RemoveFrame(ContentType);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedTextFrame(Id3v2TextFrameIdentifier.ContentType);
+        set => SetVersionedTextFrame(value, Id3v2TextFrameIdentifier.ContentType);
     }
 
     /// <summary>
@@ -344,22 +246,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2TextFrame? CopyrightMessage
     {
-        get
-        {
-            return GetTextFrame(Id3v2TextFrameIdentifier.CopyrightMessage);
-        }
-
-        set
-        {
-            if (value == null)
-            {
-                RemoveFrame(CopyrightMessage);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedTextFrame(Id3v2TextFrameIdentifier.CopyrightMessage);
+        set => SetVersionedTextFrame(value, Id3v2TextFrameIdentifier.CopyrightMessage);
     }
 
     /// <summary>
@@ -415,22 +303,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2TextFrame? EncodedBy
     {
-        get
-        {
-            return GetTextFrame(Id3v2TextFrameIdentifier.EncodedBy);
-        }
-
-        set
-        {
-            if (value == null)
-            {
-                RemoveFrame(EncodedBy);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedTextFrame(Id3v2TextFrameIdentifier.EncodedBy);
+        set => SetVersionedTextFrame(value, Id3v2TextFrameIdentifier.EncodedBy);
     }
 
     /// <summary>
@@ -446,22 +320,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2TextFrame? EncodingSettingsUsed
     {
-        get
-        {
-            return GetTextFrame(Id3v2TextFrameIdentifier.EncodingSettingsUsed);
-        }
-
-        set
-        {
-            if (value == null)
-            {
-                RemoveFrame(EncodingSettingsUsed);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedTextFrame(Id3v2TextFrameIdentifier.EncodingSettingsUsed);
+        set => SetVersionedTextFrame(value, Id3v2TextFrameIdentifier.EncodingSettingsUsed);
     }
 
     /// <summary>
@@ -486,22 +346,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2TextFrame? FileType
     {
-        get
-        {
-            return GetTextFrame(Id3v2TextFrameIdentifier.FileType);
-        }
-
-        set
-        {
-            if (value == null)
-            {
-                RemoveFrame(FileType);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedTextFrame(Id3v2TextFrameIdentifier.FileType);
+        set => SetVersionedTextFrame(value, Id3v2TextFrameIdentifier.FileType);
     }
 
     /// <summary>
@@ -518,22 +364,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2TextFrame? InitialKey
     {
-        get
-        {
-            return GetTextFrame(Id3v2TextFrameIdentifier.InitialKey);
-        }
-
-        set
-        {
-            if (value == null)
-            {
-                RemoveFrame(InitialKey);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedTextFrame(Id3v2TextFrameIdentifier.InitialKey);
+        set => SetVersionedTextFrame(value, Id3v2TextFrameIdentifier.InitialKey);
     }
 
     /// <summary>
@@ -716,22 +548,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2TextFrame? MediaType
     {
-        get
-        {
-            return GetTextFrame(Id3v2TextFrameIdentifier.MediaType);
-        }
-
-        set
-        {
-            if (value == null)
-            {
-                RemoveFrame(MediaType);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedTextFrame(Id3v2TextFrameIdentifier.MediaType);
+        set => SetVersionedTextFrame(value, Id3v2TextFrameIdentifier.MediaType);
     }
 
     /// <summary>
@@ -746,22 +564,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2TextFrame? ModifiedBy
     {
-        get
-        {
-            return GetTextFrame(Id3v2TextFrameIdentifier.ModifiedBy);
-        }
-
-        set
-        {
-            if (value == null)
-            {
-                RemoveFrame(ModifiedBy);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedTextFrame(Id3v2TextFrameIdentifier.ModifiedBy);
+        set => SetVersionedTextFrame(value, Id3v2TextFrameIdentifier.ModifiedBy);
     }
 
     /// <summary>
@@ -776,22 +580,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2TextFrame? OriginalAlbumTitle
     {
-        get
-        {
-            return GetTextFrame(Id3v2TextFrameIdentifier.OriginalAlbumTitle);
-        }
-
-        set
-        {
-            if (value == null)
-            {
-                RemoveFrame(OriginalAlbumTitle);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedTextFrame(Id3v2TextFrameIdentifier.OriginalAlbumTitle);
+        set => SetVersionedTextFrame(value, Id3v2TextFrameIdentifier.OriginalAlbumTitle);
     }
 
     /// <summary>
@@ -806,22 +596,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2TextFrame? OriginalArtist
     {
-        get
-        {
-            return GetTextFrame(Id3v2TextFrameIdentifier.OriginalArtist);
-        }
-
-        set
-        {
-            if (value == null)
-            {
-                RemoveFrame(OriginalArtist);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedTextFrame(Id3v2TextFrameIdentifier.OriginalArtist);
+        set => SetVersionedTextFrame(value, Id3v2TextFrameIdentifier.OriginalArtist);
     }
 
     /// <summary>
@@ -837,22 +613,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2TextFrame? OriginalFilename
     {
-        get
-        {
-            return GetTextFrame(Id3v2TextFrameIdentifier.OriginalFilename);
-        }
-
-        set
-        {
-            if (value == null)
-            {
-                RemoveFrame(OriginalFilename);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedTextFrame(Id3v2TextFrameIdentifier.OriginalFilename);
+        set => SetVersionedTextFrame(value, Id3v2TextFrameIdentifier.OriginalFilename);
     }
 
     /// <summary>
@@ -905,22 +667,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2TextFrame? OriginalTextWriter
     {
-        get
-        {
-            return GetTextFrame(Id3v2TextFrameIdentifier.OriginalTextWriter);
-        }
-
-        set
-        {
-            if (value == null)
-            {
-                RemoveFrame(OriginalTextWriter);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedTextFrame(Id3v2TextFrameIdentifier.OriginalTextWriter);
+        set => SetVersionedTextFrame(value, Id3v2TextFrameIdentifier.OriginalTextWriter);
     }
 
     /// <summary>
@@ -937,22 +685,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2TextFrame? PartOfSet
     {
-        get
-        {
-            return GetTextFrame(Id3v2TextFrameIdentifier.PartOfSet);
-        }
-
-        set
-        {
-            if (value == null)
-            {
-                RemoveFrame(PartOfSet);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedTextFrame(Id3v2TextFrameIdentifier.PartOfSet);
+        set => SetVersionedTextFrame(value, Id3v2TextFrameIdentifier.PartOfSet);
     }
 
     /// <summary>
@@ -969,22 +703,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2TextFrame? PlaylistDelay
     {
-        get
-        {
-            return GetTextFrame(Id3v2TextFrameIdentifier.PlaylistDelay);
-        }
-
-        set
-        {
-            if (value == null)
-            {
-                RemoveFrame(PlaylistDelay);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedTextFrame(Id3v2TextFrameIdentifier.PlaylistDelay);
+        set => SetVersionedTextFrame(value, Id3v2TextFrameIdentifier.PlaylistDelay);
     }
 
     /// <summary>
@@ -998,22 +718,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2TextFrame? Publisher
     {
-        get
-        {
-            return GetTextFrame(Id3v2TextFrameIdentifier.Publisher);
-        }
-
-        set
-        {
-            if (value == null)
-            {
-                RemoveFrame(Publisher);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedTextFrame(Id3v2TextFrameIdentifier.Publisher);
+        set => SetVersionedTextFrame(value, Id3v2TextFrameIdentifier.Publisher);
     }
 
     /// <summary>
@@ -1118,22 +824,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2TextFrame? TextWriter
     {
-        get
-        {
-            return GetTextFrame(Id3v2TextFrameIdentifier.TextWriter);
-        }
-
-        set
-        {
-            if (value == null)
-            {
-                RemoveFrame(TextWriter);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedTextFrame(Id3v2TextFrameIdentifier.TextWriter);
+        set => SetVersionedTextFrame(value, Id3v2TextFrameIdentifier.TextWriter);
     }
 
     /// <summary>
@@ -1211,22 +903,8 @@ public partial class Id3v2Tag
     /// </value>
     public Id3v2TextFrame? TrackTitle
     {
-        get
-        {
-            return GetTextFrame(Id3v2TextFrameIdentifier.TrackTitle);
-        }
-
-        set
-        {
-            if (value == null)
-            {
-                RemoveFrame(TrackTitle);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedTextFrame(Id3v2TextFrameIdentifier.TrackTitle);
+        set => SetVersionedTextFrame(value, Id3v2TextFrameIdentifier.TrackTitle);
     }
 
     /// <summary>
@@ -1241,22 +919,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2TextFrame? TrackTitleDescription
     {
-        get
-        {
-            return GetTextFrame(Id3v2TextFrameIdentifier.TrackTitleDescription);
-        }
-
-        set
-        {
-            if (value == null)
-            {
-                RemoveFrame(TrackTitleDescription);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedTextFrame(Id3v2TextFrameIdentifier.TrackTitleDescription);
+        set => SetVersionedTextFrame(value, Id3v2TextFrameIdentifier.TrackTitleDescription);
     }
 
     /// <summary>
