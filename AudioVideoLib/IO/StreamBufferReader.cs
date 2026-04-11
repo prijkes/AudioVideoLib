@@ -97,7 +97,7 @@ public sealed partial class StreamBuffer
     /// <inheritdoc />
     public override int ReadByte()
     {
-        return ReadByte(true);
+        return _stream.ReadByte();
     }
 
     /// <summary>
@@ -111,48 +111,27 @@ public sealed partial class StreamBuffer
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
     public int ReadByte(out int bytesRead)
     {
-        return ReadByte(true, out bytesRead);
-    }
-
-    /// <summary>
-    /// Reads a 8-bit signed integer from the stream and advances the position within the stream by one byte.
-    /// </summary>
-    /// <param name="movePosition">if set to <c>true</c>, advances the position within the stream by one byte.</param>
-    /// <returns>
-    /// A 8-bit signed integer, or -1 if at the end of the stream.
-    /// </returns>
-    /// <exception cref="T:System.NotSupportedException">The stream does not support reading.</exception>
-    /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    public int ReadByte(bool movePosition)
-    {
         var b = _stream.ReadByte();
-        if (!movePosition)
-        {
-            Seek(-1, SeekOrigin.Current);
-        }
-
+        bytesRead = (b == -1) ? 0 : 1;
         return b;
     }
 
     /// <summary>
-    /// Reads a 8-bit signed integer from the stream and advances the position within the stream by one byte.
+    /// Reads a byte from the stream <em>without</em> advancing the stream position.
     /// </summary>
-    /// <param name="movePosition">if set to <c>true</c>, advances the position within the stream by one byte.</param>
-    /// <param name="bytesRead">The amount of bytes read from the stream.</param>
     /// <returns>
-    /// A 8-bit signed integer, or -1 if at the end of the stream.
+    /// The unsigned byte cast to an Int32, or -1 if at the end of the stream.
     /// </returns>
-    /// <exception cref="T:System.NotSupportedException">The stream does not support reading.</exception>
+    /// <exception cref="T:System.NotSupportedException">The stream does not support reading or seeking.</exception>
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    public int ReadByte(bool movePosition, out int bytesRead)
+    public int PeekByte()
     {
         var b = _stream.ReadByte();
-        if (!movePosition)
+        if (b != -1)
         {
             Seek(-1, SeekOrigin.Current);
         }
 
-        bytesRead = (b == -1) ? 0 : 1;
         return b;
     }
 

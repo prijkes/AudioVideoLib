@@ -185,12 +185,12 @@ public class StreamBufferTest
     }
 
     [Fact]
-    public void ReadByteTestMovePositionFalse()
+    public void PeekByteDoesNotAdvancePosition()
     {
         const byte Value = 0xEF;
         const byte Expected = 0xEF;
         var target = new StreamBuffer(BitConverter.GetBytes((short)Value)) { Position = 0 };
-        var actual = target.ReadByte(false);
+        var actual = target.PeekByte();
         Assert.Equal(Expected, actual);
         Assert.True(target.Position == 0);
     }

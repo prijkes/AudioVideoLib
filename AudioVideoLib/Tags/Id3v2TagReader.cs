@@ -192,7 +192,7 @@ public sealed partial class Id3v2TagReader : IAudioTagReader
             var startPosition = sb.Position;
 
             // See if the next byte is a padding byte.
-            var identifierByte = sb.ReadByte(false);
+            var identifierByte = sb.PeekByte();
             if (identifierByte == 0x00)
             {
                 // Rest is padding.
