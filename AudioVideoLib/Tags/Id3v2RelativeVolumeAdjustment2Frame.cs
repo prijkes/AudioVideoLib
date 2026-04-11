@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2011-07-06
  * Sources used:
  *  http://www.id3.org/Id3v2-00
@@ -34,8 +34,7 @@ namespace AudioVideoLib.Tags
     /// </remarks>
     public sealed class Id3v2RelativeVolumeAdjustment2Frame : Id3v2Frame
     {
-        private string _identification;
-
+        private string _identification = null!;
         private readonly EventList<Id3v2ChannelInformation> _channelInformation = new EventList<Id3v2ChannelInformation>();
 
         ////------------------------------------------------------------------------------------------------------------------------------

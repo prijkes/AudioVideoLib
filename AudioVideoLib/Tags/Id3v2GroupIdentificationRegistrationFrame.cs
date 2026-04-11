@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2011-08-13
  * Sources used:
  *  http://www.id3.org/Id3v2-00
@@ -28,8 +28,7 @@ namespace AudioVideoLib.Tags
     /// </remarks>
     public sealed class Id3v2GroupIdentificationRegistrationFrame : Id3v2Frame
     {
-        private string _ownerIdentifier;
-
+        private string _ownerIdentifier = null!;
         private byte _groupSymbol;
 
         ////------------------------------------------------------------------------------------------------------------------------------
@@ -127,7 +126,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// This field is optional can be used for some group specific data, e.g. a digital signature.
         /// </remarks>
-        public byte[] GroupDependentData { get; set; }
+        public byte[] GroupDependentData { get; set; } = null!;
 
         ////------------------------------------------------------------------------------------------------------------------------------
 

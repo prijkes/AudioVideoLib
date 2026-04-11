@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2011-04-11
  * Sources used: 
  *  http://www.codeproject.com/KB/audio-video/mpegaudioinfo.aspx
@@ -134,7 +134,7 @@ namespace AudioVideoLib.Tags
 
             public int Flags { get; set; }
 
-            public byte[] ReservedBytes { get; set; }
+            public byte[] ReservedBytes { get; set; } = null!;
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2013-02-17
  * Sources used: 
  *  http://www.xiph.org/vorbis/doc/v-comment.html
@@ -21,8 +21,7 @@ namespace AudioVideoLib.Tags
     {
         private const char Delimiter = '=';
 
-        private string _name;
-
+        private string _name = null!;
         ////------------------------------------------------------------------------------------------------------------------------------
 
         /// <summary>
@@ -57,7 +56,7 @@ namespace AudioVideoLib.Tags
         /// <value>
         /// The value.
         /// </value>
-        public string Value { get; set; }
+        public string Value { get; set; } = null!;
 
         ////------------------------------------------------------------------------------------------------------------------------------
 

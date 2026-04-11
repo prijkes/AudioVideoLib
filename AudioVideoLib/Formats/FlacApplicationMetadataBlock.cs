@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2013-02-16
  * Sources used: 
  *  http://xiph.org/flac/format.html
@@ -61,7 +61,7 @@ namespace AudioVideoLib.Formats
         /// <value>
         /// The application identifier.
         /// </value>
-        public string ApplicationIdentifier { get; private set; }
+        public string ApplicationIdentifier { get; private set; } = null!;
 
         /// <summary>
         /// Gets or sets the application data.
@@ -69,6 +69,6 @@ namespace AudioVideoLib.Formats
         /// <value>
         /// The application data.
         /// </value>
-        public byte[] ApplicationData { get; private set; }
+        public byte[] ApplicationData { get; private set; } = null!;
     }
 }

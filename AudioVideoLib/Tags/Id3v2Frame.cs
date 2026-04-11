@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2011-01-08
  * Sources used:
  *  http://www.codeproject.com/KB/audio-video/mpegaudioinfo.aspx
@@ -77,7 +77,7 @@ namespace AudioVideoLib.Tags
         ////------------------------------------------------------------------------------------------------------------------------------
 
         /// <inheritdoc/>
-        public virtual byte[] Data { get; protected set; }
+        public virtual byte[] Data { get; protected set; } = null!;
 
         /// <summary>
         /// Gets the encrypted data.
@@ -86,7 +86,7 @@ namespace AudioVideoLib.Tags
         /// When an <see cref="Id3v2Frame"/> is read from a stream and the data is encrypted, the encrypted data will be stored in this field.
         /// Consumers can use the <see cref="EncryptedData"/> property to retrieve the data as-read.
         /// </remarks>
-        public byte[] EncryptedData { get; private set; }
+        public byte[] EncryptedData { get; private set; } = null!;
 
         /// <summary>
         /// Gets the compressed data.
@@ -97,7 +97,7 @@ namespace AudioVideoLib.Tags
         /// <para />
         /// If the data has been encrypted and compressed, but could not be decrypted, the data will be stored in the <see cref="EncryptedData"/> property instead.
         /// </remarks>
-        public byte[] CompressedData { get; private set; }
+        public byte[] CompressedData { get; private set; } = null!;
 
         /// <summary>
         /// Gets or sets the cryptor for handling <see cref="Id3v2Frame"/> encryption / decryption.
@@ -105,7 +105,7 @@ namespace AudioVideoLib.Tags
         /// <value>
         /// An <see cref="IId3v2FrameCryptor"/> which handles <see cref="Id3v2Frame"/> encryption / decryption.
         /// </value>
-        public IId3v2FrameCryptor Cryptor { get; set; }
+        public IId3v2FrameCryptor Cryptor { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the compressor for handling <see cref="Id3v2Frame"/> compression / decompression.
@@ -113,7 +113,7 @@ namespace AudioVideoLib.Tags
         /// <value>
         /// An <see cref="IId3v2FrameCompressor"/> which handles <see cref="Id3v2Frame"/> compression / decompression.
         /// </value>
-        public IId3v2FrameCompressor Compressor { get; set; }
+        public IId3v2FrameCompressor Compressor { get; set; } = null!;
 
         ////------------------------------------------------------------------------------------------------------------------------------
 

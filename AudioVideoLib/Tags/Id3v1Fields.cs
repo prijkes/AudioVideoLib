@@ -16,13 +16,13 @@ namespace AudioVideoLib.Tags
     /// </summary>
     public partial class Id3v1Tag
     {
-        private string _trackTitle, _artist, _albumTitle, _albumYear, _trackComment;
+        private string? _trackTitle, _artist, _albumTitle, _albumYear, _trackComment;
 
         private Encoding _encoding = Encoding.Default;
 
         private Id3v1Genre _genre;
 
-        private string _extendedTrackGenre;
+        private string? _extendedTrackGenre;
 
         private Id3v1TrackSpeed _trackSpeed;
 

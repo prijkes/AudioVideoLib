@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2011-08-13
  * Sources used:
  *  http://www.id3.org/Id3v2-00
@@ -60,7 +60,7 @@ namespace AudioVideoLib.Tags
         /// <value>
         /// The signature.
         /// </value>
-        public byte[] SignatureData { get; set; }
+        public byte[] SignatureData { get; set; } = null!;
 
         ////------------------------------------------------------------------------------------------------------------------------------
 

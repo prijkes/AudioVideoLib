@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2012-11-04
  * Sources used: 
  *  http://emule-xtreme.googlecode.com/svn-history/r6/branches/emule/id3lib/doc/musicmatch.txt
@@ -106,11 +106,11 @@ namespace AudioVideoLib.Tags
             /// The identifier.
             /// </value>
             /// The first subsection serves as a sync string: its 8-byte string is always "18273645".
-            public string Identifier { get; set; }
+            public string Identifier { get; set; } = null!;
 
-            public byte[] Padding1 { get; set; }
+            public byte[] Padding1 { get; set; } = null!;
 
-            public byte[] SpacePadding1 { get; set; }
+            public byte[] SpacePadding1 { get; set; } = null!;
 
             /// <summary>
             /// Gets the Xing encoder version.
@@ -120,9 +120,9 @@ namespace AudioVideoLib.Tags
             /// </value>
             /// The second subsection's 8-byte string is the version of the Xing encoder used to encode the mp3 file.
             /// The last four bytes of this string are usually '0' (0x30).  An example of this string is "1.010000".
-            public string XingEncoderVersion { get; set; }
+            public string XingEncoderVersion { get; set; } = null!;
 
-            public byte[] Padding2 { get; set; }
+            public byte[] Padding2 { get; set; } = null!;
 
             /// <summary>
             /// Gets the music match version.
@@ -132,11 +132,11 @@ namespace AudioVideoLib.Tags
             /// </value>
             /// The third and final 10-byte subsection is the version of the MusicMatch Jukebox used to encode the mp3 file.
             /// The last four bytes of this string are usually '0' (0x30).  An example of this string is "2.120000".
-            public string MusicMatchVersion { get; set; }
+            public string MusicMatchVersion { get; set; } = null!;
 
-            public byte[] Padding3 { get; set; }
+            public byte[] Padding3 { get; set; } = null!;
 
-            public byte[] SpacePadding2 { get; set; }
+            public byte[] SpacePadding2 { get; set; } = null!;
 
             ////------------------------------------------------------------------------------------------------------------------------------
 

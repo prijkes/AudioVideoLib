@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2011-08-14
  * Sources used:
  *  http://www.id3.org/Id3v2-00
@@ -25,10 +25,8 @@ namespace AudioVideoLib.Tags
     /// </summary>
     public sealed partial class Id3v2UrlLinkFrame : Id3v2Frame
     {
-        private readonly string _identifier;
-
-        private string _url;
-
+        private readonly string _identifier = null!;
+        private string _url = null!;
         ////------------------------------------------------------------------------------------------------------------------------------
 
         /// <summary>

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2012-11-17
  * Sources used: 
  *  http://id3.org/Lyrics3v2
@@ -23,8 +23,7 @@ namespace AudioVideoLib.Tags
 
         private const int FieldSizeLengthBytes = 5;
 
-        private byte[] _data;
-
+        private byte[] _data = null!;
         ////------------------------------------------------------------------------------------------------------------------------------
 
         /// <summary>
@@ -82,7 +81,7 @@ namespace AudioVideoLib.Tags
         /// <value>
         /// The name of the field.
         /// </value>
-        public virtual string Identifier { get; private set; }
+        public virtual string Identifier { get; private set; } = null!;
 
         /// <summary>
         /// Gets or sets the value of the field.

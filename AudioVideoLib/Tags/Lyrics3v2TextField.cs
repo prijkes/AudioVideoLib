@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2012-12-09
  * Sources used: 
  *  http://id3.org/Lyrics3v2
@@ -14,8 +14,7 @@ namespace AudioVideoLib.Tags
     /// </summary>
     public sealed partial class Lyrics3v2TextField : Lyrics3v2Field
     {
-        private string _value;
-
+        private string _value = null!;
         ////------------------------------------------------------------------------------------------------------------------------------
 
         /// <summary>

@@ -17,7 +17,7 @@ namespace AudioVideoLib.Formats
         /// Gets the audio data.
         /// </summary>
         /// <returns>The audio data.</returns>
-        public byte[] AudioData { get; private set; }
+        public byte[] AudioData { get; private set; } = null!;
 
         /// <summary>
         /// Gets the length of the audio data, in bytes.

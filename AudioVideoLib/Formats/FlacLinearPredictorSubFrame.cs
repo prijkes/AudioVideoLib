@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2013-03-23
  * Sources used: 
  *  http://xiph.org/flac/format.html
@@ -33,7 +33,7 @@ namespace AudioVideoLib.Formats
         /// <value>
         /// The unencoded warm-up samples.
         /// </value>
-        public int[] UnencodedWarmUpSamples { get; private set; }
+        public int[] UnencodedWarmUpSamples { get; private set; } = null!;
 
         /// <summary>
         /// Gets the quantized linear predictor coefficients' precision, in bits.
@@ -57,7 +57,7 @@ namespace AudioVideoLib.Formats
         /// <value>
         /// The unencoded predictor coefficients.
         /// </value>
-        public int[] UnencodedPredictorCoefficients { get; private set; }
+        public int[] UnencodedPredictorCoefficients { get; private set; } = null!;
 
         /// <summary>
         /// Gets the encoded residual.
@@ -65,7 +65,7 @@ namespace AudioVideoLib.Formats
         /// <value>
         /// The encoded residual.
         /// </value>
-        public FlacResidual Residual { get; private set; }
+        public FlacResidual Residual { get; private set; } = null!;
 
         private int Order
         {

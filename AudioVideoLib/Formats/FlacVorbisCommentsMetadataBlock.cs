@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2013-02-16
  * Sources used: 
  *  http://xiph.org/flac/format.html
@@ -50,6 +50,6 @@ namespace AudioVideoLib.Formats
         /// <value>
         /// The vorbis comment.
         /// </value>
-        public VorbisComments VorbisComments { get; set; }
+        public VorbisComments VorbisComments { get; set; } = null!;
     }
 }

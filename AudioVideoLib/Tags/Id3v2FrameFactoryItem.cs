@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2013-10-26
  * Sources used:
  *  http://www.id3.org/Id3v2-00
@@ -30,7 +30,7 @@ namespace AudioVideoLib.Tags
             /// <value>
             /// The <see cref="Id3v2Frame"/> type.
             /// </value>
-            public Type Type { get; set; }
+            public Type Type { get; set; } = null!;
 
             /// <summary>
             /// Gets or sets the identifiers of the <see cref="Id3v2Frame"/>.
@@ -41,7 +41,7 @@ namespace AudioVideoLib.Tags
             /// <remarks>
             /// Each identifier is used for a <see cref="Id3v2Version"/>; multiple <see cref="Id3v2Version"/>s can use the same identifier.
             /// </remarks>
-            public Dictionary<string, Id3v2Version[]> Identifiers { get; set; }
+            public Dictionary<string, Id3v2Version[]> Identifiers { get; set; } = null!;
 
             /// <summary>
             /// Gets or sets the factory for creating the <see cref="Id3v2Frame"/>.
@@ -52,7 +52,7 @@ namespace AudioVideoLib.Tags
             /// <remarks>
             /// The factory creates new <see cref="Id3v2Frame"/> items depending on the <see cref="Id3v2Version"/> and the identifier.
             /// </remarks>
-            public Func<Id3v2Version, string, Id3v2Frame> Factory { get; set; }
+            public Func<Id3v2Version, string, Id3v2Frame> Factory { get; set; } = null!;
 
             /// <summary>
             /// Gets or sets the partial comparer.
@@ -64,7 +64,7 @@ namespace AudioVideoLib.Tags
             /// The partial comparer is used for comparing <see cref="Id3v2Frame"/>s when the <see cref="Id3v2Frame"/> does not have pre-defined <see cref="Identifiers"/>.
             /// It is used to test if the <see cref="Factory"/> can create the given <see cref="Id3v2Frame"/> based on the identifier and <see cref="Id3v2Version"/>.
             /// </remarks>
-            public Func<Id3v2Version, string, bool> PartialComparer { get; set; }
+            public Func<Id3v2Version, string, bool> PartialComparer { get; set; } = null!;
 
             ////------------------------------------------------------------------------------------------------------------------------------
 

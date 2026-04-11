@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2011-10-22
  * Sources used: 
  *  http://en.wikipedia.org/wiki/APE_tag
@@ -22,7 +22,7 @@ namespace AudioVideoLib.Tags
     /// </summary>
     public partial class ApeItem
     {
-        private string _key;
+        private string _key = null!;
 
         private int _flags;
 

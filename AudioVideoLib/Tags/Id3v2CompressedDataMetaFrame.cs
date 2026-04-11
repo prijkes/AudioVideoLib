@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2012-12-03
  * Sources used:
  *  http://id3lib.sourceforge.net/api/tag__parse_8cpp-source.html
@@ -22,10 +22,8 @@ namespace AudioVideoLib.Tags
     {
         private Id3v2CompressionMethod _compressionMethod;
 
-        private byte[] _compressedData;
-
-        private Id3v2Frame _frame;
-
+        private byte[] _compressedData = null!;
+        private Id3v2Frame _frame = null!;
         ////------------------------------------------------------------------------------------------------------------------------------
 
         /// <summary>

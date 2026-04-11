@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2013-01-05
  * Sources used:
  *  http://forums.asp.net/t/1057992.aspx/1
@@ -15,8 +15,7 @@ namespace AudioVideoLib.Tags
     /// </summary>
     public sealed class ApeItemParseEventArgs : CancelEventArgs
     {
-        private ApeItem _item;
-
+        private ApeItem _item = null!;
         ////------------------------------------------------------------------------------------------------------------------------------
 
         /// <summary>

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2013-03-23
  * Sources used: 
  *  http://xiph.org/flac/format.html
@@ -33,7 +33,7 @@ namespace AudioVideoLib.Formats
         /// <value>
         /// The unencoded subblock.
         /// </value>
-        public int[] UnencodedSubblocks { get; private set; }
+        public int[] UnencodedSubblocks { get; private set; } = null!;
 
         ////------------------------------------------------------------------------------------------------------------------------------
 

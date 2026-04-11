@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2011-08-13
  * Sources used:
  *  http://www.id3.org/Id3v2-00
@@ -26,8 +26,7 @@ namespace AudioVideoLib.Tags
     /// </remarks>
     public sealed class Id3v2EncryptionMethodRegistrationFrame : Id3v2Frame
     {
-        private string _ownerIdentifier;
-
+        private string _ownerIdentifier = null!;
         private byte _methodSymbol;
 
         ////------------------------------------------------------------------------------------------------------------------------------
@@ -126,7 +125,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// The encryption data field is optional.
         /// </remarks>
-        public byte[] EncryptionData { get; set; }
+        public byte[] EncryptionData { get; set; } = null!;
 
         ////------------------------------------------------------------------------------------------------------------------------------
 

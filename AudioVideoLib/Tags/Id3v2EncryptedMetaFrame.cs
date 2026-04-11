@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2011-07-04
  * Sources used:
  *  http://www.id3.org/Id3v2-00
@@ -37,8 +37,7 @@ namespace AudioVideoLib.Tags
     /// </remarks>
     public sealed class Id3v2EncryptedMetaFrame : Id3v2Frame
     {
-        private string _ownerIdentifier, _contentExplanation;
-
+        private string _ownerIdentifier = null!, _contentExplanation = null!;
         ////------------------------------------------------------------------------------------------------------------------------------
 
         /// <summary>

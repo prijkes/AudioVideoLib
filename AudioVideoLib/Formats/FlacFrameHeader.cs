@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2013-02-18
  * Sources used: 
  *  http://flac.sourceforge.net/format.html
@@ -30,7 +30,7 @@ namespace AudioVideoLib.Formats
 
         private static readonly int[] SampleRates = { 0, 88200, 176400, 192000, 8000, 16000, 22050, 24000, 32000, 44100, 48000, 96000, 0, 0, 0, 0 };
 
-        private byte[] _sampleFrameNumberBytes;
+        private byte[] _sampleFrameNumberBytes = null!;
 
         private int _crc8;
 

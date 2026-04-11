@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2013-10-26
  * Sources used: 
  *  http://id3.org/Lyrics3v2
@@ -21,7 +21,7 @@ namespace AudioVideoLib.Tags
             /// <value>
             /// The <see cref="Lyrics3v2Field"/> type.
             /// </value>
-            public Type Type { get; set; }
+            public Type Type { get; set; } = null!;
 
             /// <summary>
             /// Gets or sets the identifiers of the <see cref="Lyrics3v2Field"/>.
@@ -29,7 +29,7 @@ namespace AudioVideoLib.Tags
             /// <value>
             /// The <see cref="Lyrics3v2Field"/> identifiers.
             /// </value>
-            public string[] Identifiers { get; set; }
+            public string[] Identifiers { get; set; } = null!;
 
             /// <summary>
             /// Gets or sets the factory for creating the <see cref="Lyrics3v2Field"/>.
@@ -37,7 +37,7 @@ namespace AudioVideoLib.Tags
             /// <value>
             /// The factory for creating the <see cref="Lyrics3v2Field"/>.
             /// </value>
-            public Func<string, Lyrics3v2Field> Factory { get; set; }
+            public Func<string, Lyrics3v2Field> Factory { get; set; } = null!;
 
             /// <summary>
             /// Gets or sets the partial comparer.
@@ -49,7 +49,7 @@ namespace AudioVideoLib.Tags
             /// The partial comparer is used for comparing <see cref="Lyrics3v2Field"/>s when the <see cref="Lyrics3v2Field"/> does not have pre-defined <see cref="Identifiers"/>.
             /// It is used to test if the <see cref="Factory"/> can create the given <see cref="Lyrics3v2Field"/> based on the identifier.
             /// </remarks>
-            public Func<string, bool> PartialComparer { get; set; }
+            public Func<string, bool> PartialComparer { get; set; } = null!;
 
             ////------------------------------------------------------------------------------------------------------------------------------
 

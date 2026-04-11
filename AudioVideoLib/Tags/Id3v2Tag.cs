@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2010-08-12
  * Sources used:
  *  http://www.codeproject.com/KB/audio-video/mpegaudioinfo.aspx
@@ -50,8 +50,7 @@ namespace AudioVideoLib.Tags
 
         private readonly EventList<Id3v2Frame> _frames = new EventList<Id3v2Frame>();
 
-        private Id3v2ExtendedHeader _extendedHeader;
-
+        private Id3v2ExtendedHeader _extendedHeader = null!;
         ////------------------------------------------------------------------------------------------------------------------------------
 
         /// <summary>

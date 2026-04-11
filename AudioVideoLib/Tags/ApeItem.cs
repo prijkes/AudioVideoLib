@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2011-01-08
  * Sources used: 
  *  http://www.codeproject.com/KB/audio-video/mpegaudioinfo.aspx
@@ -83,7 +83,7 @@ namespace AudioVideoLib.Tags
         ////------------------------------------------------------------------------------------------------------------------------------
 
         /// <inheritdoc/>
-        public virtual byte[] Data { get; protected set; }
+        public virtual byte[] Data { get; protected set; } = null!;
 
         ////------------------------------------------------------------------------------------------------------------------------------
 

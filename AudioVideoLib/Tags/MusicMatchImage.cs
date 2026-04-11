@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2012-11-04
  * Sources used: 
  *  http://emule-xtreme.googlecode.com/svn-history/r6/branches/emule/id3lib/doc/musicmatch.txt
@@ -16,8 +16,7 @@ namespace AudioVideoLib.Tags
     /// MusicMatch tags can contain at most one image.
     public sealed class MusicMatchImage
     {
-        private string _fileExtension;
-
+        private string _fileExtension = null!;
         ////------------------------------------------------------------------------------------------------------------------------------
 
         /// <summary>
@@ -70,7 +69,7 @@ namespace AudioVideoLib.Tags
         /// The second is the actual image data.
         /// <para />
         /// If no image is present, the image binary section consists of exactly four null bytes (0x00 0x00 0x00 0x00).
-        public byte[] BinaryImage { get; set; }
+        public byte[] BinaryImage { get; set; } = null!;
 
         ////------------------------------------------------------------------------------------------------------------------------------
 

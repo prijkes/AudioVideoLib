@@ -224,7 +224,7 @@ namespace AudioVideoLib.Formats
         // Frame sync (all bits must be set)
         private short _frameSync;
 
-        private byte[] _header;
+        private byte[] _header = null!;
 
         ////------------------------------------------------------------------------------------------------------------------------------
 

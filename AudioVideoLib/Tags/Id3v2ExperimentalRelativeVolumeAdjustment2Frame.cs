@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2012-12-28
  * Sources used:
  *  http://www.id3.org/Id3v2-00
@@ -32,8 +32,7 @@ namespace AudioVideoLib.Tags
     {
         private readonly EventList<Id3v2ChannelInformation> _channelInformation = new EventList<Id3v2ChannelInformation>();
 
-        private string _identification;
-
+        private string _identification = null!;
         ////------------------------------------------------------------------------------------------------------------------------------
 
         /// <summary>

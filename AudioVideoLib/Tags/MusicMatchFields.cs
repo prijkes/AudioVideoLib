@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2012-11-10
  * Sources used: 
  *  http://emule-xtreme.googlecode.com/svn-history/r6/branches/emule/id3lib/doc/musicmatch.txt
@@ -20,7 +20,7 @@ namespace AudioVideoLib.Tags
         /// <value>
         /// The <see cref="MusicMatchImage"/>.
         /// </value>
-        public MusicMatchImage Image { get; set; }
+        public MusicMatchImage Image { get; set; } = null!;
 
         /* 
          * The audio meta-data is the heart of the MusicMatch tag.
@@ -63,7 +63,7 @@ namespace AudioVideoLib.Tags
         /// <value>
         /// The song title.
         /// </value>
-        public string SongTitle { get; set; }
+        public string SongTitle { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the album title.
@@ -71,7 +71,7 @@ namespace AudioVideoLib.Tags
         /// <value>
         /// The album title.
         /// </value>
-        public string AlbumTitle { get; set; }
+        public string AlbumTitle { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the name of the artist.
@@ -79,7 +79,7 @@ namespace AudioVideoLib.Tags
         /// <value>
         /// The name of the artist.
         /// </value>
-        public string ArtistName { get; set; }
+        public string ArtistName { get; set; } = null!;
 
         /*
          * The final five entries are a little less common: Genre, Tempo, Mood, Situation, and Preference.
@@ -96,7 +96,7 @@ namespace AudioVideoLib.Tags
         /// The Genre entry differs from the ID3v1 tagging format in that it allows a full-text genre description, 
         /// whereas ID3v1 maps a number to a list of genres.
         /// Again, the genre description could be anything, but the interface in Jukebox typically limited most users to the standard ID3v1 genres.
-        public string Genre { get; set; }
+        public string Genre { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the tempo.
@@ -106,7 +106,7 @@ namespace AudioVideoLib.Tags
         /// </value>
         /// The Tempo entry is intended to describe the general tempo of the song.
         /// The Jukebox application provided the following defaults: None, Fast, Pretty fast, Moderate, Pretty slow, and Slow.
-        public string Tempo { get; set; }
+        public string Tempo { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the mood.
@@ -116,7 +116,7 @@ namespace AudioVideoLib.Tags
         /// </value>
         /// The Mood entry describes what type of mood the audio establishes: 
         /// Typical values include the following: None, Wild, Upbeat, Morose, Mellow, Tranquil, and Comatose.
-        public string Mood { get; set; }
+        public string Mood { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the situation.
@@ -126,7 +126,7 @@ namespace AudioVideoLib.Tags
         /// </value>
         /// The Situation entry describes in which situation this music is best played.
         /// Expect the following: None, Dance, Party, Romantic, Dinner, Background, Seasonal, Rave, and Drunken Brawl.
-        public string Situation { get; set; }
+        public string Situation { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the preference.
@@ -136,7 +136,7 @@ namespace AudioVideoLib.Tags
         /// </value>
         /// The Preference entry allows the user to rate the song.
         /// Possible values include the following: None, Excellent, Very Good, Good, Fair, Poor, and Bad Taste.
-        public string Preference { get; set; }
+        public string Preference { get; set; } = null!;
 
         /* * * * * * * * * * * * * * * * * * * * * * * *
          *  Non-text fields
@@ -155,7 +155,7 @@ namespace AudioVideoLib.Tags
         /// </value>
         /// The "Song duration" entry consists of two fields: a size and text.
         /// The text is formatted as "minutes:seconds", and thus the size field is typically 4 (0x04 0x00).
-        public string SongDuration { get; set; }
+        public string SongDuration { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the creation date.
@@ -190,7 +190,7 @@ namespace AudioVideoLib.Tags
         /// </value>
         /// The next entry is a size/text combo and represents the original filename and path.
         /// As these tags were created almost universally on Windows machines, the entries are typically in the form of "C:\path\to\file.mp3".
-        public string OriginalFilename { get; set; }
+        public string OriginalFilename { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the serial number.
@@ -199,7 +199,7 @@ namespace AudioVideoLib.Tags
         /// The serial number.
         /// </value>
         /// The next size/text entry is the album serial number fetched from the online CDDB when a track is ripped with MusicMatch.
-        public string SerialNumber { get; set; }
+        public string SerialNumber { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the track number.
@@ -224,7 +224,7 @@ namespace AudioVideoLib.Tags
         /// <value>
         /// The notes.
         /// </value>
-        public string Notes { get; set; }
+        public string Notes { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the artist bio.
@@ -232,7 +232,7 @@ namespace AudioVideoLib.Tags
         /// <value>
         /// The artist bio.
         /// </value>
-        public string ArtistBio { get; set; }
+        public string ArtistBio { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the lyrics.
@@ -240,7 +240,7 @@ namespace AudioVideoLib.Tags
         /// <value>
         /// The lyrics.
         /// </value>
-        public string Lyrics { get; set; }
+        public string Lyrics { get; set; } = null!;
 
         /* * * * * * * * * * * * * * * * * * * * * * * *
          * Internet addresses
@@ -255,7 +255,7 @@ namespace AudioVideoLib.Tags
         /// <value>
         /// The artist URL.
         /// </value>
-        public string ArtistUrl { get; set; }
+        public string ArtistUrl { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the buy cd URL.
@@ -263,7 +263,7 @@ namespace AudioVideoLib.Tags
         /// <value>
         /// The buy cd URL.
         /// </value>
-        public string BuyCdUrl { get; set; }
+        public string BuyCdUrl { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the artist email.
@@ -271,6 +271,6 @@ namespace AudioVideoLib.Tags
         /// <value>
         /// The artist email.
         /// </value>
-        public string ArtistEmail { get; set; }
+        public string ArtistEmail { get; set; } = null!;
     }
 }

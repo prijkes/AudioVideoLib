@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2011-07-04
  * Sources used:
  *  http://www.id3.org/Id3v2-00
@@ -31,8 +31,7 @@ namespace AudioVideoLib.Tags
     /// </remarks>
     public sealed class Id3v2AudioEncryptionFrame : Id3v2Frame
     {
-        private string _ownerIdentifier;
-
+        private string _ownerIdentifier = null!;
         ////------------------------------------------------------------------------------------------------------------------------------
 
         /// <summary>
@@ -126,7 +125,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// The encryption info is an optional data block required for decryption of the audio.
         /// </remarks>
-        public byte[] EncryptionInfo { get; set; }
+        public byte[] EncryptionInfo { get; set; } = null!;
 
         ////------------------------------------------------------------------------------------------------------------------------------
 

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2013-02-16
  * Sources used: 
  *  http://xiph.org/flac/format.html
@@ -113,7 +113,7 @@ namespace AudioVideoLib.Formats
         /// In general, the media catalog number may be 0 to 128 bytes long; any unused characters should be right-padded with NUL characters.
         /// For CD-DA, this is a thirteen digit number, followed by 115 NUL bytes.
         /// </remarks>
-        public string MediaCatalogNumber { get; private set; }
+        public string MediaCatalogNumber { get; private set; } = null!;
 
         /// <summary>
         /// Gets the number of lead-in samples.
@@ -148,7 +148,7 @@ namespace AudioVideoLib.Formats
         /// <remarks>
         /// All bits must be set to zero.
         /// </remarks>
-        public byte[] Reserved { get; private set; }
+        public byte[] Reserved { get; private set; } = null!;
 
         /// <summary>
         /// Gets the number of tracks.

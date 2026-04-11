@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2013-03-23
  * Sources used: 
  *  http://xiph.org/flac/format.html
@@ -31,7 +31,7 @@ namespace AudioVideoLib.Formats
         /// <value>
         /// The unencoded warm-up samples.
         /// </value>
-        public int[] UnencodedWarmUpSamples { get; private set; }
+        public int[] UnencodedWarmUpSamples { get; private set; } = null!;
 
         /// <summary>
         /// Gets the residual.
@@ -39,7 +39,7 @@ namespace AudioVideoLib.Formats
         /// <value>
         /// The residual.
         /// </value>
-        public FlacResidual Residual { get; private set; }
+        public FlacResidual Residual { get; private set; } = null!;
 
         private int Order
         {

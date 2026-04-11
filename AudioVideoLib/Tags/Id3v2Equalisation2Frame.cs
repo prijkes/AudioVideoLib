@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2011-08-14
  * Sources used:
  *  http://www.id3.org/Id3v2-00
@@ -32,8 +32,7 @@ namespace AudioVideoLib.Tags
 
         private Id3v2InterpolationMethod _interpolationMethod;
 
-        private string _identification;
-
+        private string _identification = null!;
         ////------------------------------------------------------------------------------------------------------------------------------
 
         /// <summary>

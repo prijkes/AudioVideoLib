@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2013-01-06
  * Sources used:
  *  http://forums.asp.net/t/1057992.aspx/1
@@ -15,8 +15,7 @@ namespace AudioVideoLib.Tags
     /// </summary>
     public sealed class Lyrics3v2FieldParseEventArgs : CancelEventArgs
     {
-        private Lyrics3v2Field _field;
-
+        private Lyrics3v2Field _field = null!;
         ////------------------------------------------------------------------------------------------------------------------------------
 
         /// <summary>

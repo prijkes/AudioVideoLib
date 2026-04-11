@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2014-02-17
  * Sources used:
  *  http://www.id3.org/Id3v2-00
@@ -17,7 +17,7 @@ namespace AudioVideoLib.Tags
         {
             public long Position { get; set; }
 
-            public string Identifier { get; set; }
+            public string Identifier { get; set; } = null!;
 
             public Id3v2Version Version { get; set; }
 

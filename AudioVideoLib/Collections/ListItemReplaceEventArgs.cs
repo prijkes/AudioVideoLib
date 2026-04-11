@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2012-12-21
  * Sources used:
  *  http://forums.asp.net/t/1057992.aspx/1
@@ -54,6 +54,6 @@ namespace AudioVideoLib.Collections
         /// <summary>
         /// Gets or sets the item to replace the <see cref="OldItem"/>.
         /// </summary>
-        public T NewItem { get; set; }
+        public T NewItem { get; set; } = null!;
     }
 }

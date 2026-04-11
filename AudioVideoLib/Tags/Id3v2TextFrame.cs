@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2011-08-14
  * Sources used:
  *  http://www.id3.org/Id3v2-00
@@ -30,8 +30,7 @@ namespace AudioVideoLib.Tags
     {
         private const char TextValueDelimiter = '\0';
 
-        private readonly string _identifier;
-
+        private readonly string _identifier = null!;
         private readonly Id3v2TextList _valueList = new Id3v2TextList();
 
         private Id3v2FrameEncodingType _frameEncodingType;

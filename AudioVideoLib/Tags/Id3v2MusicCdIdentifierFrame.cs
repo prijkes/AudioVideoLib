@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2011-06-26
  * Sources used:
  *  http://www.id3.org/Id3v2-00
@@ -30,8 +30,7 @@ namespace AudioVideoLib.Tags
         /// </summary>
         private const int MaxTableOfContentsSize = 804;
 
-        private byte[] _tableOfContents;
-
+        private byte[] _tableOfContents = null!;
         ////------------------------------------------------------------------------------------------------------------------------------
 
         /// <summary>

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2012-12-30
  * Sources used:
  *  http://forums.asp.net/t/1057992.aspx/1
@@ -15,8 +15,7 @@ namespace AudioVideoLib.Tags
     /// </summary>
     public sealed class Id3v2FrameParseEventArgs : CancelEventArgs
     {
-        private Id3v2Frame _frame;
-
+        private Id3v2Frame _frame = null!;
         ////------------------------------------------------------------------------------------------------------------------------------
 
         /// <summary>

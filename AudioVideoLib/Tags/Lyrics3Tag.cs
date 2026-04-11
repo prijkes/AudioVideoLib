@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2012-11-02
  * Sources used: 
  *  http://www.id3.org/lyrics3.html
@@ -37,8 +37,7 @@ namespace AudioVideoLib.Tags
 
         private static readonly byte[] FooterIdentifierBytes = Encoding.ASCII.GetBytes(FooterIdentifier);
 
-        private byte[] _lyrics;
-
+        private byte[] _lyrics = null!;
         private Encoding _encoding = Encoding.Default;
 
         ////------------------------------------------------------------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2012-11-17
  * Sources used: 
  *  http://id3.org/Lyrics3v2
@@ -16,8 +16,7 @@ namespace AudioVideoLib.Tags
     /// </summary>
     public sealed class Lyrics3v2LyricLine
     {
-        private string _lyricLine;
-
+        private string _lyricLine = null!;
         private readonly EventList<TimeSpan> _timeStamps = new EventList<TimeSpan>();
 
         ////------------------------------------------------------------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2011-05-28
  * Sources used:
  *  http://www.id3.org/Id3v2-00
@@ -28,8 +28,7 @@ namespace AudioVideoLib.Tags
     {
         private Id3v2FrameEncodingType _frameEncodingType;
 
-        private string _description, _value;
-
+        private string _description = null!, _value = null!;
         ////------------------------------------------------------------------------------------------------------------------------------
 
         /// <summary>

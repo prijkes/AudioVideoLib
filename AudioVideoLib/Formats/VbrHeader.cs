@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2010-05-25
  * Sources used: 
  *  http://www.codeproject.com/KB/audio-video/mpegaudioinfo.aspx
@@ -46,7 +46,7 @@ namespace AudioVideoLib.Formats
         /// Gets or sets the name of the <see cref="VbrHeader"/> as it is found in the stream.
         /// </summary>
         /// <value>The name of the <see cref="VbrHeader"/>.</value>
-        public string Name { get; protected set; }
+        public string Name { get; protected set; } = null!;
 
         /// <summary>
         /// Gets or sets the version of the <see cref="VbrHeader"/>.
@@ -98,7 +98,7 @@ namespace AudioVideoLib.Formats
         /// Gets or sets the LAME tag, if found.
         /// </summary>
         /// <value>The LAME tag in the firstFrame, if found.</value>
-        public LameTag LameTag { get; protected set; }
+        public LameTag LameTag { get; protected set; } = null!;
 
         /// <summary>
         /// Gets or sets the frame which contains the VBR header.

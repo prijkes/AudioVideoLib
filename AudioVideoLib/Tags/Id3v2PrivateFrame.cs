@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2011-08-13
  * Sources used:
  *  http://www.id3.org/Id3v2-00
@@ -27,8 +27,7 @@ namespace AudioVideoLib.Tags
     /// </remarks>
     public sealed class Id3v2PrivateFrame : Id3v2Frame
     {
-        private string _ownerIdentifier;
-
+        private string _ownerIdentifier = null!;
         ////------------------------------------------------------------------------------------------------------------------------------
 
         /// <summary>
@@ -94,7 +93,7 @@ namespace AudioVideoLib.Tags
         /// <value>
         /// The private data.
         /// </value>
-        public byte[] PrivateData { get; set; }
+        public byte[] PrivateData { get; set; } = null!;
 
         ////------------------------------------------------------------------------------------------------------------------------------
 

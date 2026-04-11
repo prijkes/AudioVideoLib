@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2013-02-17
  * Sources used: 
  *  http://www.xiph.org/vorbis/doc/v-comment.html
@@ -36,7 +36,7 @@ namespace AudioVideoLib.Tags
         /// <value>
         /// The vendor.
         /// </value>
-        public string Vendor { get; set; }
+        public string Vendor { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the comments.

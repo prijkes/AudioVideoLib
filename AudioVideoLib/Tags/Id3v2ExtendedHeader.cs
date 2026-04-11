@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2011-03-04
  * Sources used: 
  *  http://www.id3.org/Id3v2-00
@@ -21,8 +21,7 @@ namespace AudioVideoLib.Tags
     {
         private int _extendedFlagsFieldLength;
 
-        private Id3v2TagRestrictions _tagRestrictions;
-
+        private Id3v2TagRestrictions _tagRestrictions = null!;
         ////------------------------------------------------------------------------------------------------------------------------------
 
         /// <summary>

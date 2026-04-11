@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2013-02-02
  * Sources used: 
  *  http://xiph.org/flac/format.html
@@ -77,7 +77,7 @@ namespace AudioVideoLib.Formats
         /// The data.
         /// </value>
         /// <exception cref="System.ArgumentNullException">value</exception>
-        public virtual byte[] Data { get; protected set; }
+        public virtual byte[] Data { get; protected set; } = null!;
 
         /// <summary>
         /// Gets the flags of this frame.

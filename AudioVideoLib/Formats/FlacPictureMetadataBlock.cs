@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2013-02-16
  * Sources used:
  *  http://xiph.org/flac/format.html
@@ -96,7 +96,7 @@ namespace AudioVideoLib.Formats
         /// The MIME type string is in printable ASCII characters 0x20-0x7e.
         /// The MIME type may also be --> to signify that the data part is a URL of the picture instead of the picture data itself.
         /// </remarks>
-        public string MimeType { get; private set; }
+        public string MimeType { get; private set; } = null!;
 
         /// <summary>
         /// Gets the description of the picture.
@@ -104,7 +104,7 @@ namespace AudioVideoLib.Formats
         /// <value>
         /// The description of the picture.
         /// </value>
-        public string Description { get; private set; }
+        public string Description { get; private set; } = null!;
 
         /// <summary>
         /// Gets the width of the picture in pixels.
@@ -147,6 +147,6 @@ namespace AudioVideoLib.Formats
         /// <value>
         /// The binary picture data.
         /// </value>
-        public byte[] PictureData { get; private set; }
+        public byte[] PictureData { get; private set; } = null!;
     }
 }

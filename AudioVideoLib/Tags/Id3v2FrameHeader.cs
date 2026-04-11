@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2011-03-04
  * Sources used: 
  *  http://www.codeproject.com/KB/audio-video/mpegaudioinfo.aspx
@@ -44,7 +44,7 @@ namespace AudioVideoLib.Tags
         /// <value>
         /// The identifier of the frame.
         /// </value>
-        public virtual string Identifier { get; private set; }
+        public virtual string Identifier { get; private set; } = null!;
 
         /// <summary>
         /// Gets or sets the type of encryption.

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2013-03-03
  * Sources used: 
  *  http://xiph.org/flac/format.html
@@ -22,7 +22,7 @@ namespace AudioVideoLib.Formats
 
         public int EncodingResidual { get; private set; }
 
-        public int[] Residuals { get; private set; }
+        public int[] Residuals { get; private set; } = null!;
 
         ////------------------------------------------------------------------------------------------------------------------------------
 

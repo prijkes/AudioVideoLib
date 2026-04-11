@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2011-05-28
  * Sources used:
  *  http://www.id3.org/Id3v2-00
@@ -32,10 +32,8 @@ namespace AudioVideoLib.Tags
     /// </remarks>
     public sealed class Id3v2UniqueFileIdentifierFrame : Id3v2Frame
     {
-        private string _ownerIdentifier;
-
-        private byte[] _identifierData;
-
+        private string _ownerIdentifier = null!;
+        private byte[] _identifierData = null!;
         ////------------------------------------------------------------------------------------------------------------------------------
 
         /// <summary>

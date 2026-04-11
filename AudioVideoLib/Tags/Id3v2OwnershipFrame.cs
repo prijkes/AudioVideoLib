@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2011-08-13
  * Sources used:
  *  http://www.id3.org/Id3v2-00
@@ -30,8 +30,7 @@ namespace AudioVideoLib.Tags
     {
         private Id3v2FrameEncodingType _frameEncodingType;
 
-        private string _pricePaid, _dateOfPurchase, _seller;
-
+        private string _pricePaid = null!, _dateOfPurchase = null!, _seller = null!;
         ////------------------------------------------------------------------------------------------------------------------------------
 
         /// <summary>

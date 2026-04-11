@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2010-08-12
  * Sources used: 
  *  http://emule-xtreme.googlecode.com/svn-history/r6/branches/emule/id3lib/doc/musicmatch.txt
@@ -140,7 +140,7 @@ namespace AudioVideoLib.Tags
         /// </value>
         /// The second subsection's 8-byte string is the version of the Xing encoder used to encode the mp3 file.
         /// The last four bytes of this string are usually '0' (0x30).  An example of this string is "1.010000".
-        public string XingEncoderVersion { get; set; }
+        public string XingEncoderVersion { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets a value indicating whether a header should be added to the <see cref="MusicMatchTag"/>.

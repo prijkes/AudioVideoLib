@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2013-02-03
  * Sources used: 
  *  http://xiph.org/flac/format.html
@@ -173,6 +173,6 @@ namespace AudioVideoLib.Formats
         /// <remarks>
         /// The MD5 signature allows the decoder to determine if an error exists in the audio data even when the error does not result in an invalid bitstream.
         /// </remarks>
-        public byte[] MD5 { get; private set; }
+        public byte[] MD5 { get; private set; } = null!;
     }
 }
