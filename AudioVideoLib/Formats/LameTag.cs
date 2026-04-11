@@ -623,12 +623,20 @@ public sealed class LameTag
         else
         {
             buffer.WriteString(EncoderVersion, Encoding.ASCII, 9);
-            buffer.WriteByte((byte)((InfoTagRevision & 0xF0) | (VbrMethod & 0x0F)));
-            buffer.WriteByte((byte)LowpassFilterValue);
+
+            // Revision information in 4 MSB, VBR info in 4 LSB.
+            buffer.WriteByte((byte)(((InfoTagRevision & 0x0F) << 4) | (VbrMethod & 0x0F)));
+
+            // Lowpass filter value is stored in Hz; the byte is in multiples of 100 Hz.
+            buffer.WriteByte((byte)(LowpassFilterValue / 100));
+
             buffer.WriteFloat(PeakSignalAmplitude);
             buffer.WriteShort(RadioReplayGain);
             buffer.WriteShort(AudiophileReplayGain);
-            buffer.WriteByte((byte)EncodingFlags);
+
+            // Encoding flags in 4 MSB, ATH type in 4 LSB.
+            buffer.WriteByte((byte)(((EncodingFlags & 0x0F) << 4) | (AthType & 0x0F)));
+
             buffer.WriteByte((byte)BitRate);
             buffer.WriteBytes(EncoderDelays, 3);
             buffer.WriteByte((byte)Misc);

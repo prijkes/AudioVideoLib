@@ -147,16 +147,13 @@ public sealed class Id3v2TermsOfUseFrame : Id3v2Frame
             // Text encoding
             stream.WriteByte(Id3v2FrameEncoding.GetEncodingTypeValue(TextEncoding));
 
-            // Language
+            // Language (3 bytes, ISO-639-2 in ISO-8859-1)
             if (Language != null)
             {
                 stream.WriteString(Language, Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default));
             }
 
-            // Preamble
-            stream.Write(Id3v2FrameEncoding.GetEncodingPreamble(TextEncoding));
-
-            // Text
+            // Text (according to text encoding — no BOM preamble per ID3v2 USER spec)
             if (Text != null)
             {
                 stream.WriteString(Text, Id3v2FrameEncoding.GetEncoding(TextEncoding));

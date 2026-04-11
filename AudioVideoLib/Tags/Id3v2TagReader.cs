@@ -546,19 +546,19 @@ public sealed partial class Id3v2TagReader : IAudioTagReader
                 var tagRestrictions = (byte)streamBuffer.ReadByte();
                 extendedHeader.TagRestrictions = new Id3v2TagRestrictions
                 {
-                    // p - Tag size restrictions
-                    TagSizeRestriction = (Id3v2TagSizeRestriction)(tagRestrictions & Id3v2TagRestrictions.TagSizeRestrictionFlags),
+                    // p - Tag size restrictions (bits 7-6)
+                    TagSizeRestriction = (Id3v2TagSizeRestriction)((tagRestrictions & Id3v2TagRestrictions.TagSizeRestrictionFlags) >> 6),
 
-                    // q - Text encoding restrictions
-                    TextEncodingRestriction = (Id3v2TextEncodingRestriction)(tagRestrictions & Id3v2TagRestrictions.TextEncodingRestrictionFlags),
+                    // q - Text encoding restrictions (bit 5)
+                    TextEncodingRestriction = (Id3v2TextEncodingRestriction)((tagRestrictions & Id3v2TagRestrictions.TextEncodingRestrictionFlags) >> 5),
 
-                    // r - Text fields size restrictions
-                    TextFieldsSizeRestriction = (Id3v2TextFieldsSizeRestriction)(tagRestrictions & Id3v2TagRestrictions.TextFieldsSizeRestrictionFlags),
+                    // r - Text fields size restrictions (bits 4-3)
+                    TextFieldsSizeRestriction = (Id3v2TextFieldsSizeRestriction)((tagRestrictions & Id3v2TagRestrictions.TextFieldsSizeRestrictionFlags) >> 3),
 
-                    // s - Image encoding restrictions
-                    ImageEncodingRestriction = (Id3v2ImageEncodingRestriction)(tagRestrictions & Id3v2TagRestrictions.ImageEncodingRestrictionFlags),
+                    // s - Image encoding restrictions (bit 2)
+                    ImageEncodingRestriction = (Id3v2ImageEncodingRestriction)((tagRestrictions & Id3v2TagRestrictions.ImageEncodingRestrictionFlags) >> 2),
 
-                    // t - Image size restrictions
+                    // t - Image size restrictions (bits 1-0)
                     ImageSizeRestriction = (Id3v2ImageSizeRestriction)(tagRestrictions & Id3v2TagRestrictions.ImageSizeRestrictionFlags)
                 };
             }

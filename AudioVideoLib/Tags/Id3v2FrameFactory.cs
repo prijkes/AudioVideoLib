@@ -118,8 +118,8 @@ public partial class Id3v2Frame
         },
         new Id3v2FrameFactoryItem
         {
-            Type = typeof(Id3v2Equalisation2Frame),
-            Identifiers = new Dictionary<string, Id3v2Version[]> { { "GRID", new[] { Id3v2Version.Id3v240 } } },
+            Type = typeof(Id3v2GroupIdentificationRegistrationFrame),
+            Identifiers = new Dictionary<string, Id3v2Version[]> { { "GRID", new[] { Id3v2Version.Id3v230, Id3v2Version.Id3v240 } } },
             Factory = (version, identifier) => new Id3v2GroupIdentificationRegistrationFrame()
         },
         new Id3v2FrameFactoryItem

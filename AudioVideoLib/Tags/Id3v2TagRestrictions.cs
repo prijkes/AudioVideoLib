@@ -98,16 +98,20 @@ public sealed class Id3v2TagRestrictions
     /// Places the tag restrictions into a byte array.
     /// </summary>
     /// <returns>A byte array that represents the tag restrictions.</returns>
+    /// <remarks>
+    /// The enum values store the raw 2-bit or 1-bit field values, so they are
+    /// shifted into their spec-defined positions (%ppqrrstt) here.
+    /// </remarks>
     public byte[] ToByte()
     {
         return
             [
                 (byte)
-                ((((byte)TagSizeRestriction & TagSizeRestrictionFlags) << 6) |
-                 (((byte)TextEncodingRestriction & TextEncodingRestrictionFlags) << 5) |
-                 (((byte)TextFieldsSizeRestriction & TextFieldsSizeRestrictionFlags) << 3) |
-                 (((byte)ImageEncodingRestriction & ImageEncodingRestrictionFlags) << 2) |
-                 ((byte)ImageSizeRestriction & ImageSizeRestrictionFlags))
+                (((int)TagSizeRestriction << 6) |
+                 ((int)TextEncodingRestriction << 5) |
+                 ((int)TextFieldsSizeRestriction << 3) |
+                 ((int)ImageEncodingRestriction << 2) |
+                 (int)ImageSizeRestriction)
             ];
     }
 }
