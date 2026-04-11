@@ -1,3 +1,4 @@
+#nullable disable warnings
 ﻿/*
  * Date: 2012-12-30
   * Sources used: 
@@ -379,7 +380,7 @@ namespace AudioVideoLibExamples
         ////------------------------------------------------------------------------------------------------------------------------------
 
         /// <inheritdoc/>
-        public override bool Equals(Id3v2Frame frame)
+        public override bool Equals(Id3v2Frame? frame)
         {
             return Equals(frame as Id3v2iTunesNormalizationFrame);
         }

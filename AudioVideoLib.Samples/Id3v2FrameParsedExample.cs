@@ -1,3 +1,4 @@
+#nullable disable warnings
 ﻿/*
  * Date: 2012-12-01
  * Sources used: 
@@ -54,7 +55,7 @@ namespace AudioVideoLibExamples
 
         // Event called when an tag is being created and asked to try to read a tag.
         // This event can be used to add custom event handlers to a tag, before reading a stream.
-        private static void AudioTagParse(object sender, AudioTagParseEventArgs e)
+        private static void AudioTagParse(object? sender, AudioTagParseEventArgs e)
         {
             // If the current tag is an Id3v2 tag, add our custom frame parser.
             if (e.AudioTagReader is Id3v2TagReader)
@@ -63,7 +64,7 @@ namespace AudioVideoLibExamples
 
         // Event called when the Id3v2 tag has read a frame.
         // This event can be used to modify a read frame, as we do here, to further parse known frames.
-        private static void Id3v2FrameParsed(object sender, Id3v2FrameParsedEventArgs e)
+        private static void Id3v2FrameParsed(object? sender, Id3v2FrameParsedEventArgs e)
         {
             // See if the frame is a comment frame.
             if (!(e.Frame is Id3v2CommentFrame))

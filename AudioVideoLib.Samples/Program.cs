@@ -1,3 +1,4 @@
+#nullable disable warnings
 ﻿/*
  * Date: 2012-12-01
  * Sources used: 

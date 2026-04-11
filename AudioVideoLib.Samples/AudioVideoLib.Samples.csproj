@@ -6,6 +6,7 @@
     <RootNamespace>AudioVideoLib.Samples</RootNamespace>
     <AssemblyName>AudioVideoLib.Samples</AssemblyName>
     <IsPackable>false</IsPackable>
+    <NoWarn>$(NoWarn);CA2021</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

@@ -64,7 +64,8 @@ namespace AudioVideoLib.Tests
             byte[] msBuffer = { 0x90, 0x10, 0xAA, 0x02, 0xFF };
             StreamBuffer target = new StreamBuffer(msBuffer);
             byte[] buffer = new byte[msBuffer.Length];
-            target.Read(buffer, 0, msBuffer.Length);
+            int bytesRead = target.Read(buffer, 0, msBuffer.Length);
+            Assert.Equal(msBuffer.Length, bytesRead);
             Assert.True(msBuffer.SequenceEqual(buffer));
         }
 
@@ -75,7 +76,8 @@ namespace AudioVideoLib.Tests
             MemoryStream ms = new MemoryStream(msBuffer);
             StreamBuffer target = new StreamBuffer(ms);
             byte[] buffer = new byte[msBuffer.Length];
-            target.Read(buffer, 0, msBuffer.Length);
+            int bytesRead = target.Read(buffer, 0, msBuffer.Length);
+            Assert.Equal(msBuffer.Length, bytesRead);
             Assert.True(msBuffer.SequenceEqual(buffer));
         }
 
@@ -177,7 +179,7 @@ namespace AudioVideoLib.Tests
         {
             const byte Value = 0xEF;
             const byte Expected = 0xEF;
-            StreamBuffer target = new StreamBuffer(BitConverter.GetBytes(Value)) { Position = 0 };
+            StreamBuffer target = new StreamBuffer(BitConverter.GetBytes((short)Value)) { Position = 0 };
             int actual = target.ReadByte();
             Assert.Equal(Expected, actual);
         }
@@ -187,7 +189,7 @@ namespace AudioVideoLib.Tests
         {
             const byte Value = 0xEF;
             const byte Expected = 0xEF;
-            StreamBuffer target = new StreamBuffer(BitConverter.GetBytes(Value)) { Position = 0 };
+            StreamBuffer target = new StreamBuffer(BitConverter.GetBytes((short)Value)) { Position = 0 };
             int actual = target.ReadByte(false);
             Assert.Equal(Expected, actual);
             Assert.True(target.Position == 0);
@@ -359,7 +361,7 @@ namespace AudioVideoLib.Tests
             StreamBuffer target = new StreamBuffer();
             const long Value = 1024;
             target.SetLength(Value);
-            Assert.Equal(target.Length, Value);
+            Assert.Equal(Value, target.Length);
         }
 
         [Fact]
@@ -488,7 +490,7 @@ namespace AudioVideoLib.Tests
             byte[] value = new byte[] { 0x01, 0x02, 0x10 };
             StreamBuffer target = new StreamBuffer(value);
             long actual = target.Length;
-            Assert.Equal(actual, value.Length);
+            Assert.Equal(value.Length, actual);
         }
 
         [Fact]

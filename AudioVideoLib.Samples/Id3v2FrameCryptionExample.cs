@@ -1,3 +1,4 @@
+#nullable disable warnings
 ﻿/*
  * Date: 2012-12-01
  * Sources used: 
@@ -61,14 +62,14 @@ namespace AudioVideoLibExamples
 
         // Event called when an tag is being created and asked to try to read a tag.
         // This event can be used to add an cryptor instance to the tag, before reading a stream.
-        private static void AudioTagParse(object sender, AudioTagParseEventArgs e)
+        private static void AudioTagParse(object? sender, AudioTagParseEventArgs e)
         {
             // If the current tag is an Id3v2 tag, add our custom frame parser.
             if (e.AudioTagReader is Id3v2TagReader)
                 (e.AudioTagReader as Id3v2TagReader).FrameParse += Id3v2FrameParse;
         }
 
-        private static void Id3v2FrameParse(object sender, Id3v2FrameParseEventArgs e)
+        private static void Id3v2FrameParse(object? sender, Id3v2FrameParseEventArgs e)
         {
             // If the frame is encrypted, add the frame cryptor and decrypt the frame.
             if (e.Frame.UseEncryption)

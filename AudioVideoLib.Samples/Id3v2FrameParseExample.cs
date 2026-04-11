@@ -1,3 +1,4 @@
+#nullable disable warnings
 ﻿/*
  * Date: 2012-12-01
  * Sources used: 
@@ -58,7 +59,7 @@ namespace AudioVideoLibExamples
 
         // Event called when an tag is being created and asked to try to read a tag.
         // This event can be used to add custom event handlers to a tag, before reading a stream.
-        private static void AudioTagParse(object sender, AudioTagParseEventArgs e)
+        private static void AudioTagParse(object? sender, AudioTagParseEventArgs e)
         {
             if (e == null)
                 throw new ArgumentNullException("e");
@@ -70,7 +71,7 @@ namespace AudioVideoLibExamples
 
         // Event called when the Id3v2 tag reads a frame.
         // This event can be used to parse your own custom frames, as shown here.
-        private static void Id3v2FrameParse(object sender, Id3v2FrameParseEventArgs e)
+        private static void Id3v2FrameParse(object? sender, Id3v2FrameParseEventArgs e)
         {
             if (e == null)
                 throw new ArgumentNullException("e");
