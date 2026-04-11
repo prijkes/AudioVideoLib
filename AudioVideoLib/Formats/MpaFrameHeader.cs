@@ -36,6 +36,11 @@ public sealed partial class MpaFrame
     /// </summary>
     private const byte InvalidSamplingRate = 0x03;
 
+    /// <summary>
+    /// Reserved value for emphasis field (ISO/IEC 11172-3 marks this bit pattern reserved).
+    /// </summary>
+    private const byte InvalidEmphasis = 0x02;
+
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -563,7 +568,7 @@ public sealed partial class MpaFrame
     {
         return (_frameSync == ValidFrameSync) && (AudioVersion != MpaAudioVersion.Reserved)
                && (LayerVersion != MpaFrameLayerVersion.Reserved) && (_bitrateIndex != InvalidBitrateIndex)
-               && (_samplingRateFrequency != InvalidSamplingRate) && (_emphasis != InvalidSamplingRate)
+               && (_samplingRateFrequency != InvalidSamplingRate) && (_emphasis != InvalidEmphasis)
                && IsAllowedBitrateChannelMode;
     }
 }

@@ -552,6 +552,15 @@ public sealed partial class Id3v2Tag : IAudioTag
             return 0;
         }
 
+        // The CRC is computed over exactly the bytes that ToByteArray() will write
+        // for the frame region (and, in v2.4, the padding). ToByteArray() also
+        // iterates GetFrames(), so the two match by construction: a tag written by
+        // this library will always validate against its own stored CRC when read
+        // back, because the read-path CRC in Id3v2TagReader hashes the same byte
+        // range that was written here. Tags produced by other writers that include
+        // empty-data frames will still validate on read (that path hashes raw bytes)
+        // but we deliberately don't reproduce such frames on write, so a subsequent
+        // round-trip will re-compute a different (filtered) CRC.
         var stream = new StreamBuffer();
         // Id3v2.3.0
         // The CRC should be calculated before unsynchronisation on the data between the extended header and the padding, i.e. the frames and only the frames.

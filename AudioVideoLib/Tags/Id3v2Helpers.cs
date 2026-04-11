@@ -107,8 +107,11 @@ public sealed partial class Id3v2Tag
             throw new ArgumentOutOfRangeException("count");
         }
 
+        // Input is little-endian bytes of a synchsafe integer: index (startIndex+count-1)
+        // holds the most significant byte and index startIndex holds the least significant.
+        // Decode MSB-first, consuming 7 bits per byte.
         long d = 0;
-        for (var i = startIndex + count - 1; i >= 0; i--)
+        for (var i = startIndex + count - 1; i >= startIndex; i--)
         {
             d <<= 7;
             d |= (byte)(synchsafeDataLsb[i] & 0x7F);

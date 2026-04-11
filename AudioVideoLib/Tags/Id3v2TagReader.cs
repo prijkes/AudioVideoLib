@@ -177,6 +177,14 @@ public sealed partial class Id3v2TagReader : IAudioTagReader
                 {
                     var currentPosition = sb.Position;
 
+                    // The read-path CRC hashes the raw byte range that was actually
+                    // read from the stream. The write-path CRC in Id3v2Tag.CalculateCrc32
+                    // is computed over the bytes that ToByteArray produces; both paths
+                    // are self-consistent for tags written by this library (they hash
+                    // the same bytes). For tags authored by other writers that may
+                    // include empty-data frames, the read-path still validates the
+                    // stored CRC against the on-disk bytes correctly.
+                    //
                     // Id3v2.3.0:
                     // The CRC should be calculated before unsynchronisation on the data between the extended header and the padding, i.e. the frames and only the frames.
                     // Id3v2.4.0:
