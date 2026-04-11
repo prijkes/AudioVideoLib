@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2010-05-25
  * Sources used: 
  *  http://www.codeproject.com/KB/audio-video/mpegaudioinfo.aspx
@@ -595,7 +595,7 @@ namespace AudioVideoLib.Formats
         /// <param name="firstFrameBuffer">The first frame buffer.</param>
         /// <param name="offset">The offset.</param>
         /// <returns>The <see cref="LameTag"/> when found; otherwise, null.</returns>
-        public static LameTag FindTag(StreamBuffer firstFrameBuffer, long offset)
+        public static LameTag? FindTag(StreamBuffer firstFrameBuffer, long offset)
         {
             if (firstFrameBuffer == null)
                 throw new ArgumentNullException("firstFrameBuffer");

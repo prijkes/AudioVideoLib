@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2013-10-16
  * Sources used: 
  *  http://www.codeproject.com/KB/audio-video/mpegaudioinfo.aspx
@@ -49,7 +49,7 @@ namespace AudioVideoLib.Tags
         ////------------------------------------------------------------------------------------------------------------------------------
 
         /// <inheritdoc/>
-        public IAudioTagOffset ReadFromStream(Stream stream, TagOrigin tagOrigin)
+        public IAudioTagOffset? ReadFromStream(Stream stream, TagOrigin tagOrigin)
         {
             if (stream == null)
                 throw new ArgumentNullException("stream");

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2014-02-17
  * Sources used:
  *  http://forums.asp.net/t/1057992.aspx/1
@@ -31,7 +31,7 @@ namespace AudioVideoLib.Tags
         /// <param name="e">The <see cref="AudioVideoLib.Tags.ApeItemParseEventArgs"/> instance containing the event data.</param>
         private void OnItemParse(ApeItemParseEventArgs e)
         {
-            EventHandler<ApeItemParseEventArgs> eventHandlers = ItemParse;
+            EventHandler<ApeItemParseEventArgs>? eventHandlers = ItemParse;
             if (eventHandlers == null)
                 return;
 
@@ -49,7 +49,7 @@ namespace AudioVideoLib.Tags
         /// <param name="e">The <see cref="AudioVideoLib.Tags.ApeItemParsedEventArgs"/> instance containing the event data.</param>
         private void OnItemParsed(ApeItemParsedEventArgs e)
         {
-            EventHandler<ApeItemParsedEventArgs> eventHandlers = ItemParsed;
+            EventHandler<ApeItemParsedEventArgs>? eventHandlers = ItemParsed;
             if (eventHandlers != null)
                 eventHandlers(this, e);
         }

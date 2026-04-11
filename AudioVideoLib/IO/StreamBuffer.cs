@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2010-12-07
  * Sources used: 
  */
@@ -109,7 +109,7 @@ namespace AudioVideoLib.IO
         /// <remarks>
         /// The underlying stream will only be returned if this instance has been constructed with <see cref="StreamBuffer(Stream)"/>.
         /// </remarks>
-        public Stream BaseStream
+        public Stream? BaseStream
         {
             get
             {
@@ -401,7 +401,7 @@ namespace AudioVideoLib.IO
             }
         }
 
-        public override string ToString()
+        public override string? ToString()
         {
             return _stream.ToString();
         }

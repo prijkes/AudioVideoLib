@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2013-02-23
  * Sources used: 
  *  http://xiph.org/flac/format.html
@@ -198,7 +198,7 @@ namespace AudioVideoLib.IO
             while ((stream.Position <= streamLength) && (spacing < MaxFrameSpacingLength))
             {
                 spacing++;
-                FlacFrame frame = FlacFrame.ReadFrame(stream, this);
+                FlacFrame? frame = FlacFrame.ReadFrame(stream, this);
                 if (frame != null)
                 {
                     spacing = 0;
@@ -216,7 +216,7 @@ namespace AudioVideoLib.IO
             using (StreamBuffer sb = new StreamBuffer())
             {
                 sb.WriteString(Identifier);
-                FlacStreamInfoMetadataBlock streamInfoMetadataBlock = StreamInfoMetadataBlocks.FirstOrDefault();
+                FlacStreamInfoMetadataBlock? streamInfoMetadataBlock = StreamInfoMetadataBlocks.FirstOrDefault();
                 if (streamInfoMetadataBlock != null)
                     sb.Write(streamInfoMetadataBlock.ToByteArray());
 

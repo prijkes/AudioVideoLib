@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2013-02-02
  * Sources used: 
  *  http://xiph.org/flac/format.html
@@ -82,7 +82,7 @@ namespace AudioVideoLib.Formats
         /// true if found; otherwise, null.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">Thrown if stream is null.</exception>
-        public static FlacFrame ReadFrame(Stream stream, IO.FlacStream flacStream)
+        public static FlacFrame? ReadFrame(Stream stream, IO.FlacStream flacStream)
         {
             if (stream == null)
                 throw new ArgumentNullException("stream");

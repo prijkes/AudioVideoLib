@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2010-02-12
  * Sources used: 
  *  http://www.codeproject.com/KB/audio-video/mpegaudioinfo.aspx
@@ -148,7 +148,7 @@ namespace AudioVideoLib.Tags
         /// <returns>
         /// The first item of type T if found; otherwise, null.
         /// </returns>
-        public T GetItem<T>() where T : ApeItem
+        public T? GetItem<T>() where T : ApeItem
         {
             return _items.OfType<T>().FirstOrDefault();
         }
@@ -160,7 +160,7 @@ namespace AudioVideoLib.Tags
         /// <returns>
         /// The <see cref="ApeItem"/> when found, otherwise null.
         /// </returns>
-        public ApeItem GetItem(ApeItemKey key)
+        public ApeItem? GetItem(ApeItemKey key)
         {
             IEnumerable<string> keys = ApeItem.GetItemKeys(key);
             return _items.FirstOrDefault(f => keys.Contains(f.Key));
@@ -173,7 +173,7 @@ namespace AudioVideoLib.Tags
         /// <returns>
         /// The <see cref="ApeItem"/> when found, otherwise null.
         /// </returns>
-        public ApeItem GetItem(string key)
+        public ApeItem? GetItem(string key)
         {
             if (key == null)
                 throw new ArgumentNullException("key");
@@ -248,7 +248,7 @@ namespace AudioVideoLib.Tags
             if (key == null)
                 throw new ArgumentNullException("key");
 
-            ApeItem item = _items.FirstOrDefault(i => String.Equals(i.Key, key, StringComparison.OrdinalIgnoreCase));
+            ApeItem? item = _items.FirstOrDefault(i => String.Equals(i.Key, key, StringComparison.OrdinalIgnoreCase));
             if (item != null)
                 _items.Remove(item);
         }

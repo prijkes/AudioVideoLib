@@ -68,7 +68,7 @@ namespace AudioVideoLib.Tags
         /// A <see cref="VorbisComment"/> instance if a vorbis comment was found; otherwise, null.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">Thrown if stream is null.</exception>
-        public static VorbisComment ReadStream(Stream stream)
+        public static VorbisComment? ReadStream(Stream stream)
         {
             if (stream == null)
                 throw new ArgumentNullException("stream");

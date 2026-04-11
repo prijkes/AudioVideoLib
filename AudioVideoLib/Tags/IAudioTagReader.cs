@@ -24,6 +24,6 @@ namespace AudioVideoLib.Tags
         /// <returns>
         /// An <see cref="IAudioTagOffset" /> instance with the tag and offset info; or null when the tag could not be found.
         /// </returns>
-        IAudioTagOffset ReadFromStream(Stream stream, TagOrigin tagOrigin);
+        IAudioTagOffset? ReadFromStream(Stream stream, TagOrigin tagOrigin);
     }
 }

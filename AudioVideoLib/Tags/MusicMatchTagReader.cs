@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2013-10-16
  * Sources used: 
  *  http://emule-xtreme.googlecode.com/svn-history/r6/branches/emule/id3lib/doc/musicmatch.txt
@@ -40,7 +40,7 @@ namespace AudioVideoLib.Tags
         ////------------------------------------------------------------------------------------------------------------------------------
 
         /// <inheritdoc/>
-        public IAudioTagOffset ReadFromStream(Stream stream, TagOrigin tagOrigin)
+        public IAudioTagOffset? ReadFromStream(Stream stream, TagOrigin tagOrigin)
         {
             if (stream == null)
                 throw new ArgumentNullException("stream");
@@ -55,12 +55,12 @@ namespace AudioVideoLib.Tags
             MusicMatchTag tag = new MusicMatchTag();
 
             // Should we read the header or footer?
-            MusicMatchHeader headerOrFooter = (tagOrigin == TagOrigin.Start) ? ReadHeader(sb, tagOrigin) : ReadFooter(sb, tagOrigin);
+            MusicMatchHeader? headerOrFooter = (tagOrigin == TagOrigin.Start) ? ReadHeader(sb, tagOrigin) : ReadFooter(sb, tagOrigin);
             if (headerOrFooter == null)
                 return null;
 
             long startOffset = 0, endOffset = 0, streamLength = sb.Length;
-            MusicMatchHeader header = null, footer = null, versionInformation = null;
+            MusicMatchHeader? header = null, footer = null, versionInformation = null;
             if (tagOrigin == TagOrigin.Start)
             {
                 header = headerOrFooter;
@@ -193,7 +193,7 @@ namespace AudioVideoLib.Tags
             return 0;
         }
 
-        private static MusicMatchHeader ReadHeader(StreamBuffer stream, TagOrigin tagOrigin)
+        private static MusicMatchHeader? ReadHeader(StreamBuffer stream, TagOrigin tagOrigin)
         {
             if (stream == null)
                 throw new ArgumentNullException("stream");
@@ -208,7 +208,7 @@ namespace AudioVideoLib.Tags
                 // Look for a header at the current position
                 long startPositionHeader = startPosition;
                 long endPositionHeader = Math.Min(startPositionHeader + HeaderIdentifierBytes.Length, streamLength);
-                MusicMatchHeader header = ReadHeaderFooter(stream, startPositionHeader, endPositionHeader, HeaderIdentifierBytes, TagOrigin.Start);
+                MusicMatchHeader? header = ReadHeaderFooter(stream, startPositionHeader, endPositionHeader, HeaderIdentifierBytes, TagOrigin.Start);
                 if (header != null)
                     return header;
 
@@ -224,7 +224,7 @@ namespace AudioVideoLib.Tags
                 // Look for a footer before the current position
                 long startPositionHeader = Math.Max(startPosition - HeaderIdentifierBytes.Length, 0);
                 long endPositionHeader = Math.Min(startPositionHeader + HeaderIdentifierBytes.Length, streamLength);
-                MusicMatchHeader footer = ReadHeaderFooter(stream, startPositionHeader, endPositionHeader, HeaderIdentifierBytes, TagOrigin.End);
+                MusicMatchHeader? footer = ReadHeaderFooter(stream, startPositionHeader, endPositionHeader, HeaderIdentifierBytes, TagOrigin.End);
                 if (footer != null)
                     return footer;
 
@@ -238,7 +238,7 @@ namespace AudioVideoLib.Tags
             return null;
         }
 
-        private static MusicMatchHeader ReadFooter(StreamBuffer stream, TagOrigin tagOrigin)
+        private static MusicMatchHeader? ReadFooter(StreamBuffer stream, TagOrigin tagOrigin)
         {
             if (stream == null)
                 throw new ArgumentNullException("stream");
@@ -253,7 +253,7 @@ namespace AudioVideoLib.Tags
                 // Look for a footer before the current position
                 long startPositionFooter = Math.Max(startPosition, 0);
                 long endPositionFooter = Math.Min(startPosition + FooterIdentifierBytes.Length, streamLength);
-                MusicMatchHeader footer = ReadHeaderFooter(stream, startPositionFooter, endPositionFooter, FooterIdentifierBytes, TagOrigin.End);
+                MusicMatchHeader? footer = ReadHeaderFooter(stream, startPositionFooter, endPositionFooter, FooterIdentifierBytes, TagOrigin.End);
                 if (footer != null)
                     return footer;
 
@@ -269,7 +269,7 @@ namespace AudioVideoLib.Tags
                 // Look for a footer before the current position
                 long startPositionFooter = Math.Max(startPosition - MusicMatchTag.FooterSize, 0);
                 long endPositionFooter = Math.Min(startPosition, streamLength);
-                MusicMatchHeader footer = ReadHeaderFooter(stream, startPositionFooter, endPositionFooter, FooterIdentifierBytes, TagOrigin.End);
+                MusicMatchHeader? footer = ReadHeaderFooter(stream, startPositionFooter, endPositionFooter, FooterIdentifierBytes, TagOrigin.End);
                 if (footer != null)
                     return footer;
 
@@ -283,7 +283,7 @@ namespace AudioVideoLib.Tags
             return null;
         }
 
-        private static MusicMatchHeader ReadHeaderFooter(StreamBuffer stream, long startHeaderPosition, long endHeaderPosition, IList<byte> identifierBytes, TagOrigin tagOrigin)
+        private static MusicMatchHeader? ReadHeaderFooter(StreamBuffer stream, long startHeaderPosition, long endHeaderPosition, IList<byte> identifierBytes, TagOrigin tagOrigin)
         {
             if (stream == null)
                 throw new ArgumentNullException("stream");

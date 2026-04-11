@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2011-06-25
  * Sources used:
  *  http://www.id3.org/Id3v2-00
@@ -28,7 +28,7 @@ namespace AudioVideoLib.Tags
         /// The 'Album/Movie/Show title' frame is intended for the title of the recording (or source of sound)
         /// from which the audio in the file is taken.
         /// </remarks>
-        public Id3v2TextFrame AlbumTitle
+        public Id3v2TextFrame? AlbumTitle
         {
             get
             {
@@ -53,7 +53,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// The 'Lead artist(s)/Lead performer(s)/Soloist(s)/Performing group' is used for the main artist(s).
         /// </remarks>
-        public Id3v2TextFrame Artist
+        public Id3v2TextFrame? Artist
         {
             get
             {
@@ -78,7 +78,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// The 'Band/Orchestra/Accompaniment' frame is used for additional information about the performers in the recording.
         /// </remarks>
-        public Id3v2TextFrame ArtistExtra
+        public Id3v2TextFrame? ArtistExtra
         {
             get
             {
@@ -108,7 +108,7 @@ namespace AudioVideoLib.Tags
         /// There is however no good use for such information.
         /// The frame is therefore completely deprecated.
         /// </remarks>
-        public Id3v2TextFrame AudioSize
+        public Id3v2TextFrame? AudioSize
         {
             get
             {
@@ -149,7 +149,7 @@ namespace AudioVideoLib.Tags
         /// To acquire best result measure the time between each beat and calculate individual BPM for each beat and use the median value as result.
         /// BPM is an integer and represented as a numerical string.
         /// </remarks>
-        public Id3v2TextFrame BeatsPerMinute
+        public Id3v2TextFrame? BeatsPerMinute
         {
             get
             {
@@ -184,7 +184,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// The 'Composer(s)' frame is intended for the name of the composer(s).
         /// </remarks>
-        public Id3v2TextFrame ComposerName
+        public Id3v2TextFrame? ComposerName
         {
             get
             {
@@ -209,7 +209,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// The 'Conductor' frame is used for the name of the conductor.
         /// </remarks>
-        public Id3v2TextFrame ConductorName
+        public Id3v2TextFrame? ConductorName
         {
             get
             {
@@ -235,7 +235,7 @@ namespace AudioVideoLib.Tags
         /// The 'Content group description' frame is used if the sound belongs to a larger category of sounds/music.
         /// For example, classical music is often sorted in different musical sections (e.g. "Piano Concerto", "Weather - Hurricane").
         /// </remarks>
-        public Id3v2TextFrame ContentGroupDescription
+        public Id3v2TextFrame? ContentGroupDescription
         {
             get
             {
@@ -274,7 +274,7 @@ namespace AudioVideoLib.Tags
         /// RX  Remix
         /// CR  Cover
         /// </remarks>
-        public Id3v2TextFrame ContentType
+        public Id3v2TextFrame? ContentType
         {
             get
             {
@@ -304,7 +304,7 @@ namespace AudioVideoLib.Tags
         /// Every time this field is displayed the field must be preceded with "Copyright " (C) " ",
         /// where (C) is one character showing a C in a circle.
         /// </remarks>
-        public Id3v2TextFrame CopyrightMessage
+        public Id3v2TextFrame? CopyrightMessage
         {
             get
             {
@@ -332,7 +332,7 @@ namespace AudioVideoLib.Tags
         /// <para />
         /// This frame has been replaced by the TDRC frame, 'Recording time' as of <see cref="Id3v2Version.Id3v240"/>.
         /// </remarks>
-        public Id3v2TextFrame DateRecording
+        public Id3v2TextFrame? DateRecording
         {
             get
             {
@@ -367,7 +367,7 @@ namespace AudioVideoLib.Tags
         /// The 'Encoded by' frame contains the name of the person or organization that encoded the audio file.
         /// This field may contain a copyright message, if the audio file also is copyrighted by the encoder.
         /// </remarks>
-        public Id3v2TextFrame EncodedBy
+        public Id3v2TextFrame? EncodedBy
         {
             get
             {
@@ -394,7 +394,7 @@ namespace AudioVideoLib.Tags
         /// and its settings when the file was encoded.
         /// Hardware refers to hardware encoders, not the computer on which a program was run.
         /// </remarks>
-        public Id3v2TextFrame EncodingSettingsUsed
+        public Id3v2TextFrame? EncodingSettingsUsed
         {
             get
             {
@@ -430,7 +430,7 @@ namespace AudioVideoLib.Tags
         /// This is used in a similar way to the predefined types in the "TMT" frame, but without parenthesis.
         /// If this frame is not present audio type is assumed to be "MPG".
         /// </remarks>
-        public Id3v2TextFrame FileType
+        public Id3v2TextFrame? FileType
         {
             get
             {
@@ -458,7 +458,7 @@ namespace AudioVideoLib.Tags
         /// The ground keys are represented with "A","B","C","D","E", "F" and "G" and half keys represented with "b" and "#".
         /// Minor is represented as "m". Example "Cbm". Off key is represented with an "o" only.
         /// </remarks>
-        public Id3v2TextFrame InitialKey
+        public Id3v2TextFrame? InitialKey
         {
             get
             {
@@ -483,7 +483,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// The 'ISRC' frame should contain the International Standard Recording Code [ISRC] (12 characters).
         /// </remarks>
-        public Id3v2TextFrame InternationalStandardRecordingCode
+        public Id3v2TextFrame? InternationalStandardRecordingCode
         {
             get
             {
@@ -523,7 +523,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// The 'Length' frame contains the length of the audio file in milliseconds, represented as a numeric string.
         /// </remarks>
-        public Id3v2TextFrame Length
+        public Id3v2TextFrame? Length
         {
             get
             {
@@ -644,7 +644,7 @@ namespace AudioVideoLib.Tags
         /// /III  Type III cassette (ferric chrome)
         /// /IV   Type IV cassette (metal)
         /// </remarks>
-        public Id3v2TextFrame MediaType
+        public Id3v2TextFrame? MediaType
         {
             get
             {
@@ -670,7 +670,7 @@ namespace AudioVideoLib.Tags
         /// The 'Interpreted, remixed, or otherwise modified by' frame contains more information about the people
         /// behind a remix and similar interpretations of another existing piece.
         /// </remarks>
-        public Id3v2TextFrame ModifiedBy
+        public Id3v2TextFrame? ModifiedBy
         {
             get
             {
@@ -696,7 +696,7 @@ namespace AudioVideoLib.Tags
         /// The 'Original album/Movie/Show title' frame is intended for the title of the original recording(/source of sound),
         /// if for example the music in the file should be a cover of a previously released song.
         /// </remarks>
-        public Id3v2TextFrame OriginalAlbumTitle
+        public Id3v2TextFrame? OriginalAlbumTitle
         {
             get
             {
@@ -722,7 +722,7 @@ namespace AudioVideoLib.Tags
         /// The 'Original artist(s)/performer(s)' frame is intended for the performer(s) of the original recording,
         /// if for example the music in the file should be a cover of a previously released song.
         /// </remarks>
-        public Id3v2TextFrame OriginalArtist
+        public Id3v2TextFrame? OriginalArtist
         {
             get
             {
@@ -749,7 +749,7 @@ namespace AudioVideoLib.Tags
         /// since some media doesn't allow the desired length of the filename.
         /// The filename is case sensitive and includes its suffix.
         /// </remarks>
-        public Id3v2TextFrame OriginalFilename
+        public Id3v2TextFrame? OriginalFilename
         {
             get
             {
@@ -778,7 +778,7 @@ namespace AudioVideoLib.Tags
         /// <para />
         /// This frame has been replaced by the TDOR frame, 'Original release time' as of <see cref="Id3v2Version.Id3v240"/>.
         /// </remarks>
-        public Id3v2TextFrame OriginalReleaseYear
+        public Id3v2TextFrame? OriginalReleaseYear
         {
             get
             {
@@ -807,7 +807,7 @@ namespace AudioVideoLib.Tags
         /// The 'Original Lyricist(s)/text writer(s)' frame is intended for the text writer(s) of the original recording,
         /// if for example the music in the file should be a cover of a previously released song.
         /// </remarks>
-        public Id3v2TextFrame OriginalTextWriter
+        public Id3v2TextFrame? OriginalTextWriter
         {
             get
             {
@@ -835,7 +835,7 @@ namespace AudioVideoLib.Tags
         /// The value may be extended with a "/" character and a numeric string
         /// containing the total number of parts in the set. E.g. "1/2".
         /// </remarks>
-        public Id3v2TextFrame PartOfSet
+        public Id3v2TextFrame? PartOfSet
         {
             get
             {
@@ -863,7 +863,7 @@ namespace AudioVideoLib.Tags
         /// to skip initial silence and silence at the end of the audio to match the 'Playlist delay' time.
         /// The time is represented as a numeric string.
         /// </remarks>
-        public Id3v2TextFrame PlaylistDelay
+        public Id3v2TextFrame? PlaylistDelay
         {
             get
             {
@@ -888,7 +888,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// The 'Publisher' frame simply contains the name of the label or publisher.
         /// </remarks>
-        public Id3v2TextFrame Publisher
+        public Id3v2TextFrame? Publisher
         {
             get
             {
@@ -916,7 +916,7 @@ namespace AudioVideoLib.Tags
         /// <para />
         /// This frame has been replaced by the TDRC frame, 'Recording time' as of <see cref="Id3v2Version.Id3v240"/>.
         /// </remarks>
-        public Id3v2TextFrame RecordingDates
+        public Id3v2TextFrame? RecordingDates
         {
             get
             {
@@ -949,7 +949,7 @@ namespace AudioVideoLib.Tags
         /// The language is represented with three characters according to ISO-639-2.
         /// If more than one language is used in the text their language codes should follow according to their usage.
         /// </remarks>
-        public Id3v2TextFrame TextLanguages
+        public Id3v2TextFrame? TextLanguages
         {
             get
             {
@@ -996,7 +996,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// The 'Lyricist(s)/text writer(s)' frame is intended for the writer(s) of the text or lyrics in the recording.
         /// </remarks>
-        public Id3v2TextFrame TextWriter
+        public Id3v2TextFrame? TextWriter
         {
             get
             {
@@ -1024,7 +1024,7 @@ namespace AudioVideoLib.Tags
         /// <para />
         /// This frame has been replaced by the TDRC frame, 'Recording time' as of <see cref="Id3v2Version.Id3v240"/>.
         /// </remarks>
-        public Id3v2TextFrame TimeRecording
+        public Id3v2TextFrame? TimeRecording
         {
             get
             {
@@ -1055,7 +1055,7 @@ namespace AudioVideoLib.Tags
         /// This may be extended with a "/" character and a numeric string
         /// containing the total number of tracks/elements on the original recording. E.g. "4/9".
         /// </remarks>
-        public Id3v2TextFrame TrackNumber
+        public Id3v2TextFrame? TrackNumber
         {
             get
             {
@@ -1079,7 +1079,7 @@ namespace AudioVideoLib.Tags
         /// <value>
         /// The track title.
         /// </value>
-        public Id3v2TextFrame TrackTitle
+        public Id3v2TextFrame? TrackTitle
         {
             get
             {
@@ -1105,7 +1105,7 @@ namespace AudioVideoLib.Tags
         /// The 'Subtitle/Description refinement' frame is used for information directly related
         /// to the contents title (e.g. "Op. 16" or "Performed live at wembley").
         /// </remarks>
-        public Id3v2TextFrame TrackTitleDescription
+        public Id3v2TextFrame? TrackTitleDescription
         {
             get
             {
@@ -1133,7 +1133,7 @@ namespace AudioVideoLib.Tags
         /// <para />
         /// This frame has been replaced by the TDRC frame, 'Recording time' as of <see cref="Id3v2Version.Id3v240"/>.
         /// </remarks>
-        public Id3v2TextFrame YearRecording
+        public Id3v2TextFrame? YearRecording
         {
             get
             {

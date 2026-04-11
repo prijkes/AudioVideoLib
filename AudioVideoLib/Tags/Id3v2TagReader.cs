@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2013-10-16
  * Sources used:
  *  http://www.id3.org/Id3v2-00
@@ -28,7 +28,7 @@ namespace AudioVideoLib.Tags
         ////------------------------------------------------------------------------------------------------------------------------------
 
         /// <inheritdoc/>
-        public IAudioTagOffset ReadFromStream(Stream stream, TagOrigin tagOrigin)
+        public IAudioTagOffset? ReadFromStream(Stream stream, TagOrigin tagOrigin)
         {
             if (stream == null)
                 throw new ArgumentNullException("stream");
@@ -42,7 +42,7 @@ namespace AudioVideoLib.Tags
             StreamBuffer sb = stream as StreamBuffer ?? new StreamBuffer(stream);
 
             // Try to read the header.
-            Id3v2Header headerOrFooter = ReadHeader(sb, tagOrigin);
+            Id3v2Header? headerOrFooter = ReadHeader(sb, tagOrigin);
             if (headerOrFooter == null)
                 return null;
 
@@ -57,7 +57,7 @@ namespace AudioVideoLib.Tags
             // startOffset: offset the header starts
             // endOffset: offset the footer ends if available, or when the tag ends
             long startOffset, endOffset;
-            Id3v2Header header, footer = null;
+            Id3v2Header? header = null, footer = null;
             if (isHeader)
             {
                 header = headerOrFooter;
@@ -327,7 +327,7 @@ namespace AudioVideoLib.Tags
 #endif
         }
 
-        private static Id3v2Header ReadHeader(StreamBuffer stream, TagOrigin tagOrigin)
+        private static Id3v2Header? ReadHeader(StreamBuffer stream, TagOrigin tagOrigin)
         {
             if (stream == null)
                 throw new ArgumentNullException("stream");
@@ -342,7 +342,7 @@ namespace AudioVideoLib.Tags
                 // Look for a header at the current position
                 long startPositionHeader = startPosition;
                 long endPositionHeader = Math.Min(startPositionHeader + Id3v2Tag.HeaderSize, streamLength);
-                Id3v2Header header = ReadHeader(stream, startPositionHeader, endPositionHeader, HeaderIdentifierBytes);
+                Id3v2Header? header = ReadHeader(stream, startPositionHeader, endPositionHeader, HeaderIdentifierBytes);
                 if (header != null)
                     return header;
 
@@ -358,7 +358,7 @@ namespace AudioVideoLib.Tags
                 // Look for a footer before the current position
                 long startPositionHeader = Math.Max(startPosition - Id3v2Tag.FooterSize, 0);
                 long endPositionHeader = Math.Min(startPositionHeader + Id3v2Tag.FooterSize, streamLength);
-                Id3v2Header footer = ReadHeader(stream, startPositionHeader, endPositionHeader, FooterIdentifierBytes);
+                Id3v2Header? footer = ReadHeader(stream, startPositionHeader, endPositionHeader, FooterIdentifierBytes);
                 if (footer != null)
                     return footer;
 
@@ -372,7 +372,7 @@ namespace AudioVideoLib.Tags
             return null;
         }
 
-        private static Id3v2Header ReadHeader(StreamBuffer stream, long startHeaderPosition, long endHeaderPosition, byte[] identifierBytes)
+        private static Id3v2Header? ReadHeader(StreamBuffer stream, long startHeaderPosition, long endHeaderPosition, byte[] identifierBytes)
         {
             if (stream == null)
                 throw new ArgumentNullException("stream");
@@ -435,7 +435,7 @@ namespace AudioVideoLib.Tags
         /// The extended header if used; otherwise, null.
         /// </returns>
         /// <exception cref="System.IO.InvalidDataException">Thrown if the extended header size does not match the amount of bytes read for the extended header.</exception>
-        private static Id3v2ExtendedHeader ReadExtendedHeader(StreamBuffer streamBuffer, Id3v2Tag tag, out int crcData)
+        private static Id3v2ExtendedHeader? ReadExtendedHeader(StreamBuffer streamBuffer, Id3v2Tag tag, out int crcData)
         {
             crcData = 0;
             if (!tag.UseExtendedHeader)
@@ -445,7 +445,7 @@ namespace AudioVideoLib.Tags
             // but is not vital to the correct parsing of the tag information; hence the extended header is optional.
             int extendedHeaderSize = 0;
             long startPosition = streamBuffer.Position;
-            Id3v2ExtendedHeader extendedHeader = null;
+            Id3v2ExtendedHeader? extendedHeader = null;
             if ((tag.Version >= Id3v2Version.Id3v230) && (tag.Version < Id3v2Version.Id3v240))
             {
                 // Where the 'Extended header size', currently 6 or 10 bytes, excludes itself.
@@ -539,12 +539,12 @@ namespace AudioVideoLib.Tags
             if (frames == null)
                 return;
 
-            string trackNumberIdentifier = Id3v2TextFrame.GetIdentifier(version, Id3v2TextFrameIdentifier.TrackNumber);
+            string? trackNumberIdentifier = Id3v2TextFrame.GetIdentifier(version, Id3v2TextFrameIdentifier.TrackNumber);
             Id3v2Frame trackNumberFrame =
                 frames.OfType<Id3v2TextFrame>()
                     .FirstOrDefault(f => String.Equals(f.Identifier, trackNumberIdentifier, StringComparison.OrdinalIgnoreCase));
 
-            string musicCdIdentifier = Id3v2Frame.GetIdentifier<Id3v2MusicCdIdentifierFrame>(version);
+            string? musicCdIdentifier = Id3v2Frame.GetIdentifier<Id3v2MusicCdIdentifierFrame>(version);
             Id3v2Frame musicCdFrame =
                 frames.FirstOrDefault(
                     f => f is Id3v2MusicCdIdentifierFrame || String.Equals(f.Identifier, musicCdIdentifier, StringComparison.OrdinalIgnoreCase));
@@ -557,12 +557,12 @@ namespace AudioVideoLib.Tags
 
             if (version >= Id3v2Version.Id3v240)
             {
-                string lengthIdentifier = Id3v2TextFrame.GetIdentifier(version, Id3v2TextFrameIdentifier.Length);
+                string? lengthIdentifier = Id3v2TextFrame.GetIdentifier(version, Id3v2TextFrameIdentifier.Length);
                 Id3v2Frame lengthFrame =
                     frames.OfType<Id3v2TextFrame>()
                         .FirstOrDefault(f => String.Equals(f.Identifier, lengthIdentifier, StringComparison.OrdinalIgnoreCase));
 
-                string audioSeekPointIndexIdentifier = Id3v2Frame.GetIdentifier<Id3v2AudioSeekPointIndexFrame>(version);
+                string? audioSeekPointIndexIdentifier = Id3v2Frame.GetIdentifier<Id3v2AudioSeekPointIndexFrame>(version);
                 Id3v2Frame audioSeekPointIndexFrame =
                     frames.FirstOrDefault(
                         f =>

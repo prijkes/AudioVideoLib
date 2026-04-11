@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2013-10-16
  * Sources used: 
  *  http://id3.org/Lyrics3v2
@@ -32,7 +32,7 @@ namespace AudioVideoLib.Tags
         /// <param name="e">The <see cref="AudioVideoLib.Tags.Lyrics3v2FieldParseEventArgs"/> instance containing the event data.</param>
         private void OnFieldParse(Lyrics3v2FieldParseEventArgs e)
         {
-            EventHandler<Lyrics3v2FieldParseEventArgs> eventHandlers = FieldParse;
+            EventHandler<Lyrics3v2FieldParseEventArgs>? eventHandlers = FieldParse;
             if (eventHandlers == null)
                 return;
 
@@ -50,7 +50,7 @@ namespace AudioVideoLib.Tags
         /// <param name="e">The <see cref="AudioVideoLib.Tags.Lyrics3v2FieldParsedEventArgs"/> instance containing the event data.</param>
         private void OnFieldParsed(Lyrics3v2FieldParsedEventArgs e)
         {
-            EventHandler<Lyrics3v2FieldParsedEventArgs> eventHandlers = FieldParsed;
+            EventHandler<Lyrics3v2FieldParsedEventArgs>? eventHandlers = FieldParsed;
             if (eventHandlers != null)
                 eventHandlers(this, e);
         }

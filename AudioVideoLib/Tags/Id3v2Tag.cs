@@ -233,7 +233,7 @@ namespace AudioVideoLib.Tags
         /// <returns>
         /// The first frame of type T if found; otherwise, null.
         /// </returns>
-        public T GetFrame<T>() where T : Id3v2Frame
+        public T? GetFrame<T>() where T : Id3v2Frame
         {
             return _frames.OfType<T>().FirstOrDefault();
         }
@@ -243,9 +243,9 @@ namespace AudioVideoLib.Tags
         /// </summary>
         /// <param name="identifier">The identifier.</param>
         /// <returns>The <see cref="Id3v2TextFrame"/> if found; otherwise, null.</returns>
-        public Id3v2TextFrame GetTextFrame(Id3v2TextFrameIdentifier identifier)
+        public Id3v2TextFrame? GetTextFrame(Id3v2TextFrameIdentifier identifier)
         {
-            string id = Id3v2TextFrame.GetIdentifier(Version, identifier);
+            string? id = Id3v2TextFrame.GetIdentifier(Version, identifier);
             return _frames.OfType<Id3v2TextFrame>().FirstOrDefault(f => String.Equals(f.Identifier, id, StringComparison.OrdinalIgnoreCase));
         }
 
@@ -254,9 +254,9 @@ namespace AudioVideoLib.Tags
         /// </summary>
         /// <param name="identifier">The identifier.</param>
         /// <returns>The <see cref="Id3v2UrlLinkFrame"/> if found; otherwise, null.</returns>
-        public Id3v2UrlLinkFrame GetUrlLinkFrame(Id3v2UrlLinkFrameIdentifier identifier)
+        public Id3v2UrlLinkFrame? GetUrlLinkFrame(Id3v2UrlLinkFrameIdentifier identifier)
         {
-            string id = Id3v2UrlLinkFrame.GetIdentifier(Version, identifier);
+            string? id = Id3v2UrlLinkFrame.GetIdentifier(Version, identifier);
             return _frames.OfType<Id3v2UrlLinkFrame>().FirstOrDefault(f => String.Equals(f.Identifier, id, StringComparison.OrdinalIgnoreCase));
         }
 
@@ -269,7 +269,7 @@ namespace AudioVideoLib.Tags
         /// The first frame of type T with a matching frame identifier if found; otherwise, null.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="identifier"/> is null.</exception>
-        public T GetFrame<T>(string identifier) where T : Id3v2Frame
+        public T? GetFrame<T>(string identifier) where T : Id3v2Frame
         {
             if (identifier == null)
                 throw new ArgumentNullException("identifier");
@@ -286,7 +286,7 @@ namespace AudioVideoLib.Tags
         /// </returns>
         public IEnumerable<Id3v2UrlLinkFrame> GetUrlLinkFrames(Id3v2UrlLinkFrameIdentifier identifier)
         {
-            string id = Id3v2UrlLinkFrame.GetIdentifier(Version, identifier);
+            string? id = Id3v2UrlLinkFrame.GetIdentifier(Version, identifier);
             return _frames.OfType<Id3v2UrlLinkFrame>().Where(f => String.Equals(f.Identifier, id, StringComparison.OrdinalIgnoreCase));
         }
 
@@ -667,7 +667,7 @@ namespace AudioVideoLib.Tags
 
         private void RemoveFrames<T>(Id3v2UrlLinkFrameIdentifier identifier)
         {
-            string id = Id3v2UrlLinkFrame.GetIdentifier(Version, identifier);
+            string? id = Id3v2UrlLinkFrame.GetIdentifier(Version, identifier);
             _frames.RemoveAll(f => f is Id3v2UrlLinkFrame && String.Equals(f.Identifier, id, StringComparison.OrdinalIgnoreCase));
         }
     }

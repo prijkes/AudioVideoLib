@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2013-01-26
  * Sources used: 
  */
@@ -118,7 +118,7 @@ namespace AudioVideoLib.IO
             long spacing = 0;
             while ((stream.Position <= streamLength) && (spacing < MaxStreamSpacingLength))
             {
-                IAudioStream audioStream = ReadAudioStream(stream);
+                IAudioStream? audioStream = ReadAudioStream(stream);
                 if (audioStream != null)
                 {
                     spacing = 0;
@@ -161,14 +161,14 @@ namespace AudioVideoLib.IO
 
         private void OnAudioStreamParse(AudioStreamParseEventArgs e)
         {
-            EventHandler<AudioStreamParseEventArgs> audioTagParse = AudioStreamParse;
+            EventHandler<AudioStreamParseEventArgs>? audioTagParse = AudioStreamParse;
             if (audioTagParse != null)
                 audioTagParse(this, e);
         }
 
         private void OnAudioStreamParsed(AudioStreamParsedEventArgs e)
         {
-            EventHandler<AudioStreamParsedEventArgs> audioTagParsed = AudioStreamParsed;
+            EventHandler<AudioStreamParsedEventArgs>? audioTagParsed = AudioStreamParsed;
             if (audioTagParsed != null)
                 audioTagParsed(this, e);
         }
@@ -217,7 +217,7 @@ namespace AudioVideoLib.IO
         /// True if an audio stream was found; otherwise, false.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">Thrown if stream is null.</exception>
-        private IAudioStream ReadAudioStream(Stream stream)
+        private IAudioStream? ReadAudioStream(Stream stream)
         {
             if (stream == null)
                 throw new ArgumentNullException("stream");

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2010-02-12
  * Sources used: 
  *  http://www.codeproject.com/KB/audio-video/mpegaudioinfo.aspx
@@ -40,7 +40,7 @@ namespace AudioVideoLib.Formats
         /// true if found; otherwise, null.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">Thrown if stream is null.</exception>
-        public static MpaFrame ReadFrame(Stream stream)
+        public static MpaFrame? ReadFrame(Stream stream)
         {
             if (stream == null)
                 throw new ArgumentNullException("stream");

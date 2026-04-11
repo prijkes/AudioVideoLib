@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2010-05-25
  * Sources used: 
  *  http://www.codeproject.com/KB/audio-video/mpegaudioinfo.aspx
@@ -104,7 +104,7 @@ namespace AudioVideoLib.Formats
         /// It will compare the first 4 bytes against the <see cref="HeaderIndicator"/> 
         /// to see if the header contains a <see cref="VbriHeader"/> or not.
         /// </remarks>
-        public static new VbriHeader FindHeader(MpaFrame firstFrame)
+        public static new VbriHeader? FindHeader(MpaFrame firstFrame)
         {
             if (firstFrame == null)
                 throw new ArgumentNullException("firstFrame");

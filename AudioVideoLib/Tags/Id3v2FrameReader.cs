@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2013-10-20
  * Sources used:
  *  http://www.codeproject.com/KB/audio-video/mpegaudioinfo.aspx
@@ -47,7 +47,7 @@ namespace AudioVideoLib.Tags
         /// <returns>
         /// An <see cref="Id3v2Frame"/> if found; otherwise, null.
         /// </returns>
-        public static Id3v2Frame ReadFromStream(Id3v2Version version, Stream stream, long maximumFrameSize)
+        public static Id3v2Frame? ReadFromStream(Id3v2Version version, Stream stream, long maximumFrameSize)
         {
             if (stream == null)
                 throw new ArgumentNullException("stream");
@@ -65,7 +65,7 @@ namespace AudioVideoLib.Tags
         /// <returns>
         /// The type specific <see cref="Id3v2Frame" /> if found; otherwise, null.
         /// </returns>
-        public static T ReadFromStream<T>(Id3v2Version version, Stream stream, long maximumFrameSize) where T : Id3v2Frame, new()
+        public static T? ReadFromStream<T>(Id3v2Version version, Stream stream, long maximumFrameSize) where T : Id3v2Frame, new()
         {
             if (stream == null)
                 throw new ArgumentNullException("stream");
@@ -75,12 +75,12 @@ namespace AudioVideoLib.Tags
 
         ////------------------------------------------------------------------------------------------------------------------------------
 
-        private static Id3v2Frame ReadFrame(Id3v2Version version, StreamBuffer sb, long maximumFrameSize)
+        private static Id3v2Frame? ReadFrame(Id3v2Version version, StreamBuffer sb, long maximumFrameSize)
         {
             if (sb == null)
                 throw new ArgumentNullException("sb");
 
-            string identifier = ReadIdentifier(version, sb, maximumFrameSize);
+            string? identifier = ReadIdentifier(version, sb, maximumFrameSize);
             if (identifier == null)
                 return null;
 
@@ -88,12 +88,12 @@ namespace AudioVideoLib.Tags
             return frame.ReadFrame(sb, maximumFrameSize) ? frame : null;
         }
 
-        private static T ReadFrame<T>(Id3v2Version version, StreamBuffer sb, long maximumFrameSize) where T : Id3v2Frame, new()
+        private static T? ReadFrame<T>(Id3v2Version version, StreamBuffer sb, long maximumFrameSize) where T : Id3v2Frame, new()
         {
             if (sb == null)
                 throw new ArgumentNullException("sb");
 
-            string identifier = ReadIdentifier(version, sb, maximumFrameSize);
+            string? identifier = ReadIdentifier(version, sb, maximumFrameSize);
             if (identifier == null)
                 return null;
 
@@ -102,7 +102,7 @@ namespace AudioVideoLib.Tags
             return frame.ReadFrame(sb, maximumFrameSize) ? frame : null;
         }
 
-        private static string ReadIdentifier(Id3v2Version version, StreamBuffer sb, long maximumFrameSize)
+        private static string? ReadIdentifier(Id3v2Version version, StreamBuffer sb, long maximumFrameSize)
         {
             // Find the frame.
             long startPosition = sb.Position;

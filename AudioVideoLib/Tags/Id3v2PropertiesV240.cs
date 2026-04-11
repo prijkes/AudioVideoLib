@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2011-08-14
  * Sources used:
  *  http://www.id3.org/Id3v2-00
@@ -34,7 +34,7 @@ namespace AudioVideoLib.Tags
         /// <para />
         /// This frame has been added as of <see cref="Id3v2Version.Id3v240"/>.
         /// </remarks>
-        public Id3v2AudioSeekPointIndexFrame AudioSeekPointIndex
+        public Id3v2AudioSeekPointIndexFrame? AudioSeekPointIndex
         {
             get
             {
@@ -132,7 +132,7 @@ namespace AudioVideoLib.Tags
         /// <para />
         /// This frame has been added as of <see cref="Id3v2Version.Id3v240"/>.
         /// </remarks>
-        public Id3v2SeekFrame Seek
+        public Id3v2SeekFrame? Seek
         {
             get
             {

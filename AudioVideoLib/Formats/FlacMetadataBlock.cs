@@ -104,7 +104,7 @@ namespace AudioVideoLib.Formats
         /// <param name="stream">The stream.</param>
         /// <returns></returns>
         /// <exception cref="System.ArgumentNullException">stream</exception>
-        public static FlacMetadataBlock ReadBlock(Stream stream)
+        public static FlacMetadataBlock? ReadBlock(Stream stream)
         {
             if (stream == null)
                 throw new ArgumentNullException("stream");
@@ -118,7 +118,7 @@ namespace AudioVideoLib.Formats
         /// <param name="data">The data.</param>
         /// <returns></returns>
         /// <exception cref="System.ArgumentNullException">data</exception>
-        public static FlacMetadataBlock ReadBlock(byte[] data)
+        public static FlacMetadataBlock? ReadBlock(byte[] data)
         {
             if (data == null)
                 throw new ArgumentNullException("data");
@@ -143,7 +143,7 @@ namespace AudioVideoLib.Formats
 
         ////------------------------------------------------------------------------------------------------------------------------------
 
-        private static FlacMetadataBlock ReadBlock(StreamBuffer stream)
+        private static FlacMetadataBlock? ReadBlock(StreamBuffer stream)
         {
             int flags = stream.ReadByte();
 

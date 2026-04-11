@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2013-09-28
  * Sources used:
  *  http://forums.asp.net/t/1057992.aspx/1
@@ -41,7 +41,7 @@ namespace AudioVideoLib.Tags
             if (e.Item == null)
                 throw new NullReferenceException("e.Item may not be null");
 
-            string identifier = Id3v2Frame.GetIdentifier<Id3v2MusicCdIdentifierFrame>(e.Item.Version);
+            string? identifier = Id3v2Frame.GetIdentifier<Id3v2MusicCdIdentifierFrame>(e.Item.Version);
             if ((e.Item is Id3v2MusicCdIdentifierFrame || String.Equals(e.Item.Identifier, identifier, StringComparison.OrdinalIgnoreCase))
                 && TrackNumber == null)
             {

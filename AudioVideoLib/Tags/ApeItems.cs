@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2011-11-28
  * Sources used: 
  *  http://www.codeproject.com/KB/audio-video/mpegaudioinfo.aspx
@@ -27,7 +27,7 @@ namespace AudioVideoLib.Tags
         /// <value>
         /// An abstract <see cref="ApeLocatorItem"/>.
         /// </value>
-        public ApeLocatorItem AbstractLink
+        public ApeLocatorItem? AbstractLink
         {
             get { return GetItem(ApeItemKey.Abstract) as ApeLocatorItem; }
             set { SetItem(value); }
@@ -39,7 +39,7 @@ namespace AudioVideoLib.Tags
         /// <value>
         /// The album artist.
         /// </value>
-        public ApeUtf8Item AlbumArtist
+        public ApeUtf8Item? AlbumArtist
         {
             get { return GetItem(ApeItemKey.AlbumArtist) as ApeUtf8Item; }
             set { SetItem(value); }
@@ -51,7 +51,7 @@ namespace AudioVideoLib.Tags
         /// <value>
         /// The album name.
         /// </value>
-        public ApeUtf8Item AlbumName
+        public ApeUtf8Item? AlbumName
         {
             get { return GetItem(ApeItemKey.AlbumName) as ApeUtf8Item; }
             set { SetItem(value); }
@@ -66,7 +66,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// The artist can be one or more performing artists.
         /// </remarks>
-        public ApeUtf8Item Artist
+        public ApeUtf8Item? Artist
         {
             get { return GetItem(ApeItemKey.Artist) as ApeUtf8Item; }
             set { SetItem(value); }
@@ -81,7 +81,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// The bar code identifier should an EAN-13/UPC-A bar code identifier.
         /// </remarks>
-        public ApeUtf8Item BarCodeIdentifier
+        public ApeUtf8Item? BarCodeIdentifier
         {
             get { return GetItem(ApeItemKey.BarCodeIdentifier) as ApeUtf8Item; }
             set { SetItem(value); }
@@ -96,7 +96,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// The EAN/UPC or the labels catalog number for this media.
         /// </remarks>
-        public ApeUtf8Item CatalogNumber
+        public ApeUtf8Item? CatalogNumber
         {
             get { return GetItem(ApeItemKey.CatalogNumber) as ApeUtf8Item; }
             set { SetItem(value); }
@@ -111,7 +111,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// One or more comments can be stored using this field.
         /// </remarks>
-        public ApeUtf8Item Comments
+        public ApeUtf8Item? Comments
         {
             get { return GetItem(ApeItemKey.Comments) as ApeUtf8Item; }
             set { SetItem(value); }
@@ -126,7 +126,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// Name of the original composer, or name of the original arranger.
         /// </remarks>
-        public ApeUtf8Item Composer
+        public ApeUtf8Item? Composer
         {
             get { return GetItem(ApeItemKey.Composer) as ApeUtf8Item; }
             set { SetItem(value); }
@@ -141,7 +141,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// Name of the conductor.
         /// </remarks>
-        public ApeUtf8Item Conductor
+        public ApeUtf8Item? Conductor
         {
             get { return GetItem(ApeItemKey.Conductor) as ApeUtf8Item; }
             set { SetItem(value); }
@@ -153,7 +153,7 @@ namespace AudioVideoLib.Tags
         /// <value>
         /// The copyright holder.
         /// </value>
-        public ApeUtf8Item CopyrightHolder
+        public ApeUtf8Item? CopyrightHolder
         {
             get { return GetItem(ApeItemKey.CopyrightHolder) as ApeUtf8Item; }
             set { SetItem(value); }
@@ -165,7 +165,7 @@ namespace AudioVideoLib.Tags
         /// <value>
         /// The debut album name.
         /// </value>
-        public ApeUtf8Item DebutAlbumName
+        public ApeUtf8Item? DebutAlbumName
         {
             get { return GetItem(ApeItemKey.DebutAlbumName) as ApeUtf8Item; }
             set { SetItem(value); }
@@ -177,7 +177,7 @@ namespace AudioVideoLib.Tags
         /// <value>
         /// The disc number.
         /// </value>
-        public ApeUtf8Item DiscNumber
+        public ApeUtf8Item? DiscNumber
         {
             get { return GetItem(ApeItemKey.DiscNumber) as ApeUtf8Item; }
             set { SetItem(value); }
@@ -192,7 +192,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// A link to a page containing the discography.
         /// </remarks>
-        public ApeLocatorItem DiscographyLink
+        public ApeLocatorItem? DiscographyLink
         {
             get { return GetItem(ApeItemKey.Discography) as ApeLocatorItem; }
             set { SetItem(value); }
@@ -207,7 +207,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// This field is a place holder.
         /// </remarks>
-        public ApeBinaryItem Dummy
+        public ApeBinaryItem? Dummy
         {
             get { return GetItem(ApeItemKey.Dummy) as ApeBinaryItem; }
             set { SetItem(value); }
@@ -222,7 +222,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// The location of the file.
         /// </remarks>
-        public ApeLocatorItem FileLocation
+        public ApeLocatorItem? FileLocation
         {
             get { return GetItem(ApeItemKey.FileLocation) as ApeLocatorItem; }
             set { SetItem(value); }
@@ -238,7 +238,7 @@ namespace AudioVideoLib.Tags
         /// Genre keywords should be normally English terms.
         /// A native language supporting plugin can translate common expression to the local language and vice versa when storing the genre in the file.
         /// </remarks>
-        public ApeUtf8Item Genre
+        public ApeUtf8Item? Genre
         {
             get { return GetItem(ApeItemKey.Genre) as ApeUtf8Item; }
             set { SetItem(value); }
@@ -253,7 +253,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// Indexes of time for quick access.
         /// </remarks>
-        public ApeUtf8Item IndexTimes
+        public ApeUtf8Item? IndexTimes
         {
             get { return GetItem(ApeItemKey.Index) as ApeUtf8Item; }
             set { SetItem(value); }
@@ -268,7 +268,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// Characteristic part of piece for intro playing.
         /// </remarks>
-        public ApeUtf8Item IntroPlay
+        public ApeUtf8Item? IntroPlay
         {
             get { return GetItem(ApeItemKey.IntroPlay) as ApeUtf8Item; }
             set { SetItem(value); }
@@ -285,7 +285,7 @@ namespace AudioVideoLib.Tags
         /// <para />
         /// Use <see cref="IsValidIsbn10"/> to see if a value is a valid ISBN10 number.
         /// </remarks>
-        public ApeUtf8Item InternationalStandardBookNumber
+        public ApeUtf8Item? InternationalStandardBookNumber
         {
             get
             {
@@ -317,7 +317,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// International Standard Recording Number.
         /// </remarks>
-        public ApeUtf8Item InternationalStandardRecordingNumber
+        public ApeUtf8Item? InternationalStandardRecordingNumber
         {
             get { return GetItem(ApeItemKey.InternationalStandardRecordingNumber) as ApeUtf8Item; }
             set { SetItem(value); }
@@ -332,7 +332,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// Label Code.
         /// </remarks>
-        public ApeUtf8Item LabelCode
+        public ApeUtf8Item? LabelCode
         {
             get { return GetItem(ApeItemKey.LabelCode) as ApeUtf8Item; }
             set { SetItem(value); }
@@ -347,7 +347,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// Used Language(s) for music/spoken words
         /// </remarks>
-        public ApeUtf8Item Language
+        public ApeUtf8Item? Language
         {
             get { return GetItem(ApeItemKey.Language) as ApeUtf8Item; }
             set { SetItem(value); }
@@ -362,7 +362,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// Source, Source Media Number/Total Media Number, Source Time.
         /// </remarks>
-        public ApeUtf8Item Media
+        public ApeUtf8Item? Media
         {
             get { return GetItem(ApeItemKey.Media) as ApeUtf8Item; }
             set { SetItem(value); }
@@ -374,7 +374,7 @@ namespace AudioVideoLib.Tags
         /// <value>
         /// The publication right holder.
         /// </value>
-        public ApeUtf8Item PublicationRightHolder
+        public ApeUtf8Item? PublicationRightHolder
         {
             get { return GetItem(ApeItemKey.PublicationRightHolder) as ApeUtf8Item; }
             set { SetItem(value); }
@@ -389,7 +389,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// Record label or publisher.
         /// </remarks>
-        public ApeUtf8Item Publisher
+        public ApeUtf8Item? Publisher
         {
             get { return GetItem(ApeItemKey.Publisher) as ApeUtf8Item; }
             set { SetItem(value); }
@@ -404,7 +404,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// Record date.
         /// </remarks>
-        public ApeUtf8Item RecordDate
+        public ApeUtf8Item? RecordDate
         {
             get { return GetItem(ApeItemKey.RecordDate) as ApeUtf8Item; }
             set { SetItem(value); }
@@ -419,7 +419,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// Record location(s).
         /// </remarks>
-        public ApeUtf8Item RecordLocation
+        public ApeUtf8Item? RecordLocation
         {
             get { return GetItem(ApeItemKey.RecordLocation) as ApeUtf8Item; }
             set { SetItem(value); }
@@ -434,7 +434,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// Location of related information.
         /// </remarks>
-        public ApeLocatorItem Related
+        public ApeLocatorItem? Related
         {
             get { return GetItem(ApeItemKey.Related) as ApeLocatorItem; }
             set { SetItem(value); }
@@ -449,7 +449,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// Release date.
         /// </remarks>
-        public ApeUtf8Item ReleaseDate
+        public ApeUtf8Item? ReleaseDate
         {
             get { return GetItem(ApeItemKey.ReleaseDate) as ApeUtf8Item; }
             set { SetItem(value); }
@@ -461,7 +461,7 @@ namespace AudioVideoLib.Tags
         /// <value>
         /// The replay gain album gain.
         /// </value>
-        public ApeUtf8Item ReplayGainAlbumGain
+        public ApeUtf8Item? ReplayGainAlbumGain
         {
             get { return GetItem(ApeItemKey.ReplayGainAlbumGain) as ApeUtf8Item; }
             set { SetItem(value); }
@@ -473,7 +473,7 @@ namespace AudioVideoLib.Tags
         /// <value>
         /// The replay gain album peak.
         /// </value>
-        public ApeUtf8Item ReplayGainAlbumPeak
+        public ApeUtf8Item? ReplayGainAlbumPeak
         {
             get { return GetItem(ApeItemKey.ReplayGainAlbumPeak) as ApeUtf8Item; }
             set { SetItem(value); }
@@ -485,7 +485,7 @@ namespace AudioVideoLib.Tags
         /// <value>
         /// The replay gain track gain.
         /// </value>
-        public ApeUtf8Item ReplayGainTrackGain
+        public ApeUtf8Item? ReplayGainTrackGain
         {
             get { return GetItem(ApeItemKey.ReplayGainTrackGain) as ApeUtf8Item; }
             set { SetItem(value); }
@@ -497,7 +497,7 @@ namespace AudioVideoLib.Tags
         /// <value>
         /// The replay gain track peak.
         /// </value>
-        public ApeUtf8Item ReplayGainTrackPeak
+        public ApeUtf8Item? ReplayGainTrackPeak
         {
             get { return GetItem(ApeItemKey.ReplayGainTrackPeak) as ApeUtf8Item; }
             set { SetItem(value); }
@@ -512,7 +512,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// Title when TITLE contains the work or additional sub title.
         /// </remarks>
-        public ApeUtf8Item Subtitle
+        public ApeUtf8Item? Subtitle
         {
             get { return GetItem(ApeItemKey.Subtitle) as ApeUtf8Item; }
             set { SetItem(value); }
@@ -527,7 +527,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// Music Piece Title, Music Work.
         /// </remarks>
-        public ApeUtf8Item Title
+        public ApeUtf8Item? Title
         {
             get { return GetItem(ApeItemKey.Title) as ApeUtf8Item; }
             set { SetItem(value); }
@@ -539,7 +539,7 @@ namespace AudioVideoLib.Tags
         /// <value>
         /// The track number.
         /// </value>
-        public ApeUtf8Item TrackNumber
+        public ApeUtf8Item? TrackNumber
         {
             get { return GetItem(ApeItemKey.TrackNumber) as ApeUtf8Item; }
             set { SetItem(value); }

@@ -36,7 +36,7 @@ namespace AudioVideoLib.Tags
         ////------------------------------------------------------------------------------------------------------------------------------
 
         /// <inheritdoc />
-        public override byte[] Data
+        public override byte[]? Data
         {
             get
             {
@@ -83,7 +83,7 @@ namespace AudioVideoLib.Tags
         /// <returns>
         /// The identifier as string for the specified <see cref="Lyrics3v2TextFieldIdentifier"/>, or null if not found.
         /// </returns>
-        public static string GetIdentifier(Lyrics3v2TextFieldIdentifier identifier)
+        public static string? GetIdentifier(Lyrics3v2TextFieldIdentifier identifier)
         {
             string id;
             return Identifiers.TryGetValue(identifier, out id) ? id : null;

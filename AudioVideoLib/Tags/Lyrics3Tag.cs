@@ -76,7 +76,7 @@ namespace AudioVideoLib.Tags
         /// If encoding the value in the specified <see cref="Encoding"/> exceeds <see cref="MaxLyricsSize"/> bytes, 
         /// the value will be cut to the maximum character count which fits within <see cref="MaxLyricsSize"/> bytes.
         /// </remarks>
-        public string Lyrics
+        public string? Lyrics
         {
             get
             {

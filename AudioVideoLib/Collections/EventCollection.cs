@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2012-12-22
  * Sources used:
  *  http://forums.asp.net/t/1057992.aspx/1
@@ -161,7 +161,7 @@ namespace AudioVideoLib.Collections
         /// <param name="e">The <see cref="CollectionItemAddEventArgs{T}"/>.</param>
         protected virtual void OnItemAdd(CollectionItemAddEventArgs<T> e)
         {
-            EventHandler<CollectionItemAddEventArgs<T>> eventHandlers = ItemAdd;
+            EventHandler<CollectionItemAddEventArgs<T>>? eventHandlers = ItemAdd;
             if (eventHandlers == null)
                 return;
 
@@ -179,7 +179,7 @@ namespace AudioVideoLib.Collections
         /// <param name="e">The <see cref="CollectionItemAddedEventArgs{T}"/>.</param>
         protected virtual void OnItemAdded(CollectionItemAddedEventArgs<T> e)
         {
-            EventHandler<CollectionItemAddedEventArgs<T>> eventHandlers = ItemAdded;
+            EventHandler<CollectionItemAddedEventArgs<T>>? eventHandlers = ItemAdded;
             if (eventHandlers != null)
                 eventHandlers(this, e);
         }
@@ -190,7 +190,7 @@ namespace AudioVideoLib.Collections
         /// <param name="e">The <see cref="CollectionItemRemoveEventArgs{T}"/>.</param>
         protected virtual void OnItemRemove(CollectionItemRemoveEventArgs<T> e)
         {
-            EventHandler<CollectionItemRemoveEventArgs<T>> eventHandlers = ItemRemove;
+            EventHandler<CollectionItemRemoveEventArgs<T>>? eventHandlers = ItemRemove;
             if (eventHandlers == null)
                 return;
 
@@ -208,7 +208,7 @@ namespace AudioVideoLib.Collections
         /// <param name="e">The <see cref="CollectionItemRemovedEventArgs{T}"/>.</param>
         protected virtual void OnItemRemoved(CollectionItemRemovedEventArgs<T> e)
         {
-            EventHandler<CollectionItemRemovedEventArgs<T>> eventHandlers = ItemRemoved;
+            EventHandler<CollectionItemRemovedEventArgs<T>>? eventHandlers = ItemRemoved;
             if (eventHandlers != null)
                 eventHandlers(this, e);
         }

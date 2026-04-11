@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2011-08-14
  * Sources used:
  *  http://www.id3.org/Id3v2-00
@@ -28,7 +28,7 @@ namespace AudioVideoLib.Tags
         /// <para />
         /// This frame has been added as of <see cref="Id3v2Version.Id3v240"/>.
         /// </remarks>
-        public Id3v2TextFrame AlbumSortOrder
+        public Id3v2TextFrame? AlbumSortOrder
         {
             get
             {
@@ -58,7 +58,7 @@ namespace AudioVideoLib.Tags
         /// <para />
         /// This frame has been added as of <see cref="Id3v2Version.Id3v240"/>.
         /// </remarks>
-        public Id3v2TextFrame EncodingTime
+        public Id3v2TextFrame? EncodingTime
         {
             get
             {
@@ -88,7 +88,7 @@ namespace AudioVideoLib.Tags
         /// <para />
         /// This frame has been added as of <see cref="Id3v2Version.Id3v240"/>.
         /// </remarks>
-        public Id3v2TextFrame InvolvedPeopleList2
+        public Id3v2TextFrame? InvolvedPeopleList2
         {
             get
             {
@@ -118,7 +118,7 @@ namespace AudioVideoLib.Tags
         /// <para />
         /// This frame has been added as of <see cref="Id3v2Version.Id3v240"/>.
         /// </remarks>
-        public Id3v2TextFrame Mood
+        public Id3v2TextFrame? Mood
         {
             get
             {
@@ -149,7 +149,7 @@ namespace AudioVideoLib.Tags
         /// <para />
         /// This frame has been added as of <see cref="Id3v2Version.Id3v240"/>.
         /// </remarks>
-        public Id3v2TextFrame MusicianCreditsList
+        public Id3v2TextFrame? MusicianCreditsList
         {
             get
             {
@@ -179,7 +179,7 @@ namespace AudioVideoLib.Tags
         /// <para />
         /// This frame has been added as of <see cref="Id3v2Version.Id3v240"/>.
         /// </remarks>
-        public Id3v2TextFrame OriginalReleaseTime
+        public Id3v2TextFrame? OriginalReleaseTime
         {
             get
             {
@@ -209,7 +209,7 @@ namespace AudioVideoLib.Tags
         /// <para />
         /// This frame has been added as of <see cref="Id3v2Version.Id3v240"/>.
         /// </remarks>
-        public Id3v2TextFrame PerformerSortOrder
+        public Id3v2TextFrame? PerformerSortOrder
         {
             get
             {
@@ -244,7 +244,7 @@ namespace AudioVideoLib.Tags
         /// <para />
         /// This frame has been added as of <see cref="Id3v2Version.Id3v240"/>.
         /// </remarks>
-        public Id3v2TextFrame ProducedNote
+        public Id3v2TextFrame? ProducedNote
         {
             get
             {
@@ -274,7 +274,7 @@ namespace AudioVideoLib.Tags
         /// <para />
         /// This frame has been added as of <see cref="Id3v2Version.Id3v240"/>.
         /// </remarks>
-        public Id3v2TextFrame RecordingTime
+        public Id3v2TextFrame? RecordingTime
         {
             get
             {
@@ -304,7 +304,7 @@ namespace AudioVideoLib.Tags
         /// <para />
         /// This frame has been added as of <see cref="Id3v2Version.Id3v240"/>.
         /// </remarks>
-        public Id3v2TextFrame ReleaseTime
+        public Id3v2TextFrame? ReleaseTime
         {
             get
             {
@@ -334,7 +334,7 @@ namespace AudioVideoLib.Tags
         /// <para />
         /// This frame has been added as of <see cref="Id3v2Version.Id3v240"/>.
         /// </remarks>
-        public Id3v2TextFrame SetSubtitle
+        public Id3v2TextFrame? SetSubtitle
         {
             get
             {
@@ -364,7 +364,7 @@ namespace AudioVideoLib.Tags
         /// <para />
         /// This frame has been added as of <see cref="Id3v2Version.Id3v240"/>.
         /// </remarks>
-        public Id3v2TextFrame TaggingTime
+        public Id3v2TextFrame? TaggingTime
         {
             get
             {
@@ -394,7 +394,7 @@ namespace AudioVideoLib.Tags
         /// <para />
         /// This frame has been added as of <see cref="Id3v2Version.Id3v240"/>.
         /// </remarks>
-        public Id3v2TextFrame TitleSortOrder
+        public Id3v2TextFrame? TitleSortOrder
         {
             get
             {

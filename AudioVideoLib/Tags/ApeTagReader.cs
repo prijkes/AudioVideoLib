@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2013-10-16
  * Sources used: 
  *  http://www.codeproject.com/KB/audio-video/mpegaudioinfo.aspx
@@ -24,7 +24,7 @@ namespace AudioVideoLib.Tags
     public sealed partial class ApeTagReader : IAudioTagReader
     {    
         /// <inheritdoc/>
-        public IAudioTagOffset ReadFromStream(Stream stream, TagOrigin tagOrigin)
+        public IAudioTagOffset? ReadFromStream(Stream stream, TagOrigin tagOrigin)
         {
             if (stream == null)
                 throw new ArgumentNullException("stream");
@@ -37,7 +37,7 @@ namespace AudioVideoLib.Tags
 
             StreamBuffer sb = stream as StreamBuffer ?? new StreamBuffer(stream);
             
-            ApeHeader headerOrFooter = ReadHeader(sb, tagOrigin);
+            ApeHeader? headerOrFooter = ReadHeader(sb, tagOrigin);
             if (headerOrFooter == null)
                 return null;
 
@@ -47,7 +47,7 @@ namespace AudioVideoLib.Tags
 
             ApeTag tag = new ApeTag(headerOrFooter.Version, headerOrFooter.Flags);
             long startOffset, endOffset;
-            ApeHeader header = null, footer = null;
+            ApeHeader? header = null, footer = null;
             if (tag.IsHeader)
             {
                 header = headerOrFooter;
@@ -190,7 +190,7 @@ namespace AudioVideoLib.Tags
 
         ////------------------------------------------------------------------------------------------------------------------------------
 
-        private static ApeHeader ReadHeader(StreamBuffer stream, TagOrigin tagOrigin)
+        private static ApeHeader? ReadHeader(StreamBuffer stream, TagOrigin tagOrigin)
         {
             if (stream == null)
                 throw new ArgumentNullException("stream");
@@ -206,7 +206,7 @@ namespace AudioVideoLib.Tags
                 // Look for a header at the current position
                 long startPositionHeader = startPosition;
                 long endPositionHeader = Math.Min(startPositionHeader + ApeTag.HeaderSize, streamLength);
-                ApeHeader hdr = ReadHeader(stream, startPositionHeader, endPositionHeader);
+                ApeHeader? hdr = ReadHeader(stream, startPositionHeader, endPositionHeader);
                 if (hdr != null)
                     return hdr;
 
@@ -222,7 +222,7 @@ namespace AudioVideoLib.Tags
                 // Look for a footer before the current position
                 long startPositionHeader = Math.Max(startPosition - ApeTag.FooterSize, 0);
                 long endPositionHeader = Math.Min(startPositionHeader + ApeTag.FooterSize, streamLength);
-                ApeHeader hdr = ReadHeader(stream, startPositionHeader, endPositionHeader);
+                ApeHeader? hdr = ReadHeader(stream, startPositionHeader, endPositionHeader);
                 if (hdr != null)
                     return hdr;
 
@@ -236,7 +236,7 @@ namespace AudioVideoLib.Tags
             return null;
         }
 
-        private static ApeHeader ReadHeader(StreamBuffer stream, long startHeaderPosition, long endHeaderPosition)
+        private static ApeHeader? ReadHeader(StreamBuffer stream, long startHeaderPosition, long endHeaderPosition)
         {
             if (stream == null)
                 throw new ArgumentNullException("stream");

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2010-02-12
  * Sources used: 
  *  http://www.codeproject.com/KB/audio-video/mpegaudioinfo.aspx
@@ -50,11 +50,11 @@ namespace AudioVideoLib.IO
         /// <value>
         /// The <see cref="VbrHeader"/>, this can be one of the types defined in <see cref="VbrHeaderType"/>.
         /// </value>
-        public VbrHeader VbrHeader
+        public VbrHeader? VbrHeader
         {
             get
             {
-                MpaFrame firstFrame = _frames.FirstOrDefault();
+                MpaFrame? firstFrame = _frames.FirstOrDefault();
                 return ((firstFrame != null) && (firstFrame.AudioData != null)) ? VbrHeader.FindHeader(firstFrame) : null;
             }
         }
@@ -178,7 +178,7 @@ namespace AudioVideoLib.IO
         {
             get
             {
-                MpaFrame firstFrame = Frames.FirstOrDefault();
+                MpaFrame? firstFrame = Frames.FirstOrDefault();
                 if (firstFrame == null)
                     return 0;
 
@@ -226,10 +226,10 @@ namespace AudioVideoLib.IO
             long startPosition = stream.Position;
             long spacing = 0;
             bool foundFirstFrame = false;
-            MpaFrame prevFrame = null;
+            MpaFrame? prevFrame = null;
             while ((stream.Position + MpaFrame.FrameHeaderSize <= streamLength) && (spacing < MaxFrameSpacingLength))
             {
-                MpaFrame frame = MpaFrame.ReadFrame(stream);
+                MpaFrame? frame = MpaFrame.ReadFrame(stream);
                 if (frame != null)
                 {
                     spacing = 0;

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2012-12-21
  * Sources used:
  *  http://forums.asp.net/t/1057992.aspx/1
@@ -353,7 +353,7 @@ namespace AudioVideoLib.Collections
         /// <param name="e">The <see cref="ListItemAddEventArgs{T}"/>.</param>
         protected virtual void OnItemAdd(ListItemAddEventArgs<T> e)
         {
-            EventHandler<ListItemAddEventArgs<T>> eventHandlers = ItemAdd;
+            EventHandler<ListItemAddEventArgs<T>>? eventHandlers = ItemAdd;
             if (eventHandlers == null)
                 return;
 
@@ -371,7 +371,7 @@ namespace AudioVideoLib.Collections
         /// <param name="e">The <see cref="ListItemAddedEventArgs{T}"/>.</param>
         protected virtual void OnItemAdded(ListItemAddedEventArgs<T> e)
         {
-            EventHandler<ListItemAddedEventArgs<T>> eventHandlers = ItemAdded;
+            EventHandler<ListItemAddedEventArgs<T>>? eventHandlers = ItemAdded;
             if (eventHandlers != null)
                 eventHandlers(this, e);
         }
@@ -382,7 +382,7 @@ namespace AudioVideoLib.Collections
         /// <param name="e">The <see cref="ListItemReplaceEventArgs{T}"/>.</param>
         protected virtual void OnItemReplace(ListItemReplaceEventArgs<T> e)
         {
-            EventHandler<ListItemReplaceEventArgs<T>> eventHandlers = ItemReplace;
+            EventHandler<ListItemReplaceEventArgs<T>>? eventHandlers = ItemReplace;
             if (eventHandlers == null)
                 return;
 
@@ -400,7 +400,7 @@ namespace AudioVideoLib.Collections
         /// <param name="e">The <see cref="ListItemReplacedEventArgs{T}"/>.</param>
         protected virtual void OnItemReplaced(ListItemReplacedEventArgs<T> e)
         {
-            EventHandler<ListItemReplacedEventArgs<T>> eventHandlers = ItemReplaced;
+            EventHandler<ListItemReplacedEventArgs<T>>? eventHandlers = ItemReplaced;
             if (eventHandlers != null)
                 eventHandlers(this, e);
         }
@@ -411,7 +411,7 @@ namespace AudioVideoLib.Collections
         /// <param name="e">The <see cref="ListItemRemoveEventArgs{T}"/>.</param>
         protected virtual void OnItemRemove(ListItemRemoveEventArgs<T> e)
         {
-            EventHandler<ListItemRemoveEventArgs<T>> eventHandlers = ItemRemove;
+            EventHandler<ListItemRemoveEventArgs<T>>? eventHandlers = ItemRemove;
             if (eventHandlers == null)
                 return;
 
@@ -429,7 +429,7 @@ namespace AudioVideoLib.Collections
         /// <param name="e">The <see cref="ListItemRemovedEventArgs{T}"/>.</param>
         protected virtual void OnItemRemoved(ListItemRemovedEventArgs<T> e)
         {
-            EventHandler<ListItemRemovedEventArgs<T>> eventHandlers = ItemRemoved;
+            EventHandler<ListItemRemovedEventArgs<T>>? eventHandlers = ItemRemoved;
             if (eventHandlers != null)
                 eventHandlers(this, e);
         }
@@ -495,7 +495,7 @@ namespace AudioVideoLib.Collections
 
         private bool RemoveItem(int index)
         {
-            T item = _list.ElementAtOrDefault(index);
+            T? item = _list.ElementAtOrDefault(index);
             ListItemRemoveEventArgs<T> removeEventArgs = new ListItemRemoveEventArgs<T>(index, item);
             OnItemRemove(removeEventArgs);
 

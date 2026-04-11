@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2011-08-14
  * Sources used:
  *  http://www.id3.org/Id3v2-00
@@ -53,7 +53,7 @@ namespace AudioVideoLib.Tags
         /// The 'Copyright/Legal information' frame is a URL pointing at a webpage 
         /// where the terms of use and ownership of the file is described.
         /// </remarks>
-        public Id3v2UrlLinkFrame CopyrightInformation
+        public Id3v2UrlLinkFrame? CopyrightInformation
         {
             get
             {
@@ -105,7 +105,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// The 'Official audio file webpage' frame is a URL pointing at a file specific webpage.
         /// </remarks>
-        public Id3v2UrlLinkFrame OfficialAudioFileWebpage
+        public Id3v2UrlLinkFrame? OfficialAudioFileWebpage
         {
             get
             {
@@ -131,7 +131,7 @@ namespace AudioVideoLib.Tags
         /// The 'Official audio source webpage' frame is a URL pointing 
         /// at the official webpage for the source of the audio file, e.g. a movie.
         /// </remarks>
-        public Id3v2UrlLinkFrame OfficialAudioSource
+        public Id3v2UrlLinkFrame? OfficialAudioSource
         {
             get
             {
@@ -156,7 +156,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// The 'Publishers official webpage' frame is a URL pointing at the official webpage for the publisher.
         /// </remarks>
-        public Id3v2UrlLinkFrame PublishersOfficialWebpage
+        public Id3v2UrlLinkFrame? PublishersOfficialWebpage
         {
             get
             {

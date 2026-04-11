@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2011-08-14
  * Sources used:
  *  http://www.id3.org/Id3v2-00
@@ -25,7 +25,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// The 'Official internet radio station homepage' contains a URL pointing at the homepage of the internet radio station.
         /// </remarks>
-        public Id3v2UrlLinkFrame OfficialInternetRadioStationHomepage
+        public Id3v2UrlLinkFrame? OfficialInternetRadioStationHomepage
         {
             get
             {
@@ -53,7 +53,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// The 'Payment' frame is a URL pointing at a webpage that will handle the process of paying for this file.
         /// </remarks>
-        public Id3v2UrlLinkFrame PaymentWebpage
+        public Id3v2UrlLinkFrame? PaymentWebpage
         {
             get
             {

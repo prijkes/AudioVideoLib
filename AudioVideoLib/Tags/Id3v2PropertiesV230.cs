@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2011-08-12
  * Sources used:
  *  http://www.id3.org/Id3v2-00
@@ -32,7 +32,7 @@ namespace AudioVideoLib.Tags
         /// <para />
         /// This frame has been added as of <see cref="Id3v2Version.Id3v230"/>.
         /// </remarks>
-        public Id3v2PositionSynchronizationFrame PositionSynchronization
+        public Id3v2PositionSynchronizationFrame? PositionSynchronization
         {
             get
             {
@@ -65,7 +65,7 @@ namespace AudioVideoLib.Tags
         /// <para />
         /// This frame has been added as of <see cref="Id3v2Version.Id3v230"/>.
         /// </remarks>
-        public Id3v2TermsOfUseFrame TermsOfUse
+        public Id3v2TermsOfUseFrame? TermsOfUse
         {
             get
             {
@@ -98,7 +98,7 @@ namespace AudioVideoLib.Tags
         /// <para />
         /// This frame has been added as of <see cref="Id3v2Version.Id3v230"/>.
         /// </remarks>
-        public Id3v2OwnershipFrame Ownership
+        public Id3v2OwnershipFrame? Ownership
         {
             get
             {
@@ -133,7 +133,7 @@ namespace AudioVideoLib.Tags
         /// <para />
         /// This frame has been added as of <see cref="Id3v2Version.Id3v230"/>.
         /// </remarks>
-        public Id3v2CommercialFrame Commercial
+        public Id3v2CommercialFrame? Commercial
         {
             get
             {

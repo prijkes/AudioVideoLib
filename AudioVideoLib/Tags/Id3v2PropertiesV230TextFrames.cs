@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2011-08-13
  * Sources used:
  *  http://www.id3.org/Id3v2-00
@@ -27,7 +27,7 @@ namespace AudioVideoLib.Tags
         /// <para />
         /// This frame has been added as of <see cref="Id3v2Version.Id3v230"/>.
         /// </remarks>
-        public Id3v2TextFrame FileOwner
+        public Id3v2TextFrame? FileOwner
         {
             get
             {
@@ -57,7 +57,7 @@ namespace AudioVideoLib.Tags
         /// <para />
         /// This frame has been added as of <see cref="Id3v2Version.Id3v230"/>.
         /// </remarks>
-        public Id3v2TextFrame InternetRadioStationName
+        public Id3v2TextFrame? InternetRadioStationName
         {
             get
             {
@@ -88,7 +88,7 @@ namespace AudioVideoLib.Tags
         /// <para />
         /// This frame has been added as of <see cref="Id3v2Version.Id3v230"/>.
         /// </remarks>
-        public Id3v2TextFrame InternetRadioStationOwner
+        public Id3v2TextFrame? InternetRadioStationOwner
         {
             get
             {

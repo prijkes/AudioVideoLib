@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2012-11-09
  * Sources used: 
  *  http://id3.org/Lyrics3v2
@@ -112,7 +112,7 @@ namespace AudioVideoLib.Tags
         /// <returns>
         /// The field of type T if found; otherwise, null.
         /// </returns>
-        public T GetField<T>() where T : Lyrics3v2Field
+        public T? GetField<T>() where T : Lyrics3v2Field
         {
             return _fields.OfType<T>().FirstOrDefault();
         }
@@ -122,9 +122,9 @@ namespace AudioVideoLib.Tags
         /// </summary>
         /// <param name="identifier">The identifier.</param>
         /// <returns>The <see cref="Lyrics3v2TextField"/> if found; otherwise, null.</returns>
-        public Lyrics3v2TextField GetField(Lyrics3v2TextFieldIdentifier identifier)
+        public Lyrics3v2TextField? GetField(Lyrics3v2TextFieldIdentifier identifier)
         {
-            string id = Lyrics3v2TextField.GetIdentifier(identifier);
+            string? id = Lyrics3v2TextField.GetIdentifier(identifier);
             return _fields.OfType<Lyrics3v2TextField>().FirstOrDefault(f => String.Equals(f.Identifier, id, StringComparison.OrdinalIgnoreCase));
         }
 
@@ -136,7 +136,7 @@ namespace AudioVideoLib.Tags
         /// <returns>
         /// The first field of type T with a matching field identifier if found; otherwise, null.
         /// </returns>
-        public T GetField<T>(string identifier) where T : Lyrics3v2Field
+        public T? GetField<T>(string identifier) where T : Lyrics3v2Field
         {
             if (identifier == null)
                 throw new ArgumentNullException("identifier");
@@ -202,7 +202,7 @@ namespace AudioVideoLib.Tags
             if (identifier == null)
                 throw new ArgumentNullException("identifier");
 
-            Lyrics3v2Field field = _fields.FirstOrDefault(f => String.Equals(f.Identifier, identifier, StringComparison.OrdinalIgnoreCase));
+            Lyrics3v2Field? field = _fields.FirstOrDefault(f => String.Equals(f.Identifier, identifier, StringComparison.OrdinalIgnoreCase));
             if (field != null)
                 _fields.Remove(field);
         }

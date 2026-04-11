@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2013-10-16
  * Sources used: 
  *  http://id3.org/Lyrics3v2
@@ -25,7 +25,7 @@ namespace AudioVideoLib.Tags
         ////------------------------------------------------------------------------------------------------------------------------------
 
         /// <inheritdoc/>
-        public IAudioTagOffset ReadFromStream(Stream stream, TagOrigin tagOrigin)
+        public IAudioTagOffset? ReadFromStream(Stream stream, TagOrigin tagOrigin)
         {
             if (stream == null)
                 throw new ArgumentNullException("stream");

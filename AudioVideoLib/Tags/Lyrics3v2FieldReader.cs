@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2013-10-26
  * Sources used: 
  *  http://id3.org/Lyrics3v2
@@ -23,7 +23,7 @@ namespace AudioVideoLib.Tags
         /// <returns>
         /// An <see cref="Lyrics3v2Field"/> if found; otherwise, null.
         /// </returns>
-        public static Lyrics3v2Field ReadFromStream(Stream stream, long maximumFieldSize)
+        public static Lyrics3v2Field? ReadFromStream(Stream stream, long maximumFieldSize)
         {
             if (stream == null)
                 throw new ArgumentNullException("stream");
@@ -33,7 +33,7 @@ namespace AudioVideoLib.Tags
 
         ////------------------------------------------------------------------------------------------------------------------------------
 
-        private static Lyrics3v2Field ReadField(StreamBuffer sb, long maximumFieldSize)
+        private static Lyrics3v2Field? ReadField(StreamBuffer sb, long maximumFieldSize)
         {
             if (sb == null)
                 throw new ArgumentNullException("sb");

@@ -249,7 +249,7 @@ namespace AudioVideoLib.Tags
         /// <returns>
         /// The identifier as string for the specified <see cref="Id3v2TextFrameIdentifier"/>, or null if not found.
         /// </returns>
-        public static string GetIdentifier(Id3v2Version version, Id3v2TextFrameIdentifier identifier)
+        public static string? GetIdentifier(Id3v2Version version, Id3v2TextFrameIdentifier identifier)
         {
             Dictionary<string, Id3v2Version[]> identifiers;
             return Identifiers.TryGetValue(identifier, out identifiers)

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2013-10-20
  * Sources used: 
  *  http://www.codeproject.com/KB/audio-video/mpegaudioinfo.aspx
@@ -33,7 +33,7 @@ namespace AudioVideoLib.Tags
         /// An <see cref="ApeItem" /> if found; otherwise, null.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">stream</exception>
-        public static ApeItem ReadFromStream(ApeVersion version, Stream stream, long maximumItemSize)
+        public static ApeItem? ReadFromStream(ApeVersion version, Stream stream, long maximumItemSize)
         {
             if (stream == null)
                 throw new ArgumentNullException("stream");
@@ -43,7 +43,7 @@ namespace AudioVideoLib.Tags
 
         ////------------------------------------------------------------------------------------------------------------------------------
 
-        private static ApeItem ReadItem(ApeVersion version, StreamBuffer sb, long maximumItemSize)
+        private static ApeItem? ReadItem(ApeVersion version, StreamBuffer sb, long maximumItemSize)
         {
             if (sb == null)
                 throw new ArgumentNullException("sb");

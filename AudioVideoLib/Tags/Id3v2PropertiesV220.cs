@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2011-05-14
  * Sources used:
  *  http://www.id3.org/Id3v2-00
@@ -125,7 +125,7 @@ namespace AudioVideoLib.Tags
         /// <para/>
         /// This frame has been replaced by the two frames <see cref="MusicianCreditsList"/> and <see cref="InvolvedPeopleList2"/> as of <see cref="Id3v2Version.Id3v240"/>.
         /// </remarks>
-        public Id3v2InvolvedPeopleListFrame InvolvedPeopleList
+        public Id3v2InvolvedPeopleListFrame? InvolvedPeopleList
         {
             get
             {
@@ -156,7 +156,7 @@ namespace AudioVideoLib.Tags
         /// <para/>
         /// There may only be one <see cref="Id3v2MusicCdIdentifierFrame"/> frame in each <see cref="Id3v2Tag"/>.
         /// </remarks>
-        public Id3v2MusicCdIdentifierFrame MusicCdIdentifier
+        public Id3v2MusicCdIdentifierFrame? MusicCdIdentifier
         {
             get
             {
@@ -183,7 +183,7 @@ namespace AudioVideoLib.Tags
         /// <para/>
         /// There may only be one <see cref="Id3v2EventTimingCodesFrame"/> frame in each <see cref="Id3v2Tag"/>.
         /// </remarks>
-        public Id3v2EventTimingCodesFrame EventTimingCodes
+        public Id3v2EventTimingCodesFrame? EventTimingCodes
         {
             get
             {
@@ -210,7 +210,7 @@ namespace AudioVideoLib.Tags
         /// <para/>
         /// There may only be one <see cref="Id3v2MpegLocationLookupTableFrame"/> frame in each <see cref="Id3v2Tag"/>.
         /// </remarks>
-        public Id3v2MpegLocationLookupTableFrame MpegLocationLookupTable
+        public Id3v2MpegLocationLookupTableFrame? MpegLocationLookupTable
         {
             get
             {
@@ -238,7 +238,7 @@ namespace AudioVideoLib.Tags
         /// <para/>
         /// There may only be one <see cref="Id3v2SyncedTempoCodesFrame"/> frame in each <see cref="Id3v2Tag"/>.
         /// </remarks>
-        public Id3v2SyncedTempoCodesFrame SyncedTempoCodes
+        public Id3v2SyncedTempoCodesFrame? SyncedTempoCodes
         {
             get
             {
@@ -358,7 +358,7 @@ namespace AudioVideoLib.Tags
         /// <para/>
         /// This frame has been replaced by the <see cref="Id3v2RelativeVolumeAdjustment2Frame"/> frame as of <see cref="Id3v2Version.Id3v240"/>.
         /// </remarks>
-        public Id3v2RelativeVolumeAdjustmentFrame RelativeVolumeAdjustment
+        public Id3v2RelativeVolumeAdjustmentFrame? RelativeVolumeAdjustment
         {
             get
             {
@@ -387,7 +387,7 @@ namespace AudioVideoLib.Tags
         /// <para/>
         /// This frame has been replaced by the <see cref="Id3v2Equalisation2Frame"/> frame as of <see cref="Id3v2Version.Id3v240"/>.
         /// </remarks>
-        public Id3v2EqualisationFrame Equalisation
+        public Id3v2EqualisationFrame? Equalisation
         {
             get
             {
@@ -414,7 +414,7 @@ namespace AudioVideoLib.Tags
         /// <para/>
         /// There may only be one <see cref="Id3v2ReverbFrame"/> frame in each <see cref="Id3v2Tag"/>.
         /// </remarks>
-        public Id3v2ReverbFrame Reverb
+        public Id3v2ReverbFrame? Reverb
         {
             get
             {
@@ -498,7 +498,7 @@ namespace AudioVideoLib.Tags
         /// <para />
         /// There may only be one <see cref="Id3v2PlayCounterFrame"/> frame in each <see cref="Id3v2Tag"/>.
         /// </remarks>
-        public Id3v2PlayCounterFrame PlayCounter
+        public Id3v2PlayCounterFrame? PlayCounter
         {
             get
             {
@@ -562,7 +562,7 @@ namespace AudioVideoLib.Tags
         /// <para />
         /// There may only be one <see cref="Id3v2RecommendedBufferSizeFrame"/> frame in each <see cref="Id3v2Tag"/>.
         /// </remarks>
-        public Id3v2RecommendedBufferSizeFrame RecommendedBufferSize
+        public Id3v2RecommendedBufferSizeFrame? RecommendedBufferSize
         {
             get
             {

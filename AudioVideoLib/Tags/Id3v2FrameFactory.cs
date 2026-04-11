@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2012-12-08
  * Sources used:
  *  http://www.id3.org/Id3v2-00
@@ -314,7 +314,7 @@ namespace AudioVideoLib.Tags
         /// <returns>
         /// The identifier if found; otherwise, null.
         /// </returns>
-        public static string GetIdentifier<T>(Id3v2Version version) where T : Id3v2Frame
+        public static string? GetIdentifier<T>(Id3v2Version version) where T : Id3v2Frame
         {
             return
                 FrameFactories.Where(f => f.Type == typeof(T) && f.Identifiers != null && f.Identifiers.Values.Any(v => v != null && v.Contains(version)))
@@ -329,7 +329,7 @@ namespace AudioVideoLib.Tags
             if (identifier == null)
                 throw new ArgumentNullException("identifier");
 
-            Id3v2Frame frame = FrameFactories.Where(f => f.IsMatch(version, identifier)).Select(f => f.Factory(version, identifier)).FirstOrDefault();
+            Id3v2Frame? frame = FrameFactories.Where(f => f.IsMatch(version, identifier)).Select(f => f.Factory(version, identifier)).FirstOrDefault();
 
             // The identifier might end with a NULL terminator '\0' because the writer of the tag is bugged.
             // Because of this, we won't find the tag by just comparing the identifier.

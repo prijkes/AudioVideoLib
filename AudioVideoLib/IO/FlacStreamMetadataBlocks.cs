@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2013-02-02
  * Sources used: 
  *  http://xiph.org/flac/format.html
@@ -79,7 +79,7 @@ namespace AudioVideoLib.IO
         /// <value>
         /// The seek table metadata block.
         /// </value>
-        public FlacSeekTableMetadataBlock SeekTableMetadataBlock
+        public FlacSeekTableMetadataBlock? SeekTableMetadataBlock
         {
             get
             {
@@ -93,7 +93,7 @@ namespace AudioVideoLib.IO
         /// <value>
         /// The vorbis comments metadata block.
         /// </value>
-        public FlacVorbisCommentsMetadataBlock VorbisCommentsMetadataBlock
+        public FlacVorbisCommentsMetadataBlock? VorbisCommentsMetadataBlock
         {
             get
             {

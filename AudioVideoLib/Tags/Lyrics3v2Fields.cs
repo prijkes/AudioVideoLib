@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2012-11-09
  * Sources used: 
  *  http://id3.org/Lyrics3v2
@@ -18,7 +18,7 @@ namespace AudioVideoLib.Tags
         /// <value>
         /// The additional information.
         /// </value>
-        public Lyrics3v2TextField AdditionalInformation
+        public Lyrics3v2TextField? AdditionalInformation
         {
             get { return GetField(Lyrics3v2TextFieldIdentifier.AdditionalInformation); }
             set { SetField(value); }
@@ -30,7 +30,7 @@ namespace AudioVideoLib.Tags
         /// <value>
         /// The name of the extended album.
         /// </value>
-        public Lyrics3v2TextField ExtendedAlbumName
+        public Lyrics3v2TextField? ExtendedAlbumName
         {
             get { return GetField(Lyrics3v2TextFieldIdentifier.ExtendedAlbumName); }
             set { SetField(value); }
@@ -42,7 +42,7 @@ namespace AudioVideoLib.Tags
         /// <value>
         /// The name of the extended artist.
         /// </value>
-        public Lyrics3v2TextField ExtendedArtistName
+        public Lyrics3v2TextField? ExtendedArtistName
         {
             get { return GetField(Lyrics3v2TextFieldIdentifier.ExtendedArtistName); }
             set { SetField(value); }
@@ -54,7 +54,7 @@ namespace AudioVideoLib.Tags
         /// <value>
         /// The extended track title.
         /// </value>
-        public Lyrics3v2TextField ExtendedTrackTitle
+        public Lyrics3v2TextField? ExtendedTrackTitle
         {
             get { return GetField(Lyrics3v2TextFieldIdentifier.ExtendedTrackTitle); }
             set { SetField(value); }
@@ -66,7 +66,7 @@ namespace AudioVideoLib.Tags
         /// <value>
         /// The genre.
         /// </value>
-        public Lyrics3v2TextField Genre
+        public Lyrics3v2TextField? Genre
         {
             get { return GetField(Lyrics3v2TextFieldIdentifier.Genre); }
             set { SetField(value); }
@@ -78,7 +78,7 @@ namespace AudioVideoLib.Tags
         /// <value>
         /// The image files.
         /// </value>
-        public Lyrics3v2ImageFileField ImageFile
+        public Lyrics3v2ImageFileField? ImageFile
         {
             get { return GetField<Lyrics3v2ImageFileField>(); }
             set { SetField(value); }
@@ -90,7 +90,7 @@ namespace AudioVideoLib.Tags
         /// <value>
         /// The lyrics.
         /// </value>
-        public Lyrics3v2LyricsField Lyrics
+        public Lyrics3v2LyricsField? Lyrics
         {
             get { return GetField<Lyrics3v2LyricsField>(); }
             set { SetField(value); }
@@ -102,7 +102,7 @@ namespace AudioVideoLib.Tags
         /// <value>
         /// The lyrics/music author name.
         /// </value>
-        public Lyrics3v2TextField LyricsAuthorName
+        public Lyrics3v2TextField? LyricsAuthorName
         {
             get { return GetField(Lyrics3v2TextFieldIdentifier.LyricsAuthorName); }
             set { SetField(value); }

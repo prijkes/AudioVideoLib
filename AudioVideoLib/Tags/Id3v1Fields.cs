@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2012-11-10
  * Sources used: 
  *  http://www.codeproject.com/KB/audio-video/mpegaudioinfo.aspx
@@ -62,7 +62,7 @@ namespace AudioVideoLib.Tags
         /// The full string is stored internally and only cut to the max character count on retrieval.
         /// This is done to preserve the value when changing the <see cref="Encoding"/>, so characters aren't lost when changing encoding.
         /// </remarks>
-        public string Artist
+        public string? Artist
         {
             get
             {
@@ -91,7 +91,7 @@ namespace AudioVideoLib.Tags
         /// Encoding issues could cause the first part to contain more than 30 bytes if we encode at max 90 bytes.
         /// This will cause issues when writing the string as 2 separate byte arrays; characters can get lost.
         /// This is why we have to encode the string in 2 parts: one for 30 bytes max and one fore 60 bytes max.
-        public string AlbumTitle
+        public string? AlbumTitle
         {
             get
             {
@@ -116,7 +116,7 @@ namespace AudioVideoLib.Tags
         /// The full string is stored internally and only cut to the max character count on retrieval.
         /// This is done to preserve the value when changing the <see cref="Encoding"/>, so characters aren't lost when changing encoding.
         /// </remarks>
-        public string AlbumYear
+        public string? AlbumYear
         {
             get
             {
@@ -142,7 +142,7 @@ namespace AudioVideoLib.Tags
         /// The full string is stored internally and only cut to the max character count on retrieval.
         /// This is done to preserve the value when changing the <see cref="Encoding"/>, so characters aren't lost when changing encoding.
         /// </remarks>
-        public string TrackComment
+        public string? TrackComment
         {
             get
             {
@@ -201,7 +201,7 @@ namespace AudioVideoLib.Tags
         /// The full string is stored internally and only cut to the max character count on retrieval.
         /// This is done to preserve the value when changing the <see cref="Encoding"/>, so characters aren't lost when changing encoding.
         /// </remarks>
-        public string TrackTitle
+        public string? TrackTitle
         {
             get
             {
@@ -286,7 +286,7 @@ namespace AudioVideoLib.Tags
         /// <para />
         /// If encoding the value in the specified <see cref="Encoding"/> exceeds 30 bytes, the value will be cut to the max character count which fits within 30 bytes.
         /// </remarks>
-        public string ExtendedTrackGenre
+        public string? ExtendedTrackGenre
         {
             get
             {

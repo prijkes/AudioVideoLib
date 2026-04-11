@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2010-05-19
  * Sources used: 
  *  http://www.codeproject.com/KB/audio-video/mpegaudioinfo.aspx
@@ -235,7 +235,7 @@ namespace AudioVideoLib.Tags
         /// <param name="e">The <see cref="AudioTagParseEventArgs" /> instance containing the event data.</param>
         private void OnAudioTagParse(AudioTagParseEventArgs e)
         {
-            EventHandler<AudioTagParseEventArgs> audioTagParse = AudioTagParse;
+            EventHandler<AudioTagParseEventArgs>? audioTagParse = AudioTagParse;
             if (audioTagParse != null)
                 audioTagParse(this, e);
         }
@@ -246,7 +246,7 @@ namespace AudioVideoLib.Tags
         /// <param name="e">The <see cref="AudioTagParsedEventArgs" /> instance containing the event data.</param>
         private void OnAudioTagParsed(AudioTagParsedEventArgs e)
         {
-            EventHandler<AudioTagParsedEventArgs> audioTagParsed = AudioTagParsed;
+            EventHandler<AudioTagParsedEventArgs>? audioTagParsed = AudioTagParsed;
             if (audioTagParsed != null)
                 audioTagParsed(this, e);
         }
@@ -264,7 +264,7 @@ namespace AudioVideoLib.Tags
             {
                 stream.Position = streamPosition;
 
-                IAudioTagOffset audioTagOffset = ReadTag(stream, TagOrigin.Start);
+                IAudioTagOffset? audioTagOffset = ReadTag(stream, TagOrigin.Start);
                 if (audioTagOffset != null && audioTagOffset.AudioTag != null)
                 {
                     spacing = 0;
@@ -295,7 +295,7 @@ namespace AudioVideoLib.Tags
             {
                 stream.Position = streamPosition;
 
-                IAudioTagOffset audioTagOffset = ReadTag(stream, TagOrigin.End);
+                IAudioTagOffset? audioTagOffset = ReadTag(stream, TagOrigin.End);
                 if (audioTagOffset != null && audioTagOffset.AudioTag != null)
                 {
                     spacing = 0;
@@ -312,7 +312,7 @@ namespace AudioVideoLib.Tags
             return tags;
         }
 
-        private IAudioTagOffset ReadTag(Stream stream, TagOrigin tagOrigin)
+        private IAudioTagOffset? ReadTag(Stream stream, TagOrigin tagOrigin)
         {
             if (stream == null)
                 throw new ArgumentNullException("stream");
