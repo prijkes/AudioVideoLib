@@ -244,8 +244,12 @@ public sealed partial class Id3v2ExtendedHeader
     /// <returns></returns>
     public bool Equals(Id3v2ExtendedHeader? extendedHeader)
     {
-        return extendedHeader is not null && (ReferenceEquals(this, extendedHeader) || ((TagRestrictions != null) && (extendedHeader.TagRestrictions != null)
-               && StreamBuffer.SequenceEqual(extendedHeader.TagRestrictions.ToByte(), TagRestrictions.ToByte())));
+        return extendedHeader is not null
+            && (ReferenceEquals(this, extendedHeader)
+                || (TagRestrictions is null && extendedHeader.TagRestrictions is null)
+                || (TagRestrictions is not null
+                    && extendedHeader.TagRestrictions is not null
+                    && StreamBuffer.SequenceEqual(extendedHeader.TagRestrictions.ToByte(), TagRestrictions.ToByte())));
     }
 
     public override int GetHashCode()

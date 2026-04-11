@@ -52,7 +52,7 @@ public partial class Id3v1Tag
     {
         get
         {
-            return (_artist == null) ? GetExtendedString(_artist, 30, 60) : null;
+            return (_artist != null) ? GetExtendedString(_artist, 30, 60) : null;
         }
 
         set
@@ -81,7 +81,7 @@ public partial class Id3v1Tag
     {
         get
         {
-            return (_albumTitle == null) ? GetExtendedString(_albumTitle, 30, 60) : null;
+            return (_albumTitle != null) ? GetExtendedString(_albumTitle, 30, 60) : null;
         }
 
         set

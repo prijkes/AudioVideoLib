@@ -174,7 +174,10 @@ public sealed partial class Id3v2Tag : IAudioTag
     {
         return tag is not null
             && (ReferenceEquals(this, tag)
-                || ((tag.Version == Version) && (tag.Flags == Flags) && tag.ExtendedHeader.Equals(ExtendedHeader) && tag.Frames.SequenceEqual(Frames)));
+                || ((tag.Version == Version)
+                    && (tag.Flags == Flags)
+                    && Equals(tag.ExtendedHeader, ExtendedHeader)
+                    && tag.Frames.SequenceEqual(Frames)));
     }
 
     /// <summary>
