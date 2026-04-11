@@ -5,7 +5,9 @@
  */
 namespace AudioVideoLib.Tags;
 
+#if DEBUG
 using System.Linq;
+#endif
 
 /// <summary>
 /// Class to store a MusicMatch tag.
