@@ -7,6 +7,7 @@
 namespace AudioVideoLib.Formats;
 
 using System;
+using System.Globalization;
 using System.IO;
 using System.Text;
 
@@ -20,7 +21,9 @@ using AudioVideoLib.IO;
 /// This tag should, as much as possible, be meaningful for as many encoders as possible,
 /// even if it is unlikely that other encoders than Lame will implement it.
 /// </remarks>
-//// NOTE: class is incomplete - not all values are extracted and stored from the LAME tag.
+//// All 36 bytes of the LAME tag footer (per revision 1 of the spec) are parsed; bit-packed
+//// fields like Misc and PresetSurroundInfo are stored in raw form and can be split by the
+//// caller if needed.
 /*
     In the Info Tag, the "Xing" identification string (mostly at 0x24) of the header is replaced by "Info" in case of a CBR file.  
     This was done to avoid CBR files to be recognized as traditional Xing VBR files by some decoders.
@@ -81,9 +84,6 @@ public sealed class LameTag
     /// then the musicCRC should be invalid.
     /// The Lame Tag CRC should still be valid however (it could be updated by mp3gain).
     /// </remarks>
-    private readonly short _musicCrc;
-
-    private readonly short _infoTagCrc;
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
@@ -93,88 +93,107 @@ public sealed class LameTag
     /// <param name="firstFrameBuffer">The first frame buffer containing a <see cref="LameTag"/>.</param>
     public LameTag(StreamBuffer firstFrameBuffer)
     {
-        // string lameTag = "LAME"
-        firstFrameBuffer.ReadString(4);
-        float ver;
-        float.TryParse(firstFrameBuffer.ReadString(4), out ver);
+        // Tag starts with the 4-byte "LAME" identifier followed by the 4-byte LAME version
+        // as an ASCII string (e.g. "3.98"). Rewind after reading the version so the full
+        // "LAME<ver>" string is available for the pre-3.90 short-form branch below.
+        _ = firstFrameBuffer.ReadString(4);
+        _ = float.TryParse(firstFrameBuffer.ReadString(4), NumberStyles.Float, CultureInfo.InvariantCulture, out var ver);
         Version = ver;
-
         firstFrameBuffer.Seek(-8, SeekOrigin.Current);
+
         if (Version < 3.90f)
         {
-            // Initial LAME info, 20 bytes for LAME tag. for example, "LAME3.12 (beta 6)"
-            // LAME prior to 3.90 writes only a 20 byte encoder string.
+            // LAME prior to 3.90 wrote only a 20-byte encoder string and no structured
+            // fields. Consume the string and leave all other properties at their defaults.
             EncoderVersion = firstFrameBuffer.ReadString(20);
+            return;
         }
-        else
+
+        EncoderVersion = firstFrameBuffer.ReadString(9);
+
+        ParseRevisionAndVbr(firstFrameBuffer);
+        ParseLowpassAndReplayGain(firstFrameBuffer);
+        ParseEncodingFlagsAndAth(firstFrameBuffer);
+        ParseBitrateAndDelays(firstFrameBuffer);
+        ParseMiscAndGain(firstFrameBuffer);
+        ParseLengthAndCrcs(firstFrameBuffer);
+    }
+
+    private void ParseRevisionAndVbr(StreamBuffer buffer)
+    {
+        // Revision information tag (4 MSB) + VBR info (4 LSB) packed into one byte.
+        var infoAndVbr = buffer.ReadByte();
+        InfoTagRevision = infoAndVbr >> 4;
+        if (InfoTagRevision == Formats.InfoTagRevision.Reserved)
         {
-            EncoderVersion = firstFrameBuffer.ReadString(9);
-
-            // Revision Information Tag + VBR Info
-            var infoAndVbr = firstFrameBuffer.ReadByte();
-
-            // Revision information in 4 MSB
-            InfoTagRevision = infoAndVbr >> 4;
-            if (InfoTagRevision == Formats.InfoTagRevision.Reserved)
-            {
-                throw new ArgumentException("InfoTagRevision bit is set to reserved (0xF)");
-            }
-
-            // VBR info in 4 LSB
-            VbrMethod = infoAndVbr & 0x0F;
-
-            // lowpass information, multiply by 100 to get hz
-            LowpassFilterValue = firstFrameBuffer.ReadByte() * 100;
-
-            // Radio replay gain fields
-            // Peak signal amplitude
-            PeakSignalAmplitude = firstFrameBuffer.ReadFloat();
-
-            // Radio Replay Gain
-            RadioReplayGain = firstFrameBuffer.ReadInt16();
-
-            // Audiophile Replay Gain
-            AudiophileReplayGain = firstFrameBuffer.ReadInt16();
-
-            // Encoding Flags + ATH type
-            var encodingFlagsAndAthType = firstFrameBuffer.ReadByte();
-
-            // Encoding Flags in 4 MSB
-            EncodingFlags = encodingFlagsAndAthType >> 4;
-
-            // LAME ATH Type in 4 LSB
-            AthType = encodingFlagsAndAthType & 0x0F;
-
-            // If ABR, this will be the specified bitrate
-            // Otherwise (CBR/VBR), the minimal bitrate (255 means 255 or bigger)
-            BitRate = firstFrameBuffer.ReadByte();
-
-            // the 12 bit values (0-4095) of how many samples were added at start (encoder delay)
-            // in X and how many 0-samples were padded at the end in Y to complete the last frame.
-            EncoderDelays = firstFrameBuffer.ReadInt(3);
-            EncoderDelaySamples = EncoderDelays & 0xFFF;
-            EncoderDelayPaddingSamples = EncoderDelays >> 12;
-            ////int numberSamplesInOriginalWav = frameCount
-
-            Misc = firstFrameBuffer.ReadByte();
-
-            // Any mp3 can be amplified by a factor 2 ^ ( x * 0.25) in a lossless manner by a tool like eg. mp3gain
-            // if done so, this 8-bit field can be used to log such transformation happened so that any given time it can be undone.
-            Mp3Gain = firstFrameBuffer.ReadByte();
-
-            // Preset and surround info
-            PresetSurroundInfo = firstFrameBuffer.ReadInt16();
-
-            // 32 bit integer filed containing the exact length in bytes of the mp3 file originally made by LAME excluded ID3 tag info at the end.
-            MusicLength = firstFrameBuffer.ReadBigEndianInt32();
-
-            // Contains a CRC-16 of the complete mp3 music data as made originally by LAME. 
-            _musicCrc = (short)firstFrameBuffer.ReadBigEndianInt16();
-
-            // contains a CRC-16 of the first 190 bytes (0x00 - 0xBD) of the Info header frame.
-            // This field is calculated at the end, once all other fields are completed. 
-            _infoTagCrc = (short)firstFrameBuffer.ReadBigEndianInt16();
+            throw new ArgumentException("InfoTagRevision bit is set to reserved (0xF)");
         }
+
+        VbrMethod = infoAndVbr & 0x0F;
+    }
+
+    private void ParseLowpassAndReplayGain(StreamBuffer buffer)
+    {
+        // Lowpass filter value is stored in multiples of 100 Hz — multiply out on read.
+        LowpassFilterValue = buffer.ReadByte() * 100;
+
+        // Radio replay-gain fields.
+        PeakSignalAmplitude = buffer.ReadFloat();
+        RadioReplayGain = buffer.ReadInt16();
+        AudiophileReplayGain = buffer.ReadInt16();
+    }
+
+    private void ParseEncodingFlagsAndAth(StreamBuffer buffer)
+    {
+        // Encoding flags (4 MSB) + ATH type (4 LSB) packed into one byte.
+        var encodingFlagsAndAthType = buffer.ReadByte();
+        EncodingFlags = encodingFlagsAndAthType >> 4;
+        AthType = encodingFlagsAndAthType & 0x0F;
+    }
+
+    private void ParseBitrateAndDelays(StreamBuffer buffer)
+    {
+        // If ABR, the specified bitrate; otherwise (CBR/VBR), the minimal bitrate
+        // (255 means "255 or greater").
+        BitRate = buffer.ReadByte();
+
+        // Three bytes, 24 bits total: 12-bit encoder delay (samples added at start)
+        // followed by 12-bit padding samples (zero-samples padded at end to complete
+        // the last frame).
+        EncoderDelays = buffer.ReadInt(3);
+        EncoderDelaySamples = EncoderDelays & 0xFFF;
+        EncoderDelayPaddingSamples = EncoderDelays >> 12;
+    }
+
+    private void ParseMiscAndGain(StreamBuffer buffer)
+    {
+        // One-byte Misc field: contains noise shaping (bits 0-1), stereo mode (2-4),
+        // unwise-settings flag (5), and source sample frequency (6-7). We keep it as
+        // a raw int for callers that want the full set.
+        Misc = buffer.ReadByte();
+
+        // Any mp3 can be amplified by a factor 2^(x * 0.25) in a lossless manner by a
+        // tool like mp3gain. If done so, this 8-bit field can be used to log that such
+        // transformation happened so it can be undone later.
+        Mp3Gain = buffer.ReadByte();
+
+        // Preset and surround info packed into a single big-endian short: surround
+        // mode (3 bits) + preset index (11 bits).
+        PresetSurroundInfo = buffer.ReadInt16();
+    }
+
+    private void ParseLengthAndCrcs(StreamBuffer buffer)
+    {
+        // 32-bit big-endian integer containing the exact length in bytes of the mp3
+        // file originally made by LAME, excluding ID3 tag info at the end.
+        MusicLength = buffer.ReadBigEndianInt32();
+
+        // CRC-16 of the complete mp3 music data as originally produced by LAME.
+        MusicCrc = (short)buffer.ReadBigEndianInt16();
+
+        // CRC-16 of the first 190 bytes (0x00 - 0xBD) of the Info header frame.
+        // Calculated at the end once all other fields are completed.
+        InfoTagCrc = (short)buffer.ReadBigEndianInt16();
     }
 
     ////------------------------------------------------------------------------------------------------------------------------------
@@ -549,6 +568,24 @@ public sealed class LameTag
     //// (in Bytes)
     public int MusicLength { get; private set; }
 
+    /// <summary>
+    /// Gets the CRC-16 of the complete mp3 music data as originally produced by LAME.
+    /// </summary>
+    /// <remarks>
+    /// If an application like mp3gain changes the main music frames of the mp3 (for instance
+    /// via the <see cref="Mp3Gain"/> field), this CRC becomes invalid. The <see cref="InfoTagCrc"/>
+    /// can still be valid however — tools can update it.
+    /// </remarks>
+    public short MusicCrc { get; private set; }
+
+    /// <summary>
+    /// Gets the CRC-16 of the first 190 bytes (0x00 - 0xBD) of the Info header frame.
+    /// </summary>
+    /// <remarks>
+    /// Calculated at the end once all other fields are completed.
+    /// </remarks>
+    public short InfoTagCrc { get; private set; }
+
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -643,8 +680,8 @@ public sealed class LameTag
             buffer.WriteByte((byte)Mp3Gain);
             buffer.WriteShort(PresetSurroundInfo);
             buffer.WriteBigEndianInt32(MusicLength);
-            buffer.WriteBigEndianInt16(_musicCrc);
-            buffer.WriteBigEndianInt16(_infoTagCrc);
+            buffer.WriteBigEndianInt16(MusicCrc);
+            buffer.WriteBigEndianInt16(InfoTagCrc);
         }
         return buffer.ToByteArray();
     }
