@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2014-02-01
  * Sources used: 
  */
@@ -19,7 +19,7 @@ namespace AudioVideoLibExamples
     {
         public static void ParseStream(Stream stream)
         {
-            MpaStream mpaStream = new MpaStream { MaxFrameSpacingLength = (int)stream.Length };
+            var mpaStream = new MpaStream { MaxFrameSpacingLength = (int)stream.Length };
             mpaStream.ReadStream(stream);
             Console.WriteLine("[*] Found {0} frames", mpaStream.Frames.Count());
             Console.WriteLine("[*] Bytes per second: {0}", mpaStream.BytesPerSecond);

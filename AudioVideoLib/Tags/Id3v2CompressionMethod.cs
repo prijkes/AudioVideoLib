@@ -7,16 +7,15 @@
  *  http://id3lib.sourceforge.net/id3lib-manual.php
  */
 
-namespace AudioVideoLib.Tags
+namespace AudioVideoLib.Tags;
+
+/// <summary>
+/// Id3v2 compression method.
+/// </summary>
+public enum Id3v2CompressionMethod
 {
     /// <summary>
-    /// Id3v2 compression method.
+    /// ZLib compression.
     /// </summary>
-    public enum Id3v2CompressionMethod
-    {
-        /// <summary>
-        /// ZLib compression.
-        /// </summary>
-        ZLib = 'z'
-    }
+    ZLib = 'z'
 }

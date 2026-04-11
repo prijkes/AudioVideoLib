@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2012-12-01
  * Sources used: 
  */
@@ -38,7 +38,7 @@ namespace AudioVideoLibExamples
                 SearchDirectory(sub);
 
             // No sub directories in current directory, list the files in current directory.
-            string[] list = SearchDirectoryForFiles(path, new[] { "*" });
+            var list = SearchDirectoryForFiles(path, new[] { "*" });
             if (list.Length == 0)
                 return;
 
@@ -62,7 +62,7 @@ namespace AudioVideoLibExamples
             if (fileExtension == null)
                 throw new ArgumentNullException("fileExtension");
 
-            List<string> list = new List<string>();
+            var list = new List<string>();
             foreach (string[] files in fileExtension.Select(ext => Directory.GetFiles(dir, "*." + ext)))
                 list.AddRange(files);
 
@@ -81,7 +81,7 @@ namespace AudioVideoLibExamples
             foreach (FileInfo file in list.Where(filePath => filePath.Length < 260).Select(filePath => new FileInfo(filePath)))
             {
                 Console.WriteLine("[*] Checking file: {0}", file.Name);
-                FileStream fs = file.OpenRead();
+                var fs = file.OpenRead();
 
                 // Parse the files in the Id3v2 frame parsed example.
                 Id3v2FrameParsedExample.ParseStream(fs);

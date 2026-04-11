@@ -1,9 +1,9 @@
 #nullable disable warnings
-﻿/*
- * Date: 2012-12-30
-  * Sources used: 
- *  http://web.archive.org/web/20120101134344/http://www.id3.org/iTunes_Normalization_settings
- */
+/*
+* Date: 2012-12-30
+ * Sources used: 
+*  http://web.archive.org/web/20120101134344/http://www.id3.org/iTunes_Normalization_settings
+*/
 using System;
 using System.Globalization;
 using System.Text;
@@ -275,16 +275,16 @@ namespace AudioVideoLibExamples
             get
             {
                 // Get the language encoding for the default encoding type.
-                Encoding languageEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
+                var languageEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
 
                 // Get the encoding for the given encoding type.
-                Encoding encoding = Id3v2FrameEncoding.GetEncoding(_frameEncodingType);
+                var encoding = Id3v2FrameEncoding.GetEncoding(_frameEncodingType);
 
                 // Write the frame into a stream buffer.
                 using (StreamBuffer stream = new StreamBuffer())
                 {
                     // Get the preamble of the given encoding type.
-                    byte[] preamble = Id3v2FrameEncoding.GetEncodingPreamble(_frameEncodingType);
+                    var preamble = Id3v2FrameEncoding.GetEncodingPreamble(_frameEncodingType);
 
                     // Write the given encoding type value as defined in the Id3v2 spec.
                     stream.WriteByte(Id3v2FrameEncoding.GetEncodingTypeValue(_frameEncodingType));
@@ -297,7 +297,7 @@ namespace AudioVideoLibExamples
 
                     // Write the short content description string in the given encoding type - this is always 'iTunNORM'
                     stream.WriteString(_shortContentDescription, encoding);
-                    
+
                     // Write the string terminator in the given encoding.
                     stream.Write(encoding.GetBytes("\0"));
 
@@ -335,14 +335,14 @@ namespace AudioVideoLibExamples
                 if (value == null)
                     throw new ArgumentNullException("value");
 
-                Encoding languageEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
+                var languageEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
                 using (StreamBuffer stream = new StreamBuffer(value))
                 {
                     _frameEncodingType = Id3v2FrameEncoding.ReadEncodingTypeFromStream(stream);
-                    Encoding encoding = Id3v2FrameEncoding.GetEncoding(_frameEncodingType);
+                    var encoding = Id3v2FrameEncoding.GetEncoding(_frameEncodingType);
                     _language = stream.ReadString(3, languageEncoding);
                     _shortContentDescription = stream.ReadString(encoding);
-                    string text = stream.ReadString(encoding);
+                    var text = stream.ReadString(encoding);
 
                     // values
                     text = text.Replace(Prefix, String.Empty);

@@ -7,69 +7,72 @@
  *  http://lib313.sourceforge.net/id3v13.html
  */
 
+namespace AudioVideoLib.Tags;
+
 using System;
 
 using AudioVideoLib.IO;
 
-namespace AudioVideoLib.Tags
+/// <summary>
+/// Class to store an Id3v1 tag.
+/// </summary>
+public sealed partial class Id3v1Tag
 {
     /// <summary>
-    /// Class to store an Id3v1 tag.
+    /// Determines whether the specified version is valid.
     /// </summary>
-    public sealed partial class Id3v1Tag
+    /// <param name="version">The version.</param>
+    /// <returns>
+    /// <c>true</c> if the specified <param name="version">version</param> is valid; otherwise, <c>false</c>.
+    /// </returns>
+    public static bool IsValidVersion(Id3v1Version version)
     {
-        /// <summary>
-        /// Determines whether the specified version is valid.
-        /// </summary>
-        /// <param name="version">The version.</param>
-        /// <returns>
-        /// <c>true</c> if the specified <param name="version">version</param> is valid; otherwise, <c>false</c>.
-        /// </returns>
-        public static bool IsValidVersion(Id3v1Version version)
+        return Enum.TryParse(version.ToString(), true, out Id3v1Version _);
+    }
+
+    /// <summary>
+    /// Determines whether the specified genre is valid.
+    /// </summary>
+    /// <param name="genre">The genre.</param>
+    /// <returns>
+    /// <c>true</c> if the specified <paramref name="genre">genre</paramref> is valid; otherwise, <c>false</c>.
+    /// </returns>
+    public static bool IsValidGenre(Id3v1Genre genre)
+    {
+        return Enum.TryParse(genre.ToString(), true, out Id3v1Genre _);
+    }
+
+    /// <summary>
+    /// Determines whether the specified track is valid.
+    /// </summary>
+    /// <param name="trackSpeed">The track speed.</param>
+    /// <returns></returns>
+    public static bool IsValidTrackSpeed(Id3v1TrackSpeed trackSpeed)
+    {
+        return Enum.TryParse(trackSpeed.ToString(), true, out Id3v1TrackSpeed _);
+    }
+
+    ////------------------------------------------------------------------------------------------------------------------------------
+
+    private string GetTruncatedEncodedString(string value, int maxBytesAllowed)
+    {
+        return StreamBuffer.GetTruncatedEncodedString(value, Encoding, maxBytesAllowed);
+    }
+
+    private string GetExtendedString(string? value, int maxLengthNormal, int maxLengthExtended, bool onlyLastPart = false)
+    {
+        if (value == null)
         {
-            return Enum.TryParse(version.ToString(), true, out version);
+            throw new ArgumentNullException("value");
         }
 
-        /// <summary>
-        /// Determines whether the specified genre is valid.
-        /// </summary>
-        /// <param name="genre">The genre.</param>
-        /// <returns>
-        /// <c>true</c> if the specified <paramref name="genre">genre</paramref> is valid; otherwise, <c>false</c>.
-        /// </returns>
-        public static bool IsValidGenre(Id3v1Genre genre)
+        var firstPart = GetTruncatedEncodedString(value, maxLengthNormal);
+        if (!UseExtendedTag || (firstPart.Length == value.Length))
         {
-            return Enum.TryParse(genre.ToString(), true, out genre);
+            return onlyLastPart ? string.Empty : firstPart;
         }
 
-        /// <summary>
-        /// Determines whether the specified track is valid.
-        /// </summary>
-        /// <param name="trackSpeed">The track speed.</param>
-        /// <returns></returns>
-        public static bool IsValidTrackSpeed(Id3v1TrackSpeed trackSpeed)
-        {
-            return Enum.TryParse(trackSpeed.ToString(), true, out trackSpeed);
-        }
-
-        ////------------------------------------------------------------------------------------------------------------------------------
-
-        private string GetTruncatedEncodedString(string value, int maxBytesAllowed)
-        {
-            return StreamBuffer.GetTruncatedEncodedString(value, _encoding, maxBytesAllowed);
-        }
-
-        private string GetExtendedString(string? value, int maxLengthNormal, int maxLengthExtended, bool onlyLastPart = false)
-        {
-            if (value == null)
-                throw new ArgumentNullException("value");
-
-            string firstPart = GetTruncatedEncodedString(value, maxLengthNormal);
-            if (!UseExtendedTag || (firstPart.Length == value.Length))
-                return onlyLastPart ? String.Empty : firstPart;
-
-            string secondPart = GetTruncatedEncodedString(value.Substring(firstPart.Length), maxLengthExtended);
-            return onlyLastPart ? secondPart : firstPart + secondPart;
-        }
+        var secondPart = GetTruncatedEncodedString(value[firstPart.Length..], maxLengthExtended);
+        return onlyLastPart ? secondPart : firstPart + secondPart;
     }
 }

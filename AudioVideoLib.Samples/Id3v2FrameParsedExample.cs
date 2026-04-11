@@ -1,8 +1,8 @@
 #nullable disable warnings
-﻿/*
- * Date: 2012-12-01
- * Sources used: 
- */
+/*
+* Date: 2012-12-01
+* Sources used: 
+*/
 
 using System;
 using System.IO;
@@ -22,7 +22,7 @@ namespace AudioVideoLibExamples
     {
         public static void ParseStream(Stream stream)
         {
-            AudioTags audioTags = new AudioTags();
+            var audioTags = new AudioTags();
             audioTags.AudioTagParse += AudioTagParse;
             try
             {
@@ -71,16 +71,16 @@ namespace AudioVideoLibExamples
                 return;
 
             // Safe-cast the frame to a comment frame.
-            Id3v2CommentFrame frame = e.Frame as Id3v2CommentFrame;
+            var frame = e.Frame as Id3v2CommentFrame;
 
             // See if the frame is an iTunes normalization frame.
             if (!String.Equals(frame.ShortContentDescription, "iTunNORM", StringComparison.OrdinalIgnoreCase))
                 return;
 
-            byte[] frameData = e.Frame.ToByteArray();
+            var frameData = e.Frame.ToByteArray();
 
             // Parse the frame as an iTunes normalization frame.
-            Id3v2iTunesNormalizationFrame normalizationFrame = Id3v2Frame.ReadFromStream<Id3v2iTunesNormalizationFrame>(
+            var normalizationFrame = Id3v2Frame.ReadFromStream<Id3v2iTunesNormalizationFrame>(
                 e.Frame.Version,
                 new MemoryStream(frameData),
                 frameData.Length);

@@ -5,49 +5,41 @@
  *  http://www.codeproject.com/Articles/1474/Events-and-event-handling-in-C
  */
 
+namespace AudioVideoLib.Tags;
+
 using System;
 using System.ComponentModel;
 
-namespace AudioVideoLib.Tags
+/// <summary>
+/// Class for storing event data passed as argument to subscribed event handlers.
+/// </summary>
+public sealed class Id3v2FrameParseEventArgs : CancelEventArgs
 {
+    ////------------------------------------------------------------------------------------------------------------------------------
+
     /// <summary>
-    /// Class for storing event data passed as argument to subscribed event handlers.
+    /// Initializes a new instance of the <see cref="Id3v2FrameParseEventArgs" /> class.
     /// </summary>
-    public sealed class Id3v2FrameParseEventArgs : CancelEventArgs
+    public Id3v2FrameParseEventArgs(Id3v2Frame frame)
     {
-        private Id3v2Frame _frame = null!;
-        ////------------------------------------------------------------------------------------------------------------------------------
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Id3v2FrameParseEventArgs" /> class.
-        /// </summary>
-        public Id3v2FrameParseEventArgs(Id3v2Frame frame)
-        {
-            Frame = frame;
-        }
-
-        ////------------------------------------------------------------------------------------------------------------------------------
-
-        /// <summary>
-        /// Gets or sets the frame.
-        /// </summary>
-        /// <value>
-        /// The frame.
-        /// </value>
-        public Id3v2Frame Frame
-        {
-            get
-            {
-                return _frame;
-            }
-
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException("value");
-
-                _frame = value;
-            }
-        }
+        Frame = frame;
     }
+
+    ////------------------------------------------------------------------------------------------------------------------------------
+
+    /// <summary>
+    /// Gets or sets the frame.
+    /// </summary>
+    /// <value>
+    /// The frame.
+    /// </value>
+    public Id3v2Frame Frame
+    {
+        get;
+
+        set
+        {
+            field = value ?? throw new ArgumentNullException("value");
+        }
+    } = null!;
 }

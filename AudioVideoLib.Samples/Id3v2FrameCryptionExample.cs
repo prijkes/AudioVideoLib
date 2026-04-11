@@ -1,8 +1,8 @@
 #nullable disable warnings
-﻿/*
- * Date: 2012-12-01
- * Sources used: 
- */
+/*
+* Date: 2012-12-01
+* Sources used: 
+*/
 
 using System;
 using System.IO;
@@ -16,7 +16,7 @@ namespace AudioVideoLibExamples
     {
         public static void ParseStream(Stream stream)
         {
-            AudioTags audioTags = new AudioTags();
+            var audioTags = new AudioTags();
             audioTags.AudioTagParse += AudioTagParse;
             try
             {
@@ -31,7 +31,7 @@ namespace AudioVideoLibExamples
             // For each Id3v2 tag found
             foreach (IAudioTagOffset tagOffset in audioTags.Where(t => t.AudioTag is Id3v2Tag))
             {
-                Id3v2Tag tag = tagOffset.AudioTag as Id3v2Tag;
+                var tag = tagOffset.AudioTag as Id3v2Tag;
                 if (tag == null)
                     continue;
 
@@ -46,14 +46,14 @@ namespace AudioVideoLibExamples
                 }
 
                 // Write the tag to a byte array into a memory stream (this will trigger encrypting each frame).
-                MemoryStream ms = new MemoryStream(tag.ToByteArray());
+                var ms = new MemoryStream(tag.ToByteArray());
 
                 // Read the tag again from the memory stream (this will trigger decrypting each frame).
-                Id3v2TagReader tagReader = new Id3v2TagReader();
-                IAudioTagOffset decryptedTagOffset = tagReader.ReadFromStream(ms, tagOffset.TagOrigin);
+                var tagReader = new Id3v2TagReader();
+                var decryptedTagOffset = tagReader.ReadFromStream(ms, tagOffset.TagOrigin);
                 if (decryptedTagOffset != null)
                 {
-                    Id3v2Tag decryptedTag = decryptedTagOffset.AudioTag as Id3v2Tag;
+                    var decryptedTag = decryptedTagOffset.AudioTag as Id3v2Tag;
                     if (decryptedTag != null)
                         Console.WriteLine("[*] Frames use encryption: {0}", decryptedTag.Frames.All(f => f.UseEncryption));
                 }

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2012-12-27
  * Sources used:
  *  http://www.id3.org/Id3v2-00
@@ -11,21 +11,20 @@
  *  http://web.archive.org/web/20081223230059/http://replaygain.hydrogenaudio.org/file_format_id3v2.html
  */
 
-namespace AudioVideoLib.Tags
+namespace AudioVideoLib.Tags;
+
+/// <summary>
+/// Sign indicator in an <see cref="Id3v2ReplayGainAdjustmentFrame"/>.
+/// </summary>
+public enum Id3v2ReplayGainSign
 {
     /// <summary>
-    /// Sign indicator in an <see cref="Id3v2ReplayGainAdjustmentFrame"/>.
+    /// A positive sign.
     /// </summary>
-    public enum Id3v2ReplayGainSign
-    {
-        /// <summary>
-        /// A positive sign.
-        /// </summary>
-        Positive = 0x00,
+    Positive = 0x00,
 
-        /// <summary>
-        /// A negative sign.
-        /// </summary>
-        Negative = 0x01
-    }
+    /// <summary>
+    /// A negative sign.
+    /// </summary>
+    Negative = 0x01
 }

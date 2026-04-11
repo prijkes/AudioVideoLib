@@ -4,21 +4,20 @@
  *  http://www.codeproject.com/KB/audio-video/mpegaudioinfo.aspx
  */
 
-namespace AudioVideoLib.Formats
+namespace AudioVideoLib.Formats;
+
+/// <summary>
+/// Possible VBR header types in a MPA stream.
+/// </summary>
+public enum VbrHeaderType
 {
     /// <summary>
-    /// Possible VBR header types in a MPA stream.
+    /// Indicates a <see cref="XingHeader"/>.
     /// </summary>
-    public enum VbrHeaderType
-    {
-        /// <summary>
-        /// Indicates a <see cref="XingHeader"/>.
-        /// </summary>
-        Xing = 0x01,
+    Xing = 0x01,
 
-        /// <summary>
-        /// Indicates a <see cref="VbriHeader"/>.
-        /// </summary>
-        Vbri = 0x02
-    }
+    /// <summary>
+    /// Indicates a <see cref="VbriHeader"/>.
+    /// </summary>
+    Vbri = 0x02
 }

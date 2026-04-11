@@ -11,348 +11,383 @@
  *  http://www.id3.org/Id3v2.4.0-frames
  *  http://www.id3.org/Id3v2.4.0-changes
  */
+namespace AudioVideoLib.Tags;
+
 using System;
 using System.IO;
 
 using AudioVideoLib.IO;
 
-namespace AudioVideoLib.Tags
+/// <summary>
+/// Class used to store an <see cref="Id3v2Tag"/> frame.
+/// </summary>
+/// <remarks>
+/// A frame is a block of information in an <see cref="Id3v2Tag"/>.
+/// </remarks>
+public partial class Id3v2Frame : IAudioTagFrame, IEquatable<Id3v2Frame>
 {
     /// <summary>
-    /// Class used to store an <see cref="Id3v2Tag"/> frame.
+    /// The max size an <see cref="Id3v2Frame"/> can be.
     /// </summary>
     /// <remarks>
-    /// A frame is a block of information in an <see cref="Id3v2Tag"/>.
+    /// Frames can be up to 16MB in size.
     /// </remarks>
-    public partial class Id3v2Frame : IAudioTagFrame, IEquatable<Id3v2Frame>
+    //// frameSize <= MaxAllowedSize
+    public const int MaxAllowedSize = (1024 * 1024 * 16) - 1; // or 0xFFFFFF
+
+    ////------------------------------------------------------------------------------------------------------------------------------
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Id3v2Frame"/> class.
+    /// </summary>
+    /// <param name="version">The <see cref="Id3v2Version"/> of the <see cref="Id3v2Tag"/>.</param>
+    /// <param name="identifier">The identifier of the frame.</param>
+    public Id3v2Frame(Id3v2Version version, string identifier)
     {
-        /// <summary>
-        /// The max size an <see cref="Id3v2Frame"/> can be.
-        /// </summary>
-        /// <remarks>
-        /// Frames can be up to 16MB in size.
-        /// </remarks>
-        //// frameSize <= MaxAllowedSize
-        public const int MaxAllowedSize = (1024 * 1024 * 16) - 1; // or 0xFFFFFF
-        
-        ////------------------------------------------------------------------------------------------------------------------------------
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Id3v2Frame"/> class.
-        /// </summary>
-        /// <param name="version">The <see cref="Id3v2Version"/> of the <see cref="Id3v2Tag"/>.</param>
-        /// <param name="identifier">The identifier of the frame.</param>
-        public Id3v2Frame(Id3v2Version version, string identifier)
+        if (!IsValidVersion(version))
         {
-            if (!IsValidVersion(version))
-                throw new InvalidDataException(String.Format("Version {0} not valid.", version));
-
-            if (identifier == null)
-                throw new ArgumentNullException("identifier");
-
-            if (!IsValidIdentifier(version, identifier))
-                throw new InvalidDataException(String.Format("identifier {0} is not valid for version {1}.", identifier, version));
-
-            Identifier = identifier;
-            Version = version;
+            throw new InvalidDataException(string.Format("Version {0} not valid.", version));
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Id3v2Frame"/> class.
-        /// </summary>
-        /// <param name="version">The <see cref="Id3v2Version"/> of the <see cref="Id3v2Tag"/>.</param>
-        protected Id3v2Frame(Id3v2Version version)
+        if (identifier == null)
         {
-            if (!IsValidVersion(version))
-                throw new InvalidDataException(String.Format("Version {0} not valid.", version));
-
-            Version = version;
+            throw new ArgumentNullException("identifier");
         }
 
-        private Id3v2Frame(string identifier)
+        if (!IsValidIdentifier(version, identifier))
         {
-            Identifier = identifier;
+            throw new InvalidDataException(string.Format("identifier {0} is not valid for version {1}.", identifier, version));
         }
 
-        ////------------------------------------------------------------------------------------------------------------------------------
+        Identifier = identifier;
+        Version = version;
+    }
 
-        /// <inheritdoc/>
-        public virtual byte[] Data { get; protected set; } = null!;
-
-        /// <summary>
-        /// Gets the encrypted data.
-        /// </summary>
-        /// <remarks>
-        /// When an <see cref="Id3v2Frame"/> is read from a stream and the data is encrypted, the encrypted data will be stored in this field.
-        /// Consumers can use the <see cref="EncryptedData"/> property to retrieve the data as-read.
-        /// </remarks>
-        public byte[] EncryptedData { get; private set; } = null!;
-
-        /// <summary>
-        /// Gets the compressed data.
-        /// </summary>
-        /// <remarks>
-        /// When an <see cref="Id3v2Frame"/> is read from a stream and the data is compressed, the compressed data will be stored in this field.
-        /// Consumers can use the <see cref="CompressedData"/> property to retrieve the data as-read.
-        /// <para />
-        /// If the data has been encrypted and compressed, but could not be decrypted, the data will be stored in the <see cref="EncryptedData"/> property instead.
-        /// </remarks>
-        public byte[] CompressedData { get; private set; } = null!;
-
-        /// <summary>
-        /// Gets or sets the cryptor for handling <see cref="Id3v2Frame"/> encryption / decryption.
-        /// </summary>
-        /// <value>
-        /// An <see cref="IId3v2FrameCryptor"/> which handles <see cref="Id3v2Frame"/> encryption / decryption.
-        /// </value>
-        public IId3v2FrameCryptor Cryptor { get; set; } = null!;
-
-        /// <summary>
-        /// Gets or sets the compressor for handling <see cref="Id3v2Frame"/> compression / decompression.
-        /// </summary>
-        /// <value>
-        /// An <see cref="IId3v2FrameCompressor"/> which handles <see cref="Id3v2Frame"/> compression / decompression.
-        /// </value>
-        public IId3v2FrameCompressor Compressor { get; set; } = null!;
-
-        ////------------------------------------------------------------------------------------------------------------------------------
-
-        /// <inheritdoc/>
-        public override bool Equals(object? obj)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Id3v2Frame"/> class.
+    /// </summary>
+    /// <param name="version">The <see cref="Id3v2Version"/> of the <see cref="Id3v2Tag"/>.</param>
+    protected Id3v2Frame(Id3v2Version version)
+    {
+        if (!IsValidVersion(version))
         {
-            return Equals(obj as Id3v2Frame);
+            throw new InvalidDataException(string.Format("Version {0} not valid.", version));
         }
 
-        /// <inheritdoc/>
-        public bool Equals(IAudioTagFrame? audioFrame)
+        Version = version;
+    }
+
+    private Id3v2Frame(string identifier)
+    {
+        Identifier = identifier;
+    }
+
+    ////------------------------------------------------------------------------------------------------------------------------------
+
+    /// <inheritdoc/>
+    public virtual byte[] Data { get; protected set; } = null!;
+
+    /// <summary>
+    /// Gets the encrypted data.
+    /// </summary>
+    /// <remarks>
+    /// When an <see cref="Id3v2Frame"/> is read from a stream and the data is encrypted, the encrypted data will be stored in this field.
+    /// Consumers can use the <see cref="EncryptedData"/> property to retrieve the data as-read.
+    /// </remarks>
+    public byte[] EncryptedData { get; private set; } = null!;
+
+    /// <summary>
+    /// Gets the compressed data.
+    /// </summary>
+    /// <remarks>
+    /// When an <see cref="Id3v2Frame"/> is read from a stream and the data is compressed, the compressed data will be stored in this field.
+    /// Consumers can use the <see cref="CompressedData"/> property to retrieve the data as-read.
+    /// <para />
+    /// If the data has been encrypted and compressed, but could not be decrypted, the data will be stored in the <see cref="EncryptedData"/> property instead.
+    /// </remarks>
+    public byte[] CompressedData { get; private set; } = null!;
+
+    /// <summary>
+    /// Gets or sets the cryptor for handling <see cref="Id3v2Frame"/> encryption / decryption.
+    /// </summary>
+    /// <value>
+    /// An <see cref="IId3v2FrameCryptor"/> which handles <see cref="Id3v2Frame"/> encryption / decryption.
+    /// </value>
+    public IId3v2FrameCryptor Cryptor { get; set; } = null!;
+
+    /// <summary>
+    /// Gets or sets the compressor for handling <see cref="Id3v2Frame"/> compression / decompression.
+    /// </summary>
+    /// <value>
+    /// An <see cref="IId3v2FrameCompressor"/> which handles <see cref="Id3v2Frame"/> compression / decompression.
+    /// </value>
+    public IId3v2FrameCompressor Compressor { get; set; } = null!;
+
+    ////------------------------------------------------------------------------------------------------------------------------------
+
+    /// <inheritdoc/>
+    public override bool Equals(object? obj)
+    {
+        return Equals(obj as Id3v2Frame);
+    }
+
+    /// <inheritdoc/>
+    public bool Equals(IAudioTagFrame? audioFrame)
+    {
+        return Equals(audioFrame as Id3v2Frame);
+    }
+
+    /// <summary>
+    /// Equals the specified <see cref="Id3v2Frame"/>.
+    /// </summary>
+    /// <param name="frame">The <see cref="Id3v2Frame"/>.</param>
+    /// <returns>
+    /// Both instances are equal when the following fields are equal (case-insensitive):
+    /// * <see cref="Version"/>
+    /// * <see cref="Identifier"/>
+    /// * <see cref="Flags"/>
+    /// * <see cref="GroupIdentifier"/>
+    /// * <see cref="EncryptionType"/>
+    /// * <see cref="DataLengthIndicator"/>
+    /// * <see cref="Data"/>
+    /// </returns>
+    public virtual bool Equals(Id3v2Frame? frame)
+    {
+        return frame is not null && (ReferenceEquals(this, frame) || ((frame.Version == Version) && string.Equals(frame.Identifier, Identifier, StringComparison.OrdinalIgnoreCase)
+               && (frame.Flags == Flags) && (frame.GroupIdentifier == GroupIdentifier) && (frame.EncryptionType == EncryptionType)
+               && (frame.DataLengthIndicator == DataLengthIndicator)
+               && ((frame.Data != null) && (Data != null) ? StreamBuffer.SequenceEqual(frame.Data, Data) : (frame.Data == null) && (Data == null))));
+    }
+
+    /// <summary>
+    /// Serves as a hash function for a particular type.
+    /// </summary>
+    /// <returns>
+    /// A hash code for the current <see cref="T:System.Object"/>.
+    /// </returns>
+    /// <filterpriority>2</filterpriority>
+    /// The value should be calculated on immutable fields only.
+    public override int GetHashCode()
+    {
+        unchecked
         {
-            return Equals(audioFrame as Id3v2Frame);
+            return 397 ^ ((Identifier != null) ? Identifier.GetHashCode() * 397 : 0);
+        }
+    }
+
+    ////------------------------------------------------------------------------------------------------------------------------------
+
+    /// <summary>
+    /// Determines whether the specified version is supported by the frame.
+    /// </summary>
+    /// <param name="version">The version.</param>
+    /// <returns>
+    ///   <c>true</c> if the specified version is supported; otherwise, <c>false</c>.
+    /// </returns>
+    /// <remarks>
+    /// Unless overridden, the <paramref name="version"/> is supported if any of the following is true:
+    /// * Both <paramref name="version"/> and the current <see cref="Version"/> are equal to or higher than <see cref="Id3v2Version.Id3v230"/>.
+    /// * Both <paramref name="version"/> and the current <see cref="Version"/> are lower than <see cref="Id3v2Version.Id3v230"/>.
+    /// </remarks>
+    public virtual bool IsVersionSupported(Id3v2Version version)
+    {
+        return ((version >= Id3v2Version.Id3v230) && (Version >= Id3v2Version.Id3v230))
+               || ((version < Id3v2Version.Id3v230) && (Version < Id3v2Version.Id3v230));
+    }
+
+    /// <summary>
+    /// Sets the version of the <see cref="Id3v2Frame"/>.
+    /// </summary>
+    /// <param name="version">The version.</param>
+    /// <exception cref="InvalidVersionException">Thrown if <paramref name="version"/> is not supported by this frame.</exception>
+    /// <remarks>
+    /// This function can be used to change the <see cref="Version"/> of the <see cref="Id3v2Frame"/>.
+    /// Classes inheriting this class can override <see cref="IsVersionSupported(Id3v2Version)"/> to specify whether the <paramref name="version"/> is supported or not.
+    /// </remarks>
+    public void SetVersion(Id3v2Version version)
+    {
+        if (!IsVersionSupported(version))
+        {
+            throw new InvalidVersionException(string.Format("Version {0} is not supported by this frame", version));
         }
 
-        /// <summary>
-        /// Equals the specified <see cref="Id3v2Frame"/>.
-        /// </summary>
-        /// <param name="frame">The <see cref="Id3v2Frame"/>.</param>
-        /// <returns>
-        /// Both instances are equal when the following fields are equal (case-insensitive):
-        /// * <see cref="Version"/>
-        /// * <see cref="Identifier"/>
-        /// * <see cref="Flags"/>
-        /// * <see cref="GroupIdentifier"/>
-        /// * <see cref="EncryptionType"/>
-        /// * <see cref="DataLengthIndicator"/>
-        /// * <see cref="Data"/>
-        /// </returns>
-        public virtual bool Equals(Id3v2Frame? frame)
+        Version = version;
+    }
+
+    /// <summary>
+    /// Decrypts this instance.
+    /// </summary>
+    /// <returns>
+    /// true if <see cref="Cryptor"/> has been set and this instance could be decrypted; otherwise, false.
+    /// </returns>
+    public bool Decrypt()
+    {
+        if (Cryptor == null)
         {
-            if (ReferenceEquals(null, frame))
-                return false;
-
-            if (ReferenceEquals(this, frame))
-                return true;
-
-            return (frame.Version == Version) && String.Equals(frame.Identifier, Identifier, StringComparison.OrdinalIgnoreCase)
-                   && (frame.Flags == Flags) && (frame.GroupIdentifier == GroupIdentifier) && (frame.EncryptionType == EncryptionType)
-                   && (frame.DataLengthIndicator == DataLengthIndicator)
-                   && ((frame.Data != null) && (Data != null) ? StreamBuffer.SequenceEqual(frame.Data, Data) : (frame.Data == null) && (Data == null));
+            return false;
         }
 
-        /// <summary>
-        /// Serves as a hash function for a particular type.
-        /// </summary>
-        /// <returns>
-        /// A hash code for the current <see cref="T:System.Object"/>.
-        /// </returns>
-        /// <filterpriority>2</filterpriority>
-        /// The value should be calculated on immutable fields only.
-        public override int GetHashCode()
+        var decryptedData = Cryptor.Decrypt(EncryptionType, EncryptedData, EncryptedData.Length);
+        if (decryptedData == null)
         {
-            unchecked
+            return false;
+        }
+
+        _isEncrypted = false;
+        Data = decryptedData;
+        return true;
+    }
+
+    /// <summary>
+    /// Decompresses this instance.
+    /// </summary>
+    /// <returns>
+    /// true if <see cref="Compressor"/> has been set and this instance could be decompressed; otherwise, false.
+    /// </returns>
+    public bool Decompress()
+    {
+        if (Compressor == null)
+        {
+            return false;
+        }
+
+        var decompressedData = Compressor.Decompress(CompressedData, CompressedData.Length);
+        if (decompressedData == null)
+        {
+            return false;
+        }
+
+        _isCompressed = false;
+        Data = decompressedData;
+        return true;
+    }
+
+    /// <summary>
+    /// Writes the frame into a byte array.
+    /// </summary>
+    /// <returns>
+    /// A byte array that represents the frame.
+    /// </returns>
+    /// <remarks>
+    /// When <see cref="UseEncryption"/> is set, <see cref="Cryptor"/> will be called to encrypt the data.
+    /// Note that the data passed to the <see cref="Cryptor"/> function will be compressed if <see cref="UseCompression"/> is set.
+    /// </remarks>
+    public byte[] ToByteArray()
+    {
+        var data = (_isCompressed ? (_isEncrypted ? EncryptedData : CompressedData) : (_isEncrypted ? EncryptedData : Data)) ?? [];
+
+        // Don't write 0-byte data fields as they won't be parsed again (according to the specs the data should contain at least 1 byte).
+        if (data.Length == 0)
+        {
+            return [];
+        }
+
+        using (var buffer = new StreamBuffer())
+        {
+            // Write the extra header fields if needed.
+            // Note that the order of fields differ by version.
+            if (Version is >= Id3v2Version.Id3v230 and < Id3v2Version.Id3v240)
             {
-                return 397 ^ ((Identifier != null) ? Identifier.GetHashCode() * 397 : 0);
+                // Some flags indicates that the frame header is extended with additional information.
+                // This information will be added to the frame header in the same order as the flags indicating the additions.
+                // I.e. the four bytes of decompressed size will precede the encryption method byte.
+
+                // Frame is compressed using [#ZLIB zlib] with 4 bytes for 'decompressed size' appended to the frame header.
+                if (UseCompression)
+                {
+                    buffer.WriteBigEndianInt32(data.Length);
+                }
+
+                // Frame is encrypted.
+                if (UseEncryption)
+                {
+                    buffer.WriteByte(EncryptionType);
+                }
+
+                // Frame contains group information
+                if (UseGroupingIdentity)
+                {
+                    buffer.WriteByte(GroupIdentifier);
+                }
             }
-        }
-
-        ////------------------------------------------------------------------------------------------------------------------------------
-
-        /// <summary>
-        /// Determines whether the specified version is supported by the frame.
-        /// </summary>
-        /// <param name="version">The version.</param>
-        /// <returns>
-        ///   <c>true</c> if the specified version is supported; otherwise, <c>false</c>.
-        /// </returns>
-        /// <remarks>
-        /// Unless overridden, the <paramref name="version"/> is supported if any of the following is true:
-        /// * Both <paramref name="version"/> and the current <see cref="Version"/> are equal to or higher than <see cref="Id3v2Version.Id3v230"/>.
-        /// * Both <paramref name="version"/> and the current <see cref="Version"/> are lower than <see cref="Id3v2Version.Id3v230"/>.
-        /// </remarks>
-        public virtual bool IsVersionSupported(Id3v2Version version)
-        {
-            return ((version >= Id3v2Version.Id3v230) && (Version >= Id3v2Version.Id3v230))
-                   || ((version < Id3v2Version.Id3v230) && (Version < Id3v2Version.Id3v230));
-        }
-
-        /// <summary>
-        /// Sets the version of the <see cref="Id3v2Frame"/>.
-        /// </summary>
-        /// <param name="version">The version.</param>
-        /// <exception cref="InvalidVersionException">Thrown if <paramref name="version"/> is not supported by this frame.</exception>
-        /// <remarks>
-        /// This function can be used to change the <see cref="Version"/> of the <see cref="Id3v2Frame"/>.
-        /// Classes inheriting this class can override <see cref="IsVersionSupported(Id3v2Version)"/> to specify whether the <paramref name="version"/> is supported or not.
-        /// </remarks>
-        public void SetVersion(Id3v2Version version)
-        {
-            if (!IsVersionSupported(version))
-                throw new InvalidVersionException(String.Format("Version {0} is not supported by this frame", version));
-
-            Version = version;
-        }
-
-        /// <summary>
-        /// Decrypts this instance.
-        /// </summary>
-        /// <returns>
-        /// true if <see cref="Cryptor"/> has been set and this instance could be decrypted; otherwise, false.
-        /// </returns>
-        public bool Decrypt()
-        {
-            if (Cryptor == null)
-                return false;
-
-            byte[] decryptedData = Cryptor.Decrypt(EncryptionType, EncryptedData, EncryptedData.Length);
-            if (decryptedData == null)
-                return false;
-
-            _isEncrypted = false;
-            Data = decryptedData;
-            return true;
-        }
-
-        /// <summary>
-        /// Decompresses this instance.
-        /// </summary>
-        /// <returns>
-        /// true if <see cref="Compressor"/> has been set and this instance could be decompressed; otherwise, false.
-        /// </returns>
-        public bool Decompress()
-        {
-            if (Compressor == null)
-                return false;
-
-            byte[] decompressedData = Compressor.Decompress(CompressedData, CompressedData.Length);
-            if (decompressedData == null)
-                return false;
-
-            _isCompressed = false;
-            Data = decompressedData;
-            return true;
-        }
-
-        /// <summary>
-        /// Writes the frame into a byte array.
-        /// </summary>
-        /// <returns>
-        /// A byte array that represents the frame.
-        /// </returns>
-        /// <remarks>
-        /// When <see cref="UseEncryption"/> is set, <see cref="Cryptor"/> will be called to encrypt the data.
-        /// Note that the data passed to the <see cref="Cryptor"/> function will be compressed if <see cref="UseCompression"/> is set.
-        /// </remarks>
-        public byte[] ToByteArray()
-        {
-            byte[] data = (_isCompressed ? (_isEncrypted ? EncryptedData : CompressedData) : (_isEncrypted ? EncryptedData : Data)) ?? new byte[0];
-
-            // Don't write 0-byte data fields as they won't be parsed again (according to the specs the data should contain at least 1 byte).
-            if (data.Length == 0)
-                return new byte[0];
-
-            using (StreamBuffer buffer = new StreamBuffer())
+            else if (Version >= Id3v2Version.Id3v240)
             {
-                // Write the extra header fields if needed.
-                // Note that the order of fields differ by version.
-                if ((Version >= Id3v2Version.Id3v230) && (Version < Id3v2Version.Id3v240))
+                // Some frame format flags indicate that additional information fields are added to the frame.
+                // This information is added after the frame header and before the frame data 
+                // in the same order as the flags that indicates them.
+                // I.e. the four bytes of decompressed size will precede the encryption method byte.
+
+                // Frame contains group information
+                if (UseGroupingIdentity)
                 {
-                    // Some flags indicates that the frame header is extended with additional information.
-                    // This information will be added to the frame header in the same order as the flags indicating the additions.
-                    // I.e. the four bytes of decompressed size will precede the encryption method byte.
-
-                    // Frame is compressed using [#ZLIB zlib] with 4 bytes for 'decompressed size' appended to the frame header.
-                    if (UseCompression)
-                        buffer.WriteBigEndianInt32(data.Length);
-
-                    // Frame is encrypted.
-                    if (UseEncryption)
-                        buffer.WriteByte(EncryptionType);
-
-                    // Frame contains group information
-                    if (UseGroupingIdentity)
-                        buffer.WriteByte(GroupIdentifier);
-                }
-                else if (Version >= Id3v2Version.Id3v240)
-                {
-                    // Some frame format flags indicate that additional information fields are added to the frame.
-                    // This information is added after the frame header and before the frame data 
-                    // in the same order as the flags that indicates them.
-                    // I.e. the four bytes of decompressed size will precede the encryption method byte.
-
-                    // Frame contains group information
-                    if (UseGroupingIdentity)
-                        buffer.WriteByte(GroupIdentifier);
-
-                    // Frame is encrypted.
-                    if (UseEncryption)
-                        buffer.WriteByte(EncryptionType);
-
-                    // A data length Indicator has been added to the frame.
-                    if (UseCompression || UseDataLengthIndicator)
-                        buffer.WriteBigEndianInt32(Id3v2Tag.GetSynchsafeValue(data.Length));
+                    buffer.WriteByte(GroupIdentifier);
                 }
 
-                // If the frameData is not initially compressed and the compression flag has been set - compress the data.
-                if (!_isEncrypted && !_isCompressed && UseCompression && (Compressor != null))
+                // Frame is encrypted.
+                if (UseEncryption)
                 {
-                    // Frame should be compressed using zlib [zlib] deflate method.
-                    data = Compressor.Compress(data);
-
-                    // A 'Data Length Indicator' byte MUST be included in the frame.
-                    UseDataLengthIndicator = true;
+                    buffer.WriteByte(EncryptionType);
                 }
 
-                // If we can't encrypt the frame, i.e. because it's encrypted and we couldn't decrypt it, we can't compress it or encrypt it again.
-                // If the encryption flag has been set - encrypt the data.
-                if (!_isEncrypted && UseEncryption && (Cryptor != null))
-                    data = Cryptor.Encrypt(EncryptionType, data) ?? data;
-
-                // Synchronize the data.
-                if (UseUnsynchronization)
-                    data = Id3v2Tag.GetUnsynchronizedData(data, 0, data.Length);
-
-                // Write the data to the temp buffer; header has already been written at this point.
-                buffer.Write(data);
-
-                data = buffer.ToByteArray();
-            }
-
-            // Write the frame header to the final buffer.
-            using (StreamBuffer buffer = new StreamBuffer())
-            {
-                // identifier needs to match the IdentifierFieldLength; pad the identifier if needed (not legal, but some programs write incorrect identifiers).
-                string identifier = (Identifier ?? string.Empty).PadRight(GetIdentifierFieldLength(Version), '\0');
-                buffer.WriteString(identifier.Substring(0, IdentifierFieldLength));
-                if (Version >= Id3v2Version.Id3v240)
+                // A data length Indicator has been added to the frame.
+                if (UseCompression || UseDataLengthIndicator)
+                {
                     buffer.WriteBigEndianInt32(Id3v2Tag.GetSynchsafeValue(data.Length));
-                else
-                    buffer.WriteBigEndianBytes(data.Length, DataSizeFieldLength);
-
-                // Write the flags to the final buffer.
-                if (Version >= Id3v2Version.Id3v230)
-                    buffer.WriteBigEndianInt16((short)Flags);
-
-                buffer.Write(data);
-                return buffer.ToByteArray();
+                }
             }
+
+            // If the frameData is not initially compressed and the compression flag has been set - compress the data.
+            if (!_isEncrypted && !_isCompressed && UseCompression && (Compressor != null))
+            {
+                // Frame should be compressed using zlib [zlib] deflate method.
+                data = Compressor.Compress(data);
+
+                // A 'Data Length Indicator' byte MUST be included in the frame.
+                UseDataLengthIndicator = true;
+            }
+
+            // If we can't encrypt the frame, i.e. because it's encrypted and we couldn't decrypt it, we can't compress it or encrypt it again.
+            // If the encryption flag has been set - encrypt the data.
+            if (!_isEncrypted && UseEncryption && (Cryptor != null))
+            {
+                data = Cryptor.Encrypt(EncryptionType, data) ?? data;
+            }
+
+            // Synchronize the data.
+            if (UseUnsynchronization)
+            {
+                data = Id3v2Tag.GetUnsynchronizedData(data, 0, data.Length);
+            }
+
+            // Write the data to the temp buffer; header has already been written at this point.
+            buffer.Write(data);
+
+            data = buffer.ToByteArray();
+        }
+
+        // Write the frame header to the final buffer.
+        using (var buffer = new StreamBuffer())
+        {
+            // identifier needs to match the IdentifierFieldLength; pad the identifier if needed (not legal, but some programs write incorrect identifiers).
+            var identifier = (Identifier ?? string.Empty).PadRight(GetIdentifierFieldLength(Version), '\0');
+            buffer.WriteString(identifier[..IdentifierFieldLength]);
+            if (Version >= Id3v2Version.Id3v240)
+            {
+                buffer.WriteBigEndianInt32(Id3v2Tag.GetSynchsafeValue(data.Length));
+            }
+            else
+            {
+                buffer.WriteBigEndianBytes(data.Length, DataSizeFieldLength);
+            }
+
+            // Write the flags to the final buffer.
+            if (Version >= Id3v2Version.Id3v230)
+            {
+                buffer.WriteBigEndianInt16((short)Flags);
+            }
+
+            buffer.Write(data);
+            return buffer.ToByteArray();
         }
     }
 }

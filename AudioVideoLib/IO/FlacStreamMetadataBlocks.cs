@@ -5,128 +5,127 @@
  *  http://py.thoulon.free.fr/
  */
 
+namespace AudioVideoLib.IO;
+
 using System.Collections.Generic;
 using System.Linq;
 
 using AudioVideoLib.Formats;
 
-namespace AudioVideoLib.IO
+/// <summary>
+/// The stream containing FLAC Audio <see cref="FlacFrame"/>s.
+/// </summary>
+public sealed partial class FlacStream
 {
     /// <summary>
-    /// The stream containing FLAC Audio <see cref="FlacFrame"/>s.
+    /// Gets the metadata blocks in the stream.
     /// </summary>
-    public sealed partial class FlacStream
+    /// <value>
+    /// The metadata blocks in the stream.
+    /// </value>
+    public IEnumerable<FlacMetadataBlock> MetadataBlocks
     {
-        /// <summary>
-        /// Gets the metadata blocks in the stream.
-        /// </summary>
-        /// <value>
-        /// The metadata blocks in the stream.
-        /// </value>
-        public IEnumerable<FlacMetadataBlock> MetadataBlocks
+        get
         {
-            get
-            {
-                return _metadataBlocks;
-            }
+            return _metadataBlocks;
         }
+    }
 
-        /// <summary>
-        /// Gets the stream info metadata blocks.
-        /// </summary>
-        /// <value>
-        /// The stream info metadata blocks.
-        /// </value>
-        public IEnumerable<FlacStreamInfoMetadataBlock> StreamInfoMetadataBlocks
+    /// <summary>
+    /// Gets the stream info metadata blocks.
+    /// </summary>
+    /// <value>
+    /// The stream info metadata blocks.
+    /// </value>
+    public IEnumerable<FlacStreamInfoMetadataBlock> StreamInfoMetadataBlocks
+    {
+        get
         {
-            get
-            {
-                return _metadataBlocks.OfType<FlacStreamInfoMetadataBlock>();
-            }
+            return _metadataBlocks.OfType<FlacStreamInfoMetadataBlock>();
         }
+    }
 
-        /// <summary>
-        /// Gets the application metadata blocks.
-        /// </summary>
-        /// <value>
-        /// The application metadata blocks.
-        /// </value>
-        public IEnumerable<FlacApplicationMetadataBlock> ApplicationMetadataBlocks
+    /// <summary>
+    /// Gets the application metadata blocks.
+    /// </summary>
+    /// <value>
+    /// The application metadata blocks.
+    /// </value>
+    public IEnumerable<FlacApplicationMetadataBlock> ApplicationMetadataBlocks
+    {
+        get
         {
-            get
-            {
-                return _metadataBlocks.OfType<FlacApplicationMetadataBlock>();
-            }
+            return _metadataBlocks.OfType<FlacApplicationMetadataBlock>();
         }
+    }
 
-        /// <summary>
-        /// Gets the padding metadata blocks.
-        /// </summary>
-        /// <value>
-        /// The padding metadata blocks.
-        /// </value>
-        public IEnumerable<FlacPaddingMetadataBlock> PaddingMetadataBlocks
+    /// <summary>
+    /// Gets the padding metadata blocks.
+    /// </summary>
+    /// <value>
+    /// The padding metadata blocks.
+    /// </value>
+    public IEnumerable<FlacPaddingMetadataBlock> PaddingMetadataBlocks
+    {
+        get
         {
-            get
-            {
-                return _metadataBlocks.OfType<FlacPaddingMetadataBlock>();
-            }
+            return _metadataBlocks.OfType<FlacPaddingMetadataBlock>();
         }
+    }
 
-        /// <summary>
-        /// Gets the seek table metadata block.
-        /// </summary>
-        /// <value>
-        /// The seek table metadata block.
-        /// </value>
-        public FlacSeekTableMetadataBlock? SeekTableMetadataBlock
+    /// <summary>
+    /// Gets the seek table metadata block.
+    /// </summary>
+    /// <value>
+    /// The seek table metadata block.
+    /// </value>
+    public FlacSeekTableMetadataBlock? SeekTableMetadataBlock
+    {
+        get
         {
-            get
-            {
-                return _metadataBlocks.OfType<FlacSeekTableMetadataBlock>().FirstOrDefault();
-            }
+            return _metadataBlocks.OfType<FlacSeekTableMetadataBlock>().FirstOrDefault();
         }
+    }
 
-        /// <summary>
-        /// Gets the vorbis comments metadata block.
-        /// </summary>
-        /// <value>
-        /// The vorbis comments metadata block.
-        /// </value>
-        public FlacVorbisCommentsMetadataBlock? VorbisCommentsMetadataBlock
+    /// <summary>
+    /// Gets the vorbis comments metadata block.
+    /// </summary>
+    /// <value>
+    /// The vorbis comments metadata block.
+    /// </value>
+    public FlacVorbisCommentsMetadataBlock? VorbisCommentsMetadataBlock
+    {
+        get
         {
-            get
-            {
-                return _metadataBlocks.OfType<FlacVorbisCommentsMetadataBlock>().FirstOrDefault();
-            }
+            return _metadataBlocks.OfType<FlacVorbisCommentsMetadataBlock>().FirstOrDefault();
         }
+    }
 
-        /// <summary>
-        /// Gets the flac cue sheet metadata blocks.
-        /// </summary>
-        /// <value>
-        /// The flac cue sheet metadata blocks.
-        /// </value>
-        public IEnumerable<FlacCueSheetMetadataBlock> FlacCueSheetMetadataBlocks
+    /// <summary>
+    /// Gets the flac cue sheet metadata blocks.
+    /// </summary>
+    /// <value>
+    /// The flac cue sheet metadata blocks.
+    /// </value>
+    public IEnumerable<FlacCueSheetMetadataBlock> FlacCueSheetMetadataBlocks
+    {
+        get
         {
-            get
-            {
-                return _metadataBlocks.OfType<FlacCueSheetMetadataBlock>();
-            }
+            return _metadataBlocks.OfType<FlacCueSheetMetadataBlock>();
         }
+    }
 
-        /// <summary>
-        /// Gets the picture metadata blocks.
-        /// </summary>
-        /// <value>
-        /// The picture metadata blocks.
-        /// </value>
-        public IEnumerable<FlacPictureMetadataBlock> PictureMetadataBlocks
+    /// <summary>
+    /// Gets the picture metadata blocks.
+    /// </summary>
+    /// <value>
+    /// The picture metadata blocks.
+    /// </value>
+    public IEnumerable<FlacPictureMetadataBlock> PictureMetadataBlocks
+    {
+        get
         {
-            get
-            {
-                return _metadataBlocks.OfType<FlacPictureMetadataBlock>();
-            }
+            return _metadataBlocks.OfType<FlacPictureMetadataBlock>();
         }
     }
 }

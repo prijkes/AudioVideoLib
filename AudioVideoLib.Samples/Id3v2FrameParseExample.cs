@@ -1,8 +1,8 @@
 #nullable disable warnings
-﻿/*
- * Date: 2012-12-01
- * Sources used: 
- */
+/*
+* Date: 2012-12-01
+* Sources used: 
+*/
 
 using System;
 using System.IO;
@@ -22,7 +22,7 @@ namespace AudioVideoLibExamples
     {
         public static void ParseStream(Stream stream)
         {
-            AudioTags audioTags = new AudioTags();
+            var audioTags = new AudioTags();
             audioTags.AudioTagParse += AudioTagParse;
             try
             {
@@ -36,22 +36,22 @@ namespace AudioVideoLibExamples
 
             foreach (IAudioTagOffset tagOffset in audioTags.Where(t => t.AudioTag is Id3v2Tag))
             {
-                Id3v2Tag tag = tagOffset.AudioTag as Id3v2Tag;
+                var tag = tagOffset.AudioTag as Id3v2Tag;
                 if (tag == null)
                     continue;
 
-                Id3v2ExperimentalTestFrame testFrame = tag.GetFrame<Id3v2ExperimentalTestFrame>();
+                var testFrame = tag.GetFrame<Id3v2ExperimentalTestFrame>();
                 if (testFrame == null)
                 {
                     testFrame = new Id3v2ExperimentalTestFrame(tag.Version)
-                                    {
-                                        TextEncodingType = Id3v2FrameEncodingType.UTF16BigEndian,
-                                        TaggingLibraryUsed = "This one",
-                                        TaggingLibraryAuthor = "Me",
-                                        TaggingLibraryWebsite = "http://www.google.com/",
-                                        TaggingLibrarySupportsFrame = true,
-                                        DateOfTag = DateTime.MaxValue
-                                    };
+                    {
+                        TextEncodingType = Id3v2FrameEncodingType.UTF16BigEndian,
+                        TaggingLibraryUsed = "This one",
+                        TaggingLibraryAuthor = "Me",
+                        TaggingLibraryWebsite = "http://www.google.com/",
+                        TaggingLibrarySupportsFrame = true,
+                        DateOfTag = DateTime.MaxValue
+                    };
                     tag.SetFrame(testFrame);
                 }
             }
@@ -79,7 +79,7 @@ namespace AudioVideoLibExamples
             if (((e.Frame.Version < Id3v2Version.Id3v230) && String.Equals(e.Frame.Identifier, "XFT", StringComparison.OrdinalIgnoreCase))
                 || ((e.Frame.Version >= Id3v2Version.Id3v230) && String.Equals(e.Frame.Identifier, "XFTS", StringComparison.OrdinalIgnoreCase)))
             {
-                byte[] frameData = e.Frame.ToByteArray();
+                var frameData = e.Frame.ToByteArray();
                 e.Frame = Id3v2Frame.ReadFromStream<Id3v2ExperimentalTestFrame>(e.Frame.Version, new MemoryStream(frameData), frameData.Length);
             }
         }

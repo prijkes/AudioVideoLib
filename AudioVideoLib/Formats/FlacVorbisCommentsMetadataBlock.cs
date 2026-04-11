@@ -4,53 +4,54 @@
  *  http://xiph.org/flac/format.html
  *  http://py.thoulon.free.fr/
  */
+namespace AudioVideoLib.Formats;
+
 using System;
 using System.IO;
 
 using AudioVideoLib.IO;
 using AudioVideoLib.Tags;
 
-namespace AudioVideoLib.Formats
+/// <summary>
+/// Class for FLAC audio frames.
+/// </summary>
+public class FlacVorbisCommentsMetadataBlock : FlacMetadataBlock
 {
-    /// <summary>
-    /// Class for FLAC audio frames.
-    /// </summary>
-    public class FlacVorbisCommentsMetadataBlock : FlacMetadataBlock
+    /// <inheritdoc/>
+    public override FlacMetadataBlockType BlockType
     {
-        /// <inheritdoc/>
-        public override FlacMetadataBlockType BlockType
+        get
         {
-            get
-            {
-                return FlacMetadataBlockType.VorbisComment;
-            }
+            return FlacMetadataBlockType.VorbisComment;
         }
-
-        /// <inheritdoc/>
-        public override byte[] Data
-        {
-            get
-            {
-                return VorbisComments.ToByteArray();
-            }
-
-            protected set
-            {
-                if (value == null)
-                    throw new ArgumentNullException("value");
-
-                VorbisComments = VorbisComments.ReadStream(new StreamBuffer(value)) ?? throw new InvalidDataException("Could not parse Vorbis comments block.");
-            }
-        }
-
-        ////------------------------------------------------------------------------------------------------------------------------------
-
-        /// <summary>
-        /// Gets or sets the vorbis comment.
-        /// </summary>
-        /// <value>
-        /// The vorbis comment.
-        /// </value>
-        public VorbisComments VorbisComments { get; set; } = null!;
     }
+
+    /// <inheritdoc/>
+    public override byte[] Data
+    {
+        get
+        {
+            return VorbisComments.ToByteArray();
+        }
+
+        protected set
+        {
+            if (value == null)
+            {
+                throw new ArgumentNullException("value");
+            }
+
+            VorbisComments = VorbisComments.ReadStream(new StreamBuffer(value)) ?? throw new InvalidDataException("Could not parse Vorbis comments block.");
+        }
+    }
+
+    ////------------------------------------------------------------------------------------------------------------------------------
+
+    /// <summary>
+    /// Gets or sets the vorbis comment.
+    /// </summary>
+    /// <value>
+    /// The vorbis comment.
+    /// </value>
+    public VorbisComments VorbisComments { get; set; } = null!;
 }

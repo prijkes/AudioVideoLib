@@ -9,66 +9,77 @@
  *  http://www.id3.org/Id3v2.4.0-changes
  */
 
-namespace AudioVideoLib.Tags
+namespace AudioVideoLib.Tags;
+
+/// <summary>
+/// Class to store an Id3v2 tag.
+/// </summary>
+public partial class Id3v2Tag
 {
     /// <summary>
-    /// Class to store an Id3v2 tag.
+    /// Gets or sets the official internet radio station homepage.
     /// </summary>
-    public partial class Id3v2Tag
+    /// <value>
+    /// The official internet radio station homepage.
+    /// </value>
+    /// <remarks>
+    /// The 'Official internet radio station homepage' contains a URL pointing at the homepage of the internet radio station.
+    /// </remarks>
+    public Id3v2UrlLinkFrame? OfficialInternetRadioStationHomepage
     {
-        /// <summary>
-        /// Gets or sets the official internet radio station homepage.
-        /// </summary>
-        /// <value>
-        /// The official internet radio station homepage.
-        /// </value>
-        /// <remarks>
-        /// The 'Official internet radio station homepage' contains a URL pointing at the homepage of the internet radio station.
-        /// </remarks>
-        public Id3v2UrlLinkFrame? OfficialInternetRadioStationHomepage
+        get
         {
-            get
-            {
-                return (Version >= Id3v2Version.Id3v230) ? GetUrlLinkFrame(Id3v2UrlLinkFrameIdentifier.OfficialInternetRadioStationHomepage) : null;
-            }
-
-            set
-            {
-                if (Version < Id3v2Version.Id3v230)
-                    return;
-
-                if (value == null)
-                    RemoveFrame(OfficialInternetRadioStationHomepage);
-                else
-                    SetFrame(value);
-            }
+            return (Version >= Id3v2Version.Id3v230) ? GetUrlLinkFrame(Id3v2UrlLinkFrameIdentifier.OfficialInternetRadioStationHomepage) : null;
         }
 
-        /// <summary>
-        /// Gets or sets the payment webpage.
-        /// </summary>
-        /// <value>
-        /// The payment webpage.
-        /// </value>
-        /// <remarks>
-        /// The 'Payment' frame is a URL pointing at a webpage that will handle the process of paying for this file.
-        /// </remarks>
-        public Id3v2UrlLinkFrame? PaymentWebpage
+        set
         {
-            get
+            if (Version < Id3v2Version.Id3v230)
             {
-                return (Version >= Id3v2Version.Id3v230) ? GetUrlLinkFrame(Id3v2UrlLinkFrameIdentifier.PaymentWebpage) : null;
+                return;
             }
 
-            set
+            if (value == null)
             {
-                if (Version < Id3v2Version.Id3v230)
-                    return;
+                RemoveFrame(OfficialInternetRadioStationHomepage);
+            }
+            else
+            {
+                SetFrame(value);
+            }
+        }
+    }
 
-                if (value == null)
-                    RemoveFrame(PaymentWebpage);
-                else
-                    SetFrame(value);
+    /// <summary>
+    /// Gets or sets the payment webpage.
+    /// </summary>
+    /// <value>
+    /// The payment webpage.
+    /// </value>
+    /// <remarks>
+    /// The 'Payment' frame is a URL pointing at a webpage that will handle the process of paying for this file.
+    /// </remarks>
+    public Id3v2UrlLinkFrame? PaymentWebpage
+    {
+        get
+        {
+            return (Version >= Id3v2Version.Id3v230) ? GetUrlLinkFrame(Id3v2UrlLinkFrameIdentifier.PaymentWebpage) : null;
+        }
+
+        set
+        {
+            if (Version < Id3v2Version.Id3v230)
+            {
+                return;
+            }
+
+            if (value == null)
+            {
+                RemoveFrame(PaymentWebpage);
+            }
+            else
+            {
+                SetFrame(value);
             }
         }
     }

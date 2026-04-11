@@ -4,50 +4,53 @@
  *  http://xiph.org/flac/format.html
  *  http://py.thoulon.free.fr/
  */
+namespace AudioVideoLib.Formats;
+
 using System;
 
 using AudioVideoLib.IO;
 
-namespace AudioVideoLib.Formats
+/// <summary>
+/// Class for FLAC audio frames.
+/// </summary>
+public sealed class FlacVerbatimSubFrame : FlacSubFrame
 {
     /// <summary>
-    /// Class for FLAC audio frames.
+    /// Initializes a new instance of the <see cref="FlacVerbatimSubFrame"/> class.
     /// </summary>
-    public sealed class FlacVerbatimSubFrame : FlacSubFrame
+    /// <param name="flacFrame">The <see cref="FlacFrame"/>.</param>
+    public FlacVerbatimSubFrame(FlacFrame flacFrame) : base(flacFrame)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FlacVerbatimSubFrame"/> class.
-        /// </summary>
-        /// <param name="flacFrame">The <see cref="FlacFrame"/>.</param>
-        public FlacVerbatimSubFrame(FlacFrame flacFrame) : base(flacFrame)
+        if (flacFrame == null)
         {
-            if (flacFrame == null)
-                throw new ArgumentNullException("flacFrame");
+            throw new ArgumentNullException("flacFrame");
         }
+    }
 
-        ////------------------------------------------------------------------------------------------------------------------------------
+    ////------------------------------------------------------------------------------------------------------------------------------
 
-        /// <summary>
-        /// Gets the unencoded subblock.
-        /// </summary>
-        /// <value>
-        /// The unencoded subblock.
-        /// </value>
-        public int[] UnencodedSubblocks { get; private set; } = null!;
+    /// <summary>
+    /// Gets the unencoded subblock.
+    /// </summary>
+    /// <value>
+    /// The unencoded subblock.
+    /// </value>
+    public int[] UnencodedSubblocks { get; private set; } = null!;
 
-        ////------------------------------------------------------------------------------------------------------------------------------
+    ////------------------------------------------------------------------------------------------------------------------------------
 
-        /// <summary>
-        /// Reads the specified stream buffer.
-        /// </summary>
-        /// <param name="sb">The stream buffer.</param>
-        /// <param name="sampeSize">Size of the sample.</param>
-        /// <param name="blockSize">Size of the block.</param>
-        protected override void Read(StreamBuffer sb, int sampeSize, int blockSize)
+    /// <summary>
+    /// Reads the specified stream buffer.
+    /// </summary>
+    /// <param name="sb">The stream buffer.</param>
+    /// <param name="sampeSize">Size of the sample.</param>
+    /// <param name="blockSize">Size of the block.</param>
+    protected override void Read(StreamBuffer sb, int sampeSize, int blockSize)
+    {
+        UnencodedSubblocks = new int[blockSize];
+        for (var i = 0; i < blockSize; i++)
         {
-            UnencodedSubblocks = new int[blockSize];
-            for (int i = 0; i < blockSize; i++)
-                UnencodedSubblocks[i] = sb.ReadBigEndianInt32();
+            UnencodedSubblocks[i] = sb.ReadBigEndianInt32();
         }
     }
 }

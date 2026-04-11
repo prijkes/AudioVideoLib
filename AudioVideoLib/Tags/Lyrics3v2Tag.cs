@@ -5,6 +5,8 @@
  *  http://www.mpx.cz/mp3manager/tags.htm
  */
 
+namespace AudioVideoLib.Tags;
+
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -13,271 +15,283 @@ using System.Linq;
 using AudioVideoLib.Collections;
 using AudioVideoLib.IO;
 
-namespace AudioVideoLib.Tags
+/// <summary>
+/// Class to store a Lyrics3v2 tag.
+/// </summary>
+public sealed partial class Lyrics3v2Tag : IAudioTag
 {
     /// <summary>
-    /// Class to store a Lyrics3v2 tag.
+    /// The header identifier for a <see cref="Lyrics3Tag"/>.
     /// </summary>
-    public sealed partial class Lyrics3v2Tag : IAudioTag
+    public const string HeaderIdentifier = "LYRICSBEGIN";
+
+    /// <summary>
+    /// The footer identifier for a <see cref="Lyrics3Tag"/>.
+    /// </summary>
+    public const string FooterIdentifier = "LYRICS200";
+
+    /// <summary>
+    /// Delimiter used between lines.
+    /// </summary>
+    public const string NewLine = "\r\n";
+
+    /// <summary>
+    /// The tag size length, in bytes.
+    /// </summary>
+    public const int TagSizeLength = 6;
+
+    private static readonly byte[] HeaderIdentifierBytes = System.Text.Encoding.ASCII.GetBytes(HeaderIdentifier);
+
+    private static readonly byte[] FooterIdentifierBytes = System.Text.Encoding.ASCII.GetBytes(FooterIdentifier);
+
+    private readonly EventList<Lyrics3v2Field> _fields = [];
+
+    ////------------------------------------------------------------------------------------------------------------------------------
+
+    /// <summary>
+    /// Gets the fields in the tag.
+    /// </summary>
+    /// <value>A list of <see cref="Lyrics3v2Field"/>s in the tag.</value>
+    public IEnumerable<Lyrics3v2Field> Fields
     {
-        /// <summary>
-        /// The header identifier for a <see cref="Lyrics3Tag"/>.
-        /// </summary>
-        public const string HeaderIdentifier = "LYRICSBEGIN";
+        get { return _fields.AsReadOnly(); }
+    }
 
-        /// <summary>
-        /// The footer identifier for a <see cref="Lyrics3Tag"/>.
-        /// </summary>
-        public const string FooterIdentifier = "LYRICS200";
+    ////------------------------------------------------------------------------------------------------------------------------------
 
-        /// <summary>
-        /// Delimiter used between lines.
-        /// </summary>
-        public const string NewLine = "\r\n";
+    /// <inheritdoc/>
+    public override bool Equals(object? obj)
+    {
+        return Equals(obj as Lyrics3v2Tag);
+    }
 
-        /// <summary>
-        /// The tag size length, in bytes.
-        /// </summary>
-        public const int TagSizeLength = 6;
+    /// <inheritdoc/>
+    public bool Equals(IAudioTag? other)
+    {
+        return Equals(other as Lyrics3v2Tag);
+    }
 
-        private static readonly byte[] HeaderIdentifierBytes = System.Text.Encoding.ASCII.GetBytes(HeaderIdentifier);
+    /// <summary>
+    /// Equals the specified <see cref="Lyrics3Tag"/>.
+    /// </summary>
+    /// <param name="tag">The <see cref="Lyrics3Tag"/>.</param>
+    /// <returns>true if equal; false otherwise.</returns>
+    public bool Equals(Lyrics3v2Tag? tag)
+    {
+        return tag is not null && (ReferenceEquals(this, tag) || true);
+    }
 
-        private static readonly byte[] FooterIdentifierBytes = System.Text.Encoding.ASCII.GetBytes(FooterIdentifier);
-
-        private readonly EventList<Lyrics3v2Field> _fields = new EventList<Lyrics3v2Field>();
-
-        ////------------------------------------------------------------------------------------------------------------------------------
-
-        /// <summary>
-        /// Gets the fields in the tag.
-        /// </summary>
-        /// <value>A list of <see cref="Lyrics3v2Field"/>s in the tag.</value>
-        public IEnumerable<Lyrics3v2Field> Fields
+    /// <summary>
+    /// Serves as a hash function for a particular type.
+    /// </summary>
+    /// <returns>
+    /// A hash code for the current <see cref="T:System.Object"/>.
+    /// </returns>
+    /// <filterpriority>2</filterpriority>
+    /// The value should be calculated on immutable fields only.
+    public override int GetHashCode()
+    {
+        unchecked
         {
-            get { return _fields.AsReadOnly(); }
+            return 0;
+        }
+    }
+
+    ////------------------------------------------------------------------------------------------------------------------------------
+
+    /// <summary>
+    /// Gets the field of type T.
+    /// </summary>
+    /// <typeparam name="T">The field type.</typeparam>
+    /// <returns>
+    /// The field of type T if found; otherwise, null.
+    /// </returns>
+    public T? GetField<T>() where T : Lyrics3v2Field
+    {
+        return _fields.OfType<T>().FirstOrDefault();
+    }
+
+    /// <summary>
+    /// Gets the <see cref="Lyrics3v2TextField"/>.
+    /// </summary>
+    /// <param name="identifier">The identifier.</param>
+    /// <returns>The <see cref="Lyrics3v2TextField"/> if found; otherwise, null.</returns>
+    public Lyrics3v2TextField? GetField(Lyrics3v2TextFieldIdentifier identifier)
+    {
+        var id = Lyrics3v2TextField.GetIdentifier(identifier);
+        return _fields.OfType<Lyrics3v2TextField>().FirstOrDefault(f => string.Equals(f.Identifier, id, StringComparison.OrdinalIgnoreCase));
+    }
+
+    /// <summary>
+    /// Gets the first field of type T with a matching field identifier.
+    /// </summary>
+    /// <typeparam name="T">The field type.</typeparam>
+    /// <param name="identifier">The identifier of the field.</param>
+    /// <returns>
+    /// The first field of type T with a matching field identifier if found; otherwise, null.
+    /// </returns>
+    public T? GetField<T>(string identifier) where T : Lyrics3v2Field
+    {
+        return identifier == null
+            ? throw new ArgumentNullException("identifier")
+            : _fields.OfType<T>().FirstOrDefault(f => string.Equals(f.Identifier, identifier, StringComparison.OrdinalIgnoreCase));
+    }
+
+    /// <summary>
+    /// Gets all fields of type T.
+    /// </summary>
+    /// <typeparam name="T">The field type.</typeparam>
+    /// <returns>
+    /// A list of fields of type T.
+    /// </returns>
+    public IEnumerable<T> GetFields<T>() where T : Lyrics3v2Field
+    {
+        return _fields.OfType<T>();
+    }
+
+    /// <summary>
+    /// Updates the first field with a matching field identifier if found; else, adds a new field.
+    /// </summary>
+    /// <param name="field">Field to add to the <see cref="Lyrics3v2Tag"/>.</param>
+    public void SetField(Lyrics3v2Field? field)
+    {
+        if (field == null)
+        {
+            throw new ArgumentNullException("field");
         }
 
-        ////------------------------------------------------------------------------------------------------------------------------------
-
-        /// <inheritdoc/>
-        public override bool Equals(object? obj)
+        int i, fieldCount = _fields.Count;
+        for (i = 0; i < fieldCount; i++)
         {
-            return Equals(obj as Lyrics3v2Tag);
-        }
-
-        /// <inheritdoc/>
-        public bool Equals(IAudioTag? other)
-        {
-            return Equals(other as Lyrics3v2Tag);
-        }
-
-        /// <summary>
-        /// Equals the specified <see cref="Lyrics3Tag"/>.
-        /// </summary>
-        /// <param name="tag">The <see cref="Lyrics3Tag"/>.</param>
-        /// <returns>true if equal; false otherwise.</returns>
-        public bool Equals(Lyrics3v2Tag? tag)
-        {
-            if (ReferenceEquals(null, tag))
-                return false;
-
-            if (ReferenceEquals(this, tag))
-                return true;
-
-            return true;
-        }
-
-        /// <summary>
-        /// Serves as a hash function for a particular type.
-        /// </summary>
-        /// <returns>
-        /// A hash code for the current <see cref="T:System.Object"/>.
-        /// </returns>
-        /// <filterpriority>2</filterpriority>
-        /// The value should be calculated on immutable fields only.
-        public override int GetHashCode()
-        {
-            unchecked
+            if (!ReferenceEquals(_fields[i], field) && !string.Equals(_fields[i].Identifier, field.Identifier, StringComparison.OrdinalIgnoreCase))
             {
-                return 0;
-            }
-        }
-
-        ////------------------------------------------------------------------------------------------------------------------------------
-
-        /// <summary>
-        /// Gets the field of type T.
-        /// </summary>
-        /// <typeparam name="T">The field type.</typeparam>
-        /// <returns>
-        /// The field of type T if found; otherwise, null.
-        /// </returns>
-        public T? GetField<T>() where T : Lyrics3v2Field
-        {
-            return _fields.OfType<T>().FirstOrDefault();
-        }
-
-        /// <summary>
-        /// Gets the <see cref="Lyrics3v2TextField"/>.
-        /// </summary>
-        /// <param name="identifier">The identifier.</param>
-        /// <returns>The <see cref="Lyrics3v2TextField"/> if found; otherwise, null.</returns>
-        public Lyrics3v2TextField? GetField(Lyrics3v2TextFieldIdentifier identifier)
-        {
-            string? id = Lyrics3v2TextField.GetIdentifier(identifier);
-            return _fields.OfType<Lyrics3v2TextField>().FirstOrDefault(f => String.Equals(f.Identifier, id, StringComparison.OrdinalIgnoreCase));
-        }
-
-        /// <summary>
-        /// Gets the first field of type T with a matching field identifier.
-        /// </summary>
-        /// <typeparam name="T">The field type.</typeparam>
-        /// <param name="identifier">The identifier of the field.</param>
-        /// <returns>
-        /// The first field of type T with a matching field identifier if found; otherwise, null.
-        /// </returns>
-        public T? GetField<T>(string identifier) where T : Lyrics3v2Field
-        {
-            if (identifier == null)
-                throw new ArgumentNullException("identifier");
-
-            return _fields.OfType<T>().FirstOrDefault(f => String.Equals(f.Identifier, identifier, StringComparison.OrdinalIgnoreCase));
-        }
-
-        /// <summary>
-        /// Gets all fields of type T.
-        /// </summary>
-        /// <typeparam name="T">The field type.</typeparam>
-        /// <returns>
-        /// A list of fields of type T.
-        /// </returns>
-        public IEnumerable<T> GetFields<T>() where T : Lyrics3v2Field
-        {
-            return _fields.OfType<T>();
-        }
-
-        /// <summary>
-        /// Updates the first field with a matching field identifier if found; else, adds a new field.
-        /// </summary>
-        /// <param name="field">Field to add to the <see cref="Lyrics3v2Tag"/>.</param>
-        public void SetField(Lyrics3v2Field? field)
-        {
-            if (field == null)
-                throw new ArgumentNullException("field");
-
-            int i, fieldCount = _fields.Count;
-            for (i = 0; i < fieldCount; i++)
-            {
-                if (!ReferenceEquals(_fields[i], field) && !String.Equals(_fields[i].Identifier, field.Identifier, StringComparison.OrdinalIgnoreCase))
-                    continue;
-
-                _fields[i] = field;
-                break;
+                continue;
             }
 
-            if (i == fieldCount)
-                _fields.Add(field);
+            _fields[i] = field;
+            break;
         }
 
-        /// <summary>
-        /// Updates a list of fields with a matching identifier if found; else, adds them.
-        /// </summary>
-        /// <param name="fields">The fields.</param>
-        public void SetFields(IEnumerable<Lyrics3v2Field> fields)
+        if (i == fieldCount)
         {
-            if (fields == null)
-                throw new ArgumentNullException("fields");
-
-            foreach (Lyrics3v2Field field in fields)
-                SetField(field);
+            _fields.Add(field);
         }
+    }
 
-        /// <summary>
-        /// Removes the first field with a matching identifier.
-        /// </summary>
-        /// <param name="identifier">The identifier.</param>
-        /// <exception cref="System.ArgumentNullException">Thrown if identifier is null.</exception>
-        public void RemoveField(string identifier)
+    /// <summary>
+    /// Updates a list of fields with a matching identifier if found; else, adds them.
+    /// </summary>
+    /// <param name="fields">The fields.</param>
+    public void SetFields(IEnumerable<Lyrics3v2Field> fields)
+    {
+        if (fields == null)
         {
-            if (identifier == null)
-                throw new ArgumentNullException("identifier");
-
-            Lyrics3v2Field? field = _fields.FirstOrDefault(f => String.Equals(f.Identifier, identifier, StringComparison.OrdinalIgnoreCase));
-            if (field != null)
-                _fields.Remove(field);
+            throw new ArgumentNullException("fields");
         }
 
-        /// <summary>
-        /// Removes the field.
-        /// </summary>
-        /// <param name="field">The field.</param>
-        /// <exception cref="System.ArgumentNullException">Thrown if field is null.</exception>
-        public void RemoveField(Lyrics3v2Field field)
+        foreach (var field in fields)
         {
-            if (field == null)
-                throw new ArgumentNullException("field");
-
-            _fields.RemoveAll(f => ReferenceEquals(f, field));
+            SetField(field);
         }
+    }
 
-        /// <summary>
-        /// Removes all fields with a matching identifier.
-        /// </summary>
-        /// <param name="identifier">The identifier.</param>
-        /// <exception cref="System.ArgumentNullException">Thrown if identifier is null.</exception>
-        public void RemoveFields(string identifier)
+    /// <summary>
+    /// Removes the first field with a matching identifier.
+    /// </summary>
+    /// <param name="identifier">The identifier.</param>
+    /// <exception cref="System.ArgumentNullException">Thrown if identifier is null.</exception>
+    public void RemoveField(string identifier)
+    {
+        if (identifier == null)
         {
-            if (identifier == null)
-                throw new ArgumentNullException("identifier");
-
-            _fields.RemoveAll(f => String.Equals(f.Identifier, identifier, StringComparison.OrdinalIgnoreCase));
+            throw new ArgumentNullException("identifier");
         }
 
-        /// <summary>
-        /// Removes all fields of type T.
-        /// </summary>
-        /// <typeparam name="T">A class of type <see cref="Lyrics3v2Field" />.</typeparam>
-        public void RemoveFields<T>() where T : Lyrics3v2Field
+        var field = _fields.FirstOrDefault(f => string.Equals(f.Identifier, identifier, StringComparison.OrdinalIgnoreCase));
+        if (field != null)
         {
-            _fields.RemoveAll(f => f is T);
+            _fields.Remove(field);
         }
+    }
 
-        /// <summary>
-        /// Removes the fields.
-        /// </summary>
-        /// <param name="fields">The fields.</param>
-        /// <exception cref="System.ArgumentNullException">Thrown if fields is null.</exception>
-        public void RemoveFields(IEnumerable<Lyrics3v2Field> fields)
+    /// <summary>
+    /// Removes the field.
+    /// </summary>
+    /// <param name="field">The field.</param>
+    /// <exception cref="System.ArgumentNullException">Thrown if field is null.</exception>
+    public void RemoveField(Lyrics3v2Field field)
+    {
+        if (field == null)
         {
-            if (fields == null)
-                throw new ArgumentNullException("fields");
-
-            foreach (Lyrics3v2Field field in fields)
-                RemoveField(field);
+            throw new ArgumentNullException("field");
         }
 
-        ////------------------------------------------------------------------------------------------------------------------------------
+        _fields.RemoveAll(f => ReferenceEquals(f, field));
+    }
 
-        /// <inheritdoc/>
-        public byte[] ToByteArray()
+    /// <summary>
+    /// Removes all fields with a matching identifier.
+    /// </summary>
+    /// <param name="identifier">The identifier.</param>
+    /// <exception cref="System.ArgumentNullException">Thrown if identifier is null.</exception>
+    public void RemoveFields(string identifier)
+    {
+        if (identifier == null)
         {
-            using (StreamBuffer buffer = new StreamBuffer())
-            {
-                buffer.Write(HeaderIdentifierBytes);
-
-                foreach (byte[] byteField in _fields.Select(field => field.ToByteArray()))
-                    buffer.Write(byteField);
-
-                buffer.WriteString(buffer.Length.ToString("D" + TagSizeLength, CultureInfo.InvariantCulture));
-                buffer.Write(FooterIdentifierBytes);
-                return buffer.ToByteArray();
-            }
+            throw new ArgumentNullException("identifier");
         }
 
-        /// <inheritdoc/>
-        public override string ToString()
+        _fields.RemoveAll(f => string.Equals(f.Identifier, identifier, StringComparison.OrdinalIgnoreCase));
+    }
+
+    /// <summary>
+    /// Removes all fields of type T.
+    /// </summary>
+    /// <typeparam name="T">A class of type <see cref="Lyrics3v2Field" />.</typeparam>
+    public void RemoveFields<T>() where T : Lyrics3v2Field
+    {
+        _fields.RemoveAll(f => f is T);
+    }
+
+    /// <summary>
+    /// Removes the fields.
+    /// </summary>
+    /// <param name="fields">The fields.</param>
+    /// <exception cref="System.ArgumentNullException">Thrown if fields is null.</exception>
+    public void RemoveFields(IEnumerable<Lyrics3v2Field> fields)
+    {
+        if (fields == null)
         {
-            return "Lyrics3v2";
+            throw new ArgumentNullException("fields");
         }
+
+        foreach (var field in fields)
+        {
+            RemoveField(field);
+        }
+    }
+
+    ////------------------------------------------------------------------------------------------------------------------------------
+
+    /// <inheritdoc/>
+    public byte[] ToByteArray()
+    {
+        var buffer = new StreamBuffer();
+        buffer.Write(HeaderIdentifierBytes);
+
+        foreach (var byteField in _fields.Select(field => field.ToByteArray()))
+        {
+            buffer.Write(byteField);
+        }
+
+        buffer.WriteString(buffer.Length.ToString("D" + TagSizeLength, CultureInfo.InvariantCulture));
+        buffer.Write(FooterIdentifierBytes);
+        return buffer.ToByteArray();
+    }
+
+    /// <inheritdoc/>
+    public override string ToString()
+    {
+        return "Lyrics3v2";
     }
 }

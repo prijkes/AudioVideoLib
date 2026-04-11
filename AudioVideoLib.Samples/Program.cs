@@ -1,8 +1,8 @@
 #nullable disable warnings
-﻿/*
- * Date: 2012-12-01
- * Sources used: 
- */
+/*
+* Date: 2012-12-01
+* Sources used: 
+*/
 
 using System;
 using System.IO;
@@ -33,30 +33,30 @@ namespace AudioVideoLibExamples
             string rootPath = null;
             for (int i = 0; i < args.Length; i++)
             {
-                string s = args[i];
+                var s = args[i];
                 switch (s)
                 {
                     case "-p":
+                    {
+                        if (++i == args.Length)
                         {
-                            if (++i == args.Length)
-                            {
-                                Console.WriteLine("[-] Search path not specified.");
-                                return 1;
-                            }
-                            rootPath = args[i];
-                            if (!Directory.Exists(rootPath))
-                            {
-                                Console.WriteLine("[-] Path \"{0}\" not found.", rootPath);
-                                return 1;
-                            }
+                            Console.WriteLine("[-] Search path not specified.");
+                            return 1;
                         }
-                        break;
+                        rootPath = args[i];
+                        if (!Directory.Exists(rootPath))
+                        {
+                            Console.WriteLine("[-] Path \"{0}\" not found.", rootPath);
+                            return 1;
+                        }
+                    }
+                    break;
 
                     default:
-                        {
-                            PrintHelp();
-                        }
-                        break;
+                    {
+                        PrintHelp();
+                    }
+                    break;
                 }
             }
 

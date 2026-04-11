@@ -1,5 +1,5 @@
 #nullable disable warnings
-﻿using System;
+using System;
 
 using AudioVideoLib.Tags;
 
@@ -53,7 +53,7 @@ namespace AudioVideoLibExamples
 
         private static byte[] EncryptDataMethod1(byte[] data)
         {
-            byte[] buffer = new byte[data.Length];
+            var buffer = new byte[data.Length];
             Buffer.BlockCopy(data, 0, buffer, 0, buffer.Length);
             for (int i = 0; i < data.Length; i++)
                 buffer[i] = (byte)(data[i] ^ SecretByte);
@@ -63,7 +63,7 @@ namespace AudioVideoLibExamples
 
         private static byte[] DecryptDataMethod1(byte[] data)
         {
-            byte[] buffer = new byte[data.Length];
+            var buffer = new byte[data.Length];
             Buffer.BlockCopy(data, 0, buffer, 0, buffer.Length);
             for (int i = 0; i < data.Length; i++)
                 buffer[i] = (byte)(data[i] ^ SecretByte);

@@ -1,7 +1,7 @@
 #nullable disable warnings
-﻿/*
- * Date: 2013-01-05
- */
+/*
+* Date: 2013-01-05
+*/
 using System;
 using System.IO;
 using System.Text;
@@ -201,16 +201,16 @@ namespace AudioVideoLibExamples
             get
             {
                 // Get the language encoding for the default encoding type.
-                Encoding defaultEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
+                var defaultEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
 
                 // Get the encoding for the given encoding type.
-                Encoding textEncoding = Id3v2FrameEncoding.GetEncoding(TextEncodingType);
+                var textEncoding = Id3v2FrameEncoding.GetEncoding(TextEncodingType);
 
                 // Write the frame into a stream buffer.
                 using (StreamBuffer stream = new StreamBuffer())
                 {
                     // Get the preamble of the given encoding type.
-                    byte[] preamble = Id3v2FrameEncoding.GetEncodingPreamble(TextEncodingType);
+                    var preamble = Id3v2FrameEncoding.GetEncodingPreamble(TextEncodingType);
 
                     // Write the given encoding type value as defined in the Id3v2 spec.
                     stream.WriteByte(Id3v2FrameEncoding.GetEncodingTypeValue(TextEncodingType));
@@ -258,12 +258,12 @@ namespace AudioVideoLibExamples
                 if (value == null)
                     throw new ArgumentNullException("value");
 
-                Encoding defaultEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
+                var defaultEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
                 using (StreamBuffer stream = new StreamBuffer(value))
                 {
                     // Read the text encoding.
                     TextEncodingType = Id3v2FrameEncoding.ReadEncodingTypeFromStream(stream);
-                    Encoding textEncoding = Id3v2FrameEncoding.GetEncoding(TextEncodingType);
+                    var textEncoding = Id3v2FrameEncoding.GetEncoding(TextEncodingType);
                     _taggingLibraryUsed = stream.ReadString(textEncoding);
                     _taggingLibraryAuthor = stream.ReadString(textEncoding);
                     _taggingLibraryWebsite = stream.ReadString(defaultEncoding);

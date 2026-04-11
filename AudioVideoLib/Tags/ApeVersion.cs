@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2011-10-22
  * Sources used:
  *  http://en.wikipedia.org/wiki/APE_tag
@@ -9,21 +9,20 @@
  *  http://www.monkeysaudio.com/developers.html
  */
 
-namespace AudioVideoLib.Tags
+namespace AudioVideoLib.Tags;
+
+/// <summary>
+/// Enumerator to indicate the APE tag version.
+/// </summary>
+public enum ApeVersion
 {
     /// <summary>
-    /// Enumerator to indicate the APE tag version.
+    /// Indicates version 1.
     /// </summary>
-    public enum ApeVersion
-    {
-        /// <summary>
-        /// Indicates version 1.
-        /// </summary>
-        Version1 = 1,
+    Version1 = 1,
 
-        /// <summary>
-        /// Indicates version 2.
-        /// </summary>
-        Version2 = 2,
-    }
+    /// <summary>
+    /// Indicates version 2.
+    /// </summary>
+    Version2 = 2,
 }

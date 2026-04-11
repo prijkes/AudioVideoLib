@@ -9,101 +9,118 @@
  *  http://www.id3.org/Id3v2.4.0-changes
  */
 
-namespace AudioVideoLib.Tags
+namespace AudioVideoLib.Tags;
+
+/// <summary>
+/// Class to store an Id3v2 tag.
+/// </summary>
+public partial class Id3v2Tag
 {
     /// <summary>
-    /// Class to store an Id3v2 tag.
+    /// Gets or sets the file owner.
     /// </summary>
-    public partial class Id3v2Tag
+    /// <value>
+    /// The owner of the file.
+    /// </value>
+    /// <remarks>
+    /// The 'File owner/licensee' frame contains the name of the owner or licensee of the file and it's contents.
+    /// <para />
+    /// This frame has been added as of <see cref="Id3v2Version.Id3v230"/>.
+    /// </remarks>
+    public Id3v2TextFrame? FileOwner
     {
-        /// <summary>
-        /// Gets or sets the file owner.
-        /// </summary>
-        /// <value>
-        /// The owner of the file.
-        /// </value>
-        /// <remarks>
-        /// The 'File owner/licensee' frame contains the name of the owner or licensee of the file and it's contents.
-        /// <para />
-        /// This frame has been added as of <see cref="Id3v2Version.Id3v230"/>.
-        /// </remarks>
-        public Id3v2TextFrame? FileOwner
+        get
         {
-            get
-            {
-                return (Version >= Id3v2Version.Id3v230) ? GetTextFrame(Id3v2TextFrameIdentifier.FileOwner) : null;
-            }
-
-            set
-            {
-                if (Version < Id3v2Version.Id3v230)
-                    return;
-
-                if (value == null)
-                    RemoveFrame(FileOwner);
-                else
-                    SetFrame(value);
-            }
+            return (Version >= Id3v2Version.Id3v230) ? GetTextFrame(Id3v2TextFrameIdentifier.FileOwner) : null;
         }
 
-        /// <summary>
-        /// Gets or sets the name of the internet radio station.
-        /// </summary>
-        /// <value>
-        /// The name of the internet radio station.
-        /// </value>
-        /// <remarks>
-        /// The 'Internet radio station name' frame contains the name of the internet radio station from which the audio is streamed.
-        /// <para />
-        /// This frame has been added as of <see cref="Id3v2Version.Id3v230"/>.
-        /// </remarks>
-        public Id3v2TextFrame? InternetRadioStationName
+        set
         {
-            get
+            if (Version < Id3v2Version.Id3v230)
             {
-                return (Version >= Id3v2Version.Id3v230) ? GetTextFrame(Id3v2TextFrameIdentifier.InternetRadioStationName) : null;
+                return;
             }
 
-            set
+            if (value == null)
             {
-                if (Version < Id3v2Version.Id3v230)
-                    return;
-
-                if (value == null)
-                    RemoveFrame(InternetRadioStationName);
-                else
-                    SetFrame(value);
+                RemoveFrame(FileOwner);
+            }
+            else
+            {
+                SetFrame(value);
             }
         }
+    }
 
-        /// <summary>
-        /// Gets or sets the internet radio station owner.
-        /// </summary>
-        /// <value>
-        /// The internet radio station owner.
-        /// </value>
-        /// <remarks>
-        /// The 'Internet radio station owner' frame contains 
-        /// the name of the owner of the internet radio station from which the audio is streamed.
-        /// <para />
-        /// This frame has been added as of <see cref="Id3v2Version.Id3v230"/>.
-        /// </remarks>
-        public Id3v2TextFrame? InternetRadioStationOwner
+    /// <summary>
+    /// Gets or sets the name of the internet radio station.
+    /// </summary>
+    /// <value>
+    /// The name of the internet radio station.
+    /// </value>
+    /// <remarks>
+    /// The 'Internet radio station name' frame contains the name of the internet radio station from which the audio is streamed.
+    /// <para />
+    /// This frame has been added as of <see cref="Id3v2Version.Id3v230"/>.
+    /// </remarks>
+    public Id3v2TextFrame? InternetRadioStationName
+    {
+        get
         {
-            get
+            return (Version >= Id3v2Version.Id3v230) ? GetTextFrame(Id3v2TextFrameIdentifier.InternetRadioStationName) : null;
+        }
+
+        set
+        {
+            if (Version < Id3v2Version.Id3v230)
             {
-                return (Version >= Id3v2Version.Id3v230) ? GetTextFrame(Id3v2TextFrameIdentifier.InternetRadioStationOwner) : null;
+                return;
             }
 
-            set
+            if (value == null)
             {
-                if (Version < Id3v2Version.Id3v230)
-                    return;
+                RemoveFrame(InternetRadioStationName);
+            }
+            else
+            {
+                SetFrame(value);
+            }
+        }
+    }
 
-                if (value == null)
-                    RemoveFrame(InternetRadioStationOwner);
-                else
-                    SetFrame(value);
+    /// <summary>
+    /// Gets or sets the internet radio station owner.
+    /// </summary>
+    /// <value>
+    /// The internet radio station owner.
+    /// </value>
+    /// <remarks>
+    /// The 'Internet radio station owner' frame contains 
+    /// the name of the owner of the internet radio station from which the audio is streamed.
+    /// <para />
+    /// This frame has been added as of <see cref="Id3v2Version.Id3v230"/>.
+    /// </remarks>
+    public Id3v2TextFrame? InternetRadioStationOwner
+    {
+        get
+        {
+            return (Version >= Id3v2Version.Id3v230) ? GetTextFrame(Id3v2TextFrameIdentifier.InternetRadioStationOwner) : null;
+        }
+
+        set
+        {
+            if (Version < Id3v2Version.Id3v230)
+            {
+                return;
+            }
+
+            if (value == null)
+            {
+                RemoveFrame(InternetRadioStationOwner);
+            }
+            else
+            {
+                SetFrame(value);
             }
         }
     }

@@ -5,49 +5,41 @@
  *  http://www.codeproject.com/Articles/1474/Events-and-event-handling-in-C
  */
 
+namespace AudioVideoLib.Tags;
+
 using System;
 using System.ComponentModel;
 
-namespace AudioVideoLib.Tags
+/// <summary>
+/// Class for storing event data passed as argument to subscribed event handlers.
+/// </summary>
+public sealed class ApeItemParseEventArgs : CancelEventArgs
 {
+    ////------------------------------------------------------------------------------------------------------------------------------
+
     /// <summary>
-    /// Class for storing event data passed as argument to subscribed event handlers.
+    /// Initializes a new instance of the <see cref="ApeItemParseEventArgs" /> class.
     /// </summary>
-    public sealed class ApeItemParseEventArgs : CancelEventArgs
+    public ApeItemParseEventArgs(ApeItem item)
     {
-        private ApeItem _item = null!;
-        ////------------------------------------------------------------------------------------------------------------------------------
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ApeItemParseEventArgs" /> class.
-        /// </summary>
-        public ApeItemParseEventArgs(ApeItem item)
-        {
-            Item = item;
-        }
-
-        ////------------------------------------------------------------------------------------------------------------------------------
-
-        /// <summary>
-        /// Gets or sets the item.
-        /// </summary>
-        /// <value>
-        /// The item.
-        /// </value>
-        public ApeItem Item
-        {
-            get
-            {
-                return _item;
-            }
-
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException("value");
-
-                _item = value;
-            }
-        }
+        Item = item;
     }
+
+    ////------------------------------------------------------------------------------------------------------------------------------
+
+    /// <summary>
+    /// Gets or sets the item.
+    /// </summary>
+    /// <value>
+    /// The item.
+    /// </value>
+    public ApeItem Item
+    {
+        get;
+
+        set
+        {
+            field = value ?? throw new ArgumentNullException("value");
+        }
+    } = null!;
 }

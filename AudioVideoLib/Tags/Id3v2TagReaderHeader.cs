@@ -9,67 +9,60 @@
  *  http://www.id3.org/Id3v2.4.0-changes
  */
 
-namespace AudioVideoLib.Tags
+namespace AudioVideoLib.Tags;
+
+public sealed partial class Id3v2TagReader
 {
-    public sealed partial class Id3v2TagReader
+    private sealed class Id3v2Header
     {
-        private sealed class Id3v2Header
+        public long Position { get; set; }
+
+        public string Identifier { get; set; } = null!;
+
+        public Id3v2Version Version { get; set; }
+
+        public int Flags { get; set; }
+
+        /// <summary>
+        /// Gets the size of the <see cref="Id3v2Tag"/> as read from a stream.
+        /// </summary>
+        /// <value>
+        /// The size of the <see cref="Id3v2Tag"/> as read from a stream.
+        /// </value>
+        /// <remarks>
+        /// The Id3v2 tag size is the sum of the byte length of the extended header, the padding and the frames after unsynchronization.
+        /// If a footer is present this equals to ('total size' - 20) bytes, otherwise ('total size' - 10) bytes.
+        /// </remarks>
+        /// This does not include the footer size nor the header size.
+        public int Size { get; set; }
+
+        ////------------------------------------------------------------------------------------------------------------------------------
+
+        /// <inheritdoc/>
+        public override bool Equals(object? obj)
         {
-            public long Position { get; set; }
+            return Equals(obj as Id3v2Header);
+        }
 
-            public string Identifier { get; set; } = null!;
+        /// <summary>
+        /// Equals the specified <see cref="Id3v2Header"/>.
+        /// </summary>
+        /// <param name="hdr">The <see cref="Id3v2Header"/>.</param>
+        /// <returns>true if equal; false otherwise.</returns>
+        public bool Equals(Id3v2Header? hdr)
+        {
+            return hdr is not null && (ReferenceEquals(this, hdr) || ((Version == hdr.Version) && (Flags == hdr.Flags) && (Size == hdr.Size)));
+        }
 
-            public Id3v2Version Version { get; set; }
-
-            public int Flags { get; set; }
-
-            /// <summary>
-            /// Gets the size of the <see cref="Id3v2Tag"/> as read from a stream.
-            /// </summary>
-            /// <value>
-            /// The size of the <see cref="Id3v2Tag"/> as read from a stream.
-            /// </value>
-            /// <remarks>
-            /// The Id3v2 tag size is the sum of the byte length of the extended header, the padding and the frames after unsynchronization.
-            /// If a footer is present this equals to ('total size' - 20) bytes, otherwise ('total size' - 10) bytes.
-            /// </remarks>
-            /// This does not include the footer size nor the header size.
-            public int Size { get; set; }
-
-            ////------------------------------------------------------------------------------------------------------------------------------
-
-            /// <inheritdoc/>
-            public override bool Equals(object? obj)
+        public override int GetHashCode()
+        {
+            unchecked
             {
-                return Equals(obj as Id3v2Header);
-            }
-
-            /// <summary>
-            /// Equals the specified <see cref="Id3v2Header"/>.
-            /// </summary>
-            /// <param name="hdr">The <see cref="Id3v2Header"/>.</param>
-            /// <returns>true if equal; false otherwise.</returns>
-            public bool Equals(Id3v2Header? hdr)
-            {
-                if (ReferenceEquals(null, hdr))
-                    return false;
-
-                if (ReferenceEquals(this, hdr))
-                    return true;
-
-                return (Version == hdr.Version) && (Flags == hdr.Flags) && (Size == hdr.Size);
-            }
-
-            public override int GetHashCode()
-            {
-                unchecked
-                {
-                    int hashCode = Identifier != null ? Identifier.GetHashCode() : 0;
-                    hashCode = (hashCode * 397) ^ Version.GetHashCode();
-                    hashCode = (hashCode * 397) ^ Flags.GetHashCode();
-                    hashCode = (hashCode * 397) ^ Size.GetHashCode();
-                    return hashCode;
-                }
+                var hashCode = Identifier != null ? Identifier.GetHashCode() : 0;
+                hashCode = (hashCode * 397) ^ Version.GetHashCode();
+                hashCode = (hashCode * 397) ^ Flags.GetHashCode();
+                hashCode = (hashCode * 397) ^ Size.GetHashCode();
+                return hashCode;
             }
         }
     }
