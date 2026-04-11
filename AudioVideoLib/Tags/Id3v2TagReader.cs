@@ -176,33 +176,7 @@ public sealed partial class Id3v2TagReader : IAudioTagReader
                 // Calculate CRC if needed.
                 if (tag.ExtendedHeader.CrcDataPresent)
                 {
-                    var currentPosition = sb.Position;
-
-                    // The read-path CRC hashes the raw byte range that was actually
-                    // read from the stream. The write-path CRC in Id3v2Tag.CalculateCrc32
-                    // is computed over the bytes that ToByteArray produces; both paths
-                    // are self-consistent for tags written by this library (they hash
-                    // the same bytes). For tags authored by other writers that may
-                    // include empty-data frames, the read-path still validates the
-                    // stored CRC against the on-disk bytes correctly.
-                    //
-                    // Id3v2.3.0:
-                    // The CRC should be calculated before unsynchronisation on the data between the extended header and the padding, i.e. the frames and only the frames.
-                    // Id3v2.4.0:
-                    // The CRC is calculated on all the data between the header and footer as indicated by the header's tag length field, minus the extended header.
-                    // Note that this includes the padding (if there is any), but excludes the footer.
-                    var dataLength = ((tag.Version >= Id3v2Version.Id3v240)
-                                          ? totalSizeItems
-                                          : totalSizeItems - (tag.PaddingSize + tag.ExtendedHeader.PaddingSize) - 4)
-                                     - tag.ExtendedHeader.GetHeaderSize(tag.Version);
-                    var crcData = sb.ToByteArray().Skip((int)currentPosition).Take(dataLength).ToArray();
-                    var calculatedCrc = (int)Crc32.HashToUInt32(crcData);
-                    if (calculatedCrc != crc)
-                    {
-                        throw new InvalidDataException(string.Format("CRC {0:X} in tag does not match calculated CRC {1:X}", crc, calculatedCrc));
-                    }
-
-                    sb.Position = currentPosition;
+                    ValidateExtendedHeaderCrc(sb, tag, totalSizeItems, crc);
                 }
             }
         }
@@ -228,48 +202,19 @@ public sealed partial class Id3v2TagReader : IAudioTagReader
                 break;
             }
 
-            var frame = Id3v2Frame.ReadFromStream(tag.Version, sb, totalSizeItems - bytesRead);
+            var frame = ReadSingleFrame(sb, tag, totalSizeItems - bytesRead);
             if (frame != null)
             {
-                var frameParseEventArgs = new Id3v2FrameParseEventArgs(frame);
-                OnFrameParse(frameParseEventArgs);
-
-                if (!frameParseEventArgs.Cancel)
-                {
-                    // If the event has 'replaced' the frame, assign the 'new' frame here and continue.
-                    if (frameParseEventArgs.Frame != null)
-                    {
-                        frame = frameParseEventArgs.Frame;
-                    }
-
-                    // Assign the cryptor instance of the tag to the frame, and decrypt if necessary.
-                    var isEncrypted = frame.UseEncryption;
-                    if (isEncrypted)
-                    {
-                        isEncrypted = frame.Decrypt();
-                    }
-
-                    // Do the same with decompressing, if necessary.
-                    if (!isEncrypted && frame.UseCompression)
-                    {
-                        frame.Decompress();
-                    }
-
-                    // Call after read event.
-                    var frameParsedEventArgs = new Id3v2FrameParsedEventArgs(frame);
-                    OnFrameParsed(frameParsedEventArgs);
-
-                    // Add the 'final' frame from the event.
-                    frames.Add(frameParsedEventArgs.Frame);
-                }
+                frames.Add(frame);
             }
-            else
+            else if (sb.Position == startPosition)
             {
-                // Skip next byte.
+                // Id3v2Frame.ReadFromStream returned null without consuming anything;
+                // skip the next byte so we make forward progress.
                 sb.Position = startPosition + 1;
             }
 
-            //Reading is always done forward; not backwards.
+            // Reading is always done forward; not backwards.
             bytesRead += sb.Position - startPosition;
         }
         paddingSize += tag.PaddingSize;
@@ -323,6 +268,83 @@ public sealed partial class Id3v2TagReader : IAudioTagReader
     }
 
     ////------------------------------------------------------------------------------------------------------------------------------
+
+    /// <summary>
+    /// Hashes the current tag's frame region and throws if it doesn't match the stored CRC.
+    /// </summary>
+    /// <remarks>
+    /// The read-path CRC hashes the raw byte range that was actually read from the stream.
+    /// The write-path CRC in <see cref="Id3v2Tag.CalculateCrc32"/> is computed over the bytes
+    /// that <c>ToByteArray</c> produces; both paths are self-consistent for tags written by
+    /// this library (they hash the same bytes). For tags authored by other writers that may
+    /// include empty-data frames, the read-path still validates the stored CRC against the
+    /// on-disk bytes correctly.
+    /// <para />
+    /// Id3v2.3.0: the CRC should be calculated before unsynchronisation on the data between
+    /// the extended header and the padding, i.e. the frames and only the frames.
+    /// <para />
+    /// Id3v2.4.0: the CRC is calculated on all the data between the header and footer as
+    /// indicated by the header's tag length field, minus the extended header. Note that this
+    /// includes the padding (if there is any), but excludes the footer.
+    /// </remarks>
+    private static void ValidateExtendedHeaderCrc(StreamBuffer sb, Id3v2Tag tag, int totalSizeItems, int expectedCrc)
+    {
+        var currentPosition = sb.Position;
+        var dataLength = ((tag.Version >= Id3v2Version.Id3v240)
+                              ? totalSizeItems
+                              : totalSizeItems - (tag.PaddingSize + tag.ExtendedHeader.PaddingSize) - 4)
+                         - tag.ExtendedHeader.GetHeaderSize(tag.Version);
+        var crcData = sb.ToByteArray().Skip((int)currentPosition).Take(dataLength).ToArray();
+        var calculatedCrc = (int)Crc32.HashToUInt32(crcData);
+        if (calculatedCrc != expectedCrc)
+        {
+            throw new InvalidDataException(string.Format("CRC {0:X} in tag does not match calculated CRC {1:X}", expectedCrc, calculatedCrc));
+        }
+
+        sb.Position = currentPosition;
+    }
+
+    /// <summary>
+    /// Reads a single frame at the current stream position, fires the parse/parsed events,
+    /// and applies encryption/compression post-processing.
+    /// </summary>
+    /// <returns>
+    /// The fully-processed frame ready to be added to the tag, or <c>null</c> if the frame
+    /// could not be read or was cancelled by a parse-event handler.
+    /// </returns>
+    private Id3v2Frame? ReadSingleFrame(StreamBuffer sb, Id3v2Tag tag, long remainingBytes)
+    {
+        var frame = Id3v2Frame.ReadFromStream(tag.Version, sb, remainingBytes);
+        if (frame == null)
+        {
+            return null;
+        }
+
+        var frameParseEventArgs = new Id3v2FrameParseEventArgs(frame);
+        OnFrameParse(frameParseEventArgs);
+        if (frameParseEventArgs.Cancel)
+        {
+            return null;
+        }
+
+        // If the event has 'replaced' the frame, pick up the new frame.
+        if (frameParseEventArgs.Frame != null)
+        {
+            frame = frameParseEventArgs.Frame;
+        }
+
+        // Decrypt if necessary; decompression is only attempted if we could decrypt
+        // (or the frame wasn't encrypted to begin with).
+        var isEncrypted = frame.UseEncryption && frame.Decrypt();
+        if (!isEncrypted && frame.UseCompression)
+        {
+            frame.Decompress();
+        }
+
+        var frameParsedEventArgs = new Id3v2FrameParsedEventArgs(frame);
+        OnFrameParsed(frameParsedEventArgs);
+        return frameParsedEventArgs.Frame;
+    }
 
     private static void ValidateHeader(Id3v2Tag tag, Id3v2Header? header, Id3v2Header? footer)
     {
