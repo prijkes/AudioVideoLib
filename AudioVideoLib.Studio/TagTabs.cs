@@ -322,17 +322,25 @@ public sealed class ApeTabViewModel : TagTabViewModel
 
         foreach (var item in tag.Items)
         {
-            Items.Add(new ApeItemRow(item));
+            Items.Add(new ApeItemRow(item, MarkDirty));
         }
+
+        ResetDirty();
     }
+
+    public override bool IsEditable => true;
 
     public ApeTag Tag { get; }
 
     public ObservableCollection<ApeItemRow> Items { get; } = [];
+
+    private void MarkDirty() => IsDirty = true;
 }
 
-public sealed class ApeItemRow(ApeItem item)
+public sealed class ApeItemRow(ApeItem item, Action markDirty) : INotifyPropertyChanged
 {
+    public event PropertyChangedEventHandler? PropertyChanged;
+
     public string Key { get; } = item.Key;
 
     public string Type { get; } = item switch
@@ -343,7 +351,41 @@ public sealed class ApeItemRow(ApeItem item)
         _ => item.GetType().Name,
     };
 
-    public string Value { get; } = item switch
+    public bool IsEditable { get; } = item is ApeUtf8Item or ApeLocatorItem;
+
+    public string Value
+    {
+        get;
+        set
+        {
+            if (field == value)
+            {
+                return;
+            }
+
+            if (!IsEditable)
+            {
+                return;
+            }
+
+            field = value ?? string.Empty;
+
+            switch (item)
+            {
+                case ApeLocatorItem loc:
+                    loc.Values.Clear();
+                    loc.Values.Add(field);
+                    break;
+                case ApeUtf8Item utf8:
+                    utf8.Values.Clear();
+                    utf8.Values.Add(field);
+                    break;
+            }
+
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Value)));
+            markDirty();
+        }
+    } = item switch
     {
         ApeLocatorItem loc => string.Join(" / ", loc.Values),
         ApeUtf8Item u => string.Join(" / ", u.Values),
@@ -362,23 +404,58 @@ public sealed class Lyrics3v2TabViewModel : TagTabViewModel
 
         foreach (var field in tag.Fields)
         {
-            Fields.Add(new Lyrics3v2FieldRow(field));
+            Fields.Add(new Lyrics3v2FieldRow(field, MarkDirty));
         }
+
+        ResetDirty();
     }
+
+    public override bool IsEditable => true;
 
     public Lyrics3v2Tag Tag { get; }
 
     public ObservableCollection<Lyrics3v2FieldRow> Fields { get; } = [];
+
+    private void MarkDirty() => IsDirty = true;
 }
 
-public sealed class Lyrics3v2FieldRow(Lyrics3v2Field field)
+public sealed class Lyrics3v2FieldRow(Lyrics3v2Field source, Action markDirty) : INotifyPropertyChanged
 {
-    public string Identifier { get; } = field.Identifier;
+    public event PropertyChangedEventHandler? PropertyChanged;
 
-    public string Value { get; } = field switch
+    public string Identifier { get; } = source.Identifier;
+
+    public bool IsEditable { get; } = source is Lyrics3v2TextField;
+
+    public string Value
+    {
+        get;
+        set
+        {
+            if (field == value)
+            {
+                return;
+            }
+
+            if (!IsEditable)
+            {
+                return;
+            }
+
+            field = value ?? string.Empty;
+
+            if (source is Lyrics3v2TextField textField)
+            {
+                textField.Value = field;
+            }
+
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Value)));
+            markDirty();
+        }
+    } = source switch
     {
         Lyrics3v2TextField t => t.Value ?? string.Empty,
-        _ when field.Data is { Length: > 0 } d => $"<{d.Length:N0} bytes>",
+        _ when source.Data is { Length: > 0 } d => $"<{d.Length:N0} bytes>",
         _ => string.Empty,
     };
 }

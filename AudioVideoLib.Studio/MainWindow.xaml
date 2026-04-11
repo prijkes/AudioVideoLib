@@ -103,10 +103,11 @@
                             </StackPanel>
                         </Grid>
                         <TextBlock Text="Comment" Style="{StaticResource FieldLabel}" />
-                        <TextBox   Height="60"
+                        <TextBox   Height="80"
                                    AcceptsReturn="True"
                                    TextWrapping="Wrap"
                                    VerticalScrollBarVisibility="Auto"
+                                   local:BubbleScrollBehavior.Enable="True"
                                    Style="{StaticResource EditField}"
                                    Text="{Binding Comment, UpdateSourceTrigger=PropertyChanged}" />
                     </StackPanel>
@@ -179,14 +180,14 @@
                           AutoGenerateColumns="False"
                           CanUserAddRows="False"
                           CanUserDeleteRows="False"
-                          IsReadOnly="True"
+                          IsReadOnly="False"
                           HeadersVisibility="Column"
                           AlternatingRowBackground="#F7F7F7"
                           MinHeight="300">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Key"   Binding="{Binding Key}"   Width="200" />
-                        <DataGridTextColumn Header="Type"  Binding="{Binding Type}"  Width="90" />
-                        <DataGridTextColumn Header="Value" Binding="{Binding Value}" Width="*" />
+                        <DataGridTextColumn Header="Key"   Binding="{Binding Key}"   Width="200" IsReadOnly="True" />
+                        <DataGridTextColumn Header="Type"  Binding="{Binding Type}"  Width="90"  IsReadOnly="True" />
+                        <DataGridTextColumn Header="Value" Binding="{Binding Value, UpdateSourceTrigger=LostFocus}" Width="*" />
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>
@@ -200,13 +201,13 @@
                           AutoGenerateColumns="False"
                           CanUserAddRows="False"
                           CanUserDeleteRows="False"
-                          IsReadOnly="True"
+                          IsReadOnly="False"
                           HeadersVisibility="Column"
                           AlternatingRowBackground="#F7F7F7"
                           MinHeight="260">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="ID"    Binding="{Binding Identifier}" Width="80" />
-                        <DataGridTextColumn Header="Value" Binding="{Binding Value}"      Width="*" />
+                        <DataGridTextColumn Header="ID"    Binding="{Binding Identifier}" Width="80" IsReadOnly="True" />
+                        <DataGridTextColumn Header="Value" Binding="{Binding Value, UpdateSourceTrigger=LostFocus}" Width="*" />
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>

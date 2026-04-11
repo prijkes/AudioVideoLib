@@ -15,6 +15,8 @@ using AudioVideoLib.Tags;
 
 public sealed class FileDossier : INotifyPropertyChanged
 {
+    private List<IAudioTagOffset> _offsets = [];
+
     public event PropertyChangedEventHandler? PropertyChanged;
 
     public string FilePath { get; }
@@ -75,69 +77,68 @@ public sealed class FileDossier : INotifyPropertyChanged
 
     public void Save()
     {
+        // Commit editable tab VMs back to their library tag instances, and snapshot
+        // which tag instances have unsaved edits so we know which regions to
+        // re-serialize vs preserve byte-for-byte.
+        var dirtyTags = new HashSet<IAudioTag>(ReferenceEqualityComparer.Instance);
         foreach (var tab in TagTabs)
         {
+            if (!tab.IsDirty)
+            {
+                continue;
+            }
+
             switch (tab)
             {
                 case Id3v2TabViewModel v2:
                     v2.CommitToTag();
+                    dirtyTags.Add(v2.Tag);
                     break;
                 case Id3v1TabViewModel v1:
                     v1.CommitToTag();
+                    dirtyTags.Add(v1.Tag);
+                    break;
+                case ApeTabViewModel ape:
+                    dirtyTags.Add(ape.Tag);
+                    break;
+                case Lyrics3v2TabViewModel l3:
+                    dirtyTags.Add(l3.Tag);
                     break;
             }
         }
 
         var fileBytes = File.ReadAllBytes(FilePath);
-        long startOffset = 0;
-        long endOffset = fileBytes.Length;
 
-        using (var ms = new MemoryStream(fileBytes))
-        {
-            var tags = AudioTags.ReadStream(ms).ToList();
-            var id3v2End = tags
-                .Where(t => t.AudioTag is Id3v2Tag && t.TagOrigin == TagOrigin.Start)
-                .OrderByDescending(t => t.EndOffset)
-                .FirstOrDefault();
-            var id3v1Start = tags
-                .Where(t => t.AudioTag is Id3v1Tag && t.TagOrigin == TagOrigin.End)
-                .OrderBy(t => t.StartOffset)
-                .FirstOrDefault();
+        var startTags = _offsets
+            .Where(o => o.TagOrigin == TagOrigin.Start)
+            .OrderBy(o => o.StartOffset)
+            .ToList();
+        var endTags = _offsets
+            .Where(o => o.TagOrigin == TagOrigin.End)
+            .OrderBy(o => o.StartOffset)
+            .ToList();
 
-            if (id3v2End != null)
-            {
-                startOffset = id3v2End.EndOffset;
-            }
+        var audioStart = startTags.Count > 0 ? startTags.Max(o => o.EndOffset) : 0L;
+        var audioEnd = endTags.Count > 0 ? endTags.Min(o => o.StartOffset) : fileBytes.Length;
 
-            if (id3v1Start != null)
-            {
-                endOffset = id3v1Start.StartOffset;
-            }
-        }
-
-        if (startOffset < 0 || endOffset < startOffset || endOffset > fileBytes.Length)
+        if (audioStart < 0 || audioEnd < audioStart || audioEnd > fileBytes.Length)
         {
             throw new InvalidDataException("Unable to determine audio region for save.");
         }
 
-        var id3v2Tab = TagTabs.OfType<Id3v2TabViewModel>().FirstOrDefault();
-        var id3v1Tab = TagTabs.OfType<Id3v1TabViewModel>().FirstOrDefault();
-
-        var newId3v2 = id3v2Tab != null
-            ? id3v2Tab.Tag.ToByteArray()
-            : new Id3v2Tag(Id3v2Version.Id3v240) { PaddingSize = 512 }.ToByteArray();
-        var newId3v1 = id3v1Tab != null
-            ? id3v1Tab.Tag.ToByteArray()
-            : [];
-
         var tmp = FilePath + ".avs-tmp";
         using (var outFile = File.Create(tmp))
         {
-            outFile.Write(newId3v2, 0, newId3v2.Length);
-            outFile.Write(fileBytes, (int)startOffset, (int)(endOffset - startOffset));
-            if (newId3v1.Length > 0)
+            foreach (var offset in startTags)
             {
-                outFile.Write(newId3v1, 0, newId3v1.Length);
+                WriteTagRegion(outFile, offset, fileBytes, dirtyTags);
+            }
+
+            outFile.Write(fileBytes, (int)audioStart, (int)(audioEnd - audioStart));
+
+            foreach (var offset in endTags)
+            {
+                WriteTagRegion(outFile, offset, fileBytes, dirtyTags);
             }
         }
 
@@ -145,10 +146,35 @@ public sealed class FileDossier : INotifyPropertyChanged
 
         foreach (var tab in TagTabs)
         {
-            ClearDirty(tab);
+            tab.ResetDirty();
+        }
+
+        using (var fs = File.OpenRead(FilePath))
+        {
+            _offsets = [.. AudioTags.ReadStream(fs).OfType<IAudioTagOffset>()];
         }
 
         Notify(nameof(HasUnsavedChanges));
+    }
+
+    private static void WriteTagRegion(Stream output, IAudioTagOffset offset, byte[] originalBytes, HashSet<IAudioTag> dirtyTags)
+    {
+        byte[] bytes;
+        if (dirtyTags.Contains(offset.AudioTag))
+        {
+            // Re-serialize from the edited library-level tag.
+            bytes = offset.AudioTag.ToByteArray();
+        }
+        else
+        {
+            // Preserve byte-for-byte from the original file — avoids round-trip
+            // drift for tag formats the library can read but not perfectly re-emit.
+            var length = (int)(offset.EndOffset - offset.StartOffset);
+            bytes = new byte[length];
+            Buffer.BlockCopy(originalBytes, (int)offset.StartOffset, bytes, 0, length);
+        }
+
+        output.Write(bytes, 0, bytes.Length);
     }
 
     private void Load()
@@ -157,7 +183,8 @@ public sealed class FileDossier : INotifyPropertyChanged
         var fileLength = fs.Length;
         FileSizeText = FormatSize(fileLength);
 
-        var tagOffsets = AudioTags.ReadStream(fs).ToList();
+        _offsets = [.. AudioTags.ReadStream(fs).OfType<IAudioTagOffset>()];
+        var tagOffsets = _offsets;
 
         var id3v2 = tagOffsets.Select(o => o.AudioTag).OfType<Id3v2Tag>().FirstOrDefault();
         var id3v1 = tagOffsets.Select(o => o.AudioTag).OfType<Id3v1Tag>().FirstOrDefault();
@@ -342,12 +369,6 @@ public sealed class FileDossier : INotifyPropertyChanged
         }
 
         SelectedHexRegion = HexRegions.FirstOrDefault();
-    }
-
-    private static void ClearDirty(TagTabViewModel tab)
-    {
-        var prop = tab.GetType().GetProperty(nameof(TagTabViewModel.IsDirty));
-        prop?.SetValue(tab, false);
     }
 
     private static string? TryText(Id3v2Tag tag, string identifier)
