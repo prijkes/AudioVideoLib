@@ -76,7 +76,7 @@ namespace AudioVideoLib.Tags
         /// </summary>
         /// <param name="tag">The <see cref="Lyrics3Tag"/>.</param>
         /// <returns>true if equal; false otherwise.</returns>
-        public bool Equals(Lyrics3v2Tag tag)
+        public bool Equals(Lyrics3v2Tag? tag)
         {
             if (ReferenceEquals(null, tag))
                 return false;
@@ -160,7 +160,7 @@ namespace AudioVideoLib.Tags
         /// Updates the first field with a matching field identifier if found; else, adds a new field.
         /// </summary>
         /// <param name="field">Field to add to the <see cref="Lyrics3v2Tag"/>.</param>
-        public void SetField(Lyrics3v2Field field)
+        public void SetField(Lyrics3v2Field? field)
         {
             if (field == null)
                 throw new ArgumentNullException("field");

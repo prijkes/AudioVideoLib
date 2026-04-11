@@ -185,7 +185,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// Both instances are equal when their <see cref="Version"/> and <see cref="Identification"/> properties are equal (case-insensitive).
         /// </remarks>
-        public bool Equals(Id3v2RelativeVolumeAdjustment2Frame rva2)
+        public bool Equals(Id3v2RelativeVolumeAdjustment2Frame? rva2)
         {
             if (ReferenceEquals(null, rva2))
                 return false;
@@ -215,7 +215,7 @@ namespace AudioVideoLib.Tags
             return Enum.TryParse(channelType.ToString(), true, out channelType);
         }
 
-        private static void ChannelInformationAdd(object sender, ListItemAddEventArgs<Id3v2ChannelInformation> e)
+        private static void ChannelInformationAdd(object? sender, ListItemAddEventArgs<Id3v2ChannelInformation> e)
         {
             if (e == null)
                 throw new ArgumentNullException("e");
@@ -227,7 +227,7 @@ namespace AudioVideoLib.Tags
                 throw new InvalidDataException("value contains one or more invalid channel types.");
         }
 
-        private void ChannelInformationReplace(object sender, ListItemReplaceEventArgs<Id3v2ChannelInformation> e)
+        private void ChannelInformationReplace(object? sender, ListItemReplaceEventArgs<Id3v2ChannelInformation> e)
         {
             if (e == null)
                 throw new ArgumentNullException("e");

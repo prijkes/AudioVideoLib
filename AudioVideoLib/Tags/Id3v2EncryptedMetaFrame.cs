@@ -202,7 +202,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// Both instances are equal when their <see cref="Version"/> and <see cref="OwnerIdentifier"/> properties are equal (case-insensitive).
         /// </remarks>
-        public bool Equals(Id3v2EncryptedMetaFrame emf)
+        public bool Equals(Id3v2EncryptedMetaFrame? emf)
         {
             if (ReferenceEquals(null, emf))
                 return false;

@@ -294,7 +294,7 @@ namespace AudioVideoLib.Tags
 
         ////------------------------------------------------------------------------------------------------------------------------------
 
-        private static void ValidateHeader(Id3v2Tag tag, Id3v2Header header, Id3v2Header footer)
+        private static void ValidateHeader(Id3v2Tag tag, Id3v2Header? header, Id3v2Header? footer)
         {
 #if DEBUG
             if (tag == null)

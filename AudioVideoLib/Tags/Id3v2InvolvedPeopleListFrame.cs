@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2011-06-18
  * Sources used:
  *  http://www.id3.org/Id3v2-00
@@ -198,7 +198,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// Both instances are equal when their <see cref="Version"/> property is equal.
         /// </remarks>
-        public bool Equals(Id3v2InvolvedPeopleListFrame ipl)
+        public bool Equals(Id3v2InvolvedPeopleListFrame? ipl)
         {
             if (ReferenceEquals(null, ipl))
                 return false;
@@ -237,7 +237,7 @@ namespace AudioVideoLib.Tags
             _involvedPeople.ItemReplace -= InvolvedPeopleReplace;
         }
 
-        private void InvolvedPeopleAdd(object sender, ListItemAddEventArgs<Id3v2InvolvedPeople> e)
+        private void InvolvedPeopleAdd(object? sender, ListItemAddEventArgs<Id3v2InvolvedPeople> e)
         {
             if (e == null)
                 throw new ArgumentNullException("e");
@@ -258,7 +258,7 @@ namespace AudioVideoLib.Tags
             }
         }
 
-        private void InvolvedPeopleReplace(object sender, ListItemReplaceEventArgs<Id3v2InvolvedPeople> e)
+        private void InvolvedPeopleReplace(object? sender, ListItemReplaceEventArgs<Id3v2InvolvedPeople> e)
         {
             if (e == null)
                 throw new ArgumentNullException("e");

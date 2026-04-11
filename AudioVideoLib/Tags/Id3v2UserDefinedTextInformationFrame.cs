@@ -203,7 +203,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// Both instances are equal when their <see cref="Version"/> and <see cref="Description"/> properties are equal (case-insensitive).
         /// </remarks>
-        public bool Equals(Id3v2UserDefinedTextInformationFrame udti)
+        public bool Equals(Id3v2UserDefinedTextInformationFrame? udti)
         {
             if (ReferenceEquals(null, udti))
                 return false;

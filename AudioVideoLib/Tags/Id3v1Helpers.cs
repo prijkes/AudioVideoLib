@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2010-05-19
  * Sources used: 
  *  http://www.codeproject.com/KB/audio-video/mpegaudioinfo.aspx
@@ -59,7 +59,7 @@ namespace AudioVideoLib.Tags
             return StreamBuffer.GetTruncatedEncodedString(value, _encoding, maxBytesAllowed);
         }
 
-        private string GetExtendedString(string value, int maxLengthNormal, int maxLengthExtended, bool onlyLastPart = false)
+        private string GetExtendedString(string? value, int maxLengthNormal, int maxLengthExtended, bool onlyLastPart = false)
         {
             if (value == null)
                 throw new ArgumentNullException("value");

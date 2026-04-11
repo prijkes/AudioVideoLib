@@ -33,7 +33,7 @@ namespace AudioVideoLib.Tags
             _frames.ItemRemove -= FrameRemove;
         }
 
-        private void FrameAdd(object sender, ListItemAddEventArgs<Id3v2Frame> e)
+        private void FrameAdd(object? sender, ListItemAddEventArgs<Id3v2Frame> e)
         {
             if (e == null)
                 throw new ArgumentNullException("e");
@@ -62,7 +62,7 @@ namespace AudioVideoLib.Tags
             }
         }
 
-        private void FrameReplace(object sender, ListItemReplaceEventArgs<Id3v2Frame> e)
+        private void FrameReplace(object? sender, ListItemReplaceEventArgs<Id3v2Frame> e)
         {
             if (e == null)
                 throw new ArgumentNullException("e");
@@ -77,7 +77,7 @@ namespace AudioVideoLib.Tags
             FrameAdd(sender, new ListItemAddEventArgs<Id3v2Frame>(e.NewItem));
         }
 
-        private void FrameRemove(object sender, ListItemRemoveEventArgs<Id3v2Frame> e)
+        private void FrameRemove(object? sender, ListItemRemoveEventArgs<Id3v2Frame> e)
         {
             if ((e == null) || (e.Item == null))
                 return;

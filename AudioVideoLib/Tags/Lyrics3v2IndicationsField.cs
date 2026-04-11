@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2012-12-09
  * Sources used: 
  *  http://id3.org/Lyrics3v2
@@ -94,7 +94,7 @@ namespace AudioVideoLib.Tags
         /// <returns>
         /// true if equal; false otherwise.
         /// </returns>
-        public bool Equals(Lyrics3v2IndicationsField field)
+        public bool Equals(Lyrics3v2IndicationsField? field)
         {
             if (ReferenceEquals(null, field))
                 return false;

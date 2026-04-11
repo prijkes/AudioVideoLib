@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2011-07-06
  * Sources used:
  *  http://www.id3.org/Id3v2-00
@@ -189,7 +189,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         ///  There may only be one <see cref="Id3v2ReplayGainAdjustmentFrame"/> frame in each <see cref="Id3v2Tag"/>.
         /// </remarks>
-        public bool Equals(Id3v2ReplayGainAdjustmentFrame rgad)
+        public bool Equals(Id3v2ReplayGainAdjustmentFrame? rgad)
         {
             if (ReferenceEquals(null, rgad))
                 return false;

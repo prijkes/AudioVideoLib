@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2011-05-28
  * Sources used:
  *  http://www.id3.org/Id3v2-00
@@ -101,7 +101,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// Both instances are equal when their <see cref="Version"/> property is equal.
         /// </remarks>
-        public bool Equals(Id3v2PlayCounterFrame pc)
+        public bool Equals(Id3v2PlayCounterFrame? pc)
         {
             if (ReferenceEquals(null, pc))
                 return false;

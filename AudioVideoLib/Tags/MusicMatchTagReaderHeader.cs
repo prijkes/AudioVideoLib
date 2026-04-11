@@ -151,7 +151,7 @@ namespace AudioVideoLib.Tags
             /// </summary>
             /// <param name="hdr">The <see cref="MusicMatchHeader"/>.</param>
             /// <returns>true if equal; false otherwise.</returns>
-            public bool Equals(MusicMatchHeader hdr)
+            public bool Equals(MusicMatchHeader? hdr)
             {
                 if (ReferenceEquals(null, hdr))
                     return false;

@@ -166,7 +166,7 @@ namespace AudioVideoLib.Tags
         /// <returns>
         /// true if equal; false otherwise.
         /// </returns>
-        public virtual bool Equals(Lyrics3v2Field field)
+        public virtual bool Equals(Lyrics3v2Field? field)
         {
             if (ReferenceEquals(null, field))
                 return false;

@@ -177,7 +177,7 @@ namespace AudioVideoLib.Tags
         /// </summary>
         /// <param name="tag">The <see cref="Id3v2Tag"/>.</param>
         /// <returns>true if equal; false otherwise.</returns>
-        public bool Equals(Id3v2Tag tag)
+        public bool Equals(Id3v2Tag? tag)
         {
             if (ReferenceEquals(null, tag))
                 return false;
@@ -376,7 +376,7 @@ namespace AudioVideoLib.Tags
         /// Removes the frame.
         /// </summary>
         /// <param name="frame">The frame.</param>
-        public void RemoveFrame(Id3v2Frame frame)
+        public void RemoveFrame(Id3v2Frame? frame)
         {
             // Try to remove by reference first before trying to remove by calling the Equal() on all frames
             if ((frame != null) && !_frames.Remove(_frames.FirstOrDefault(f => ReferenceEquals(f, frame))))

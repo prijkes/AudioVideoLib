@@ -175,7 +175,7 @@ namespace AudioVideoLib.IO
 
         ////------------------------------------------------------------------------------------------------------------------------------
 
-        private void AudioStreamAdd(object sender, ListItemAddEventArgs<IAudioStream> e)
+        private void AudioStreamAdd(object? sender, ListItemAddEventArgs<IAudioStream> e)
         {
             if (e == null)
                 throw new ArgumentNullException("e");
@@ -194,7 +194,7 @@ namespace AudioVideoLib.IO
             }
         }
 
-        private void AudioStreamReplace(object sender, ListItemReplaceEventArgs<IAudioStream> e)
+        private void AudioStreamReplace(object? sender, ListItemReplaceEventArgs<IAudioStream> e)
         {
             if (e == null)
                 throw new ArgumentNullException("e");

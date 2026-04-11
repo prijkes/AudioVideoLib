@@ -104,7 +104,7 @@ namespace AudioVideoLib.Tags
         /// <returns>
         /// true if equal; false otherwise.
         /// </returns>
-        public bool Equals(Lyrics3v2TextField field)
+        public bool Equals(Lyrics3v2TextField? field)
         {
             if (ReferenceEquals(null, field))
                 return false;

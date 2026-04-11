@@ -49,7 +49,7 @@ namespace AudioVideoLib.Tags
             /// </summary>
             /// <param name="hdr">The <see cref="Id3v2Header"/>.</param>
             /// <returns>true if equal; false otherwise.</returns>
-            public bool Equals(Id3v2Header hdr)
+            public bool Equals(Id3v2Header? hdr)
             {
                 if (ReferenceEquals(null, hdr))
                     return false;

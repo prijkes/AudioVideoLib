@@ -94,7 +94,7 @@ namespace AudioVideoLib.Formats
 
         ////------------------------------------------------------------------------------------------------------------------------------
 
-        private void SeekPointAdd(object sender, ListItemAddEventArgs<FlacSeekPoint> e)
+        private void SeekPointAdd(object? sender, ListItemAddEventArgs<FlacSeekPoint> e)
         {
             if (e == null)
                 throw new ArgumentNullException("e");
@@ -116,7 +116,7 @@ namespace AudioVideoLib.Formats
             }
         }
 
-        private void SeekPointReplace(object sender, ListItemReplaceEventArgs<FlacSeekPoint> e)
+        private void SeekPointReplace(object? sender, ListItemReplaceEventArgs<FlacSeekPoint> e)
         {
             if (e == null)
                 throw new ArgumentNullException("e");

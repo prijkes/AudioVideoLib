@@ -108,7 +108,7 @@ namespace AudioVideoLib.Tags
         /// </summary>
         /// <param name="tag">The <see cref="Lyrics3Tag"/>.</param>
         /// <returns>true if equal; false otherwise.</returns>
-        public bool Equals(Lyrics3Tag tag)
+        public bool Equals(Lyrics3Tag? tag)
         {
             if (ReferenceEquals(null, tag))
                 return false;
@@ -173,7 +173,7 @@ namespace AudioVideoLib.Tags
         /// If encoding the value in the specified <see cref="Encoding"/> exceeds <see cref="MaxLyricsSize"/> bytes, 
         /// the value will be cut to the maximum character count which fits within <see cref="MaxLyricsSize"/> bytes.
         /// </remarks>
-        private void SetLyrics(string value)
+        private void SetLyrics(string? value)
         {
             // The keywords "LYRICSBEGIN" and "LYRICSEND" must not be present in the lyrics.
             if ((value.Contains(HeaderIdentifier) || value.Contains(FooterIdentifier)))

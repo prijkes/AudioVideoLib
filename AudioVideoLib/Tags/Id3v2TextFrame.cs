@@ -292,7 +292,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// There may only be one <see cref="Id3v2TextFrame"/> frame of its kind in an <see cref="Id3v2Tag"/>.
         /// </remarks>
-        public bool Equals(Id3v2TextFrame textFrame)
+        public bool Equals(Id3v2TextFrame? textFrame)
         {
             if (ReferenceEquals(null, textFrame))
                 return false;
@@ -348,7 +348,7 @@ namespace AudioVideoLib.Tags
             _valueList.ItemReplace -= ValueReplace;
         }
 
-        private void ValueAdd(object sender, ListItemAddEventArgs<string> e)
+        private void ValueAdd(object? sender, ListItemAddEventArgs<string> e)
         {
             if (e == null)
                 throw new ArgumentNullException("e");
@@ -360,7 +360,7 @@ namespace AudioVideoLib.Tags
                 throw new InvalidDataException("value contains one or more invalid characters for the current frame encoding type.");
         }
 
-        private void ValueReplace(object sender, ListItemReplaceEventArgs<string> e)
+        private void ValueReplace(object? sender, ListItemReplaceEventArgs<string> e)
         {
             if (e == null)
                 throw new ArgumentNullException("e");

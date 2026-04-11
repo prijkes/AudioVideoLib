@@ -175,7 +175,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// Both instances are equal when their <see cref="Version"/> and <see cref="OwnerIdentifier"/> properties are equal (case-insensitive).
         /// </remarks>
-        public bool Equals(Id3v2UniqueFileIdentifierFrame ufi)
+        public bool Equals(Id3v2UniqueFileIdentifierFrame? ufi)
         {
             if (ReferenceEquals(null, ufi))
                 return false;

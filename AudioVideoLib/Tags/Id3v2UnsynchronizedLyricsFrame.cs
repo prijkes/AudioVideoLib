@@ -252,7 +252,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// Both instances are equal when their <see cref="Version"/>, <see cref="Language"/> and <see cref="ContentDescriptor"/> properties are equal (case-insensitive).
         /// </remarks>
-        public bool Equals(Id3v2UnsynchronizedLyricsFrame ul)
+        public bool Equals(Id3v2UnsynchronizedLyricsFrame? ul)
         {
             if (ReferenceEquals(null, ul))
                 return false;

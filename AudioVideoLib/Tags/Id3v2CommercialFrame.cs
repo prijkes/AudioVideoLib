@@ -446,7 +446,7 @@ namespace AudioVideoLib.Tags
         /// * <see cref="PictureMimeType"/>
         /// * <see cref="SellerLogo"/>
         /// </remarks>
-        public bool Equals(Id3v2CommercialFrame commercial)
+        public bool Equals(Id3v2CommercialFrame? commercial)
         {
             if (ReferenceEquals(null, commercial))
                 return false;

@@ -28,7 +28,7 @@ namespace AudioVideoLib.Tags
 
         ////------------------------------------------------------------------------------------------------------------------------------
 
-        private static void ValidateHeader(ApeHeader header, ApeHeader footer)
+        private static void ValidateHeader(ApeHeader? header, ApeHeader? footer)
         {
 #if DEBUG
             if (header != null && footer != null)

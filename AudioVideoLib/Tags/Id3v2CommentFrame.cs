@@ -248,7 +248,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// Both instances are equal when their <see cref="Version"/>, <see cref="Language"/> and <see cref="ShortContentDescription"/> properties are equal (case-insensitive).
         /// </remarks>
-        public bool Equals(Id3v2CommentFrame comment)
+        public bool Equals(Id3v2CommentFrame? comment)
         {
             if (ReferenceEquals(null, comment))
                 return false;

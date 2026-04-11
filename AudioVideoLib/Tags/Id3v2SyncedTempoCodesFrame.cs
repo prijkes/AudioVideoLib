@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2011-05-28
  * Sources used:
  *  http://www.id3.org/Id3v2-00
@@ -159,7 +159,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// Both instances are equal when their <see cref="Version"/> property is equal.
         /// </remarks>
-        public bool Equals(Id3v2SyncedTempoCodesFrame etc)
+        public bool Equals(Id3v2SyncedTempoCodesFrame? etc)
         {
             if (ReferenceEquals(null, etc))
                 return false;
@@ -198,7 +198,7 @@ namespace AudioVideoLib.Tags
             _tempoCodes.ItemReplace -= TempoCodeReplace;
         }
 
-        private void TempoCodeAdd(object sender, ListItemAddEventArgs<Id3v2TempoCode> e)
+        private void TempoCodeAdd(object? sender, ListItemAddEventArgs<Id3v2TempoCode> e)
         {
             if (e == null)
                 throw new ArgumentNullException("e");
@@ -217,7 +217,7 @@ namespace AudioVideoLib.Tags
             }
         }
 
-        private void TempoCodeReplace(object sender, ListItemReplaceEventArgs<Id3v2TempoCode> e)
+        private void TempoCodeReplace(object? sender, ListItemReplaceEventArgs<Id3v2TempoCode> e)
         {
             if (e == null)
                 throw new ArgumentNullException("e");

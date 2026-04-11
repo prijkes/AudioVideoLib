@@ -162,7 +162,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// Both instances are equal when their <see cref="Version"/> and <see cref="EmailToUser"/> properties are equal (case-insensitive).
         /// </remarks>
-        public bool Equals(Id3v2PopularimeterFrame pm)
+        public bool Equals(Id3v2PopularimeterFrame? pm)
         {
             if (ReferenceEquals(null, pm))
                 return false;

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2011-05-28
  * Sources used:
  *  http://www.id3.org/Id3v2-00
@@ -161,7 +161,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// Both instances are equal when their <see cref="Version"/> property is equal.
         /// </remarks>
-        public bool Equals(Id3v2RecommendedBufferSizeFrame rbs)
+        public bool Equals(Id3v2RecommendedBufferSizeFrame? rbs)
         {
             if (ReferenceEquals(null, rbs))
                 return false;

@@ -194,7 +194,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// Both instances are equal when their <see cref="Version"/> property is equal.
         /// </remarks>
-        public bool Equals(Id3v2TermsOfUseFrame tos)
+        public bool Equals(Id3v2TermsOfUseFrame? tos)
         {
             if (ReferenceEquals(null, tos))
                 return false;

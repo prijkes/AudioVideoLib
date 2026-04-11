@@ -323,7 +323,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// Both instances are equal when their <see cref="Version"/>, <see cref="Language"/> and <see cref="ContentDescriptor"/> properties are equal (case-insensitive).
         /// </remarks>
-        public bool Equals(Id3v2SynchronizedLyricsFrame sl)
+        public bool Equals(Id3v2SynchronizedLyricsFrame? sl)
         {
             if (ReferenceEquals(null, sl))
                 return false;
@@ -376,7 +376,7 @@ namespace AudioVideoLib.Tags
             _lyricSyncs.ItemReplace -= LyricSyncReplace;
         }
 
-        private void LyricSyncAdd(object sender, ListItemAddEventArgs<Id3v2LyricSync> e)
+        private void LyricSyncAdd(object? sender, ListItemAddEventArgs<Id3v2LyricSync> e)
         {
             if (e == null)
                 throw new ArgumentNullException("e");
@@ -404,7 +404,7 @@ namespace AudioVideoLib.Tags
             }
         }
 
-        private void LyricSyncReplace(object sender, ListItemReplaceEventArgs<Id3v2LyricSync> e)
+        private void LyricSyncReplace(object? sender, ListItemReplaceEventArgs<Id3v2LyricSync> e)
         {
             if (e == null)
                 throw new ArgumentNullException("e");

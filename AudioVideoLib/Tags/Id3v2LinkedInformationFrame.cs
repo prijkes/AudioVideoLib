@@ -225,7 +225,7 @@ namespace AudioVideoLib.Tags
         /// Both instances are equal when their <see cref="Version"/>, <see cref="FrameIdentifier"/>, 
         /// <see cref="Url"/> and <see cref="AdditionalIdData"/> properties are equal (case-insensitive).
         /// </remarks>
-        public bool Equals(Id3v2LinkedInformationFrame li)
+        public bool Equals(Id3v2LinkedInformationFrame? li)
         {
             if (ReferenceEquals(null, li))
                 return false;

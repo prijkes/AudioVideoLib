@@ -172,7 +172,7 @@ namespace AudioVideoLib.Tags
         /// </summary>
         /// <param name="tag">The <see cref="MusicMatchTag"/>.</param>
         /// <returns>true if equal; false otherwise.</returns>
-        public bool Equals(MusicMatchTag tag)
+        public bool Equals(MusicMatchTag? tag)
         {
             if (ReferenceEquals(null, tag))
                 return false;

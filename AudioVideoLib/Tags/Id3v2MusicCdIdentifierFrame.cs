@@ -119,7 +119,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// Both instances are equal when their <see cref="Version"/> property is equal.
         /// </remarks>
-        public bool Equals(Id3v2MusicCdIdentifierFrame mci)
+        public bool Equals(Id3v2MusicCdIdentifierFrame? mci)
         {
             if (ReferenceEquals(null, mci))
                 return false;

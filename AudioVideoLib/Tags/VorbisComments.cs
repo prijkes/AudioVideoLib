@@ -106,7 +106,7 @@ namespace AudioVideoLib.Tags
         /// </summary>
         /// <param name="tag">The <see cref="VorbisComments"/>.</param>
         /// <returns>true if equal; false otherwise.</returns>
-        public bool Equals(VorbisComments tag)
+        public bool Equals(VorbisComments? tag)
         {
             if (ReferenceEquals(null, tag))
                 return false;

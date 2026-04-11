@@ -118,7 +118,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// Both instances are equal when their <see cref="Version"/>, <see cref="GroupSymbol"/> and <see cref="SignatureData"/> properties are equal (case-insensitive).
         /// </remarks>
-        public bool Equals(Id3v2SignatureFrame signature)
+        public bool Equals(Id3v2SignatureFrame? signature)
         {
             if (ReferenceEquals(null, signature))
                 return false;

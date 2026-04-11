@@ -264,7 +264,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// Both instances are equal when their <see cref="Version"/> and <see cref="ContentDescription"/> properties are equal (case-insensitive).
         /// </remarks>
-        public bool Equals(Id3v2GeneralEncapsulatedObjectFrame geo)
+        public bool Equals(Id3v2GeneralEncapsulatedObjectFrame? geo)
         {
             if (ReferenceEquals(null, geo))
                 return false;

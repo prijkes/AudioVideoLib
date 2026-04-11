@@ -202,7 +202,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// Both instances are equal when their <see cref="Version"/> and <see cref="Identification"/> properties are equal (case-insensitive).
         /// </remarks>
-        public bool Equals(Id3v2Equalisation2Frame equalisation2)
+        public bool Equals(Id3v2Equalisation2Frame? equalisation2)
         {
             if (ReferenceEquals(null, equalisation2))
                 return false;
@@ -248,7 +248,7 @@ namespace AudioVideoLib.Tags
         }
 
         // Manually insert the AdjustmentPoint here so we can keep the list always sorted by Frequency.
-        private void AdjustmentPointAdd(object sender, ListItemAddEventArgs<Id3v2AdjustmentPoint> e)
+        private void AdjustmentPointAdd(object? sender, ListItemAddEventArgs<Id3v2AdjustmentPoint> e)
         {
             if (e == null)
                 throw new ArgumentNullException("e");
@@ -267,7 +267,7 @@ namespace AudioVideoLib.Tags
             }
         }
 
-        private void AdjustmentPointReplace(object sender, ListItemReplaceEventArgs<Id3v2AdjustmentPoint> e)
+        private void AdjustmentPointReplace(object? sender, ListItemReplaceEventArgs<Id3v2AdjustmentPoint> e)
         {
             if (e == null)
                 throw new ArgumentNullException("e");

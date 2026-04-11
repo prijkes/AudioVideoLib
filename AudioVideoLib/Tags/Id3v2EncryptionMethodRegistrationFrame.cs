@@ -194,7 +194,7 @@ namespace AudioVideoLib.Tags
         /// Both instances are equal when their <see cref="Version"/>, 
         /// <see cref="MethodSymbol"/> and <see cref="OwnerIdentifier"/> properties are equal (case-insensitive).
         /// </remarks>
-        public bool Equals(Id3v2EncryptionMethodRegistrationFrame encryptionMethodRegistrationFrame)
+        public bool Equals(Id3v2EncryptionMethodRegistrationFrame? encryptionMethodRegistrationFrame)
         {
             if (ReferenceEquals(null, encryptionMethodRegistrationFrame))
                 return false;

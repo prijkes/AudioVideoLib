@@ -293,7 +293,7 @@ namespace AudioVideoLib.Tags
         /// when their <see cref="Version"/> property is equal and both use <see cref="Id3v2AttachedPictureType.FileIcon"/> 
         /// or <see cref="Id3v2AttachedPictureType.OtherFileIcon"/> as <see cref="PictureType"/>.
         /// </remarks>
-        public bool Equals(Id3v2AttachedPictureFrame ap)
+        public bool Equals(Id3v2AttachedPictureFrame? ap)
         {
             if (ReferenceEquals(null, ap))
                 return false;

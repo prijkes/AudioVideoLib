@@ -138,7 +138,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// Both instances are equal when their <see cref="Version"/> and <see cref="CompressedData"/> properties are equal.
         /// </remarks>
-        public bool Equals(Id3v2CompressedDataMetaFrame compressedDataMeta)
+        public bool Equals(Id3v2CompressedDataMetaFrame? compressedDataMeta)
         {
             if (ReferenceEquals(null, compressedDataMeta))
                 return false;

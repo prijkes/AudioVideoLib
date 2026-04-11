@@ -182,7 +182,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// There may be more than one <see cref="Id3v2UrlLinkFrame"/> frame of its kind in an <see cref="Id3v2Tag"/>.
         /// </remarks>
-        public bool Equals(Id3v2UrlLinkFrame udti)
+        public bool Equals(Id3v2UrlLinkFrame? udti)
         {
             if (ReferenceEquals(null, udti))
                 return false;

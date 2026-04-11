@@ -157,7 +157,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// Both instances are equal when their <see cref="Version"/> and <see cref="PrivateData"/> properties are equal.
         /// </remarks>
-        public bool Equals(Id3v2PrivateFrame pf)
+        public bool Equals(Id3v2PrivateFrame? pf)
         {
             if (ReferenceEquals(null, pf))
                 return false;

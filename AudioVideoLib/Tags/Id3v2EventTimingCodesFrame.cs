@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2011-05-28
  * Sources used:
  *  http://www.id3.org/Id3v2-00
@@ -168,7 +168,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// Both instances are equal when their <see cref="Version"/> property is equal.
         /// </remarks>
-        public bool Equals(Id3v2EventTimingCodesFrame etc)
+        public bool Equals(Id3v2EventTimingCodesFrame? etc)
         {
             if (ReferenceEquals(null, etc))
                 return false;
@@ -231,7 +231,7 @@ namespace AudioVideoLib.Tags
             _keyEvents.ItemReplace -= KeyEventReplace;
         }
 
-        private void KeyEventAdd(object sender, ListItemAddEventArgs<Id3v2KeyEvent> e)
+        private void KeyEventAdd(object? sender, ListItemAddEventArgs<Id3v2KeyEvent> e)
         {
             if (e == null)
                 throw new ArgumentNullException("e");
@@ -253,7 +253,7 @@ namespace AudioVideoLib.Tags
             }
         }
 
-        private void KeyEventReplace(object sender, ListItemReplaceEventArgs<Id3v2KeyEvent> e)
+        private void KeyEventReplace(object? sender, ListItemReplaceEventArgs<Id3v2KeyEvent> e)
         {
             if (e == null)
                 throw new ArgumentException("e");

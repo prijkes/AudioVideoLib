@@ -191,7 +191,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// Both instances are equal when their <see cref="Version"/>, <see cref="GroupSymbol"/> and <see cref="OwnerIdentifier"/> properties are equal (case-insensitive).
         /// </remarks>
-        public bool Equals(Id3v2GroupIdentificationRegistrationFrame gir)
+        public bool Equals(Id3v2GroupIdentificationRegistrationFrame? gir)
         {
             if (ReferenceEquals(null, gir))
                 return false;

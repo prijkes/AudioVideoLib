@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2011-07-06
  * Sources used:
  *  http://www.id3.org/Id3v2-00
@@ -240,7 +240,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// Both instances are equal when their <see cref="Version"/> property is equal.
         /// </remarks>
-        public bool Equals(Id3v2ReverbFrame rev)
+        public bool Equals(Id3v2ReverbFrame? rev)
         {
             if (ReferenceEquals(null, rev))
                 return false;

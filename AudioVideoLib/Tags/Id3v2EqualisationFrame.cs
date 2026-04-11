@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2011-07-06
  * Sources used:
  *  http://www.id3.org/Id3v2-00
@@ -169,7 +169,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// Both instances are equal when their <see cref="Version"/> property is equal.
         /// </remarks>
-        public bool Equals(Id3v2EqualisationFrame equalisation)
+        public bool Equals(Id3v2EqualisationFrame? equalisation)
         {
             if (ReferenceEquals(null, equalisation))
                 return false;
@@ -201,7 +201,7 @@ namespace AudioVideoLib.Tags
             _equalisationBands.ItemReplace += EqualisationBandReplace;
         }
 
-        private void EqualisationBandAdd(object sender, ListItemAddEventArgs<Id3v2EqualisationBand> e)
+        private void EqualisationBandAdd(object? sender, ListItemAddEventArgs<Id3v2EqualisationBand> e)
         {
             if (e == null)
                 throw new ArgumentNullException("e");
@@ -220,7 +220,7 @@ namespace AudioVideoLib.Tags
             }
         }
 
-        private void EqualisationBandReplace(object sender, ListItemReplaceEventArgs<Id3v2EqualisationBand> e)
+        private void EqualisationBandReplace(object? sender, ListItemReplaceEventArgs<Id3v2EqualisationBand> e)
         {
             if (e == null)
                 throw new ArgumentNullException("e");

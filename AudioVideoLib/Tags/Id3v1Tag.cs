@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Date: 2010-05-19
  * Sources used: 
  *  http://www.codeproject.com/KB/audio-video/mpegaudioinfo.aspx
@@ -97,7 +97,7 @@ namespace AudioVideoLib.Tags
         /// </summary>
         /// <param name="tag">The <see cref="Id3v1Tag"/>.</param>
         /// <returns>true if equal; false otherwise.</returns>
-        public bool Equals(Id3v1Tag tag)
+        public bool Equals(Id3v1Tag? tag)
         {
             if (ReferenceEquals(null, tag))
                 return false;

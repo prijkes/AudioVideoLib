@@ -113,7 +113,7 @@ namespace AudioVideoLib.Tags
         /// </summary>
         /// <param name="tag">The <see cref="ApeTag"/>.</param>
         /// <returns>true if equal; false otherwise.</returns>
-        public bool Equals(ApeTag tag)
+        public bool Equals(ApeTag? tag)
         {
             if (ReferenceEquals(null, tag))
                 return false;
@@ -200,7 +200,7 @@ namespace AudioVideoLib.Tags
         /// <remarks>
         /// The item needs to have the same version set as the tag, otherwise an <see cref="InvalidVersionException"/> will be thrown.
         /// </remarks>
-        public void SetItem(ApeItem item)
+        public void SetItem(ApeItem? item)
         {
             if (item == null)
                 throw new ArgumentNullException("item");
@@ -258,7 +258,7 @@ namespace AudioVideoLib.Tags
         /// </summary>
         /// <param name="item">The item.</param>
         /// <exception cref="System.ArgumentNullException">Thrown if item is null.</exception>
-        public void RemoveItem(ApeItem item)
+        public void RemoveItem(ApeItem? item)
         {
             if (item == null)
                 throw new ArgumentNullException("item");
