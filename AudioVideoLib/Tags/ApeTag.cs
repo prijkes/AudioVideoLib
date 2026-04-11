@@ -152,6 +152,19 @@ public sealed partial class ApeTag : IAudioTag
     }
 
     /// <summary>
+    /// Gets the <see cref="ApeItem"/> with the specified <paramref name="key"/> cast to the
+    /// requested concrete <typeparamref name="T"/>.
+    /// </summary>
+    /// <typeparam name="T">The expected concrete item type.</typeparam>
+    /// <param name="key">The key of the <see cref="ApeItem"/>.</param>
+    /// <returns>
+    /// The matching item of type <typeparamref name="T"/>; <c>null</c> if no item with that
+    /// key is present, or the stored item is not of the expected type.
+    /// </returns>
+    public T? GetItem<T>(ApeItemKey key) where T : ApeItem
+        => GetItem(key) as T;
+
+    /// <summary>
     /// Gets the <see cref="ApeItem"/>.
     /// </summary>
     /// <param name="key">The key of the <see cref="ApeItem"/>.</param>

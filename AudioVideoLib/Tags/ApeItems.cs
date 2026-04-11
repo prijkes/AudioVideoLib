@@ -28,8 +28,8 @@ public sealed partial class ApeTag
     /// </value>
     public ApeLocatorItem? AbstractLink
     {
-        get { return GetItem(ApeItemKey.Abstract) as ApeLocatorItem; }
-        set { SetItem(value); }
+        get => GetItem<ApeLocatorItem>(ApeItemKey.Abstract);
+        set => SetItem(value);
     }
 
     /// <summary>
@@ -40,8 +40,8 @@ public sealed partial class ApeTag
     /// </value>
     public ApeUtf8Item? AlbumArtist
     {
-        get { return GetItem(ApeItemKey.AlbumArtist) as ApeUtf8Item; }
-        set { SetItem(value); }
+        get => GetItem<ApeUtf8Item>(ApeItemKey.AlbumArtist);
+        set => SetItem(value);
     }
 
     /// <summary>
@@ -52,8 +52,8 @@ public sealed partial class ApeTag
     /// </value>
     public ApeUtf8Item? AlbumName
     {
-        get { return GetItem(ApeItemKey.AlbumName) as ApeUtf8Item; }
-        set { SetItem(value); }
+        get => GetItem<ApeUtf8Item>(ApeItemKey.AlbumName);
+        set => SetItem(value);
     }
 
     /// <summary>
@@ -67,8 +67,8 @@ public sealed partial class ApeTag
     /// </remarks>
     public ApeUtf8Item? Artist
     {
-        get { return GetItem(ApeItemKey.Artist) as ApeUtf8Item; }
-        set { SetItem(value); }
+        get => GetItem<ApeUtf8Item>(ApeItemKey.Artist);
+        set => SetItem(value);
     }
 
     /// <summary>
@@ -82,8 +82,8 @@ public sealed partial class ApeTag
     /// </remarks>
     public ApeUtf8Item? BarCodeIdentifier
     {
-        get { return GetItem(ApeItemKey.BarCodeIdentifier) as ApeUtf8Item; }
-        set { SetItem(value); }
+        get => GetItem<ApeUtf8Item>(ApeItemKey.BarCodeIdentifier);
+        set => SetItem(value);
     }
 
     /// <summary>
@@ -97,8 +97,8 @@ public sealed partial class ApeTag
     /// </remarks>
     public ApeUtf8Item? CatalogNumber
     {
-        get { return GetItem(ApeItemKey.CatalogNumber) as ApeUtf8Item; }
-        set { SetItem(value); }
+        get => GetItem<ApeUtf8Item>(ApeItemKey.CatalogNumber);
+        set => SetItem(value);
     }
 
     /// <summary>
@@ -112,8 +112,8 @@ public sealed partial class ApeTag
     /// </remarks>
     public ApeUtf8Item? Comments
     {
-        get { return GetItem(ApeItemKey.Comments) as ApeUtf8Item; }
-        set { SetItem(value); }
+        get => GetItem<ApeUtf8Item>(ApeItemKey.Comments);
+        set => SetItem(value);
     }
 
     /// <summary>
@@ -127,8 +127,8 @@ public sealed partial class ApeTag
     /// </remarks>
     public ApeUtf8Item? Composer
     {
-        get { return GetItem(ApeItemKey.Composer) as ApeUtf8Item; }
-        set { SetItem(value); }
+        get => GetItem<ApeUtf8Item>(ApeItemKey.Composer);
+        set => SetItem(value);
     }
 
     /// <summary>
@@ -142,8 +142,8 @@ public sealed partial class ApeTag
     /// </remarks>
     public ApeUtf8Item? Conductor
     {
-        get { return GetItem(ApeItemKey.Conductor) as ApeUtf8Item; }
-        set { SetItem(value); }
+        get => GetItem<ApeUtf8Item>(ApeItemKey.Conductor);
+        set => SetItem(value);
     }
 
     /// <summary>
@@ -154,8 +154,8 @@ public sealed partial class ApeTag
     /// </value>
     public ApeUtf8Item? CopyrightHolder
     {
-        get { return GetItem(ApeItemKey.CopyrightHolder) as ApeUtf8Item; }
-        set { SetItem(value); }
+        get => GetItem<ApeUtf8Item>(ApeItemKey.CopyrightHolder);
+        set => SetItem(value);
     }
 
     /// <summary>
@@ -166,8 +166,8 @@ public sealed partial class ApeTag
     /// </value>
     public ApeUtf8Item? DebutAlbumName
     {
-        get { return GetItem(ApeItemKey.DebutAlbumName) as ApeUtf8Item; }
-        set { SetItem(value); }
+        get => GetItem<ApeUtf8Item>(ApeItemKey.DebutAlbumName);
+        set => SetItem(value);
     }
 
     /// <summary>
@@ -178,8 +178,8 @@ public sealed partial class ApeTag
     /// </value>
     public ApeUtf8Item? DiscNumber
     {
-        get { return GetItem(ApeItemKey.DiscNumber) as ApeUtf8Item; }
-        set { SetItem(value); }
+        get => GetItem<ApeUtf8Item>(ApeItemKey.DiscNumber);
+        set => SetItem(value);
     }
 
     /// <summary>
@@ -193,8 +193,8 @@ public sealed partial class ApeTag
     /// </remarks>
     public ApeLocatorItem? DiscographyLink
     {
-        get { return GetItem(ApeItemKey.Discography) as ApeLocatorItem; }
-        set { SetItem(value); }
+        get => GetItem<ApeLocatorItem>(ApeItemKey.Discography);
+        set => SetItem(value);
     }
 
     /// <summary>
@@ -208,8 +208,8 @@ public sealed partial class ApeTag
     /// </remarks>
     public ApeBinaryItem? Dummy
     {
-        get { return GetItem(ApeItemKey.Dummy) as ApeBinaryItem; }
-        set { SetItem(value); }
+        get => GetItem<ApeBinaryItem>(ApeItemKey.Dummy);
+        set => SetItem(value);
     }
 
     /// <summary>
@@ -223,8 +223,8 @@ public sealed partial class ApeTag
     /// </remarks>
     public ApeLocatorItem? FileLocation
     {
-        get { return GetItem(ApeItemKey.FileLocation) as ApeLocatorItem; }
-        set { SetItem(value); }
+        get => GetItem<ApeLocatorItem>(ApeItemKey.FileLocation);
+        set => SetItem(value);
     }
 
     /// <summary>
@@ -239,8 +239,8 @@ public sealed partial class ApeTag
     /// </remarks>
     public ApeUtf8Item? Genre
     {
-        get { return GetItem(ApeItemKey.Genre) as ApeUtf8Item; }
-        set { SetItem(value); }
+        get => GetItem<ApeUtf8Item>(ApeItemKey.Genre);
+        set => SetItem(value);
     }
 
     /// <summary>
@@ -254,8 +254,8 @@ public sealed partial class ApeTag
     /// </remarks>
     public ApeUtf8Item? IndexTimes
     {
-        get { return GetItem(ApeItemKey.Index) as ApeUtf8Item; }
-        set { SetItem(value); }
+        get => GetItem<ApeUtf8Item>(ApeItemKey.Index);
+        set => SetItem(value);
     }
 
     /// <summary>
@@ -269,8 +269,8 @@ public sealed partial class ApeTag
     /// </remarks>
     public ApeUtf8Item? IntroPlay
     {
-        get { return GetItem(ApeItemKey.IntroPlay) as ApeUtf8Item; }
-        set { SetItem(value); }
+        get => GetItem<ApeUtf8Item>(ApeItemKey.IntroPlay);
+        set => SetItem(value);
     }
 
     /// <summary>
@@ -320,8 +320,8 @@ public sealed partial class ApeTag
     /// </remarks>
     public ApeUtf8Item? InternationalStandardRecordingNumber
     {
-        get { return GetItem(ApeItemKey.InternationalStandardRecordingNumber) as ApeUtf8Item; }
-        set { SetItem(value); }
+        get => GetItem<ApeUtf8Item>(ApeItemKey.InternationalStandardRecordingNumber);
+        set => SetItem(value);
     }
 
     /// <summary>
@@ -335,8 +335,8 @@ public sealed partial class ApeTag
     /// </remarks>
     public ApeUtf8Item? LabelCode
     {
-        get { return GetItem(ApeItemKey.LabelCode) as ApeUtf8Item; }
-        set { SetItem(value); }
+        get => GetItem<ApeUtf8Item>(ApeItemKey.LabelCode);
+        set => SetItem(value);
     }
 
     /// <summary>
@@ -350,8 +350,8 @@ public sealed partial class ApeTag
     /// </remarks>
     public ApeUtf8Item? Language
     {
-        get { return GetItem(ApeItemKey.Language) as ApeUtf8Item; }
-        set { SetItem(value); }
+        get => GetItem<ApeUtf8Item>(ApeItemKey.Language);
+        set => SetItem(value);
     }
 
     /// <summary>
@@ -365,8 +365,8 @@ public sealed partial class ApeTag
     /// </remarks>
     public ApeUtf8Item? Media
     {
-        get { return GetItem(ApeItemKey.Media) as ApeUtf8Item; }
-        set { SetItem(value); }
+        get => GetItem<ApeUtf8Item>(ApeItemKey.Media);
+        set => SetItem(value);
     }
 
     /// <summary>
@@ -377,8 +377,8 @@ public sealed partial class ApeTag
     /// </value>
     public ApeUtf8Item? PublicationRightHolder
     {
-        get { return GetItem(ApeItemKey.PublicationRightHolder) as ApeUtf8Item; }
-        set { SetItem(value); }
+        get => GetItem<ApeUtf8Item>(ApeItemKey.PublicationRightHolder);
+        set => SetItem(value);
     }
 
     /// <summary>
@@ -392,8 +392,8 @@ public sealed partial class ApeTag
     /// </remarks>
     public ApeUtf8Item? Publisher
     {
-        get { return GetItem(ApeItemKey.Publisher) as ApeUtf8Item; }
-        set { SetItem(value); }
+        get => GetItem<ApeUtf8Item>(ApeItemKey.Publisher);
+        set => SetItem(value);
     }
 
     /// <summary>
@@ -407,8 +407,8 @@ public sealed partial class ApeTag
     /// </remarks>
     public ApeUtf8Item? RecordDate
     {
-        get { return GetItem(ApeItemKey.RecordDate) as ApeUtf8Item; }
-        set { SetItem(value); }
+        get => GetItem<ApeUtf8Item>(ApeItemKey.RecordDate);
+        set => SetItem(value);
     }
 
     /// <summary>
@@ -422,8 +422,8 @@ public sealed partial class ApeTag
     /// </remarks>
     public ApeUtf8Item? RecordLocation
     {
-        get { return GetItem(ApeItemKey.RecordLocation) as ApeUtf8Item; }
-        set { SetItem(value); }
+        get => GetItem<ApeUtf8Item>(ApeItemKey.RecordLocation);
+        set => SetItem(value);
     }
 
     /// <summary>
@@ -437,8 +437,8 @@ public sealed partial class ApeTag
     /// </remarks>
     public ApeLocatorItem? Related
     {
-        get { return GetItem(ApeItemKey.Related) as ApeLocatorItem; }
-        set { SetItem(value); }
+        get => GetItem<ApeLocatorItem>(ApeItemKey.Related);
+        set => SetItem(value);
     }
 
     /// <summary>
@@ -452,8 +452,8 @@ public sealed partial class ApeTag
     /// </remarks>
     public ApeUtf8Item? ReleaseDate
     {
-        get { return GetItem(ApeItemKey.ReleaseDate) as ApeUtf8Item; }
-        set { SetItem(value); }
+        get => GetItem<ApeUtf8Item>(ApeItemKey.ReleaseDate);
+        set => SetItem(value);
     }
 
     /// <summary>
@@ -464,8 +464,8 @@ public sealed partial class ApeTag
     /// </value>
     public ApeUtf8Item? ReplayGainAlbumGain
     {
-        get { return GetItem(ApeItemKey.ReplayGainAlbumGain) as ApeUtf8Item; }
-        set { SetItem(value); }
+        get => GetItem<ApeUtf8Item>(ApeItemKey.ReplayGainAlbumGain);
+        set => SetItem(value);
     }
 
     /// <summary>
@@ -476,8 +476,8 @@ public sealed partial class ApeTag
     /// </value>
     public ApeUtf8Item? ReplayGainAlbumPeak
     {
-        get { return GetItem(ApeItemKey.ReplayGainAlbumPeak) as ApeUtf8Item; }
-        set { SetItem(value); }
+        get => GetItem<ApeUtf8Item>(ApeItemKey.ReplayGainAlbumPeak);
+        set => SetItem(value);
     }
 
     /// <summary>
@@ -488,8 +488,8 @@ public sealed partial class ApeTag
     /// </value>
     public ApeUtf8Item? ReplayGainTrackGain
     {
-        get { return GetItem(ApeItemKey.ReplayGainTrackGain) as ApeUtf8Item; }
-        set { SetItem(value); }
+        get => GetItem<ApeUtf8Item>(ApeItemKey.ReplayGainTrackGain);
+        set => SetItem(value);
     }
 
     /// <summary>
@@ -500,8 +500,8 @@ public sealed partial class ApeTag
     /// </value>
     public ApeUtf8Item? ReplayGainTrackPeak
     {
-        get { return GetItem(ApeItemKey.ReplayGainTrackPeak) as ApeUtf8Item; }
-        set { SetItem(value); }
+        get => GetItem<ApeUtf8Item>(ApeItemKey.ReplayGainTrackPeak);
+        set => SetItem(value);
     }
 
     /// <summary>
@@ -515,8 +515,8 @@ public sealed partial class ApeTag
     /// </remarks>
     public ApeUtf8Item? Subtitle
     {
-        get { return GetItem(ApeItemKey.Subtitle) as ApeUtf8Item; }
-        set { SetItem(value); }
+        get => GetItem<ApeUtf8Item>(ApeItemKey.Subtitle);
+        set => SetItem(value);
     }
 
     /// <summary>
@@ -530,8 +530,8 @@ public sealed partial class ApeTag
     /// </remarks>
     public ApeUtf8Item? Title
     {
-        get { return GetItem(ApeItemKey.Title) as ApeUtf8Item; }
-        set { SetItem(value); }
+        get => GetItem<ApeUtf8Item>(ApeItemKey.Title);
+        set => SetItem(value);
     }
 
     /// <summary>
@@ -542,7 +542,7 @@ public sealed partial class ApeTag
     /// </value>
     public ApeUtf8Item? TrackNumber
     {
-        get { return GetItem(ApeItemKey.TrackNumber) as ApeUtf8Item; }
-        set { SetItem(value); }
+        get => GetItem<ApeUtf8Item>(ApeItemKey.TrackNumber);
+        set => SetItem(value);
     }
 }
