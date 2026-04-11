@@ -118,13 +118,13 @@ namespace AudioVideoLib.Tags
         ////------------------------------------------------------------------------------------------------------------------------------
 
         /// <inheritdoc/>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return Equals(obj as Id3v2Frame);
         }
 
         /// <inheritdoc/>
-        public bool Equals(IAudioTagFrame audioFrame)
+        public bool Equals(IAudioTagFrame? audioFrame)
         {
             return Equals(audioFrame as Id3v2Frame);
         }
@@ -143,7 +143,7 @@ namespace AudioVideoLib.Tags
         /// * <see cref="DataLengthIndicator"/>
         /// * <see cref="Data"/>
         /// </returns>
-        public virtual bool Equals(Id3v2Frame frame)
+        public virtual bool Equals(Id3v2Frame? frame)
         {
             if (ReferenceEquals(null, frame))
                 return false;

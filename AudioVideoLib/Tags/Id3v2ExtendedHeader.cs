@@ -249,7 +249,7 @@ namespace AudioVideoLib.Tags
         ////------------------------------------------------------------------------------------------------------------------------------
 
         /// <inheritdoc/>
-        public override bool Equals(object extendedHeader)
+        public override bool Equals(object? extendedHeader)
         {
             return Equals(extendedHeader as Id3v2ExtendedHeader);
         }
@@ -259,7 +259,7 @@ namespace AudioVideoLib.Tags
         /// </summary>
         /// <param name="extendedHeader">The extended header.</param>
         /// <returns></returns>
-        public bool Equals(Id3v2ExtendedHeader extendedHeader)
+        public bool Equals(Id3v2ExtendedHeader? extendedHeader)
         {
             if (ReferenceEquals(null, extendedHeader))
                 return false;

@@ -4,7 +4,6 @@
  *  http://id3.org/Lyrics3v2
  */
 using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -150,13 +149,13 @@ namespace AudioVideoLib.Tags
         ////------------------------------------------------------------------------------------------------------------------------------
 
         /// <inheritdoc/>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return Equals(obj as Lyrics3v2Field);
         }
 
         /// <inheritdoc/>
-        public bool Equals(IAudioTagFrame audioFrame)
+        public bool Equals(IAudioTagFrame? audioFrame)
         {
             return Equals(audioFrame as Lyrics3v2Field);
         }

@@ -59,12 +59,12 @@ namespace AudioVideoLib.Tags
         /// <summary>
         /// Occurs when parsing an audio tag.
         /// </summary>
-        public event EventHandler<AudioTagParseEventArgs> AudioTagParse;
+        public event EventHandler<AudioTagParseEventArgs>? AudioTagParse;
 
         /// <summary>
         /// Occurs when an audio tag has been parsed.
         /// </summary>
-        public event EventHandler<AudioTagParsedEventArgs> AudioTagParsed;
+        public event EventHandler<AudioTagParsedEventArgs>? AudioTagParsed;
 
         ////------------------------------------------------------------------------------------------------------------------------------
 

@@ -19,13 +19,5 @@ namespace AudioVideoLib.Tags
         /// A byte array that represents the <see cref="IAudioTag"/>.
         /// </returns>
         byte[] ToByteArray();
-
-        /// <summary>
-        /// Returns a <see cref="String" /> that represents this instance.
-        /// </summary>
-        /// <returns>
-        /// A <see cref="String" /> that represents this instance.
-        /// </returns>
-        string ToString();
     }
 }

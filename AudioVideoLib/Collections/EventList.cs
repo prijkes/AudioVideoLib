@@ -46,27 +46,27 @@ namespace AudioVideoLib.Collections
         /// <summary>
         /// Occurs before an item is added to the list
         /// </summary>
-        public event EventHandler<ListItemAddEventArgs<T>> ItemAdd;
+        public event EventHandler<ListItemAddEventArgs<T>>? ItemAdd;
 
         /// <summary>
         /// Occurs after an item has been added to the list.
         /// </summary>
-        public event EventHandler<ListItemAddedEventArgs<T>> ItemAdded;
+        public event EventHandler<ListItemAddedEventArgs<T>>? ItemAdded;
 
         /// <summary>
         /// Occurs before an item is replaced in the list.
         /// </summary>
-        public event EventHandler<ListItemReplaceEventArgs<T>> ItemReplace;
+        public event EventHandler<ListItemReplaceEventArgs<T>>? ItemReplace;
 
         /// <summary>
         /// Occurs after an item has been replaced in the list.
         /// </summary>
-        public event EventHandler<ListItemReplacedEventArgs<T>> ItemReplaced;
+        public event EventHandler<ListItemReplacedEventArgs<T>>? ItemReplaced;
 
         /// <summary>
         /// Occurs before an item is removed from the list.
         /// </summary>
-        public event EventHandler<ListItemRemoveEventArgs<T>> ItemRemove;
+        public event EventHandler<ListItemRemoveEventArgs<T>>? ItemRemove;
 
         /// <summary>
         /// Occurs after an item has been removed from the list.
@@ -74,7 +74,7 @@ namespace AudioVideoLib.Collections
         /// <remarks>
         /// This event will only be called when an item has been successfully removed from the list.
         /// </remarks>
-        public event EventHandler<ListItemRemovedEventArgs<T>> ItemRemoved;
+        public event EventHandler<ListItemRemovedEventArgs<T>>? ItemRemoved;
 
         ////------------------------------------------------------------------------------------------------------------------------------
 

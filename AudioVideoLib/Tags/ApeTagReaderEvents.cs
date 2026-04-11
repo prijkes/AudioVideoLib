@@ -16,12 +16,12 @@ namespace AudioVideoLib.Tags
         /// <summary>
         /// Occurs when parsing an item.
         /// </summary>
-        public event EventHandler<ApeItemParseEventArgs> ItemParse;
+        public event EventHandler<ApeItemParseEventArgs>? ItemParse;
 
         /// <summary>
         /// Occurs when an item has been parsed.
         /// </summary>
-        public event EventHandler<ApeItemParsedEventArgs> ItemParsed;
+        public event EventHandler<ApeItemParsedEventArgs>? ItemParsed;
 
         ////------------------------------------------------------------------------------------------------------------------------------
 

@@ -24,22 +24,22 @@ namespace AudioVideoLib.Collections
         /// <summary>
         /// Occurs before an item is added to the collection.
         /// </summary>
-        public event EventHandler<CollectionItemAddEventArgs<T>> ItemAdd;
+        public event EventHandler<CollectionItemAddEventArgs<T>>? ItemAdd;
 
         /// <summary>
         /// Occurs after an item has been added to the collection.
         /// </summary>
-        public event EventHandler<CollectionItemAddedEventArgs<T>> ItemAdded;
+        public event EventHandler<CollectionItemAddedEventArgs<T>>? ItemAdded;
 
         /// <summary>
         /// Occurs before an item is removed from the collection.
         /// </summary>
-        public event EventHandler<CollectionItemRemoveEventArgs<T>> ItemRemove;
+        public event EventHandler<CollectionItemRemoveEventArgs<T>>? ItemRemove;
 
         /// <summary>
         /// Occurs after an item has been removed from the collection.
         /// </summary>
-        public event EventHandler<CollectionItemRemovedEventArgs<T>> ItemRemoved;
+        public event EventHandler<CollectionItemRemovedEventArgs<T>>? ItemRemoved;
 
         ////------------------------------------------------------------------------------------------------------------------------------
 

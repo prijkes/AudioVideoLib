@@ -60,13 +60,13 @@ namespace AudioVideoLib.Tags
         ////------------------------------------------------------------------------------------------------------------------------------
 
         /// <inheritdoc/>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return Equals(obj as Lyrics3v2Tag);
         }
 
         /// <inheritdoc/>
-        public bool Equals(IAudioTag other)
+        public bool Equals(IAudioTag? other)
         {
             return Equals(other as Lyrics3v2Tag);
         }

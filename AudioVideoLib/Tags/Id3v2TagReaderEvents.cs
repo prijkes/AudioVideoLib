@@ -16,12 +16,12 @@ namespace AudioVideoLib.Tags
         /// <summary>
         /// Occurs when parsing a frame.
         /// </summary>
-        public event EventHandler<Id3v2FrameParseEventArgs> FrameParse;
+        public event EventHandler<Id3v2FrameParseEventArgs>? FrameParse;
 
         /// <summary>
         /// Occurs when a frame has been parsed.
         /// </summary>
-        public event EventHandler<Id3v2FrameParsedEventArgs> FrameParsed;
+        public event EventHandler<Id3v2FrameParsedEventArgs>? FrameParsed;
 
         ////------------------------------------------------------------------------------------------------------------------------------
 

@@ -74,13 +74,5 @@ namespace AudioVideoLib.IO
         /// A byte array that represents the <see cref="IAudioStream"/>.
         /// </returns>
         byte[] ToByteArray();
-
-        /// <summary>
-        /// Returns a <see cref="System.String" /> that represents this instance.
-        /// </summary>
-        /// <returns>
-        /// A <see cref="System.String" /> that represents this instance.
-        /// </returns>
-        string ToString();
     }
 }

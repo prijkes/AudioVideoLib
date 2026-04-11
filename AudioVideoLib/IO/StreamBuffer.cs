@@ -6,7 +6,6 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Runtime.Remoting;
 using System.Text;
 
 namespace AudioVideoLib.IO
@@ -351,12 +350,12 @@ namespace AudioVideoLib.IO
             return _stream.Seek(offset, origin);
         }
 
-        public override IAsyncResult BeginRead(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
+        public override IAsyncResult BeginRead(byte[] buffer, int offset, int count, AsyncCallback? callback, object? state)
         {
             return _stream.BeginRead(buffer, offset, count, callback, state);
         }
 
-        public override IAsyncResult BeginWrite(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
+        public override IAsyncResult BeginWrite(byte[] buffer, int offset, int count, AsyncCallback? callback, object? state)
         {
             return _stream.BeginWrite(buffer, offset, count, callback, state);
         }
@@ -369,11 +368,6 @@ namespace AudioVideoLib.IO
             }
         }
 
-        public override ObjRef CreateObjRef(Type requestedType)
-        {
-            return _stream.CreateObjRef(requestedType);
-        }
-
         public override int EndRead(IAsyncResult asyncResult)
         {
             return _stream.EndRead(asyncResult);
@@ -384,7 +378,7 @@ namespace AudioVideoLib.IO
             _stream.EndWrite(asyncResult);
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return _stream.Equals(obj);
         }
@@ -392,11 +386,6 @@ namespace AudioVideoLib.IO
         public override int GetHashCode()
         {
             return _stream.GetHashCode();
-        }
-
-        public override object InitializeLifetimeService()
-        {
-            return _stream.InitializeLifetimeService();
         }
 
         public override int ReadTimeout

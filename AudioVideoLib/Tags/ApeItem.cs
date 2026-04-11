@@ -103,13 +103,13 @@ namespace AudioVideoLib.Tags
         ////------------------------------------------------------------------------------------------------------------------------------
 
         /// <inheritdoc/>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return Equals(obj as ApeItem);
         }
 
         /// <inheritdoc/>
-        public bool Equals(IAudioTagFrame audioFrame)
+        public bool Equals(IAudioTagFrame? audioFrame)
         {
             return Equals(audioFrame as ApeItem);
         }
@@ -121,7 +121,7 @@ namespace AudioVideoLib.Tags
         /// <returns>
         /// true if equal; false otherwise.
         /// </returns>
-        public virtual bool Equals(ApeItem item)
+        public virtual bool Equals(ApeItem? item)
         {
             if (ReferenceEquals(null, item))
                 return false;

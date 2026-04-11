@@ -17,12 +17,12 @@ namespace AudioVideoLib.Tags
         /// <summary>
         /// Occurs when parsing a field.
         /// </summary>
-        public event EventHandler<Lyrics3v2FieldParseEventArgs> FieldParse;
+        public event EventHandler<Lyrics3v2FieldParseEventArgs>? FieldParse;
 
         /// <summary>
         /// Occurs when a field has been parsed.
         /// </summary>
-        public event EventHandler<Lyrics3v2FieldParsedEventArgs> FieldParsed;
+        public event EventHandler<Lyrics3v2FieldParsedEventArgs>? FieldParsed;
 
         ////------------------------------------------------------------------------------------------------------------------------------
 

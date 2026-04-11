@@ -227,7 +227,7 @@ namespace AudioVideoLib.Tags
         ////------------------------------------------------------------------------------------------------------------------------------
 
         /// <inheritdoc/>
-        public override bool Equals(Id3v2Frame frame)
+        public override bool Equals(Id3v2Frame? frame)
         {
             return Equals(frame as Id3v2ReverbFrame);
         }

@@ -47,12 +47,12 @@ namespace AudioVideoLib.IO
         /// <summary>
         /// Occurs when parsing an audio stream.
         /// </summary>
-        public event EventHandler<AudioStreamParseEventArgs> AudioStreamParse;
+        public event EventHandler<AudioStreamParseEventArgs>? AudioStreamParse;
 
         /// <summary>
         /// Occurs when an audio stream has been parsed.
         /// </summary>
-        public event EventHandler<AudioStreamParsedEventArgs> AudioStreamParsed;
+        public event EventHandler<AudioStreamParsedEventArgs>? AudioStreamParsed;
 
         ////------------------------------------------------------------------------------------------------------------------------------
 
