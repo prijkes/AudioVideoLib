@@ -107,11 +107,18 @@ public partial class ApeItem
     {
         ArgumentNullException.ThrowIfNull(stream);
 
+        // Reject values whose declared size exceeds what the enclosing tag can contain;
+        // an unchecked allocation here would turn a 4-byte malformed length into an OOM.
+        if (valueSize < 0 || valueSize > maximumItemSize)
+        {
+            return false;
+        }
+
         // Check if the item size indicated is really the size of the item.
         // Some files just aren't... properly written.
         var data = new byte[valueSize];
         var dataBytesRead = stream.Read(data, valueSize);
-        var bytesLeftInStream = (int)(maximumItemSize - dataBytesRead);
+        var bytesLeftInStream = maximumItemSize - dataBytesRead;
         if ((valueSize > 0) && (bytesLeftInStream > 0) && (dataBytesRead >= valueSize))
         {
             var dataBuffer = new StreamBuffer(data);
@@ -122,7 +129,7 @@ public partial class ApeItem
             stream.Position = startPositionNextItem;
 
             // Seems that the size indicated by the item is not the total size of the item; read the extra bytes here.
-            if (bytesUntilNextItem > 0)
+            if (bytesUntilNextItem is > 0 and <= int.MaxValue)
             {
                 data = new byte[bytesUntilNextItem];
                 stream.Read(data, data.Length);

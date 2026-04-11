@@ -54,7 +54,7 @@ public sealed partial class Lyrics3v2TagReader : IAudioTagReader
             sb.Position = Math.Max(sb.Position - FooterIdentifierBytes.Length - Lyrics3v2Tag.TagSizeLength, 0);
             var strTagSize = sb.ReadString(Lyrics3v2Tag.TagSizeLength);
             long tagSize;
-            if (!long.TryParse(strTagSize, out tagSize))
+            if (!long.TryParse(strTagSize, out tagSize) || tagSize < 0 || tagSize > sb.Position)
             {
 #if DEBUG
                 throw new InvalidDataException(string.Format("Can't parse size value {0} before footer.", strTagSize));

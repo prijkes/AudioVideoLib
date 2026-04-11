@@ -37,33 +37,25 @@ public sealed partial class MusicMatchTagReader
             if (header.Padding1.Any(c => c != 0x00))
             {
                 throw new System.IO.InvalidDataException(
-                    string.Format(
-                        "The MusicMatch header has invalid padding1 bytes: {0}.",
-                        string.Join(" ", header.Padding1.Where(c => c != 0x00).Select(c => string.Format("0:x2")))));
+                    $"The MusicMatch header has invalid padding1 bytes: {FormatHexBytes(header.Padding1, 0x00)}.");
             }
 
             if (header.Padding2.Any(c => c != 0x00))
             {
                 throw new System.IO.InvalidDataException(
-                    string.Format(
-                        "The MusicMatch header has invalid padding2 bytes: {0}.",
-                        string.Join(" ", header.Padding2.Where(c => c != 0x00).Select(c => string.Format("0:x2")))));
+                    $"The MusicMatch header has invalid padding2 bytes: {FormatHexBytes(header.Padding2, 0x00)}.");
             }
 
             if (header.Padding3.Any(c => c != 0x00))
             {
                 throw new System.IO.InvalidDataException(
-                    string.Format(
-                        "The MusicMatch header has invalid padding3 bytes: {0}.",
-                        string.Join(" ", header.Padding3.Where(c => c != 0x00).Select(c => string.Format("0:x2")))));
+                    $"The MusicMatch header has invalid padding3 bytes: {FormatHexBytes(header.Padding3, 0x00)}.");
             }
 
             if (header.SpacePadding2.Any(c => c != 0x20))
             {
                 throw new System.IO.InvalidDataException(
-                    string.Format(
-                        "The MusicMatch header has invalid space padding bytes: {0}.",
-                        string.Join(" ", header.Padding1.Where(c => c != 0x20).Select(c => string.Format("0:x2")))));
+                    $"The MusicMatch header has invalid space padding bytes: {FormatHexBytes(header.SpacePadding2, 0x20)}.");
             }
         }
 
@@ -74,6 +66,13 @@ public sealed partial class MusicMatchTagReader
         return;
 #endif
     }
+
+#if DEBUG
+    private static string FormatHexBytes(byte[] bytes, byte expected)
+    {
+        return string.Join(" ", bytes.Where(b => b != expected).Select(b => $"{b:x2}"));
+    }
+#endif
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

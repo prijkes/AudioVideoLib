@@ -6,6 +6,8 @@
 
 namespace AudioVideoLib.Tags;
 
+using System;
+
 /// <summary>
 /// Class to store a MusicMatch tag.
 /// </summary>
@@ -48,7 +50,11 @@ public sealed partial class MusicMatchTagReader
         {
             get
             {
-                return AudioMetaDataOffset - ImageExtensionOffset;
+                // Offsets are read signed from the file; a malformed header where
+                // AudioMetaDataOffset < ImageExtensionOffset would otherwise produce a
+                // negative size that gets subtracted from the seek cursor and wraps to
+                // the wrong position.
+                return Math.Max(0L, (long)AudioMetaDataOffset - ImageExtensionOffset);
             }
         }
     }

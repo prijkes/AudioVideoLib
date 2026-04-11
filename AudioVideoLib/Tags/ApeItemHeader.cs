@@ -69,9 +69,13 @@ public partial class ApeItem
     /// </remarks>
     public virtual ApeItemType ItemType
     {
+        // Read directly from the raw backing field, not via the Flags property — the
+        // Flags getter re-encodes the item-type bits from this very property, so going
+        // through it would recurse forever for base-class instances that don't
+        // override ItemType (e.g. ApeItemType.Reserved from ApeItemFactory).
         get
         {
-            return GetItemType(Flags);
+            return GetItemType(_flags);
         }
     }
 
@@ -100,6 +104,8 @@ public partial class ApeItem
         }
     } = null!;
 
+    private int _flags;
+
     /// <summary>
     /// Gets or sets the flags of this frame.
     /// </summary>
@@ -108,10 +114,13 @@ public partial class ApeItem
     {
         get
         {
-            return (field & ~HeaderFlags.ItemType) | (((int)ItemType) << 1);
+            return (_flags & ~HeaderFlags.ItemType) | (((int)ItemType) << 1);
         }
 
-        set;
+        set
+        {
+            _flags = value;
+        }
     }
 
     ////------------------------------------------------------------------------------------------------------------------------------

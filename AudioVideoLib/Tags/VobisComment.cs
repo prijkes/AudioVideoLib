@@ -72,6 +72,15 @@ public class VorbisComment
 
         var sb = stream as StreamBuffer ?? new StreamBuffer(stream);
         var length = sb.ReadInt32();
+
+        // A negative / absurd length indicates a malformed or malicious Vorbis block;
+        // refuse before allocating. Cap at remaining bytes to protect against a length
+        // field that exceeds the physical stream.
+        if (length <= 0 || length > sb.Length - sb.Position)
+        {
+            return null;
+        }
+
         var s = sb.ReadString(length, Encoding.UTF8).Split(Delimiter);
         return s.Length >= 2
                    ? new VorbisComment { Name = s[0], Value = string.Join(string.Empty, s, 1, s.Length - 1) }

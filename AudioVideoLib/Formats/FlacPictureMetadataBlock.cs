@@ -54,17 +54,21 @@ public sealed class FlacPictureMetadataBlock : FlacMetadataBlock
 
             var stream = new StreamBuffer(value);
             PictureType = (FlacPictureType)stream.ReadBigEndianInt32();
-            var length = stream.ReadBigEndianInt32();
-            MimeType = stream.ReadString(length);
-            length = stream.ReadBigEndianInt32();
-            Description = stream.ReadString(length, Encoding.UTF8);
+
+            var mimeLength = ReadBoundedLength(stream);
+            MimeType = stream.ReadString(mimeLength);
+
+            var descriptionLength = ReadBoundedLength(stream);
+            Description = stream.ReadString(descriptionLength, Encoding.UTF8);
+
             Width = stream.ReadBigEndianInt32();
             Height = stream.ReadBigEndianInt32();
             ColorDepth = stream.ReadBigEndianInt32();
             ColorCount = stream.ReadBigEndianInt32();
-            length = stream.ReadBigEndianInt32();
-            PictureData = new byte[length];
-            stream.Read(PictureData, length);
+
+            var pictureDataLength = ReadBoundedLength(stream);
+            PictureData = new byte[pictureDataLength];
+            stream.Read(PictureData, pictureDataLength);
         }
     }
 
@@ -143,4 +147,16 @@ public sealed class FlacPictureMetadataBlock : FlacMetadataBlock
     /// The binary picture data.
     /// </value>
     public byte[] PictureData { get; private set; } = null!;
+
+    // FLAC picture lengths are spec'd as 32-bit big-endian but our reader returns a
+    // signed int. A hostile (or just large) length must not become a 2 GB allocation
+    // or a negative array size.
+    private static int ReadBoundedLength(StreamBuffer stream)
+    {
+        var length = stream.ReadBigEndianInt32();
+        var remaining = stream.Length - stream.Position;
+        return length < 0 || length > remaining
+            ? throw new System.IO.InvalidDataException($"FLAC picture metadata length {length} exceeds available bytes ({remaining}).")
+            : length;
+    }
 }

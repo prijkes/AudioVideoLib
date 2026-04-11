@@ -155,16 +155,39 @@ public sealed class VorbisComments
     {
         ArgumentNullException.ThrowIfNull(sb);
 
-        var length = sb.ReadInt32();
-        Vendor = sb.ReadString(length);
-        length = sb.ReadInt32();
-        var commentsRead = 0;
-        _comments.Clear();
-        while ((commentsRead < length) && (sb.Position <= sb.Length))
+        var vendorLength = sb.ReadInt32();
+        if (vendorLength < 0 || vendorLength > sb.Length - sb.Position)
         {
-            _comments.Add(VorbisComment.ReadStream(sb)!);
-            commentsRead++;
+            return false;
         }
+
+        Vendor = sb.ReadString(vendorLength);
+
+        var commentCount = sb.ReadInt32();
+        if (commentCount < 0)
+        {
+            return false;
+        }
+
+        // Each comment is at minimum a 4-byte length prefix, so `commentCount` can never
+        // legitimately exceed the remaining byte budget / 4.
+        if (commentCount > (sb.Length - sb.Position) / 4)
+        {
+            return false;
+        }
+
+        _comments.Clear();
+        for (var i = 0; i < commentCount && sb.Position < sb.Length; i++)
+        {
+            var comment = VorbisComment.ReadStream(sb);
+            if (comment == null)
+            {
+                break;
+            }
+
+            _comments.Add(comment);
+        }
+
         return true;
     }
 }
