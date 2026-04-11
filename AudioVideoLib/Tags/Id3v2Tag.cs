@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using AudioVideoLib.Collections;
-using AudioVideoLib.Cryptography;
+using System.IO.Hashing;
 using AudioVideoLib.IO;
 
 /// <summary>
@@ -577,7 +577,7 @@ public sealed partial class Id3v2Tag : IAudioTag
             stream.WritePadding(0, PaddingSize);
         }
 
-        return Crc32.Calculate(stream.ToByteArray());
+        return (int)Crc32.HashToUInt32(stream.ToByteArray());
     }
 
     ////------------------------------------------------------------------------------------------------------------------------------

@@ -14,6 +14,7 @@ namespace AudioVideoLib.Tags;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Hashing;
 using System.Linq;
 using System.Text;
 
@@ -195,7 +196,7 @@ public sealed partial class Id3v2TagReader : IAudioTagReader
                                           : totalSizeItems - (tag.PaddingSize + tag.ExtendedHeader.PaddingSize) - 4)
                                      - tag.ExtendedHeader.GetHeaderSize(tag.Version);
                     var crcData = sb.ToByteArray().Skip((int)currentPosition).Take(dataLength).ToArray();
-                    var calculatedCrc = Cryptography.Crc32.Calculate(crcData);
+                    var calculatedCrc = (int)Crc32.HashToUInt32(crcData);
                     if (calculatedCrc != crc)
                     {
                         throw new InvalidDataException(string.Format("CRC {0:X} in tag does not match calculated CRC {1:X}", crc, calculatedCrc));
