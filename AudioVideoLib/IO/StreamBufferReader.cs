@@ -1281,10 +1281,7 @@ public sealed partial class StreamBuffer
     /// </remarks>
     public string ReadString(Encoding encoding, string customStringTerminator, bool ignoreByteOrderMarker, bool movePosition, out int bytesRead)
     {
-        if (encoding == null)
-        {
-            throw new ArgumentNullException("encoding");
-        }
+        ArgumentNullException.ThrowIfNull(encoding);
 
         var startPositionStream = Position;
         if (startPositionStream >= Length)

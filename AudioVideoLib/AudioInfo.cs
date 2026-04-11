@@ -62,10 +62,7 @@ public sealed class AudioInfo
     /// <exception cref="System.ArgumentNullException">Thrown if stream is null.</exception>
     public static AudioInfo Analyse(Stream stream)
     {
-        if (stream == null)
-        {
-            throw new ArgumentNullException("stream");
-        }
+        ArgumentNullException.ThrowIfNull(stream);
 
         if (!stream.CanRead)
         {

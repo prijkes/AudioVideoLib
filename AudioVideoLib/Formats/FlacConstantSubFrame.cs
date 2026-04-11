@@ -21,10 +21,7 @@ public sealed class FlacConstantSubFrame : FlacSubFrame
     /// <param name="flacFrame">The FLAC frame.</param>
     public FlacConstantSubFrame(FlacFrame flacFrame) : base(flacFrame)
     {
-        if (flacFrame == null)
-        {
-            throw new ArgumentNullException("flacFrame");
-        }
+        ArgumentNullException.ThrowIfNull(flacFrame);
     }
 
     ////------------------------------------------------------------------------------------------------------------------------------

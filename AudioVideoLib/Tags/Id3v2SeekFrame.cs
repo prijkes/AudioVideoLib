@@ -72,10 +72,7 @@ public sealed class Id3v2SeekFrame : Id3v2Frame
 
         protected set
         {
-            if (value == null)
-            {
-                throw new ArgumentNullException("value");
-            }
+            ArgumentNullException.ThrowIfNull(value);
 
             var stream = new StreamBuffer(value);
             MinimumOffsetToNextTag = stream.ReadBigEndianInt32();

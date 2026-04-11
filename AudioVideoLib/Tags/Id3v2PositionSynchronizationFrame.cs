@@ -102,10 +102,7 @@ public sealed class Id3v2PositionSynchronizationFrame : Id3v2Frame
 
         protected set
         {
-            if (value == null)
-            {
-                throw new ArgumentNullException("value");
-            }
+            ArgumentNullException.ThrowIfNull(value);
 
             var stream = new StreamBuffer(value);
             _timeStampFormat = (Id3v2TimeStampFormat)stream.ReadByte();

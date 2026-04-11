@@ -35,10 +35,7 @@ public partial class Id3v2Tag
 
     private void FrameAdd(object? sender, ListItemAddEventArgs<Id3v2Frame> e)
     {
-        if (e == null)
-        {
-            throw new ArgumentNullException("e");
-        }
+        ArgumentNullException.ThrowIfNull(e);
 
         if (e.Item == null)
         {
@@ -68,10 +65,7 @@ public partial class Id3v2Tag
 
     private void FrameReplace(object? sender, ListItemReplaceEventArgs<Id3v2Frame> e)
     {
-        if (e == null)
-        {
-            throw new ArgumentNullException("e");
-        }
+        ArgumentNullException.ThrowIfNull(e);
 
         if (e.NewItem == null)
         {

@@ -36,10 +36,7 @@ public partial class ApeItem
     /// According to the specs, no char may be below a space or beyond a ~; but UTF8 encoded key's have been found in the wild, thus UTF8 should be allowed.
     public static bool IsValidItemKey(string itemKey)
     {
-        if (itemKey == null)
-        {
-            throw new ArgumentNullException("itemKey");
-        }
+        ArgumentNullException.ThrowIfNull(itemKey);
 
         string[] invalidItemKeys = ["ID3", "TAG", "OggS", "MP+"];
 
@@ -83,10 +80,7 @@ public partial class ApeItem
     */
     private static bool IsValidUtf8(IList<byte> utf8Bytes)
     {
-        if (utf8Bytes == null)
-        {
-            throw new ArgumentNullException("utf8Bytes");
-        }
+        ArgumentNullException.ThrowIfNull(utf8Bytes);
 
         for (var i = 0; i < utf8Bytes.Count; i++)
         {

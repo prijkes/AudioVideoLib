@@ -71,10 +71,7 @@ public sealed class Id3v2PlayCounterFrame : Id3v2Frame
 
         protected set
         {
-            if (value == null)
-            {
-                throw new ArgumentNullException("value");
-            }
+            ArgumentNullException.ThrowIfNull(value);
 
             var stream = new StreamBuffer(value);
             Counter = stream.ReadBigEndianInt64();

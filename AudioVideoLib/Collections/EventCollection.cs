@@ -268,10 +268,7 @@ public class EventCollection<T> : ICollection<T>
 
     private int RemoveItems(Predicate<T> match)
     {
-        if (match == null)
-        {
-            throw new ArgumentNullException("match");
-        }
+        ArgumentNullException.ThrowIfNull(match);
 
         // .ToList() is important here; we can't remove items and iterate the original list at the same time.
         foreach (var item in _list.Where(i => match(i)).ToList())

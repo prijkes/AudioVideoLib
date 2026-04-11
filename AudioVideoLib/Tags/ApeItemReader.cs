@@ -44,10 +44,7 @@ public partial class ApeItem
 
     private static ApeItem? ReadItem(ApeVersion version, StreamBuffer sb, long maximumItemSize)
     {
-        if (sb == null)
-        {
-            throw new ArgumentNullException("sb");
-        }
+        ArgumentNullException.ThrowIfNull(sb);
 
         // Find the item.
         var startPosition = sb.Position;
@@ -108,10 +105,7 @@ public partial class ApeItem
 
     private bool ReadItem(int valueSize, StreamBuffer stream, long maximumItemSize)
     {
-        if (stream == null)
-        {
-            throw new ArgumentNullException("stream");
-        }
+        ArgumentNullException.ThrowIfNull(stream);
 
         // Check if the item size indicated is really the size of the item.
         // Some files just aren't... properly written.

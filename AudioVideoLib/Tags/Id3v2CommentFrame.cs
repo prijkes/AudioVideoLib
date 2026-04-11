@@ -226,10 +226,7 @@ public sealed class Id3v2CommentFrame : Id3v2Frame
 
         protected set
         {
-            if (value == null)
-            {
-                throw new ArgumentNullException("value");
-            }
+            ArgumentNullException.ThrowIfNull(value);
 
             var languageEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
             var stream = new StreamBuffer(value);

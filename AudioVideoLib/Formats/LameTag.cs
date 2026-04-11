@@ -599,10 +599,7 @@ public sealed class LameTag
     /// <returns>The <see cref="LameTag"/> when found; otherwise, null.</returns>
     public static LameTag? FindTag(StreamBuffer firstFrameBuffer, long offset)
     {
-        if (firstFrameBuffer == null)
-        {
-            throw new ArgumentNullException("firstFrameBuffer");
-        }
+        ArgumentNullException.ThrowIfNull(firstFrameBuffer);
 
         // If limiting the LAME string to 9 bytes "LAME X.YZu", the extension revision 0 could take 27 bytes and it would still fit a 64 kbit 48kHz frame.
         firstFrameBuffer.Seek(offset, SeekOrigin.Begin);

@@ -81,15 +81,9 @@ public sealed partial class FlacFrame : IAudioFrame
     /// <exception cref="System.ArgumentNullException">Thrown if stream is null.</exception>
     public static FlacFrame? ReadFrame(Stream stream, IO.FlacStream flacStream)
     {
-        if (stream == null)
-        {
-            throw new ArgumentNullException("stream");
-        }
+        ArgumentNullException.ThrowIfNull(stream);
 
-        if (flacStream == null)
-        {
-            throw new ArgumentNullException("flacStream");
-        }
+        ArgumentNullException.ThrowIfNull(flacStream);
 
         var frame = new FlacFrame(flacStream);
         return frame.ReadFrame(stream as StreamBuffer ?? new StreamBuffer(stream)) ? frame : null;
@@ -145,10 +139,7 @@ public sealed partial class FlacFrame : IAudioFrame
 
     private bool ReadFrame(StreamBuffer sb)
     {
-        if (sb == null)
-        {
-            throw new ArgumentNullException("sb");
-        }
+        ArgumentNullException.ThrowIfNull(sb);
 
         StartOffset = sb.Position;
 

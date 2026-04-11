@@ -28,10 +28,7 @@ public partial class ApeTag
     /// </returns>
     public static bool IsValidIsbn10(string isbn10)
     {
-        if (isbn10 == null)
-        {
-            throw new ArgumentNullException("isbn10");
-        }
+        ArgumentNullException.ThrowIfNull(isbn10);
 
         // 3-341-00488-X
         if (isbn10.Length == 13)

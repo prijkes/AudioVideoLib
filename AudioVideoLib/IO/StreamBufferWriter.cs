@@ -22,10 +22,7 @@ public sealed partial class StreamBuffer
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
     public void Write(byte[] buffer)
     {
-        if (buffer == null)
-        {
-            throw new ArgumentNullException("buffer");
-        }
+        ArgumentNullException.ThrowIfNull(buffer);
 
         _stream.Write(buffer, 0, buffer.Length);
     }
@@ -39,10 +36,7 @@ public sealed partial class StreamBuffer
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
     public void Write(byte[] buffer, int count)
     {
-        if (buffer == null)
-        {
-            throw new ArgumentNullException("buffer");
-        }
+        ArgumentNullException.ThrowIfNull(buffer);
 
         if (count > buffer.Length)
         {
@@ -155,10 +149,7 @@ public sealed partial class StreamBuffer
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
     public void WriteString(string value)
     {
-        if (value == null)
-        {
-            throw new ArgumentNullException("value");
-        }
+        ArgumentNullException.ThrowIfNull(value);
 
         WriteString(value, Encoding.ASCII);
     }
@@ -175,15 +166,9 @@ public sealed partial class StreamBuffer
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
     public void WriteString(string value, Encoding encoding)
     {
-        if (value == null)
-        {
-            throw new ArgumentNullException("value");
-        }
+        ArgumentNullException.ThrowIfNull(value);
 
-        if (encoding == null)
-        {
-            throw new ArgumentNullException("encoding");
-        }
+        ArgumentNullException.ThrowIfNull(encoding);
 
         var buffer = encoding.GetBytes(value);
         Write(buffer);
@@ -207,15 +192,9 @@ public sealed partial class StreamBuffer
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
     public void WriteString(string value, Encoding encoding, int maxBytesToWrite)
     {
-        if (value == null)
-        {
-            throw new ArgumentNullException("value");
-        }
+        ArgumentNullException.ThrowIfNull(value);
 
-        if (encoding == null)
-        {
-            throw new ArgumentNullException("encoding");
-        }
+        ArgumentNullException.ThrowIfNull(encoding);
 
         var subLength = value.Length;
         var buffer = encoding.GetBytes(value);

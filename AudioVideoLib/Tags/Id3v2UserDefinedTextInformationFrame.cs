@@ -179,10 +179,7 @@ public sealed class Id3v2UserDefinedTextInformationFrame : Id3v2Frame
 
         protected set
         {
-            if (value == null)
-            {
-                throw new ArgumentNullException("value");
-            }
+            ArgumentNullException.ThrowIfNull(value);
 
             var stream = new StreamBuffer(value);
             _frameEncodingType = Id3v2FrameEncoding.ReadEncodingTypeFromStream(stream);

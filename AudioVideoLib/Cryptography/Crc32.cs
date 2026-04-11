@@ -55,10 +55,7 @@ public static class Crc32
     /// </returns>
     public static int Calculate(byte[] buffer)
     {
-        if (buffer == null)
-        {
-            throw new ArgumentNullException("buffer");
-        }
+        ArgumentNullException.ThrowIfNull(buffer);
 
         unchecked
         {

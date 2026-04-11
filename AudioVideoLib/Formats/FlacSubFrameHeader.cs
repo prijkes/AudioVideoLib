@@ -58,10 +58,7 @@ public partial class FlacSubFrame
 
     private void ReadHeader(StreamBuffer sb)
     {
-        if (sb == null)
-        {
-            throw new ArgumentNullException("sb");
-        }
+        ArgumentNullException.ThrowIfNull(sb);
 
         Header = sb.ReadBigEndianInt32();
 

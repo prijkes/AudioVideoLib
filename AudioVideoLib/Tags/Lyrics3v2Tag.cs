@@ -155,10 +155,7 @@ public sealed partial class Lyrics3v2Tag : IAudioTag
     /// <param name="field">Field to add to the <see cref="Lyrics3v2Tag"/>.</param>
     public void SetField(Lyrics3v2Field? field)
     {
-        if (field == null)
-        {
-            throw new ArgumentNullException("field");
-        }
+        ArgumentNullException.ThrowIfNull(field);
 
         int i, fieldCount = _fields.Count;
         for (i = 0; i < fieldCount; i++)
@@ -184,10 +181,7 @@ public sealed partial class Lyrics3v2Tag : IAudioTag
     /// <param name="fields">The fields.</param>
     public void SetFields(IEnumerable<Lyrics3v2Field> fields)
     {
-        if (fields == null)
-        {
-            throw new ArgumentNullException("fields");
-        }
+        ArgumentNullException.ThrowIfNull(fields);
 
         foreach (var field in fields)
         {
@@ -202,10 +196,7 @@ public sealed partial class Lyrics3v2Tag : IAudioTag
     /// <exception cref="System.ArgumentNullException">Thrown if identifier is null.</exception>
     public void RemoveField(string identifier)
     {
-        if (identifier == null)
-        {
-            throw new ArgumentNullException("identifier");
-        }
+        ArgumentNullException.ThrowIfNull(identifier);
 
         var field = _fields.FirstOrDefault(f => string.Equals(f.Identifier, identifier, StringComparison.OrdinalIgnoreCase));
         if (field != null)
@@ -221,10 +212,7 @@ public sealed partial class Lyrics3v2Tag : IAudioTag
     /// <exception cref="System.ArgumentNullException">Thrown if field is null.</exception>
     public void RemoveField(Lyrics3v2Field field)
     {
-        if (field == null)
-        {
-            throw new ArgumentNullException("field");
-        }
+        ArgumentNullException.ThrowIfNull(field);
 
         _fields.RemoveAll(f => ReferenceEquals(f, field));
     }
@@ -236,10 +224,7 @@ public sealed partial class Lyrics3v2Tag : IAudioTag
     /// <exception cref="System.ArgumentNullException">Thrown if identifier is null.</exception>
     public void RemoveFields(string identifier)
     {
-        if (identifier == null)
-        {
-            throw new ArgumentNullException("identifier");
-        }
+        ArgumentNullException.ThrowIfNull(identifier);
 
         _fields.RemoveAll(f => string.Equals(f.Identifier, identifier, StringComparison.OrdinalIgnoreCase));
     }
@@ -260,10 +245,7 @@ public sealed partial class Lyrics3v2Tag : IAudioTag
     /// <exception cref="System.ArgumentNullException">Thrown if fields is null.</exception>
     public void RemoveFields(IEnumerable<Lyrics3v2Field> fields)
     {
-        if (fields == null)
-        {
-            throw new ArgumentNullException("fields");
-        }
+        ArgumentNullException.ThrowIfNull(fields);
 
         foreach (var field in fields)
         {

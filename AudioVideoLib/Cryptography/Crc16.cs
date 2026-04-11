@@ -49,10 +49,7 @@ public static class Crc16
     /// <returns>CRC16 Checksum.</returns>
     public static int Calculate(byte[] data)
     {
-        if (data == null)
-        {
-            throw new ArgumentNullException("data");
-        }
+        ArgumentNullException.ThrowIfNull(data);
 
         unchecked
         {

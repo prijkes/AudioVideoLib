@@ -61,8 +61,7 @@ namespace AudioVideoLibExamples
         // This event can be used to add custom event handlers to a tag, before reading a stream.
         private static void AudioTagParse(object? sender, AudioTagParseEventArgs e)
         {
-            if (e == null)
-                throw new ArgumentNullException("e");
+            ArgumentNullException.ThrowIfNull(e);
 
             // If the current tag is an Id3v2 tag, add our custom frame parser.
             if (e.AudioTagReader is Id3v2TagReader)
@@ -73,8 +72,7 @@ namespace AudioVideoLibExamples
         // This event can be used to parse your own custom frames, as shown here.
         private static void Id3v2FrameParse(object? sender, Id3v2FrameParseEventArgs e)
         {
-            if (e == null)
-                throw new ArgumentNullException("e");
+            ArgumentNullException.ThrowIfNull(e);
 
             if (((e.Frame.Version < Id3v2Version.Id3v230) && String.Equals(e.Frame.Identifier, "XFT", StringComparison.OrdinalIgnoreCase))
                 || ((e.Frame.Version >= Id3v2Version.Id3v230) && String.Equals(e.Frame.Identifier, "XFTS", StringComparison.OrdinalIgnoreCase)))

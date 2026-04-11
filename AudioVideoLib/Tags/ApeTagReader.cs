@@ -26,10 +26,7 @@ public sealed partial class ApeTagReader : IAudioTagReader
     /// <inheritdoc/>
     public IAudioTagOffset? ReadFromStream(Stream stream, TagOrigin tagOrigin)
     {
-        if (stream == null)
-        {
-            throw new ArgumentNullException("stream");
-        }
+        ArgumentNullException.ThrowIfNull(stream);
 
         if (!stream.CanRead)
         {
@@ -204,10 +201,7 @@ public sealed partial class ApeTagReader : IAudioTagReader
 
     private static ApeHeader? ReadHeader(StreamBuffer stream, TagOrigin tagOrigin)
     {
-        if (stream == null)
-        {
-            throw new ArgumentNullException("stream");
-        }
+        ArgumentNullException.ThrowIfNull(stream);
 
         var startPosition = stream.Position;
         var streamLength = stream.Length;
@@ -262,10 +256,7 @@ public sealed partial class ApeTagReader : IAudioTagReader
 
     private static ApeHeader? ReadHeader(StreamBuffer stream, long startHeaderPosition, long endHeaderPosition)
     {
-        if (stream == null)
-        {
-            throw new ArgumentNullException("stream");
-        }
+        ArgumentNullException.ThrowIfNull(stream);
 
         stream.Position = startHeaderPosition;
         while (startHeaderPosition < endHeaderPosition)

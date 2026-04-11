@@ -328,10 +328,7 @@ public sealed partial class Id3v2Tag : IAudioTag
     /// </remarks>
     public void SetFrame(Id3v2Frame frame)
     {
-        if (frame == null)
-        {
-            throw new ArgumentNullException("frame");
-        }
+        ArgumentNullException.ThrowIfNull(frame);
 
         if (frame.Version != Version)
         {
@@ -367,10 +364,7 @@ public sealed partial class Id3v2Tag : IAudioTag
     /// </remarks>
     public void SetFrames(IEnumerable<Id3v2Frame> frames)
     {
-        if (frames == null)
-        {
-            throw new ArgumentNullException("frames");
-        }
+        ArgumentNullException.ThrowIfNull(frames);
 
         UnbindFrameEvents();
         foreach (var frame in frames)
@@ -614,10 +608,7 @@ public sealed partial class Id3v2Tag : IAudioTag
 
     private void ItemAdd<T>(object? sender, CollectionItemAddEventArgs<T> e) where T : Id3v2Frame
     {
-        if (e == null)
-        {
-            throw new ArgumentNullException("e");
-        }
+        ArgumentNullException.ThrowIfNull(e);
 
         if (e.Item == null)
         {
@@ -682,10 +673,7 @@ public sealed partial class Id3v2Tag : IAudioTag
 
     private void RemoveFrames(IEnumerable<Id3v2Frame> frames, bool validateFrames)
     {
-        if (frames == null)
-        {
-            throw new ArgumentNullException(nameof(frames));
-        }
+        ArgumentNullException.ThrowIfNull(frames);
 
         UnbindFrameEvents();
         foreach (var frame in frames)

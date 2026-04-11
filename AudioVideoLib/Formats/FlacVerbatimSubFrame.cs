@@ -21,10 +21,7 @@ public sealed class FlacVerbatimSubFrame : FlacSubFrame
     /// <param name="flacFrame">The <see cref="FlacFrame"/>.</param>
     public FlacVerbatimSubFrame(FlacFrame flacFrame) : base(flacFrame)
     {
-        if (flacFrame == null)
-        {
-            throw new ArgumentNullException("flacFrame");
-        }
+        ArgumentNullException.ThrowIfNull(flacFrame);
     }
 
     ////------------------------------------------------------------------------------------------------------------------------------

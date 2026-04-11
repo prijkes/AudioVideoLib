@@ -75,10 +75,7 @@ public partial class Id3v2Frame
 
     private static Id3v2Frame? ReadFrame(Id3v2Version version, StreamBuffer sb, long maximumFrameSize)
     {
-        if (sb == null)
-        {
-            throw new ArgumentNullException("sb");
-        }
+        ArgumentNullException.ThrowIfNull(sb);
 
         var identifier = ReadIdentifier(version, sb, maximumFrameSize);
         if (identifier == null)
@@ -92,10 +89,7 @@ public partial class Id3v2Frame
 
     private static T? ReadFrame<T>(Id3v2Version version, StreamBuffer sb, long maximumFrameSize) where T : Id3v2Frame, new()
     {
-        if (sb == null)
-        {
-            throw new ArgumentNullException("sb");
-        }
+        ArgumentNullException.ThrowIfNull(sb);
 
         var identifier = ReadIdentifier(version, sb, maximumFrameSize);
         if (identifier == null)
@@ -134,10 +128,7 @@ public partial class Id3v2Frame
 
     private bool ReadFrame(StreamBuffer sb, long maximumFrameSize)
     {
-        if (sb == null)
-        {
-            throw new ArgumentNullException("sb");
-        }
+        ArgumentNullException.ThrowIfNull(sb);
 
         // Store the startPosition so we can retrieve the amount of header bytes read later.
         // The identifier is passed as argument here; so subtract the amount of bytes read

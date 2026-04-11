@@ -142,10 +142,7 @@ public sealed partial class Id3v2TextFrame : Id3v2Frame
 
         protected set
         {
-            if (value == null)
-            {
-                throw new ArgumentNullException("value");
-            }
+            ArgumentNullException.ThrowIfNull(value);
 
             var stream = new StreamBuffer(value);
             // Read the used encoding from the stream
@@ -341,10 +338,7 @@ public sealed partial class Id3v2TextFrame : Id3v2Frame
 
     private void ValueAdd(object? sender, ListItemAddEventArgs<string> e)
     {
-        if (e == null)
-        {
-            throw new ArgumentNullException("e");
-        }
+        ArgumentNullException.ThrowIfNull(e);
 
         if (e.Item == null)
         {
@@ -359,10 +353,7 @@ public sealed partial class Id3v2TextFrame : Id3v2Frame
 
     private void ValueReplace(object? sender, ListItemReplaceEventArgs<string> e)
     {
-        if (e == null)
-        {
-            throw new ArgumentNullException("e");
-        }
+        ArgumentNullException.ThrowIfNull(e);
 
         if (e.NewItem == null)
         {

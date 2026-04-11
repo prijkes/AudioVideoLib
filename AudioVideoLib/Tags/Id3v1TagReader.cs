@@ -43,10 +43,7 @@ public sealed class Id3v1TagReader : IAudioTagReader
     /// <inheritdoc/>
     public IAudioTagOffset? ReadFromStream(Stream stream, TagOrigin tagOrigin)
     {
-        if (stream == null)
-        {
-            throw new ArgumentNullException("stream");
-        }
+        ArgumentNullException.ThrowIfNull(stream);
 
         if (!stream.CanRead)
         {
@@ -144,10 +141,7 @@ public sealed class Id3v1TagReader : IAudioTagReader
 
     private static long FindIdentifier(Stream stream, TagOrigin tagOrigin)
     {
-        if (stream == null)
-        {
-            throw new ArgumentNullException("stream");
-        }
+        ArgumentNullException.ThrowIfNull(stream);
 
         var startPosition = stream.Position;
         var streamLength = stream.Length;
@@ -185,10 +179,7 @@ public sealed class Id3v1TagReader : IAudioTagReader
 
     private static long ReadIdentifier(Stream sb, long startPosition, long endPosition)
     {
-        if (sb == null)
-        {
-            throw new ArgumentNullException("sb");
-        }
+        ArgumentNullException.ThrowIfNull(sb);
 
         sb.Position = startPosition;
         while (startPosition < endPosition)
@@ -209,10 +200,7 @@ public sealed class Id3v1TagReader : IAudioTagReader
 
     private static TimeSpan GetTimeSpan(string time)
     {
-        if (time == null)
-        {
-            throw new ArgumentNullException("time");
-        }
+        ArgumentNullException.ThrowIfNull(time);
 
         var timeValues = time.Split([':']);
         int minutes, seconds = 0;

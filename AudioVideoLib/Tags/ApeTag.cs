@@ -199,10 +199,7 @@ public sealed partial class ApeTag : IAudioTag
     /// </remarks>
     public void SetItem(ApeItem? item)
     {
-        if (item == null)
-        {
-            throw new ArgumentNullException("item");
-        }
+        ArgumentNullException.ThrowIfNull(item);
 
         if (item.Version != Version)
         {
@@ -236,10 +233,7 @@ public sealed partial class ApeTag : IAudioTag
     /// </remarks>
     public void SetItems(IEnumerable<ApeItem> items)
     {
-        if (items == null)
-        {
-            throw new ArgumentNullException("items");
-        }
+        ArgumentNullException.ThrowIfNull(items);
 
         foreach (var item in items)
         {
@@ -254,10 +248,7 @@ public sealed partial class ApeTag : IAudioTag
     /// <exception cref="System.ArgumentNullException">Thrown if key is null.</exception>
     public void RemoveItem(string key)
     {
-        if (key == null)
-        {
-            throw new ArgumentNullException("key");
-        }
+        ArgumentNullException.ThrowIfNull(key);
 
         var item = _items.FirstOrDefault(i => string.Equals(i.Key, key, StringComparison.OrdinalIgnoreCase));
         if (item != null)
@@ -273,10 +264,7 @@ public sealed partial class ApeTag : IAudioTag
     /// <exception cref="System.ArgumentNullException">Thrown if item is null.</exception>
     public void RemoveItem(ApeItem? item)
     {
-        if (item == null)
-        {
-            throw new ArgumentNullException("item");
-        }
+        ArgumentNullException.ThrowIfNull(item);
 
         _items.RemoveAll(i => ReferenceEquals(i, item));
     }
@@ -288,10 +276,7 @@ public sealed partial class ApeTag : IAudioTag
     /// <exception cref="System.ArgumentNullException">Thrown if key is null.</exception>
     public void RemoveItems(string key)
     {
-        if (key == null)
-        {
-            throw new ArgumentNullException("key");
-        }
+        ArgumentNullException.ThrowIfNull(key);
 
         _items.RemoveAll(i => string.Equals(i.Key, key, StringComparison.OrdinalIgnoreCase));
     }
@@ -312,10 +297,7 @@ public sealed partial class ApeTag : IAudioTag
     /// <exception cref="System.ArgumentNullException">Thrown if items is null.</exception>
     public void RemoveItems(IEnumerable<ApeItem> items)
     {
-        if (items == null)
-        {
-            throw new ArgumentNullException("items");
-        }
+        ArgumentNullException.ThrowIfNull(items);
 
         foreach (var item in items)
         {

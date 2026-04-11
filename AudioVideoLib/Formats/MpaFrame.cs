@@ -42,10 +42,7 @@ public sealed partial class MpaFrame : IAudioFrame
     /// <exception cref="System.ArgumentNullException">Thrown if stream is null.</exception>
     public static MpaFrame? ReadFrame(Stream stream)
     {
-        if (stream == null)
-        {
-            throw new ArgumentNullException("stream");
-        }
+        ArgumentNullException.ThrowIfNull(stream);
 
         var frame = new MpaFrame();
         return frame.ReadFrame(stream as StreamBuffer ?? new StreamBuffer(stream)) ? frame : null;
@@ -199,10 +196,7 @@ public sealed partial class MpaFrame : IAudioFrame
 
     private static int Crc16(IList<byte> buffer, int bitSize)
     {
-        if (buffer == null)
-        {
-            throw new ArgumentNullException("buffer");
-        }
+        ArgumentNullException.ThrowIfNull(buffer);
 
         // start with inverted value of 0
         int crc = 0xFFFF, tmpChar = 0, crcMask = 0;
@@ -246,10 +240,7 @@ public sealed partial class MpaFrame : IAudioFrame
     /// <exception cref="System.ArgumentNullException">Thrown if stream is null.</exception>
     private bool ReadFrame(StreamBuffer stream)
     {
-        if (stream == null)
-        {
-            throw new ArgumentNullException("stream");
-        }
+        ArgumentNullException.ThrowIfNull(stream);
 
         StartOffset = stream.Position;
 
@@ -291,10 +282,7 @@ public sealed partial class MpaFrame : IAudioFrame
 
     private bool ParseHeader(Stream stream)
     {
-        if (stream == null)
-        {
-            throw new ArgumentNullException("stream");
-        }
+        ArgumentNullException.ThrowIfNull(stream);
 
         _header = new byte[FrameHeaderSize];
         var bytesRead = stream.Read(_header, 0, _header.Length);

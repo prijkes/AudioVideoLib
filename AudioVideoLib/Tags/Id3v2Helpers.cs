@@ -95,10 +95,7 @@ public sealed partial class Id3v2Tag
     /// </returns>
     public static long GetUnsynchedValue(byte[] synchsafeDataLsb, int startIndex, int count)
     {
-        if (synchsafeDataLsb == null)
-        {
-            throw new ArgumentNullException("synchsafeDataLsb");
-        }
+        ArgumentNullException.ThrowIfNull(synchsafeDataLsb);
 
         if ((startIndex < 0) || (startIndex > synchsafeDataLsb.Length))
         {
@@ -172,10 +169,7 @@ public sealed partial class Id3v2Tag
     /// </remarks>
     public static byte[] GetSynchronizedData(byte[] data, long startIndex, long dataLength)
     {
-        if (data == null)
-        {
-            throw new ArgumentNullException("data");
-        }
+        ArgumentNullException.ThrowIfNull(data);
 
         var bufferIndex = 0;
         var buffer = new byte[dataLength];
@@ -206,10 +200,7 @@ public sealed partial class Id3v2Tag
     /// </remarks>
     public static byte[] GetUnsynchronizedData(byte[] data, long startIndex, long dataLength)
     {
-        if (data == null)
-        {
-            throw new ArgumentNullException("data");
-        }
+        ArgumentNullException.ThrowIfNull(data);
 
         var bufferIndex = 0;
         var buffer = new byte[dataLength * 3];

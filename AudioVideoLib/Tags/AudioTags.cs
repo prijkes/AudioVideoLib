@@ -91,10 +91,7 @@ public sealed class AudioTags : IEnumerable<IAudioTagOffset>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="stream"/> is null.</exception>
     public static AudioTags ReadStream(Stream stream)
     {
-        if (stream == null)
-        {
-            throw new ArgumentNullException("stream");
-        }
+        ArgumentNullException.ThrowIfNull(stream);
 
         var audioTags = new AudioTags();
         audioTags.ReadTags(stream);
@@ -109,10 +106,7 @@ public sealed class AudioTags : IEnumerable<IAudioTagOffset>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="stream"/> is null.</exception>
     public int ReadTags(Stream stream)
     {
-        if (stream == null)
-        {
-            throw new ArgumentNullException("stream");
-        }
+        ArgumentNullException.ThrowIfNull(stream);
 
         var streamLength = stream.Length;
         var startPosition = stream.Position;
@@ -144,10 +138,7 @@ public sealed class AudioTags : IEnumerable<IAudioTagOffset>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="stream" /> is null.</exception>
     public int ReadTags(Stream stream, TagOrigin tagOrigin)
     {
-        if (stream == null)
-        {
-            throw new ArgumentNullException("stream");
-        }
+        ArgumentNullException.ThrowIfNull(stream);
 
         var streamLength = stream.Length;
         var startPosition = stream.Position;
@@ -308,10 +299,7 @@ public sealed class AudioTags : IEnumerable<IAudioTagOffset>
 
     private IAudioTagOffset? ReadTag(Stream stream, TagOrigin tagOrigin)
     {
-        if (stream == null)
-        {
-            throw new ArgumentNullException("stream");
-        }
+        ArgumentNullException.ThrowIfNull(stream);
 
         if ((stream.CanRead == false) || (stream.Length == 0))
         {

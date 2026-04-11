@@ -77,10 +77,7 @@ public sealed partial class StreamBuffer : Stream
     /// </remarks>
     public StreamBuffer(byte[] buffer)
     {
-        if (buffer == null)
-        {
-            throw new ArgumentNullException("buffer");
-        }
+        ArgumentNullException.ThrowIfNull(buffer);
 
         _stream = new MemoryStream(buffer.Length);
         _stream.Write(buffer, 0, buffer.Length);
@@ -218,10 +215,7 @@ public sealed partial class StreamBuffer : Stream
     /// <returns>The value, in switched endianness.</returns>
     public static void SwitchEndianness(byte[] bytes)
     {
-        if (bytes == null)
-        {
-            throw new ArgumentNullException("bytes");
-        }
+        ArgumentNullException.ThrowIfNull(bytes);
 
         Array.Reverse(bytes);
     }
@@ -310,15 +304,9 @@ public sealed partial class StreamBuffer : Stream
     /// </exception>
     public static byte[] GetTruncatedEncodedBytes(string value, Encoding encoding, int maxBytesAllowed)
     {
-        if (value == null)
-        {
-            throw new ArgumentNullException("value");
-        }
+        ArgumentNullException.ThrowIfNull(value);
 
-        if (encoding == null)
-        {
-            throw new ArgumentNullException("encoding");
-        }
+        ArgumentNullException.ThrowIfNull(encoding);
 
         if (maxBytesAllowed <= 0)
         {
@@ -349,15 +337,9 @@ public sealed partial class StreamBuffer : Stream
     /// </exception>
     public static string GetTruncatedEncodedString(string value, Encoding encoding, int maxBytesAllowed)
     {
-        if (value == null)
-        {
-            throw new ArgumentNullException("value");
-        }
+        ArgumentNullException.ThrowIfNull(value);
 
-        if (encoding == null)
-        {
-            throw new ArgumentNullException("encoding");
-        }
+        ArgumentNullException.ThrowIfNull(encoding);
 
         if (maxBytesAllowed <= 0)
         {

@@ -43,10 +43,7 @@ public partial class ApeItem : IAudioTagFrame, IEquatable<ApeItem>
     /// </remarks>
     public ApeItem(ApeVersion version, string key)
     {
-        if (key == null)
-        {
-            throw new ArgumentNullException("key");
-        }
+        ArgumentNullException.ThrowIfNull(key);
 
         if (!IsValidItemKey(key))
         {

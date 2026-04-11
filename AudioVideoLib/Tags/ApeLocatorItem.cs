@@ -107,10 +107,7 @@ public sealed class ApeLocatorItem : ApeUtf8Item
 
     private static void ItemAdd(object? sender, ListItemAddEventArgs<string> e)
     {
-        if (e == null)
-        {
-            throw new ArgumentNullException("e");
-        }
+        ArgumentNullException.ThrowIfNull(e);
 
         if (e.Item == null)
         {
@@ -125,10 +122,7 @@ public sealed class ApeLocatorItem : ApeUtf8Item
 
     private static void ItemReplace(object? sender, ListItemReplaceEventArgs<string> e)
     {
-        if (e == null)
-        {
-            throw new ArgumentNullException("e");
-        }
+        ArgumentNullException.ThrowIfNull(e);
 
         if (e.NewItem == null)
         {

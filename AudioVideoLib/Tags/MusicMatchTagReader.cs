@@ -42,10 +42,7 @@ public sealed partial class MusicMatchTagReader : IAudioTagReader
     /// <inheritdoc/>
     public IAudioTagOffset? ReadFromStream(Stream stream, TagOrigin tagOrigin)
     {
-        if (stream == null)
-        {
-            throw new ArgumentNullException("stream");
-        }
+        ArgumentNullException.ThrowIfNull(stream);
 
         if (!stream.CanRead)
         {
@@ -193,10 +190,7 @@ public sealed partial class MusicMatchTagReader : IAudioTagReader
 
     private static MusicMatchHeader? ReadHeader(StreamBuffer stream, TagOrigin tagOrigin)
     {
-        if (stream == null)
-        {
-            throw new ArgumentNullException("stream");
-        }
+        ArgumentNullException.ThrowIfNull(stream);
 
         var startPosition = stream.Position;
         var streamLength = stream.Length;
@@ -250,10 +244,7 @@ public sealed partial class MusicMatchTagReader : IAudioTagReader
 
     private static MusicMatchHeader? ReadFooter(StreamBuffer stream, TagOrigin tagOrigin)
     {
-        if (stream == null)
-        {
-            throw new ArgumentNullException("stream");
-        }
+        ArgumentNullException.ThrowIfNull(stream);
 
         var startPosition = stream.Position;
         var streamLength = stream.Length;
@@ -307,10 +298,7 @@ public sealed partial class MusicMatchTagReader : IAudioTagReader
 
     private static MusicMatchHeader? ReadHeaderFooter(StreamBuffer stream, long startHeaderPosition, long endHeaderPosition, IList<byte> identifierBytes, TagOrigin tagOrigin)
     {
-        if (stream == null)
-        {
-            throw new ArgumentNullException("stream");
-        }
+        ArgumentNullException.ThrowIfNull(stream);
 
         stream.Position = startHeaderPosition;
         while (startHeaderPosition < endHeaderPosition)
@@ -386,10 +374,7 @@ public sealed partial class MusicMatchTagReader : IAudioTagReader
 
     private static string ReadTextField(StreamBuffer sb)
     {
-        if (sb == null)
-        {
-            throw new ArgumentNullException("sb");
-        }
+        ArgumentNullException.ThrowIfNull(sb);
 
         int size = sb.ReadInt16();
         return sb.ReadString(size);
@@ -397,10 +382,7 @@ public sealed partial class MusicMatchTagReader : IAudioTagReader
 
     private static void ReadAudioMetaFields(StreamBuffer sb, MusicMatchTag tag)
     {
-        if (sb == null)
-        {
-            throw new ArgumentNullException("sb");
-        }
+        ArgumentNullException.ThrowIfNull(sb);
 
         // Single-line text fields
         tag.SongTitle = ReadTextField(sb);

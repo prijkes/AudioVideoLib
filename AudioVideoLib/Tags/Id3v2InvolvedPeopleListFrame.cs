@@ -161,10 +161,7 @@ public sealed class Id3v2InvolvedPeopleListFrame : Id3v2Frame
 
         protected set
         {
-            if (value == null)
-            {
-                throw new ArgumentNullException("value");
-            }
+            ArgumentNullException.ThrowIfNull(value);
 
             var stream = new StreamBuffer(value);
             _frameEncodingType = Id3v2FrameEncoding.ReadEncodingTypeFromStream(stream);
@@ -238,10 +235,7 @@ public sealed class Id3v2InvolvedPeopleListFrame : Id3v2Frame
 
     private void InvolvedPeopleAdd(object? sender, ListItemAddEventArgs<Id3v2InvolvedPeople> e)
     {
-        if (e == null)
-        {
-            throw new ArgumentNullException("e");
-        }
+        ArgumentNullException.ThrowIfNull(e);
 
         if (e.Item == null)
         {
@@ -263,10 +257,7 @@ public sealed class Id3v2InvolvedPeopleListFrame : Id3v2Frame
 
     private void InvolvedPeopleReplace(object? sender, ListItemReplaceEventArgs<Id3v2InvolvedPeople> e)
     {
-        if (e == null)
-        {
-            throw new ArgumentNullException("e");
-        }
+        ArgumentNullException.ThrowIfNull(e);
 
         if (e.NewItem == null)
         {

@@ -41,10 +41,7 @@ public sealed partial class Lyrics3TagReader : IAudioTagReader
     /// <inheritdoc/>
     public IAudioTagOffset? ReadFromStream(Stream stream, TagOrigin tagOrigin)
     {
-        if (stream == null)
-        {
-            throw new ArgumentNullException("stream");
-        }
+        ArgumentNullException.ThrowIfNull(stream);
 
         if (!stream.CanRead)
         {
@@ -92,10 +89,7 @@ public sealed partial class Lyrics3TagReader : IAudioTagReader
 
     private static long FindHeaderIdentifier(Stream stream)
     {
-        if (stream == null)
-        {
-            throw new ArgumentNullException("stream");
-        }
+        ArgumentNullException.ThrowIfNull(stream);
 
         var startPosition = stream.Position;
         var streamLength = stream.Length;
@@ -114,10 +108,7 @@ public sealed partial class Lyrics3TagReader : IAudioTagReader
 
     private static long FindFooterIdentifier(Stream stream)
     {
-        if (stream == null)
-        {
-            throw new ArgumentNullException("stream");
-        }
+        ArgumentNullException.ThrowIfNull(stream);
 
         var startPosition = stream.Position;
         var streamLength = stream.Length;
@@ -145,10 +136,7 @@ public sealed partial class Lyrics3TagReader : IAudioTagReader
 
     private static long ReadIdentifier(Stream sb, long startPosition, long endPosition, byte[] identifierBytes)
     {
-        if (sb == null)
-        {
-            throw new ArgumentNullException("sb");
-        }
+        ArgumentNullException.ThrowIfNull(sb);
 
         sb.Position = startPosition;
         while (startPosition < endPosition)

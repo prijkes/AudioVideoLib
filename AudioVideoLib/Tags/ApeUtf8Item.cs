@@ -83,10 +83,7 @@ public class ApeUtf8Item : ApeItem
 
         protected set
         {
-            if (value == null)
-            {
-                throw new ArgumentNullException("value");
-            }
+            ArgumentNullException.ThrowIfNull(value);
 
             var stream = new StreamBuffer(value);
             _values.Clear();

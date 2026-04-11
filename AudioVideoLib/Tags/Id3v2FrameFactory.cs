@@ -326,10 +326,7 @@ public partial class Id3v2Frame
 
     private static Id3v2Frame GetFrame(Id3v2Version version, string identifier)
     {
-        if (identifier == null)
-        {
-            throw new ArgumentNullException("identifier");
-        }
+        ArgumentNullException.ThrowIfNull(identifier);
 
         var frame = FrameFactories.Where(f => f.IsMatch(version, identifier)).Select(f => f.Factory(version, identifier)).FirstOrDefault();
 

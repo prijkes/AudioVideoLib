@@ -30,10 +30,7 @@ public sealed partial class Id3v2TagReader : IAudioTagReader
     /// <inheritdoc/>
     public IAudioTagOffset? ReadFromStream(Stream stream, TagOrigin tagOrigin)
     {
-        if (stream == null)
-        {
-            throw new ArgumentNullException("stream");
-        }
+        ArgumentNullException.ThrowIfNull(stream);
 
         if (!stream.CanRead)
         {
@@ -359,10 +356,7 @@ public sealed partial class Id3v2TagReader : IAudioTagReader
 
     private static Id3v2Header? ReadHeader(StreamBuffer stream, TagOrigin tagOrigin)
     {
-        if (stream == null)
-        {
-            throw new ArgumentNullException("stream");
-        }
+        ArgumentNullException.ThrowIfNull(stream);
 
         var startPosition = stream.Position;
         var streamLength = stream.Length;
@@ -416,10 +410,7 @@ public sealed partial class Id3v2TagReader : IAudioTagReader
 
     private static Id3v2Header? ReadHeader(StreamBuffer stream, long startHeaderPosition, long endHeaderPosition, byte[] identifierBytes)
     {
-        if (stream == null)
-        {
-            throw new ArgumentNullException("stream");
-        }
+        ArgumentNullException.ThrowIfNull(stream);
 
         stream.Position = startHeaderPosition;
 

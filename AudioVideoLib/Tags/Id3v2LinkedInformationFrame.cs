@@ -93,10 +93,7 @@ public sealed class Id3v2LinkedInformationFrame : Id3v2Frame
         set
         {
             // FrameIdentifier may not be null.
-            if (value == null)
-            {
-                throw new ArgumentNullException("value");
-            }
+            ArgumentNullException.ThrowIfNull(value);
 
             _frameIdentifier = (value.Length > ((Version < Id3v2Version.Id3v230) ? 3 : 4))
                                    ? value[..((Version < Id3v2Version.Id3v230) ? 3 : 4)]
@@ -197,10 +194,7 @@ public sealed class Id3v2LinkedInformationFrame : Id3v2Frame
 
         protected set
         {
-            if (value == null)
-            {
-                throw new ArgumentNullException("value");
-            }
+            ArgumentNullException.ThrowIfNull(value);
 
             var defaultEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
             var stream = new StreamBuffer(value);

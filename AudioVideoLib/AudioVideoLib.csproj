@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net10.0;netstandard2.0</TargetFrameworks>
+    <TargetFramework>net10.0</TargetFramework>
     <RootNamespace>AudioVideoLib</RootNamespace>
     <AssemblyName>AudioVideoLib</AssemblyName>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -10,12 +10,5 @@
     <Description>.NET library for reading and writing audio metadata: ID3v1, ID3v2 (2.2-2.4), APE v1/v2, Lyrics3, MusicMatch, Vorbis Comments, and MPEG audio / FLAC format parsing.</Description>
     <PackageTags>id3;id3v2;ape;flac;mp3;mpeg;audio;metadata;tags;vorbis;lyrics3</PackageTags>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="PolySharp" Version="1.15.0">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-  </ItemGroup>
 
 </Project>

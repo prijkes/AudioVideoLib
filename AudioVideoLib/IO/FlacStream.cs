@@ -138,10 +138,7 @@ public sealed partial class FlacStream : IAudioStream
     /// <exception cref="System.ArgumentNullException">stream</exception>
     public bool ReadStream(Stream stream)
     {
-        if (stream == null)
-        {
-            throw new ArgumentNullException("stream");
-        }
+        ArgumentNullException.ThrowIfNull(stream);
 
         var sb = stream as StreamBuffer ?? new StreamBuffer(stream);
         var streamLength = sb.Length;

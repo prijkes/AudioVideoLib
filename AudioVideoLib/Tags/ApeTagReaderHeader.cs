@@ -103,10 +103,7 @@ public sealed partial class ApeTagReader
     /// <exception cref="System.ArgumentNullException">header</exception>
     private static bool IsValidTag(ApeHeader header)
     {
-        if (header == null)
-        {
-            throw new ArgumentNullException("header");
-        }
+        ArgumentNullException.ThrowIfNull(header);
 
         // Validity check - only version 2.0+ may have a header.
         return header.FrameCount <= ApeTag.MaxAllowedFields && (header.Size - ApeTag.FooterSize) <= ApeTag.MaxAllowedSize

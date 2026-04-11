@@ -106,10 +106,7 @@ public sealed class VbriHeader : VbrHeader
     /// </remarks>
     public static new VbriHeader? FindHeader(MpaFrame firstFrame)
     {
-        if (firstFrame == null)
-        {
-            throw new ArgumentNullException("firstFrame");
-        }
+        ArgumentNullException.ThrowIfNull(firstFrame);
 
         var buffer = new StreamBuffer();
         var data = firstFrame.ToByteArray();

@@ -49,10 +49,7 @@ public static class Crc8
     /// <returns>CRC8 Checksum.</returns>
     public static byte Calculate(byte[] data)
     {
-        if (data == null)
-        {
-            throw new ArgumentNullException("data");
-        }
+        ArgumentNullException.ThrowIfNull(data);
 
         unchecked
         {

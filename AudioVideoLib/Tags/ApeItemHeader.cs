@@ -89,10 +89,7 @@ public partial class ApeItem
 
         private set
         {
-            if (value == null)
-            {
-                throw new ArgumentNullException("value");
-            }
+            ArgumentNullException.ThrowIfNull(value);
 
             if (value.Length < MinKeyLengthCharacters)
             {

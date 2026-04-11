@@ -23,10 +23,7 @@ public abstract class VbrHeader
     /// <param name="headerType">Type of the header.</param>
     protected VbrHeader(MpaFrame firstFrame, StreamBuffer firstFrameBuffer, long offset, VbrHeaderType headerType)
     {
-        if (firstFrameBuffer == null)
-        {
-            throw new ArgumentNullException("firstFrameBuffer");
-        }
+        ArgumentNullException.ThrowIfNull(firstFrameBuffer);
 
         ////if (headerType == null)
         ////throw new ArgumentNullException("headerType");

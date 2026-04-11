@@ -126,10 +126,7 @@ public sealed class Id3v2EqualisationFrame : Id3v2Frame
 
         protected set
         {
-            if (value == null)
-            {
-                throw new ArgumentNullException("value");
-            }
+            ArgumentNullException.ThrowIfNull(value);
 
             var stream = new StreamBuffer(value);
             _adjustmentBits = (byte)stream.ReadByte();
@@ -199,10 +196,7 @@ public sealed class Id3v2EqualisationFrame : Id3v2Frame
 
     private void EqualisationBandAdd(object? sender, ListItemAddEventArgs<Id3v2EqualisationBand> e)
     {
-        if (e == null)
-        {
-            throw new ArgumentNullException("e");
-        }
+        ArgumentNullException.ThrowIfNull(e);
 
         if (e.Item == null)
         {
@@ -222,10 +216,7 @@ public sealed class Id3v2EqualisationFrame : Id3v2Frame
 
     private void EqualisationBandReplace(object? sender, ListItemReplaceEventArgs<Id3v2EqualisationBand> e)
     {
-        if (e == null)
-        {
-            throw new ArgumentNullException("e");
-        }
+        ArgumentNullException.ThrowIfNull(e);
 
         if (e.NewItem == null)
         {

@@ -211,10 +211,7 @@ public sealed class MpaStream : IAudioStream
     /// <exception cref="System.ArgumentNullException">Thrown if stream is null.</exception>
     public bool ReadStream(Stream stream)
     {
-        if (stream == null)
-        {
-            throw new ArgumentNullException("stream");
-        }
+        ArgumentNullException.ThrowIfNull(stream);
 
         var streamLength = stream.Length;
         var startPosition = stream.Position;

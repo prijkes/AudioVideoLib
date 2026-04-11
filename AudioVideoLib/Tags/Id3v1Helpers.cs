@@ -61,10 +61,7 @@ public sealed partial class Id3v1Tag
 
     private string GetExtendedString(string? value, int maxLengthNormal, int maxLengthExtended, bool onlyLastPart = false)
     {
-        if (value == null)
-        {
-            throw new ArgumentNullException("value");
-        }
+        ArgumentNullException.ThrowIfNull(value);
 
         var firstPart = GetTruncatedEncodedString(value, maxLengthNormal);
         if (!UseExtendedTag || (firstPart.Length == value.Length))

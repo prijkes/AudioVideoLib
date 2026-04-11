@@ -264,10 +264,7 @@ public sealed class Id3v2RelativeVolumeAdjustmentFrame : Id3v2Frame
 
         protected set
         {
-            if (value == null)
-            {
-                throw new ArgumentNullException("value");
-            }
+            ArgumentNullException.ThrowIfNull(value);
 
             var stream = new StreamBuffer(value);
             // 1 is increment and 0 is decrement. 

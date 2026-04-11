@@ -49,10 +49,7 @@ public partial class Id3v2Frame : IAudioTagFrame, IEquatable<Id3v2Frame>
             throw new InvalidDataException(string.Format("Version {0} not valid.", version));
         }
 
-        if (identifier == null)
-        {
-            throw new ArgumentNullException("identifier");
-        }
+        ArgumentNullException.ThrowIfNull(identifier);
 
         if (!IsValidIdentifier(version, identifier))
         {

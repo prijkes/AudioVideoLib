@@ -221,10 +221,7 @@ public sealed partial class FlacFrame
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="sb"/> is null.</exception>
     private bool ReadHeader(StreamBuffer sb)
     {
-        if (sb == null)
-        {
-            throw new ArgumentNullException("sb");
-        }
+        ArgumentNullException.ThrowIfNull(sb);
 
         var startPosition = sb.Position;
 

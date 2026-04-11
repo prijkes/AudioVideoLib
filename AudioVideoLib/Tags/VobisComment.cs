@@ -68,10 +68,7 @@ public class VorbisComment
     /// <exception cref="System.ArgumentNullException">Thrown if stream is null.</exception>
     public static VorbisComment? ReadStream(Stream stream)
     {
-        if (stream == null)
-        {
-            throw new ArgumentNullException("stream");
-        }
+        ArgumentNullException.ThrowIfNull(stream);
 
         var sb = stream as StreamBuffer ?? new StreamBuffer(stream);
         var length = sb.ReadInt32();

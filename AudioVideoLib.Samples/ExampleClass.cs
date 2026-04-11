@@ -56,11 +56,9 @@ namespace AudioVideoLibExamples
         /// <returns>A string array filled with all the files in the directory.</returns>
         private static string[] SearchDirectoryForFiles(string dir, IEnumerable<string> fileExtension)
         {
-            if (dir == null)
-                throw new ArgumentNullException("dir");
+            ArgumentNullException.ThrowIfNull(dir);
 
-            if (fileExtension == null)
-                throw new ArgumentNullException("fileExtension");
+            ArgumentNullException.ThrowIfNull(fileExtension);
 
             var list = new List<string>();
             foreach (string[] files in fileExtension.Select(ext => Directory.GetFiles(dir, "*." + ext)))

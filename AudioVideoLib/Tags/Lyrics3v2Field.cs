@@ -117,10 +117,7 @@ public partial class Lyrics3v2Field : IAudioTagFrame
     /// </remarks>
     public static bool IsValidData(byte[] data)
     {
-        if (data == null)
-        {
-            throw new ArgumentNullException("data");
-        }
+        ArgumentNullException.ThrowIfNull(data);
 
         // All characters should be in the range of 0x01 to 0xFE; only the last character may be 0x00.
         return !data.Where((c, i) => ((c <= 0x00) || (c >= 0xFF)) && ((c != 0x00) || (i != data.Length - 1))).Any();
@@ -138,10 +135,7 @@ public partial class Lyrics3v2Field : IAudioTagFrame
     /// </remarks>
     public static bool IsValidString(string value)
     {
-        if (value == null)
-        {
-            throw new ArgumentNullException("value");
-        }
+        ArgumentNullException.ThrowIfNull(value);
 
         // All characters should be in the range of 0x01 to 0xFE; only the last character may be 0x00.
         return !value.Where((c, i) => ((c <= 0x00) || (c >= 0xFF)) && ((c != 0x00) || (i != value.Length - 1))).Any();

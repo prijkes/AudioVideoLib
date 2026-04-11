@@ -34,10 +34,7 @@ public partial class Lyrics3v2Field
 
     private static Lyrics3v2Field? ReadField(StreamBuffer sb, long maximumFieldSize)
     {
-        if (sb == null)
-        {
-            throw new ArgumentNullException("sb");
-        }
+        ArgumentNullException.ThrowIfNull(sb);
 
         var identifier = sb.ReadString(FieldIdentifierLength, false, false);
         var field = GetField(identifier);
@@ -46,10 +43,7 @@ public partial class Lyrics3v2Field
 
     private bool ReadFieldInstance(StreamBuffer sb, long maximumFieldSize)
     {
-        if (sb == null)
-        {
-            throw new ArgumentNullException("sb");
-        }
+        ArgumentNullException.ThrowIfNull(sb);
 
         var identifier = sb.ReadString(FieldIdentifierLength);
         var strFieldSize = sb.ReadString(FieldSizeLength);

@@ -45,10 +45,7 @@ public sealed partial class Lyrics3v2TextField : Lyrics3v2Field
 
         protected set
         {
-            if (value == null)
-            {
-                throw new ArgumentNullException("value");
-            }
+            ArgumentNullException.ThrowIfNull(value);
 
             _value = Encoding.ASCII.GetString(value);
         }

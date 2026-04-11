@@ -35,10 +35,7 @@ public sealed class BitStream : Stream
     /// <param name="stream">The stream to use as backing data.</param>
     public BitStream(Stream stream)
     {
-        if (stream == null)
-        {
-            throw new ArgumentNullException("stream");
-        }
+        ArgumentNullException.ThrowIfNull(stream);
 
         _sb = new StreamBuffer(stream);
     }
@@ -50,10 +47,7 @@ public sealed class BitStream : Stream
     /// <param name="buffer">The array of unsigned bytes from which to create the current stream.</param>
     public BitStream(byte[] buffer)
     {
-        if (buffer == null)
-        {
-            throw new ArgumentNullException("buffer");
-        }
+        ArgumentNullException.ThrowIfNull(buffer);
 
         _sb = new StreamBuffer(buffer.Length);
         _sb.Write(buffer, 0, buffer.Length);

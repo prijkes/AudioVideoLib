@@ -60,10 +60,7 @@ public class FlacCueSheetMetadataBlock : FlacMetadataBlock
 
         protected set
         {
-            if (value == null)
-            {
-                throw new ArgumentNullException("value");
-            }
+            ArgumentNullException.ThrowIfNull(value);
 
             var stream = new StreamBuffer(value);
             MediaCatalogNumber = stream.ReadString(128);

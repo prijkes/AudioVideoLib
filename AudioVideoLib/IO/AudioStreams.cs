@@ -78,10 +78,7 @@ public sealed class AudioStreams : IEnumerable<IAudioStream>
     /// <exception cref="System.ArgumentNullException">Thrown if stream is null.</exception>
     public static AudioStreams ReadStream(Stream stream)
     {
-        if (stream == null)
-        {
-            throw new ArgumentNullException("stream");
-        }
+        ArgumentNullException.ThrowIfNull(stream);
 
         var audioStreams = new AudioStreams();
         audioStreams.ReadStreams(stream);
@@ -98,10 +95,7 @@ public sealed class AudioStreams : IEnumerable<IAudioStream>
     /// <exception cref="System.ArgumentNullException">Thrown if stream is null.</exception>
     public bool ReadStreams(Stream stream)
     {
-        if (stream == null)
-        {
-            throw new ArgumentNullException("stream");
-        }
+        ArgumentNullException.ThrowIfNull(stream);
 
         var streamsFound = 0;
         var streamLength = stream.Length;
@@ -164,10 +158,7 @@ public sealed class AudioStreams : IEnumerable<IAudioStream>
 
     private void AudioStreamAdd(object? sender, ListItemAddEventArgs<IAudioStream> e)
     {
-        if (e == null)
-        {
-            throw new ArgumentNullException("e");
-        }
+        ArgumentNullException.ThrowIfNull(e);
 
         if (e.Item == null)
         {
@@ -187,10 +178,7 @@ public sealed class AudioStreams : IEnumerable<IAudioStream>
 
     private void AudioStreamReplace(object? sender, ListItemReplaceEventArgs<IAudioStream> e)
     {
-        if (e == null)
-        {
-            throw new ArgumentNullException("e");
-        }
+        ArgumentNullException.ThrowIfNull(e);
 
         if (e.NewItem == null)
         {
@@ -214,10 +202,7 @@ public sealed class AudioStreams : IEnumerable<IAudioStream>
     /// <exception cref="System.ArgumentNullException">Thrown if stream is null.</exception>
     private IAudioStream? ReadAudioStream(Stream stream)
     {
-        if (stream == null)
-        {
-            throw new ArgumentNullException("stream");
-        }
+        ArgumentNullException.ThrowIfNull(stream);
 
         if ((stream.CanRead == false) || (stream.Length == 0))
         {

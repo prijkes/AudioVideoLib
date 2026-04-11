@@ -19,10 +19,7 @@ public sealed class FlacFixedSubFrame : FlacSubFrame
     /// <param name="flacFrame">The flac frame.</param>
     public FlacFixedSubFrame(FlacFrame flacFrame) : base(flacFrame)
     {
-        if (flacFrame == null)
-        {
-            throw new ArgumentNullException("flacFrame");
-        }
+        ArgumentNullException.ThrowIfNull(flacFrame);
     }
 
     ////------------------------------------------------------------------------------------------------------------------------------

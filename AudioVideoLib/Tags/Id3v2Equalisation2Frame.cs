@@ -165,10 +165,7 @@ public sealed class Id3v2Equalisation2Frame : Id3v2Frame
 
         protected set
         {
-            if (value == null)
-            {
-                throw new ArgumentNullException("value");
-            }
+            ArgumentNullException.ThrowIfNull(value);
 
             var defaultEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
             var stream = new StreamBuffer(value);
@@ -251,10 +248,7 @@ public sealed class Id3v2Equalisation2Frame : Id3v2Frame
     // Manually insert the AdjustmentPoint here so we can keep the list always sorted by Frequency.
     private void AdjustmentPointAdd(object? sender, ListItemAddEventArgs<Id3v2AdjustmentPoint> e)
     {
-        if (e == null)
-        {
-            throw new ArgumentNullException("e");
-        }
+        ArgumentNullException.ThrowIfNull(e);
 
         if (e.Item == null)
         {
@@ -274,10 +268,7 @@ public sealed class Id3v2Equalisation2Frame : Id3v2Frame
 
     private void AdjustmentPointReplace(object? sender, ListItemReplaceEventArgs<Id3v2AdjustmentPoint> e)
     {
-        if (e == null)
-        {
-            throw new ArgumentNullException("e");
-        }
+        ArgumentNullException.ThrowIfNull(e);
 
         if (e.NewItem == null)
         {

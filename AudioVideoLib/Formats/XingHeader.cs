@@ -105,10 +105,7 @@ public sealed class XingHeader : VbrHeader
     /// </remarks>
     public static new XingHeader? FindHeader(MpaFrame firstFrame)
     {
-        if (firstFrame == null)
-        {
-            throw new ArgumentNullException("firstFrame");
-        }
+        ArgumentNullException.ThrowIfNull(firstFrame);
 
         long offset = MpaFrame.FrameHeaderSize + firstFrame.SideInfoSize;
         var buffer = new StreamBuffer();

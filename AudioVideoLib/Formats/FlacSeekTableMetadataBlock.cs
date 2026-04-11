@@ -59,10 +59,7 @@ public class FlacSeekTableMetadataBlock : FlacMetadataBlock
 
         protected set
         {
-            if (value == null)
-            {
-                throw new ArgumentNullException("value");
-            }
+            ArgumentNullException.ThrowIfNull(value);
 
             var stream = new StreamBuffer(value);
             while (stream.Position < stream.Length)
@@ -94,10 +91,7 @@ public class FlacSeekTableMetadataBlock : FlacMetadataBlock
 
     private void SeekPointAdd(object? sender, ListItemAddEventArgs<FlacSeekPoint> e)
     {
-        if (e == null)
-        {
-            throw new ArgumentNullException("e");
-        }
+        ArgumentNullException.ThrowIfNull(e);
 
         if (e.Item == null)
         {
@@ -120,10 +114,7 @@ public class FlacSeekTableMetadataBlock : FlacMetadataBlock
 
     private void SeekPointReplace(object? sender, ListItemReplaceEventArgs<FlacSeekPoint> e)
     {
-        if (e == null)
-        {
-            throw new ArgumentNullException("e");
-        }
+        ArgumentNullException.ThrowIfNull(e);
 
         if (e.NewItem == null)
         {

@@ -92,10 +92,7 @@ public sealed class Lyrics3v2ImageFileField : Lyrics3v2Field
 
         protected set
         {
-            if (value == null)
-            {
-                throw new ArgumentNullException(nameof(value));
-            }
+            ArgumentNullException.ThrowIfNull(value);
 
             if (!IsValidData(value))
             {

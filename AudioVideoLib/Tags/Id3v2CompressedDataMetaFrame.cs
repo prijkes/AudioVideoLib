@@ -91,10 +91,7 @@ public sealed class Id3v2CompressedDataMetaFrame : Id3v2Frame
 
         protected set
         {
-            if (value == null)
-            {
-                throw new ArgumentNullException("value");
-            }
+            ArgumentNullException.ThrowIfNull(value);
 
             var stream = new StreamBuffer(value);
             _compressionMethod = (Id3v2CompressionMethod)stream.ReadByte();

@@ -126,10 +126,7 @@ public sealed class Id3v2EventTimingCodesFrame : Id3v2Frame
 
         protected set
         {
-            if (value == null)
-            {
-                throw new ArgumentNullException("value");
-            }
+            ArgumentNullException.ThrowIfNull(value);
 
             var stream = new StreamBuffer(value);
             _timeStampFormat = (Id3v2TimeStampFormat)stream.ReadByte();
@@ -229,10 +226,7 @@ public sealed class Id3v2EventTimingCodesFrame : Id3v2Frame
 
     private void KeyEventAdd(object? sender, ListItemAddEventArgs<Id3v2KeyEvent> e)
     {
-        if (e == null)
-        {
-            throw new ArgumentNullException("e");
-        }
+        ArgumentNullException.ThrowIfNull(e);
 
         if (e.Item == null)
         {

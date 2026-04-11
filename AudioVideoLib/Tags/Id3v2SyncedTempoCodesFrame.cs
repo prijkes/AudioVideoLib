@@ -117,10 +117,7 @@ public sealed class Id3v2SyncedTempoCodesFrame : Id3v2Frame
 
         protected set
         {
-            if (value == null)
-            {
-                throw new ArgumentNullException("value");
-            }
+            ArgumentNullException.ThrowIfNull(value);
 
             var stream = new StreamBuffer(value);
             _timeStampFormat = (Id3v2TimeStampFormat)stream.ReadByte();
@@ -198,10 +195,7 @@ public sealed class Id3v2SyncedTempoCodesFrame : Id3v2Frame
 
     private void TempoCodeAdd(object? sender, ListItemAddEventArgs<Id3v2TempoCode> e)
     {
-        if (e == null)
-        {
-            throw new ArgumentNullException("e");
-        }
+        ArgumentNullException.ThrowIfNull(e);
 
         if (e.Item == null)
         {
@@ -221,10 +215,7 @@ public sealed class Id3v2SyncedTempoCodesFrame : Id3v2Frame
 
     private void TempoCodeReplace(object? sender, ListItemReplaceEventArgs<Id3v2TempoCode> e)
     {
-        if (e == null)
-        {
-            throw new ArgumentNullException("e");
-        }
+        ArgumentNullException.ThrowIfNull(e);
 
         if (e.NewItem == null)
         {

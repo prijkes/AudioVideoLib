@@ -63,10 +63,7 @@ public sealed class Lyrics3v2IndicationsField : Lyrics3v2Field
 
         protected set
         {
-            if (value == null)
-            {
-                throw new ArgumentNullException("value");
-            }
+            ArgumentNullException.ThrowIfNull(value);
 
             var sb = new StreamBuffer(value);
             var fieldSize = value.Length;

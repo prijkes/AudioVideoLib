@@ -36,10 +36,7 @@ public class FlacVorbisCommentsMetadataBlock : FlacMetadataBlock
 
         protected set
         {
-            if (value == null)
-            {
-                throw new ArgumentNullException("value");
-            }
+            ArgumentNullException.ThrowIfNull(value);
 
             VorbisComments = VorbisComments.ReadStream(new StreamBuffer(value)) ?? throw new InvalidDataException("Could not parse Vorbis comments block.");
         }

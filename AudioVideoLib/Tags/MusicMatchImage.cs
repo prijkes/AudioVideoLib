@@ -80,10 +80,7 @@ public sealed class MusicMatchImage
     /// <returns>A <see cref="MusicMatchImage"/>.</returns>
     public static MusicMatchImage ReadFromStream(Stream stream)
     {
-        if (stream == null)
-        {
-            throw new ArgumentNullException("stream");
-        }
+        ArgumentNullException.ThrowIfNull(stream);
 
         var sb = stream as StreamBuffer ?? new StreamBuffer(stream);
 

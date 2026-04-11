@@ -286,10 +286,7 @@ public sealed class Id3v2SynchronizedLyricsFrame : Id3v2Frame
 
         protected set
         {
-            if (value == null)
-            {
-                throw new ArgumentNullException("value");
-            }
+            ArgumentNullException.ThrowIfNull(value);
 
             var languageEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
             var stream = new StreamBuffer(value);
@@ -383,10 +380,7 @@ public sealed class Id3v2SynchronizedLyricsFrame : Id3v2Frame
 
     private void LyricSyncAdd(object? sender, ListItemAddEventArgs<Id3v2LyricSync> e)
     {
-        if (e == null)
-        {
-            throw new ArgumentNullException("e");
-        }
+        ArgumentNullException.ThrowIfNull(e);
 
         if (e.Item == null)
         {
@@ -417,10 +411,7 @@ public sealed class Id3v2SynchronizedLyricsFrame : Id3v2Frame
 
     private void LyricSyncReplace(object? sender, ListItemReplaceEventArgs<Id3v2LyricSync> e)
     {
-        if (e == null)
-        {
-            throw new ArgumentNullException("e");
-        }
+        ArgumentNullException.ThrowIfNull(e);
 
         if (e.NewItem == null)
         {

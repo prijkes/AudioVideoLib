@@ -71,10 +71,7 @@ public sealed class VorbisComments
     /// </exception>
     public static VorbisComments? ReadStream(Stream stream)
     {
-        if (stream == null)
-        {
-            throw new ArgumentNullException("stream");
-        }
+        ArgumentNullException.ThrowIfNull(stream);
 
         if (!stream.CanRead)
         {
@@ -156,10 +153,7 @@ public sealed class VorbisComments
 
     private bool ReadStream(StreamBuffer sb)
     {
-        if (sb == null)
-        {
-            throw new ArgumentNullException("sb");
-        }
+        ArgumentNullException.ThrowIfNull(sb);
 
         var length = sb.ReadInt32();
         Vendor = sb.ReadString(length);

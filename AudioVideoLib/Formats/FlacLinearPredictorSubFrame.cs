@@ -21,10 +21,7 @@ public sealed class FlacLinearPredictorSubFrame : FlacSubFrame
     /// <param name="flacFrame">The <see cref="FlacFrame"/>.</param>
     public FlacLinearPredictorSubFrame(FlacFrame flacFrame) : base(flacFrame)
     {
-        if (flacFrame == null)
-        {
-            throw new ArgumentNullException("flacFrame");
-        }
+        ArgumentNullException.ThrowIfNull(flacFrame);
     }
 
     ////------------------------------------------------------------------------------------------------------------------------------

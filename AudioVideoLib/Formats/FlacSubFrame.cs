@@ -82,15 +82,9 @@ public partial class FlacSubFrame
 
     private static FlacSubFrame ReadSubFrame(StreamBuffer sb, int channel, FlacFrame flacFrame)
     {
-        if (sb == null)
-        {
-            throw new ArgumentNullException("sb");
-        }
+        ArgumentNullException.ThrowIfNull(sb);
 
-        if (flacFrame == null)
-        {
-            throw new ArgumentNullException("flacFrame");
-        }
+        ArgumentNullException.ThrowIfNull(flacFrame);
 
         var header = sb.ReadBigEndianInt32(false);
         var type = (header >> 1) & 0x7E;
@@ -109,10 +103,7 @@ public partial class FlacSubFrame
 
     private void ReadSubFrame(StreamBuffer sb, int channel)
     {
-        if (sb == null)
-        {
-            throw new ArgumentNullException("sb");
-        }
+        ArgumentNullException.ThrowIfNull(sb);
 
         var sampleSize = FlacFrame.SampleSize;
         if ((((FlacFrame.ChannelAssignment == FlacChannelAssignment.LeftSide) || (FlacFrame.ChannelAssignment == FlacChannelAssignment.MidSide)) && (channel == 1)) || ((FlacFrame.ChannelAssignment == FlacChannelAssignment.RightSide) && (channel == 0)))
