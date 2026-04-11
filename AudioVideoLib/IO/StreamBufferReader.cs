@@ -43,13 +43,35 @@ public sealed partial class StreamBuffer
     /// </returns>
     private int Read(byte[] buffer, int count, bool movePosition)
     {
-        var bytesRead = Read(buffer, 0, count);
+        var bytesRead = ReadFully(buffer, 0, count);
         if (!movePosition)
         {
             Seek(-bytesRead, SeekOrigin.Current);
         }
 
         return bytesRead;
+    }
+
+    // Fills the buffer by looping on the underlying Stream.Read, which is allowed to
+    // return fewer bytes than requested on file / network streams even when more data is
+    // still available. Every numeric / string reader above this layer assumes a full fill,
+    // so a short read silently produced wrong values (sign-extension in BigEndian reads,
+    // uninitialized tail bytes in BitConverter reads). Stops on genuine EOF.
+    private int ReadFully(byte[] buffer, int offset, int count)
+    {
+        var total = 0;
+        while (total < count)
+        {
+            var n = _stream.Read(buffer, offset + total, count - total);
+            if (n == 0)
+            {
+                break;
+            }
+
+            total += n;
+        }
+
+        return total;
     }
 
     /// <inheritdoc/>
@@ -83,7 +105,7 @@ public sealed partial class StreamBuffer
         }
         else
         {
-            bytesRead = _stream.Read(buffer, offset, count);
+            bytesRead = ReadFully(buffer, offset, count);
         }
 
         if (!movePosition)

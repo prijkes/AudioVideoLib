@@ -496,32 +496,44 @@ public class NotifyingList<T> : IList<T>
 
     private bool RemoveItem(int index)
     {
-        var item = _list.ElementAtOrDefault(index);
-        var removeEventArgs = new ListItemRemoveEventArgs<T>(index, item!);
+        if (index < 0 || index >= _list.Count)
+        {
+            return false;
+        }
+
+        var item = _list[index];
+        var removeEventArgs = new ListItemRemoveEventArgs<T>(index, item);
         OnItemRemove(removeEventArgs);
 
-        if (!removeEventArgs.Cancel)
+        if (removeEventArgs.Cancel)
         {
-            if (item != null && _list.Remove(item))
-            {
-                var removedEventArgs = new ListItemRemovedEventArgs<T>(index, item);
-                OnItemRemoved(removedEventArgs);
-                return true;
-            }
+            return false;
         }
-        return false;
+
+        // Remove the exact indexed element, not the first `Equals`-match — the caller
+        // resolved `item` from `index`, so duplicates with equal values must not shift
+        // which entry gets deleted.
+        _list.RemoveAt(index);
+        var removedEventArgs = new ListItemRemovedEventArgs<T>(index, item);
+        OnItemRemoved(removedEventArgs);
+        return true;
     }
 
     private int RemoveItems(Predicate<T> match)
     {
         ArgumentNullException.ThrowIfNull(match);
 
+        var removed = 0;
+
         // .ToList() is important here; we can't remove items and iterate the original list at the same time.
         foreach (var item in _list.Where(i => match(i)).ToList())
         {
-            RemoveItem(item);
+            if (RemoveItem(item))
+            {
+                removed++;
+            }
         }
 
-        return _list.Count;
+        return removed;
     }
 }

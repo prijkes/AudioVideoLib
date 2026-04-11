@@ -350,6 +350,8 @@ public sealed partial class StreamBuffer
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
     public void WritePadding(byte paddingByte, int length)
     {
+        ArgumentOutOfRangeException.ThrowIfNegative(length);
+
         for (var i = 0; i < length; i++)
         {
             WriteByte(paddingByte);
