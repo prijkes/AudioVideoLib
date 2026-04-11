@@ -13,9 +13,19 @@ using AudioVideoLib.Formats;
 using AudioVideoLib.IO;
 using AudioVideoLib.Tags;
 
+public enum TagKind
+{
+    Id3v2,
+    Id3v1,
+    Ape,
+    Lyrics3v2,
+    MusicMatch,
+}
+
 public sealed class FileDossier : INotifyPropertyChanged
 {
     private List<IAudioTagOffset> _offsets = [];
+    private readonly HashSet<IAudioTag> _newTags = new(ReferenceEqualityComparer.Instance);
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -75,6 +85,84 @@ public sealed class FileDossier : INotifyPropertyChanged
 
     public bool HasUnsavedChanges => TagTabs.OfType<TagTabViewModel>().Any(t => t.IsDirty);
 
+    public IReadOnlyList<TagKind> AddableTagKinds
+    {
+        get
+        {
+            var present = new HashSet<TagKind>();
+            foreach (var tab in TagTabs)
+            {
+                switch (tab)
+                {
+                    case Id3v2TabViewModel: present.Add(TagKind.Id3v2); break;
+                    case Id3v1TabViewModel: present.Add(TagKind.Id3v1); break;
+                    case ApeTabViewModel: present.Add(TagKind.Ape); break;
+                    case Lyrics3v2TabViewModel: present.Add(TagKind.Lyrics3v2); break;
+                    case MusicMatchTabViewModel: present.Add(TagKind.MusicMatch); break;
+                }
+            }
+
+            return [.. Enum.GetValues<TagKind>().Where(k => !present.Contains(k))];
+        }
+    }
+
+    public TagTabViewModel AddNewTag(TagKind kind)
+    {
+        TagTabViewModel vm;
+        IAudioTag tag;
+        switch (kind)
+        {
+            case TagKind.Id3v2:
+                var id3v2 = new Id3v2Tag(Id3v2Version.Id3v240) { PaddingSize = 512 };
+                vm = new Id3v2TabViewModel(id3v2);
+                tag = id3v2;
+                break;
+            case TagKind.Id3v1:
+                var id3v1 = new Id3v1Tag(Id3v1Version.Id3v11);
+                vm = new Id3v1TabViewModel(id3v1);
+                tag = id3v1;
+                break;
+            case TagKind.Ape:
+                var ape = new ApeTag(ApeVersion.Version2)
+                {
+                    UseHeader = true,
+                    UseFooter = true,
+                };
+                vm = new ApeTabViewModel(ape);
+                tag = ape;
+                break;
+            case TagKind.Lyrics3v2:
+                var lyrics = new Lyrics3v2Tag();
+                vm = new Lyrics3v2TabViewModel(lyrics);
+                tag = lyrics;
+                break;
+            case TagKind.MusicMatch:
+                var mm = new MusicMatchTag(3, 100);
+                vm = new MusicMatchTabViewModel(mm);
+                tag = mm;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(kind));
+        }
+
+        _newTags.Add(tag);
+        vm.MarkDirty();
+        TagTabs.Add(vm);
+        Notify(nameof(AddableTagKinds));
+        Notify(nameof(HasUnsavedChanges));
+        return vm;
+    }
+
+    public static string GetKindLabel(TagKind kind) => kind switch
+    {
+        TagKind.Id3v2     => "ID3v2.4 (file start)",
+        TagKind.Id3v1     => "ID3v1.1 (file end, 128 bytes)",
+        TagKind.Ape       => "APEv2 (file end)",
+        TagKind.Lyrics3v2 => "Lyrics3v2 (file end)",
+        TagKind.MusicMatch => "MusicMatch (file end)",
+        _                 => kind.ToString(),
+    };
+
     public void Save()
     {
         // Commit editable tab VMs back to their library tag instances, and snapshot
@@ -109,40 +197,48 @@ public sealed class FileDossier : INotifyPropertyChanged
 
         var fileBytes = File.ReadAllBytes(FilePath);
 
-        var startTags = _offsets
+        var existingStart = _offsets
             .Where(o => o.TagOrigin == TagOrigin.Start)
             .OrderBy(o => o.StartOffset)
             .ToList();
-        var endTags = _offsets
+        var existingEnd = _offsets
             .Where(o => o.TagOrigin == TagOrigin.End)
             .OrderBy(o => o.StartOffset)
             .ToList();
 
-        var audioStart = startTags.Count > 0 ? startTags.Max(o => o.EndOffset) : 0L;
-        var audioEnd = endTags.Count > 0 ? endTags.Min(o => o.StartOffset) : fileBytes.Length;
+        var audioStart = existingStart.Count > 0 ? existingStart.Max(o => o.EndOffset) : 0L;
+        var audioEnd = existingEnd.Count > 0 ? existingEnd.Min(o => o.StartOffset) : fileBytes.Length;
 
         if (audioStart < 0 || audioEnd < audioStart || audioEnd > fileBytes.Length)
         {
             throw new InvalidDataException("Unable to determine audio region for save.");
         }
 
+        // Build write lists with a priority so new tags interleave with existing
+        // tags in the right order — e.g. a new APE added to a file that already
+        // ends in Id3v1 slots in *before* the Id3v1, not after it.
+        var startWrites = BuildWriteList(existingStart, _newTags.Where(IsStartOrigin));
+        var endWrites = BuildWriteList(existingEnd, _newTags.Where(IsEndOrigin));
+
         var tmp = FilePath + ".avs-tmp";
         using (var outFile = File.Create(tmp))
         {
-            foreach (var offset in startTags)
+            foreach (var item in startWrites)
             {
-                WriteTagRegion(outFile, offset, fileBytes, dirtyTags);
+                WriteWriteItem(outFile, item, fileBytes, dirtyTags);
             }
 
             outFile.Write(fileBytes, (int)audioStart, (int)(audioEnd - audioStart));
 
-            foreach (var offset in endTags)
+            foreach (var item in endWrites)
             {
-                WriteTagRegion(outFile, offset, fileBytes, dirtyTags);
+                WriteWriteItem(outFile, item, fileBytes, dirtyTags);
             }
         }
 
         File.Move(tmp, FilePath, overwrite: true);
+
+        _newTags.Clear();
 
         foreach (var tab in TagTabs)
         {
@@ -155,7 +251,68 @@ public sealed class FileDossier : INotifyPropertyChanged
         }
 
         Notify(nameof(HasUnsavedChanges));
+        Notify(nameof(AddableTagKinds));
     }
+
+    private static List<WriteItem> BuildWriteList(
+        IReadOnlyList<IAudioTagOffset> existing,
+        IEnumerable<IAudioTag> newTags)
+    {
+        var list = new List<WriteItem>(existing.Count);
+        foreach (var offset in existing)
+        {
+            list.Add(new WriteItem(offset, null, PriorityOf(offset.AudioTag)));
+        }
+
+        foreach (var newTag in newTags.OrderBy(PriorityOf))
+        {
+            var priority = PriorityOf(newTag);
+            var insertAt = list.FindIndex(w => w.Priority > priority);
+            var item = new WriteItem(null, newTag, priority);
+            if (insertAt < 0)
+            {
+                list.Add(item);
+            }
+            else
+            {
+                list.Insert(insertAt, item);
+            }
+        }
+
+        return list;
+    }
+
+    private static void WriteWriteItem(Stream output, WriteItem item, byte[] originalBytes, HashSet<IAudioTag> dirtyTags)
+    {
+        if (item.NewTag is { } newTag)
+        {
+            var bytes = newTag.ToByteArray();
+            output.Write(bytes, 0, bytes.Length);
+            return;
+        }
+
+        if (item.Offset is { } offset)
+        {
+            WriteTagRegion(output, offset, originalBytes, dirtyTags);
+        }
+    }
+
+    private static bool IsStartOrigin(IAudioTag tag) => tag is Id3v2Tag;
+
+    private static bool IsEndOrigin(IAudioTag tag) => tag is Id3v1Tag or ApeTag or Lyrics3v2Tag or MusicMatchTag;
+
+    // File-layout convention: end tags fall in this order on disk, with Id3v1 always last.
+    private static int PriorityOf(IAudioTag tag) => tag switch
+    {
+        Id3v2Tag => 0,
+        MusicMatchTag => 100,
+        Lyrics3v2Tag => 200,
+        ApeTag => 300,
+        Id3v1Tag => 1000,
+        _ => 500,
+    };
+
+    private readonly record struct WriteItem(IAudioTagOffset? Offset, IAudioTag? NewTag, int Priority);
 
     private static void WriteTagRegion(Stream output, IAudioTagOffset offset, byte[] originalBytes, HashSet<IAudioTag> dirtyTags)
     {

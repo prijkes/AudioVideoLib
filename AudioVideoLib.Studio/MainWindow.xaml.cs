@@ -91,6 +91,49 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
     }
 
+    private void AddTagButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (CurrentDossier == null)
+        {
+            UpdateStatus("Open a file first");
+            return;
+        }
+
+        AddTagMenu.Items.Clear();
+        var addable = CurrentDossier.AddableTagKinds;
+        if (addable.Count == 0)
+        {
+            AddTagMenu.Items.Add(new MenuItem { Header = "(all supported tag formats already present)", IsEnabled = false });
+        }
+        else
+        {
+            foreach (var kind in addable)
+            {
+                var item = new MenuItem
+                {
+                    Header = FileDossier.GetKindLabel(kind),
+                    Tag = kind,
+                };
+                item.Click += AddTagMenuItem_Click;
+                AddTagMenu.Items.Add(item);
+            }
+        }
+
+        AddTagMenu.PlacementTarget = AddTagButton;
+        AddTagMenu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+        AddTagMenu.IsOpen = true;
+    }
+
+    private void AddTagMenuItem_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is MenuItem { Tag: TagKind kind } && CurrentDossier != null)
+        {
+            var newTab = CurrentDossier.AddNewTag(kind);
+            TagTabControl.SelectedItem = newTab;
+            UpdateStatus($"Added {FileDossier.GetKindLabel(kind)}");
+        }
+    }
+
     private void OpenFiles_Click(object sender, RoutedEventArgs e) => OpenFiles();
     private void OpenFolder_Click(object sender, RoutedEventArgs e) => OpenFolder();
     private void Save_Click(object sender, RoutedEventArgs e) => SaveCurrent();

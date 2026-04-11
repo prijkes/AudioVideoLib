@@ -47,6 +47,11 @@ public abstract class TagTabViewModel : INotifyPropertyChanged
         IsDirty = false;
     }
 
+    public void MarkDirty()
+    {
+        IsDirty = true;
+    }
+
     protected void Notify([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -322,7 +327,7 @@ public sealed class ApeTabViewModel : TagTabViewModel
 
         foreach (var item in tag.Items)
         {
-            Items.Add(new ApeItemRow(item, MarkDirty));
+            Items.Add(new ApeItemRow(item, () => IsDirty = true));
         }
 
         ResetDirty();
@@ -333,8 +338,6 @@ public sealed class ApeTabViewModel : TagTabViewModel
     public ApeTag Tag { get; }
 
     public ObservableCollection<ApeItemRow> Items { get; } = [];
-
-    private void MarkDirty() => IsDirty = true;
 }
 
 public sealed class ApeItemRow(ApeItem item, Action markDirty) : INotifyPropertyChanged
@@ -404,7 +407,7 @@ public sealed class Lyrics3v2TabViewModel : TagTabViewModel
 
         foreach (var field in tag.Fields)
         {
-            Fields.Add(new Lyrics3v2FieldRow(field, MarkDirty));
+            Fields.Add(new Lyrics3v2FieldRow(field, () => IsDirty = true));
         }
 
         ResetDirty();
@@ -415,8 +418,6 @@ public sealed class Lyrics3v2TabViewModel : TagTabViewModel
     public Lyrics3v2Tag Tag { get; }
 
     public ObservableCollection<Lyrics3v2FieldRow> Fields { get; } = [];
-
-    private void MarkDirty() => IsDirty = true;
 }
 
 public sealed class Lyrics3v2FieldRow(Lyrics3v2Field source, Action markDirty) : INotifyPropertyChanged

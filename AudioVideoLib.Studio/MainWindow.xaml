@@ -371,7 +371,19 @@
                     <!-- tag format tabs -->
                     <Border BorderBrush="#E0E0E0" BorderThickness="0,0,0,1" Padding="0,12,0,0">
                         <StackPanel>
-                            <TextBlock Text="TAGS" FontSize="11" FontWeight="SemiBold" Foreground="#999999" Margin="0,0,0,6" />
+                            <Grid Margin="0,0,0,6">
+                                <TextBlock Text="TAGS" FontSize="11" FontWeight="SemiBold" Foreground="#999999" VerticalAlignment="Center" />
+                                <Button x:Name="AddTagButton"
+                                        Content="+ Add tag"
+                                        Click="AddTagButton_Click"
+                                        HorizontalAlignment="Right"
+                                        Padding="10,2"
+                                        FontSize="11">
+                                    <Button.ContextMenu>
+                                        <ContextMenu x:Name="AddTagMenu" />
+                                    </Button.ContextMenu>
+                                </Button>
+                            </Grid>
                             <TabControl x:Name="TagTabControl"
                                         ItemsSource="{Binding TagTabs}"
                                         MinHeight="320">
