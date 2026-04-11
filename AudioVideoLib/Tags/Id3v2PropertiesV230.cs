@@ -34,27 +34,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2PositionSynchronizationFrame? PositionSynchronization
     {
-        get
-        {
-            return (Version >= Id3v2Version.Id3v230) ? GetFrame<Id3v2PositionSynchronizationFrame>() : null;
-        }
-
-        set
-        {
-            if (Version < Id3v2Version.Id3v230)
-            {
-                return;
-            }
-
-            if (value == null)
-            {
-                RemoveFrame(PositionSynchronization);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedSingleFrame<Id3v2PositionSynchronizationFrame>(Id3v2Version.Id3v230);
+        set => SetVersionedSingleFrame(value, Id3v2Version.Id3v230);
     }
 
     /// <summary>
@@ -73,27 +54,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2TermsOfUseFrame? TermsOfUse
     {
-        get
-        {
-            return (Version >= Id3v2Version.Id3v230) ? GetFrame<Id3v2TermsOfUseFrame>() : null;
-        }
-
-        set
-        {
-            if (Version < Id3v2Version.Id3v230)
-            {
-                return;
-            }
-
-            if (value == null)
-            {
-                RemoveFrame(TermsOfUse);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedSingleFrame<Id3v2TermsOfUseFrame>(Id3v2Version.Id3v230);
+        set => SetVersionedSingleFrame(value, Id3v2Version.Id3v230);
     }
 
     /// <summary>
@@ -112,27 +74,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2OwnershipFrame? Ownership
     {
-        get
-        {
-            return (Version >= Id3v2Version.Id3v230) ? GetFrame<Id3v2OwnershipFrame>() : null;
-        }
-
-        set
-        {
-            if (Version < Id3v2Version.Id3v230)
-            {
-                return;
-            }
-
-            if (value == null)
-            {
-                RemoveFrame(Ownership);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedSingleFrame<Id3v2OwnershipFrame>(Id3v2Version.Id3v230);
+        set => SetVersionedSingleFrame(value, Id3v2Version.Id3v230);
     }
 
     /// <summary>
@@ -153,27 +96,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2CommercialFrame? Commercial
     {
-        get
-        {
-            return (Version >= Id3v2Version.Id3v230) ? GetFrame<Id3v2CommercialFrame>() : null;
-        }
-
-        set
-        {
-            if (Version < Id3v2Version.Id3v230)
-            {
-                return;
-            }
-
-            if (value == null)
-            {
-                RemoveFrame(Commercial);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedSingleFrame<Id3v2CommercialFrame>(Id3v2Version.Id3v230);
+        set => SetVersionedSingleFrame(value, Id3v2Version.Id3v230);
     }
 
     /// <summary>

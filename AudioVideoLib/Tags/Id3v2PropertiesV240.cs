@@ -36,27 +36,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2AudioSeekPointIndexFrame? AudioSeekPointIndex
     {
-        get
-        {
-            return (Version >= Id3v2Version.Id3v240) ? GetFrame<Id3v2AudioSeekPointIndexFrame>() : null;
-        }
-
-        set
-        {
-            if (Version < Id3v2Version.Id3v240)
-            {
-                return;
-            }
-
-            if (value == null)
-            {
-                RemoveFrame(AudioSeekPointIndex);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedSingleFrame<Id3v2AudioSeekPointIndexFrame>(Id3v2Version.Id3v240);
+        set => SetVersionedSingleFrame(value, Id3v2Version.Id3v240);
     }
 
     /// <summary>
@@ -144,27 +125,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2SeekFrame? Seek
     {
-        get
-        {
-            return (Version >= Id3v2Version.Id3v240) ? GetFrame<Id3v2SeekFrame>() : null;
-        }
-
-        set
-        {
-            if (Version < Id3v2Version.Id3v240)
-            {
-                return;
-            }
-
-            if (value == null)
-            {
-                RemoveFrame(Seek);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedSingleFrame<Id3v2SeekFrame>(Id3v2Version.Id3v240);
+        set => SetVersionedSingleFrame(value, Id3v2Version.Id3v240);
     }
 
     /// <summary>

@@ -27,27 +27,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2UrlLinkFrame? OfficialInternetRadioStationHomepage
     {
-        get
-        {
-            return (Version >= Id3v2Version.Id3v230) ? GetUrlLinkFrame(Id3v2UrlLinkFrameIdentifier.OfficialInternetRadioStationHomepage) : null;
-        }
-
-        set
-        {
-            if (Version < Id3v2Version.Id3v230)
-            {
-                return;
-            }
-
-            if (value == null)
-            {
-                RemoveFrame(OfficialInternetRadioStationHomepage);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedUrlLinkFrame(Id3v2UrlLinkFrameIdentifier.OfficialInternetRadioStationHomepage, Id3v2Version.Id3v230);
+        set => SetVersionedUrlLinkFrame(value, Id3v2UrlLinkFrameIdentifier.OfficialInternetRadioStationHomepage, Id3v2Version.Id3v230);
     }
 
     /// <summary>
@@ -61,26 +42,7 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2UrlLinkFrame? PaymentWebpage
     {
-        get
-        {
-            return (Version >= Id3v2Version.Id3v230) ? GetUrlLinkFrame(Id3v2UrlLinkFrameIdentifier.PaymentWebpage) : null;
-        }
-
-        set
-        {
-            if (Version < Id3v2Version.Id3v230)
-            {
-                return;
-            }
-
-            if (value == null)
-            {
-                RemoveFrame(PaymentWebpage);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedUrlLinkFrame(Id3v2UrlLinkFrameIdentifier.PaymentWebpage, Id3v2Version.Id3v230);
+        set => SetVersionedUrlLinkFrame(value, Id3v2UrlLinkFrameIdentifier.PaymentWebpage, Id3v2Version.Id3v230);
     }
 }

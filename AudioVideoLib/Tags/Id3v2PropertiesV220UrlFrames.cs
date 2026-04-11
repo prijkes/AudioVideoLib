@@ -28,21 +28,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2FrameCollection<Id3v2UrlLinkFrame> CommercialInformations
     {
-        get
-        {
-            return GetFrameCollection(Id3v2UrlLinkFrameIdentifier.CommercialInformations);
-        }
-
-        set
-        {
-            RemoveFrames<Id3v2LinkedInformationFrame>(Id3v2UrlLinkFrameIdentifier.CommercialInformations);
-            if (value != null)
-            {
-                SetFrames(value);
-            }
-
-            ValidateFrames();
-        }
+        get => GetVersionedUrlFrameCollection(Id3v2UrlLinkFrameIdentifier.CommercialInformations);
+        set => SetVersionedUrlFrameCollection(value, Id3v2UrlLinkFrameIdentifier.CommercialInformations);
     }
 
     /// <summary>
@@ -57,22 +44,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2UrlLinkFrame? CopyrightInformation
     {
-        get
-        {
-            return GetUrlLinkFrame(Id3v2UrlLinkFrameIdentifier.CopyrightInformation);
-        }
-
-        set
-        {
-            if (value == null)
-            {
-                RemoveFrame(CopyrightInformation);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedUrlLinkFrame(Id3v2UrlLinkFrameIdentifier.CopyrightInformation);
+        set => SetVersionedUrlLinkFrame(value, Id3v2UrlLinkFrameIdentifier.CopyrightInformation);
     }
 
     /// <summary>
@@ -87,21 +60,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2FrameCollection<Id3v2UrlLinkFrame> OfficialArtistWebpage
     {
-        get
-        {
-            return GetFrameCollection(Id3v2UrlLinkFrameIdentifier.OfficialArtistWebpage);
-        }
-
-        set
-        {
-            RemoveFrames<Id3v2LinkedInformationFrame>(Id3v2UrlLinkFrameIdentifier.OfficialArtistWebpage);
-            if (value != null)
-            {
-                SetFrames(value);
-            }
-
-            ValidateFrames();
-        }
+        get => GetVersionedUrlFrameCollection(Id3v2UrlLinkFrameIdentifier.OfficialArtistWebpage);
+        set => SetVersionedUrlFrameCollection(value, Id3v2UrlLinkFrameIdentifier.OfficialArtistWebpage);
     }
 
     /// <summary>
@@ -115,22 +75,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2UrlLinkFrame? OfficialAudioFileWebpage
     {
-        get
-        {
-            return GetUrlLinkFrame(Id3v2UrlLinkFrameIdentifier.OfficialAudioFileWebpage);
-        }
-
-        set
-        {
-            if (value == null)
-            {
-                RemoveFrame(OfficialAudioFileWebpage);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedUrlLinkFrame(Id3v2UrlLinkFrameIdentifier.OfficialAudioFileWebpage);
+        set => SetVersionedUrlLinkFrame(value, Id3v2UrlLinkFrameIdentifier.OfficialAudioFileWebpage);
     }
 
     /// <summary>
@@ -145,22 +91,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2UrlLinkFrame? OfficialAudioSource
     {
-        get
-        {
-            return GetUrlLinkFrame(Id3v2UrlLinkFrameIdentifier.OfficialAudioSource);
-        }
-
-        set
-        {
-            if (value == null)
-            {
-                RemoveFrame(OfficialAudioSource);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedUrlLinkFrame(Id3v2UrlLinkFrameIdentifier.OfficialAudioSource);
+        set => SetVersionedUrlLinkFrame(value, Id3v2UrlLinkFrameIdentifier.OfficialAudioSource);
     }
 
     /// <summary>
@@ -174,21 +106,7 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2UrlLinkFrame? PublishersOfficialWebpage
     {
-        get
-        {
-            return GetUrlLinkFrame(Id3v2UrlLinkFrameIdentifier.PublishersOfficialWebpage);
-        }
-
-        set
-        {
-            if (value == null)
-            {
-                RemoveFrame(PublishersOfficialWebpage);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedUrlLinkFrame(Id3v2UrlLinkFrameIdentifier.PublishersOfficialWebpage);
+        set => SetVersionedUrlLinkFrame(value, Id3v2UrlLinkFrameIdentifier.PublishersOfficialWebpage);
     }
 }

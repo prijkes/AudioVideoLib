@@ -282,6 +282,118 @@ public sealed partial class Id3v2Tag : IAudioTag
     }
 
     /// <summary>
+    /// Shared helper for the per-version URL-link-frame property accessors (single frame).
+    /// </summary>
+    private Id3v2UrlLinkFrame? GetVersionedUrlLinkFrame(Id3v2UrlLinkFrameIdentifier identifier, Id3v2Version minVersion = Id3v2Version.Id3v220)
+    {
+        return Version >= minVersion ? GetUrlLinkFrame(identifier) : null;
+    }
+
+    /// <summary>
+    /// Shared helper for the per-version URL-link-frame property setters (single frame).
+    /// </summary>
+    private void SetVersionedUrlLinkFrame(Id3v2UrlLinkFrame? value, Id3v2UrlLinkFrameIdentifier identifier, Id3v2Version minVersion = Id3v2Version.Id3v220)
+    {
+        if (Version < minVersion)
+        {
+            return;
+        }
+
+        if (value == null)
+        {
+            RemoveFrame(GetUrlLinkFrame(identifier));
+        }
+        else
+        {
+            SetFrame(value);
+        }
+    }
+
+    /// <summary>
+    /// Shared helper for URL-link-frame <em>collection</em> property getters.
+    /// </summary>
+    private Id3v2FrameCollection<Id3v2UrlLinkFrame> GetVersionedUrlFrameCollection(Id3v2UrlLinkFrameIdentifier identifier, Id3v2Version minVersion = Id3v2Version.Id3v220)
+    {
+        return Version >= minVersion ? GetFrameCollection(identifier) : GetFrameCollection<Id3v2UrlLinkFrame>([]);
+    }
+
+    /// <summary>
+    /// Shared helper for URL-link-frame <em>collection</em> property setters. Removes the
+    /// existing frames matching <paramref name="identifier"/>, assigns the replacement
+    /// (when not null), and re-runs tag validation.
+    /// </summary>
+    private void SetVersionedUrlFrameCollection(Id3v2FrameCollection<Id3v2UrlLinkFrame>? value, Id3v2UrlLinkFrameIdentifier identifier, Id3v2Version minVersion = Id3v2Version.Id3v220)
+    {
+        if (Version < minVersion)
+        {
+            return;
+        }
+
+        RemoveFrames<Id3v2UrlLinkFrame>(identifier);
+        if (value != null)
+        {
+            SetFrames(value);
+        }
+
+        ValidateFrames();
+    }
+
+    /// <summary>
+    /// Shared helper for typed single-frame property accessors (by runtime type).
+    /// </summary>
+    private TFrame? GetVersionedSingleFrame<TFrame>(Id3v2Version minVersion = Id3v2Version.Id3v220) where TFrame : Id3v2Frame
+    {
+        return Version >= minVersion ? GetFrame<TFrame>() : null;
+    }
+
+    /// <summary>
+    /// Shared helper for typed single-frame property setters.
+    /// </summary>
+    private void SetVersionedSingleFrame<TFrame>(TFrame? value, Id3v2Version minVersion = Id3v2Version.Id3v220) where TFrame : Id3v2Frame
+    {
+        if (Version < minVersion)
+        {
+            return;
+        }
+
+        if (value == null)
+        {
+            RemoveFrame(GetFrame<TFrame>());
+        }
+        else
+        {
+            SetFrame(value);
+        }
+    }
+
+    /// <summary>
+    /// Shared helper for typed frame-collection property accessors (by runtime type).
+    /// </summary>
+    private Id3v2FrameCollection<TFrame> GetVersionedFrameCollection<TFrame>(Id3v2Version minVersion = Id3v2Version.Id3v220) where TFrame : Id3v2Frame
+    {
+        return Version >= minVersion ? GetFrameCollection<TFrame>() : GetFrameCollection<TFrame>([]);
+    }
+
+    /// <summary>
+    /// Shared helper for typed frame-collection property setters.
+    /// </summary>
+    private void SetVersionedFrameCollection<TFrame>(Id3v2FrameCollection<TFrame>? value, Id3v2Version minVersion = Id3v2Version.Id3v220) where TFrame : Id3v2Frame
+    {
+        if (Version < minVersion)
+        {
+            return;
+        }
+
+        RemoveFrames<TFrame>(false);
+        if (value != null)
+        {
+            SetFrames(value);
+        }
+
+        ValidateFrames();
+    }
+
+    /// <summary>
     /// Gets the <see cref="Id3v2UrlLinkFrame"/>.
     /// </summary>
     /// <param name="identifier">The identifier.</param>

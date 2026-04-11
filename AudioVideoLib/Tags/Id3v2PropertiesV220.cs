@@ -37,21 +37,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2FrameCollection<Id3v2UniqueFileIdentifierFrame> UniqueFileIdentifiers
     {
-        get
-        {
-            return GetFrameCollection<Id3v2UniqueFileIdentifierFrame>();
-        }
-
-        set
-        {
-            RemoveFrames<Id3v2UniqueFileIdentifierFrame>(false);
-            if (value != null)
-            {
-                SetFrames(value);
-            }
-
-            ValidateFrames();
-        }
+        get => GetVersionedFrameCollection<Id3v2UniqueFileIdentifierFrame>();
+        set => SetVersionedFrameCollection(value);
     }
 
     /// <summary>
@@ -68,21 +55,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2FrameCollection<Id3v2UserDefinedTextInformationFrame> UserDefinedTextInformations
     {
-        get
-        {
-            return GetFrameCollection<Id3v2UserDefinedTextInformationFrame>();
-        }
-
-        set
-        {
-            RemoveFrames<Id3v2UserDefinedTextInformationFrame>(false);
-            if (value != null)
-            {
-                SetFrames(value);
-            }
-
-            ValidateFrames();
-        }
+        get => GetVersionedFrameCollection<Id3v2UserDefinedTextInformationFrame>();
+        set => SetVersionedFrameCollection(value);
     }
 
     /// <summary>
@@ -99,21 +73,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2FrameCollection<Id3v2UserDefinedUrlLinkFrame> UserDefinedUrlLinks
     {
-        get
-        {
-            return GetFrameCollection<Id3v2UserDefinedUrlLinkFrame>();
-        }
-
-        set
-        {
-            RemoveFrames<Id3v2UserDefinedUrlLinkFrame>(false);
-            if (value != null)
-            {
-                SetFrames(value);
-            }
-
-            ValidateFrames();
-        }
+        get => GetVersionedFrameCollection<Id3v2UserDefinedUrlLinkFrame>();
+        set => SetVersionedFrameCollection(value);
     }
 
     /// <summary>
@@ -133,22 +94,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2InvolvedPeopleListFrame? InvolvedPeopleList
     {
-        get
-        {
-            return GetFrame<Id3v2InvolvedPeopleListFrame>();
-        }
-
-        set
-        {
-            if (value == null)
-            {
-                RemoveFrame(InvolvedPeopleList);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedSingleFrame<Id3v2InvolvedPeopleListFrame>();
+        set => SetVersionedSingleFrame(value);
     }
 
     /// <summary>
@@ -168,22 +115,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2MusicCdIdentifierFrame? MusicCdIdentifier
     {
-        get
-        {
-            return GetFrame<Id3v2MusicCdIdentifierFrame>();
-        }
-
-        set
-        {
-            if (value == null)
-            {
-                RemoveFrame(MusicCdIdentifier);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedSingleFrame<Id3v2MusicCdIdentifierFrame>();
+        set => SetVersionedSingleFrame(value);
     }
 
     /// <summary>
@@ -199,22 +132,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2EventTimingCodesFrame? EventTimingCodes
     {
-        get
-        {
-            return GetFrame<Id3v2EventTimingCodesFrame>();
-        }
-
-        set
-        {
-            if (value == null)
-            {
-                RemoveFrame(EventTimingCodes);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedSingleFrame<Id3v2EventTimingCodesFrame>();
+        set => SetVersionedSingleFrame(value);
     }
 
     /// <summary>
@@ -230,22 +149,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2MpegLocationLookupTableFrame? MpegLocationLookupTable
     {
-        get
-        {
-            return GetFrame<Id3v2MpegLocationLookupTableFrame>();
-        }
-
-        set
-        {
-            if (value == null)
-            {
-                RemoveFrame(MpegLocationLookupTable);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedSingleFrame<Id3v2MpegLocationLookupTableFrame>();
+        set => SetVersionedSingleFrame(value);
     }
 
     /// <summary>
@@ -262,22 +167,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2SyncedTempoCodesFrame? SyncedTempoCodes
     {
-        get
-        {
-            return GetFrame<Id3v2SyncedTempoCodesFrame>();
-        }
-
-        set
-        {
-            if (value == null)
-            {
-                RemoveFrame(SyncedTempoCodes);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedSingleFrame<Id3v2SyncedTempoCodesFrame>();
+        set => SetVersionedSingleFrame(value);
     }
 
     /// <summary>
@@ -294,21 +185,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2FrameCollection<Id3v2UnsynchronizedLyricsFrame> UnsychronizedLyrics
     {
-        get
-        {
-            return GetFrameCollection<Id3v2UnsynchronizedLyricsFrame>();
-        }
-
-        set
-        {
-            RemoveFrames<Id3v2UnsynchronizedLyricsFrame>(false);
-            if (value != null)
-            {
-                SetFrames(value);
-            }
-
-            ValidateFrames();
-        }
+        get => GetVersionedFrameCollection<Id3v2UnsynchronizedLyricsFrame>();
+        set => SetVersionedFrameCollection(value);
     }
 
     /// <summary>
@@ -328,21 +206,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2FrameCollection<Id3v2SynchronizedLyricsFrame> SynchronizedLyrics
     {
-        get
-        {
-            return GetFrameCollection<Id3v2SynchronizedLyricsFrame>();
-        }
-
-        set
-        {
-            RemoveFrames<Id3v2SynchronizedLyricsFrame>(false);
-            if (value != null)
-            {
-                SetFrames(value);
-            }
-
-            ValidateFrames();
-        }
+        get => GetVersionedFrameCollection<Id3v2SynchronizedLyricsFrame>();
+        set => SetVersionedFrameCollection(value);
     }
 
     /// <summary>
@@ -357,21 +222,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2FrameCollection<Id3v2CommentFrame> Comments
     {
-        get
-        {
-            return GetFrameCollection<Id3v2CommentFrame>();
-        }
-
-        set
-        {
-            RemoveFrames<Id3v2CommentFrame>(false);
-            if (value != null)
-            {
-                SetFrames(value);
-            }
-
-            ValidateFrames();
-        }
+        get => GetVersionedFrameCollection<Id3v2CommentFrame>();
+        set => SetVersionedFrameCollection(value);
     }
 
     /// <summary>
@@ -392,22 +244,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2RelativeVolumeAdjustmentFrame? RelativeVolumeAdjustment
     {
-        get
-        {
-            return GetFrame<Id3v2RelativeVolumeAdjustmentFrame>();
-        }
-
-        set
-        {
-            if (value == null)
-            {
-                RemoveFrame(RelativeVolumeAdjustment);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedSingleFrame<Id3v2RelativeVolumeAdjustmentFrame>();
+        set => SetVersionedSingleFrame(value);
     }
 
     /// <summary>
@@ -425,22 +263,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2EqualisationFrame? Equalisation
     {
-        get
-        {
-            return GetFrame<Id3v2EqualisationFrame>();
-        }
-
-        set
-        {
-            if (value == null)
-            {
-                RemoveFrame(Equalisation);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedSingleFrame<Id3v2EqualisationFrame>();
+        set => SetVersionedSingleFrame(value);
     }
 
     /// <summary>
@@ -456,22 +280,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2ReverbFrame? Reverb
     {
-        get
-        {
-            return GetFrame<Id3v2ReverbFrame>();
-        }
-
-        set
-        {
-            if (value == null)
-            {
-                RemoveFrame(Reverb);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedSingleFrame<Id3v2ReverbFrame>();
+        set => SetVersionedSingleFrame(value);
     }
 
     /// <summary>
@@ -490,21 +300,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2FrameCollection<Id3v2AttachedPictureFrame> AttachedPictures
     {
-        get
-        {
-            return GetFrameCollection<Id3v2AttachedPictureFrame>();
-        }
-
-        set
-        {
-            RemoveFrames<Id3v2AttachedPictureFrame>(false);
-            if (value != null)
-            {
-                SetFrames(value);
-            }
-
-            ValidateFrames();
-        }
+        get => GetVersionedFrameCollection<Id3v2AttachedPictureFrame>();
+        set => SetVersionedFrameCollection(value);
     }
 
     /// <summary>
@@ -521,21 +318,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2FrameCollection<Id3v2GeneralEncapsulatedObjectFrame> GeneralEncapsulatedObjects
     {
-        get
-        {
-            return GetFrameCollection<Id3v2GeneralEncapsulatedObjectFrame>();
-        }
-
-        set
-        {
-            RemoveFrames<Id3v2GeneralEncapsulatedObjectFrame>(false);
-            if (value != null)
-            {
-                SetFrames(value);
-            }
-
-            ValidateFrames();
-        }
+        get => GetVersionedFrameCollection<Id3v2GeneralEncapsulatedObjectFrame>();
+        set => SetVersionedFrameCollection(value);
     }
 
     /// <summary>
@@ -548,22 +332,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2PlayCounterFrame? PlayCounter
     {
-        get
-        {
-            return GetFrame<Id3v2PlayCounterFrame>();
-        }
-
-        set
-        {
-            if (value == null)
-            {
-                RemoveFrame(PlayCounter);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedSingleFrame<Id3v2PlayCounterFrame>();
+        set => SetVersionedSingleFrame(value);
     }
 
     /// <summary>
@@ -582,21 +352,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2FrameCollection<Id3v2PopularimeterFrame> Popularimeters
     {
-        get
-        {
-            return GetFrameCollection<Id3v2PopularimeterFrame>();
-        }
-
-        set
-        {
-            RemoveFrames<Id3v2PopularimeterFrame>(false);
-            if (value != null)
-            {
-                SetFrames(value);
-            }
-
-            ValidateFrames();
-        }
+        get => GetVersionedFrameCollection<Id3v2PopularimeterFrame>();
+        set => SetVersionedFrameCollection(value);
     }
 
     /// <summary>
@@ -618,22 +375,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2RecommendedBufferSizeFrame? RecommendedBufferSize
     {
-        get
-        {
-            return GetFrame<Id3v2RecommendedBufferSizeFrame>();
-        }
-
-        set
-        {
-            if (value == null)
-            {
-                RemoveFrame(RecommendedBufferSize);
-            }
-            else
-            {
-                SetFrame(value);
-            }
-        }
+        get => GetVersionedSingleFrame<Id3v2RecommendedBufferSizeFrame>();
+        set => SetVersionedSingleFrame(value);
     }
 
     /// <summary>
@@ -664,21 +407,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2FrameCollection<Id3v2EncryptedMetaFrame> EncryptedMetaFrames
     {
-        get
-        {
-            return GetFrameCollection<Id3v2EncryptedMetaFrame>();
-        }
-
-        set
-        {
-            RemoveFrames<Id3v2EncryptedMetaFrame>(false);
-            if (value != null)
-            {
-                SetFrames(value);
-            }
-
-            ValidateFrames();
-        }
+        get => GetVersionedFrameCollection<Id3v2EncryptedMetaFrame>();
+        set => SetVersionedFrameCollection(value);
     }
 
     /// <summary>
@@ -700,21 +430,8 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2FrameCollection<Id3v2AudioEncryptionFrame> AudioEncryptions
     {
-        get
-        {
-            return GetFrameCollection<Id3v2AudioEncryptionFrame>();
-        }
-
-        set
-        {
-            RemoveFrames<Id3v2AudioEncryptionFrame>(false);
-            if (value != null)
-            {
-                SetFrames(value);
-            }
-
-            ValidateFrames();
-        }
+        get => GetVersionedFrameCollection<Id3v2AudioEncryptionFrame>();
+        set => SetVersionedFrameCollection(value);
     }
 
     /// <summary>
@@ -763,20 +480,7 @@ public partial class Id3v2Tag
     /// </remarks>
     public Id3v2FrameCollection<Id3v2LinkedInformationFrame> LinkedInformations
     {
-        get
-        {
-            return GetFrameCollection<Id3v2LinkedInformationFrame>();
-        }
-
-        set
-        {
-            RemoveFrames<Id3v2LinkedInformationFrame>(false);
-            if (value != null)
-            {
-                SetFrames(value);
-            }
-
-            ValidateFrames();
-        }
+        get => GetVersionedFrameCollection<Id3v2LinkedInformationFrame>();
+        set => SetVersionedFrameCollection(value);
     }
 }
