@@ -2,4 +2,5 @@
   <Project Path="AudioVideoLib/AudioVideoLib.csproj" />
   <Project Path="AudioVideoLib.Tests/AudioVideoLib.Tests.csproj" />
   <Project Path="AudioVideoLib.Samples/AudioVideoLib.Samples.csproj" />
+  <Project Path="AudioVideoLib.Demo/AudioVideoLib.Demo.csproj" />
 </Solution>
