@@ -91,6 +91,139 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
     }
 
+    private static readonly (string Id, string Label)[] CommonTextFrames =
+    [
+        ("TIT2", "Title"),
+        ("TPE1", "Lead artist"),
+        ("TPE2", "Band / album artist"),
+        ("TPE3", "Conductor"),
+        ("TPE4", "Remixer"),
+        ("TALB", "Album"),
+        ("TCOM", "Composer"),
+        ("TCON", "Genre (TCON)"),
+        ("TRCK", "Track"),
+        ("TPOS", "Disc"),
+        ("TYER", "Year (v2.3)"),
+        ("TDRC", "Recording time (v2.4)"),
+        ("TLAN", "Language"),
+        ("TBPM", "BPM"),
+        ("TSRC", "ISRC"),
+        ("TKEY", "Initial key"),
+        ("TPUB", "Publisher"),
+        ("TCOP", "Copyright"),
+    ];
+
+    private static readonly (string Id, string Label)[] CommonUrlFrames =
+    [
+        ("WCOM", "Commercial information"),
+        ("WCOP", "Copyright / legal information"),
+        ("WOAF", "Official audio file webpage"),
+        ("WOAR", "Official artist webpage"),
+        ("WOAS", "Official source webpage"),
+        ("WORS", "Official internet radio station"),
+        ("WPAY", "Payment"),
+        ("WPUB", "Publisher's webpage"),
+    ];
+
+    private Id3v2TabViewModel? CurrentId3v2Tab =>
+        TagTabControl.SelectedItem as Id3v2TabViewModel;
+
+    private void AddFrameButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not Button button)
+        {
+            return;
+        }
+
+        var menu = button.ContextMenu;
+        if (menu == null)
+        {
+            return;
+        }
+
+        menu.Items.Clear();
+
+        var textMenu = new MenuItem { Header = "Text frame" };
+        foreach (var (id, label) in CommonTextFrames)
+        {
+            var mi = new MenuItem
+            {
+                Header = $"{id} — {label}",
+                Tag = ("TEXT", id),
+            };
+            mi.Click += AddFrameMenuItem_Click;
+            textMenu.Items.Add(mi);
+        }
+
+        var urlMenu = new MenuItem { Header = "URL frame" };
+        foreach (var (id, label) in CommonUrlFrames)
+        {
+            var mi = new MenuItem
+            {
+                Header = $"{id} — {label}",
+                Tag = ("URL", id),
+            };
+            mi.Click += AddFrameMenuItem_Click;
+            urlMenu.Items.Add(mi);
+        }
+
+        menu.Items.Add(textMenu);
+        menu.Items.Add(urlMenu);
+
+        menu.PlacementTarget = button;
+        menu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+        menu.IsOpen = true;
+    }
+
+    private void AddFrameMenuItem_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not MenuItem { Tag: ValueTuple<string, string> tag })
+        {
+            return;
+        }
+
+        var tab = CurrentId3v2Tab;
+        if (tab == null)
+        {
+            return;
+        }
+
+        var (kind, identifier) = tag;
+        try
+        {
+            var row = kind == "TEXT"
+                ? tab.AddTextFrame(identifier)
+                : tab.AddUrlFrame(identifier);
+            UpdateStatus($"Added {identifier}");
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                this,
+                $"Could not add {identifier}:\n\n{ex.Message}",
+                "Add frame",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+        }
+    }
+
+    private void DeleteFrameMenuItem_Click(object sender, RoutedEventArgs e)
+    {
+        var tab = CurrentId3v2Tab;
+        if (tab == null)
+        {
+            return;
+        }
+
+        if (sender is MenuItem { Parent: ContextMenu menu }
+            && menu.PlacementTarget is DataGridRow row
+            && row.Item is Id3v2FrameRow frameRow)
+        {
+            tab.RemoveFrameRow(frameRow);
+            UpdateStatus($"Removed {frameRow.Identifier}");
+        }
+    }
+
     private void AddTagButton_Click(object sender, RoutedEventArgs e)
     {
         if (CurrentDossier == null)

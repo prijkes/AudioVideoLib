@@ -93,10 +93,55 @@ public sealed class Id3v2TabViewModel : TagTabViewModel
 
         foreach (var frame in tag.Frames)
         {
-            AdvancedFrames.Add(new Id3v2FrameRow(frame));
+            AdvancedFrames.Add(new Id3v2FrameRow(frame, () => IsDirty = true));
         }
 
         ResetDirty();
+    }
+
+    public void RemoveFrameRow(Id3v2FrameRow row)
+    {
+        if (row == null)
+        {
+            return;
+        }
+
+        Tag.RemoveFrame(row.Frame);
+        AdvancedFrames.Remove(row);
+        IsDirty = true;
+    }
+
+    public Id3v2FrameRow AddTextFrame(string identifier, string value = "")
+    {
+        var frame = new Id3v2TextFrame(Tag.Version, identifier)
+        {
+            TextEncoding = Id3v2FrameEncodingType.UTF8,
+        };
+        if (!string.IsNullOrEmpty(value))
+        {
+            frame.Values.Add(value);
+        }
+
+        Tag.SetFrame(frame);
+        var row = new Id3v2FrameRow(frame, () => IsDirty = true);
+        AdvancedFrames.Add(row);
+        IsDirty = true;
+        return row;
+    }
+
+    public Id3v2FrameRow AddUrlFrame(string identifier, string url = "")
+    {
+        var frame = new Id3v2UrlLinkFrame(Tag.Version, identifier);
+        if (!string.IsNullOrEmpty(url))
+        {
+            frame.Url = url;
+        }
+
+        Tag.SetFrame(frame);
+        var row = new Id3v2FrameRow(frame, () => IsDirty = true);
+        AdvancedFrames.Add(row);
+        IsDirty = true;
+        return row;
     }
 
     public override bool IsEditable => true;
@@ -215,25 +260,103 @@ public sealed class Id3v2TabViewModel : TagTabViewModel
     }
 }
 
-public sealed class Id3v2FrameRow(Id3v2Frame frame)
+public sealed class Id3v2FrameRow(Id3v2Frame frame, Action markDirty) : INotifyPropertyChanged
 {
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    public Id3v2Frame Frame { get; } = frame;
+
     public string Identifier { get; } = frame.Identifier ?? string.Empty;
 
     public string FrameType { get; } = frame.GetType().Name.Replace("Id3v2", string.Empty).Replace("Frame", string.Empty);
 
-    public string Value { get; } = Describe(frame);
+    public int Size => Frame.Data?.Length ?? 0;
 
-    public int Size { get; } = frame.Data?.Length ?? 0;
+    public bool IsEditable { get; } = frame is
+        Id3v2TextFrame or
+        Id3v2UrlLinkFrame or
+        Id3v2UserDefinedTextInformationFrame or
+        Id3v2UserDefinedUrlLinkFrame or
+        Id3v2CommentFrame;
+
+    public bool IsReadOnlyInGrid => !IsEditable;
+
+    public string Value
+    {
+        get;
+        set
+        {
+            if (field == value)
+            {
+                return;
+            }
+
+            if (!IsEditable)
+            {
+                return;
+            }
+
+            var applied = value ?? string.Empty;
+            try
+            {
+                ApplyValue(Frame, applied);
+            }
+            catch
+            {
+                return;
+            }
+
+            field = applied;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Value)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Size)));
+            markDirty();
+        }
+    } = Describe(frame);
+
+    private static void ApplyValue(Id3v2Frame frame, string value)
+    {
+        switch (frame)
+        {
+            case Id3v2TextFrame text:
+                text.TextEncoding = Id3v2FrameEncodingType.UTF8;
+                text.Values.Clear();
+                if (!string.IsNullOrEmpty(value))
+                {
+                    text.Values.Add(value);
+                }
+
+                break;
+            case Id3v2UrlLinkFrame url:
+                url.Url = value;
+                break;
+            case Id3v2UserDefinedTextInformationFrame u:
+                u.TextEncoding = Id3v2FrameEncodingType.UTF8;
+                u.Value = value;
+                break;
+            case Id3v2UserDefinedUrlLinkFrame uurl:
+                uurl.Url = value;
+                break;
+            case Id3v2CommentFrame comm:
+                comm.TextEncoding = Id3v2FrameEncodingType.UTF8;
+                if (string.IsNullOrEmpty(comm.Language))
+                {
+                    comm.Language = "eng";
+                }
+
+                comm.Text = value;
+                break;
+        }
+    }
 
     private static string Describe(Id3v2Frame f)
     {
         return f switch
         {
             Id3v2TextFrame text => string.Join(" / ", text.Values),
-            Id3v2UserDefinedTextInformationFrame u => $"[{u.Description}] = {u.Value}",
+            Id3v2UserDefinedTextInformationFrame u => u.Value ?? string.Empty,
             Id3v2UrlLinkFrame url => url.Url ?? string.Empty,
-            Id3v2UserDefinedUrlLinkFrame uurl => $"[{uurl.Description}] = {uurl.Url}",
-            Id3v2CommentFrame comm => $"[{comm.Language}:{comm.ShortContentDescription}] {comm.Text}",
+            Id3v2UserDefinedUrlLinkFrame uurl => uurl.Url ?? string.Empty,
+            Id3v2CommentFrame comm => comm.Text ?? string.Empty,
             Id3v2UnsynchronizedLyricsFrame u => $"[{u.Language}:{u.ContentDescriptor}] {u.Lyrics}",
             Id3v2AttachedPictureFrame p => $"{p.ImageFormat} {p.PictureType} {p.PictureData?.Length ?? 0:N0} bytes",
             Id3v2PrivateFrame p => $"[{p.OwnerIdentifier}] {p.PrivateData?.Length ?? 0:N0} bytes",

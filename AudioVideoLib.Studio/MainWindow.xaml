@@ -112,21 +112,56 @@
                                    Text="{Binding Comment, UpdateSourceTrigger=PropertyChanged}" />
                     </StackPanel>
                 </Grid>
-                <GroupBox Grid.Row="1" Header="Advanced (all frames)" Margin="0,10,0,0">
+                <GroupBox Grid.Row="1" Margin="0,10,0,0">
+                    <GroupBox.Header>
+                        <DockPanel LastChildFill="False">
+                            <TextBlock Text="Advanced (all frames)" VerticalAlignment="Center" />
+                            <Button DockPanel.Dock="Right"
+                                    Content="+ Frame"
+                                    Margin="12,0,0,0"
+                                    Padding="8,1"
+                                    FontSize="11"
+                                    Click="AddFrameButton_Click">
+                                <Button.ContextMenu>
+                                    <ContextMenu x:Name="AddFrameMenu" />
+                                </Button.ContextMenu>
+                            </Button>
+                        </DockPanel>
+                    </GroupBox.Header>
                     <DataGrid ItemsSource="{Binding AdvancedFrames}"
                               AutoGenerateColumns="False"
                               CanUserAddRows="False"
                               CanUserDeleteRows="False"
-                              IsReadOnly="True"
+                              IsReadOnly="False"
                               HeadersVisibility="Column"
                               GridLinesVisibility="Horizontal"
                               AlternatingRowBackground="#F7F7F7"
                               MinHeight="150">
+                        <DataGrid.RowStyle>
+                            <Style TargetType="DataGridRow">
+                                <Setter Property="ContextMenu">
+                                    <Setter.Value>
+                                        <ContextMenu>
+                                            <MenuItem Header="Delete frame"
+                                                      Click="DeleteFrameMenuItem_Click" />
+                                        </ContextMenu>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </DataGrid.RowStyle>
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="ID"    Binding="{Binding Identifier}" Width="60" />
-                            <DataGridTextColumn Header="Type"  Binding="{Binding FrameType}"  Width="130" />
-                            <DataGridTextColumn Header="Value" Binding="{Binding Value}"      Width="*" />
-                            <DataGridTextColumn Header="Size"  Binding="{Binding Size}"       Width="80" />
+                            <DataGridTextColumn Header="ID"   Binding="{Binding Identifier}" Width="60"  IsReadOnly="True" />
+                            <DataGridTextColumn Header="Type" Binding="{Binding FrameType}"  Width="130" IsReadOnly="True" />
+                            <DataGridTextColumn Header="Value"
+                                                Binding="{Binding Value, UpdateSourceTrigger=LostFocus}"
+                                                Width="*">
+                                <DataGridTextColumn.EditingElementStyle>
+                                    <Style TargetType="TextBox">
+                                        <Setter Property="IsReadOnly" Value="{Binding IsReadOnlyInGrid}" />
+                                    </Style>
+                                </DataGridTextColumn.EditingElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Size" Binding="{Binding Size}" Width="80" IsReadOnly="True" />
                         </DataGrid.Columns>
                     </DataGrid>
                 </GroupBox>
