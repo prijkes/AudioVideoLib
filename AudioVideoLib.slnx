@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="AudioVideoLib/AudioVideoLib.csproj" />
+  <Project Path="AudioVideoLib.Tests/AudioVideoLib.Tests.csproj" />
+  <Project Path="AudioVideoLib.Samples/AudioVideoLib.Samples.csproj" />
+</Solution>
