@@ -10,8 +10,6 @@
 
         <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
 
-        <!-- ==================== styles ==================== -->
-
         <Style TargetType="TextBlock" x:Key="FieldLabel">
             <Setter Property="Foreground" Value="#666666" />
             <Setter Property="FontSize" Value="11" />
@@ -20,28 +18,6 @@
         <Style TargetType="TextBox" x:Key="EditField">
             <Setter Property="Margin" Value="0,0,0,6" />
             <Setter Property="Padding" Value="4,3" />
-        </Style>
-        <Style TargetType="TextBlock" x:Key="InfoStripLabel">
-            <Setter Property="Foreground" Value="#888888" />
-            <Setter Property="FontSize" Value="11" />
-            <Setter Property="Margin" Value="0,2,0,2" />
-        </Style>
-        <Style TargetType="TextBlock" x:Key="InfoStripValue">
-            <Setter Property="FontFamily" Value="Consolas" />
-            <Setter Property="FontSize" Value="12" />
-            <Setter Property="Foreground" Value="#222222" />
-            <Setter Property="Margin" Value="0,2,0,2" />
-        </Style>
-        <Style TargetType="GroupBox">
-            <Setter Property="Margin" Value="0" />
-            <Setter Property="Padding" Value="10,6" />
-            <Setter Property="HeaderTemplate">
-                <Setter.Value>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding}" FontSize="11" FontWeight="SemiBold" Foreground="#999999" />
-                    </DataTemplate>
-                </Setter.Value>
-            </Setter>
         </Style>
 
         <!-- ==================== ID3v2 editor template ==================== -->
@@ -114,7 +90,7 @@
                 <GroupBox Grid.Row="1" Margin="0,10,0,0">
                     <GroupBox.Header>
                         <DockPanel LastChildFill="False">
-                            <TextBlock Text="Advanced (all frames)" VerticalAlignment="Center" />
+                            <TextBlock Text="All frames" VerticalAlignment="Center" />
                             <Button DockPanel.Dock="Right"
                                     Content="+ Frame"
                                     Margin="12,0,0,0"
@@ -208,8 +184,7 @@
                     <Button Content="+ Item"    Padding="8,2" FontSize="11" Click="AddApeItem_Click"    Tag="{Binding}" />
                     <Button Content="Remove"    Padding="8,2" FontSize="11" Margin="6,0,0,0" Click="RemoveApeItem_Click"    Tag="{Binding}" />
                 </StackPanel>
-                <DataGrid x:Name="ApeGrid"
-                          ItemsSource="{Binding Items}"
+                <DataGrid ItemsSource="{Binding Items}"
                           AutoGenerateColumns="False"
                           CanUserAddRows="False"
                           CanUserDeleteRows="False"
@@ -252,7 +227,7 @@
             </DockPanel>
         </DataTemplate>
 
-        <!-- ==================== MusicMatch editor template ==================== -->
+        <!-- ==================== Vorbis editor template ==================== -->
 
         <DataTemplate DataType="{x:Type local:VorbisTabViewModel}">
             <DockPanel Margin="10">
@@ -276,6 +251,8 @@
                 </DataGrid>
             </DockPanel>
         </DataTemplate>
+
+        <!-- ==================== MusicMatch editor template ==================== -->
 
         <DataTemplate DataType="{x:Type local:MusicMatchTabViewModel}">
             <StackPanel Margin="10" MaxWidth="520" HorizontalAlignment="Left">
@@ -305,12 +282,23 @@
                 <MenuItem Header="E_xit"        Click="Exit_Click" />
             </MenuItem>
             <MenuItem Header="_View">
-                <MenuItem Header="_Refresh Current" Click="Refresh_Click" InputGestureText="F5" />
+                <MenuItem Header="_Refresh" Click="Refresh_Click" InputGestureText="F5" />
             </MenuItem>
             <MenuItem Header="_Help">
                 <MenuItem Header="_About" Click="About_Click" />
             </MenuItem>
         </Menu>
+
+        <!-- ==================== file info strip ==================== -->
+
+        <Border DockPanel.Dock="Top" Background="#FAFAFA" BorderBrush="#DDDDDD" BorderThickness="0,0,0,1" Padding="14,6">
+            <TextBlock x:Name="FilePathText"
+                       Text="No file loaded. Use File > Open (Ctrl+O)."
+                       FontFamily="Consolas"
+                       FontSize="12"
+                       Foreground="#444444"
+                       TextTrimming="CharacterEllipsis" />
+        </Border>
 
         <!-- ==================== status bar ==================== -->
 
@@ -324,151 +312,135 @@
             </StatusBarItem>
         </StatusBar>
 
-        <!-- ==================== main content ==================== -->
+        <!-- ==================== main tabs ==================== -->
 
-        <DockPanel x:Name="DossierPanel">
+        <TabControl x:Name="MainTabs">
 
-            <!-- file info strip (always visible) -->
-            <Border DockPanel.Dock="Top" Background="#FAFAFA" BorderBrush="#DDDDDD" BorderThickness="0,0,0,1" Padding="14,8">
+            <!-- ==================== Inspector tab ==================== -->
+
+            <TabItem Header="Inspector">
                 <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="80" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" MinHeight="200" />
+                        <RowDefinition Height="5" />
+                        <RowDefinition Height="250" MinHeight="120" />
                     </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="path"     Style="{StaticResource InfoStripLabel}" />
-                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding FilePath}" Style="{StaticResource InfoStripValue}" TextTrimming="CharacterEllipsis" ToolTip="{Binding FilePath}" />
+                    <!-- top: tree + properties -->
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="320" MinWidth="200" />
+                            <ColumnDefinition Width="5" />
+                            <ColumnDefinition Width="*" MinWidth="300" />
+                        </Grid.ColumnDefinitions>
 
-                    <TextBlock Grid.Row="1" Grid.Column="0" Text="size"     Style="{StaticResource InfoStripLabel}" />
-                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding FileSizeText}" Style="{StaticResource InfoStripValue}" />
+                        <!-- tree -->
+                        <GroupBox Grid.Column="0" Header="Structure" Margin="4">
+                            <TreeView x:Name="InspectorTreeView"
+                                      BorderThickness="0"
+                                      SelectedItemChanged="InspectorTreeView_SelectedItemChanged">
+                                <TreeView.ItemTemplate>
+                                    <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding Label}" FontFamily="Consolas" FontSize="12" />
+                                            <TextBlock Text="  " />
+                                            <TextBlock Text="{Binding OffsetLabel}" Foreground="#888888" FontFamily="Consolas" FontSize="10" VerticalAlignment="Center" />
+                                        </StackPanel>
+                                    </HierarchicalDataTemplate>
+                                </TreeView.ItemTemplate>
+                                <TreeView.ItemContainerStyle>
+                                    <Style TargetType="TreeViewItem">
+                                        <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+                                    </Style>
+                                </TreeView.ItemContainerStyle>
+                            </TreeView>
+                        </GroupBox>
 
-                    <TextBlock Grid.Row="2" Grid.Column="0" Text="modified" Style="{StaticResource InfoStripLabel}" />
-                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding LastModifiedText}" Style="{StaticResource InfoStripValue}" />
+                        <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" Background="#DDDDDD" />
+
+                        <!-- properties -->
+                        <GroupBox Grid.Column="2" Header="Properties" Margin="4">
+                            <DataGrid x:Name="PropertiesGrid"
+                                      AutoGenerateColumns="False"
+                                      CanUserAddRows="False"
+                                      CanUserDeleteRows="False"
+                                      IsReadOnly="True"
+                                      HeadersVisibility="Column"
+                                      GridLinesVisibility="Horizontal"
+                                      AlternatingRowBackground="#F7F7F7"
+                                      BorderThickness="0"
+                                      SelectionChanged="PropertiesGrid_SelectionChanged">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Property" Binding="{Binding Name}"  Width="150">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Foreground" Value="#666666" />
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn Header="Value"    Binding="{Binding Value}" Width="*">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="FontFamily" Value="Consolas" />
+                                                <Setter Property="FontWeight" Value="SemiBold" />
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </GroupBox>
+                    </Grid>
+
+                    <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#DDDDDD" />
+
+                    <!-- hex view -->
+                    <GroupBox Grid.Row="2" Header="Hex View" Margin="4">
+                        <RichTextBox x:Name="HexViewBox"
+                                     IsReadOnly="True"
+                                     IsReadOnlyCaretVisible="True"
+                                     BorderThickness="0"
+                                     VerticalScrollBarVisibility="Auto"
+                                     HorizontalScrollBarVisibility="Auto"
+                                     Background="#1A1A1A" />
+                    </GroupBox>
                 </Grid>
-            </Border>
+            </TabItem>
 
-            <!-- main tabs -->
-            <TabControl Margin="0">
-                <!-- overview tab -->
-                <TabItem Header="Overview">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="14">
-                        <StackPanel Margin="14">
-                            <Grid Margin="0,0,0,14">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="16" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
+            <!-- ==================== Tags tab ==================== -->
 
-                                <GroupBox Grid.Column="0" Header="STREAM">
-                                    <ItemsControl ItemsSource="{Binding TechCards}">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <Grid Margin="0,1">
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="110" />
-                                                        <ColumnDefinition Width="*" />
-                                                    </Grid.ColumnDefinitions>
-                                                    <TextBlock Grid.Column="0" Text="{Binding Label}" Foreground="#888888" FontSize="11" VerticalAlignment="Center" />
-                                                    <TextBlock Grid.Column="1" Text="{Binding Value}" FontFamily="Consolas" FontWeight="SemiBold" FontSize="12" Foreground="#222222" VerticalAlignment="Center" />
-                                                </Grid>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </GroupBox>
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Tags" VerticalAlignment="Center" />
+                        <Button Content="+"
+                                x:Name="AddTagButton"
+                                Click="AddTagButton_Click"
+                                Padding="6,0"
+                                Margin="8,0,0,0"
+                                FontSize="11"
+                                VerticalAlignment="Center">
+                            <Button.ContextMenu>
+                                <ContextMenu x:Name="AddTagMenu" />
+                            </Button.ContextMenu>
+                        </Button>
+                    </StackPanel>
+                </TabItem.Header>
+                <TabControl x:Name="TagTabControl"
+                            ItemsSource="{Binding TagTabs}"
+                            Margin="0">
+                    <TabControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Header}" Margin="4,2" />
+                        </DataTemplate>
+                    </TabControl.ItemTemplate>
+                    <TabControl.ItemContainerStyle>
+                        <Style TargetType="TabItem">
+                            <EventSetter Event="PreviewMouseRightButtonUp" Handler="TabItem_PreviewMouseRightButtonUp" />
+                        </Style>
+                    </TabControl.ItemContainerStyle>
+                </TabControl>
+            </TabItem>
 
-                                <GroupBox Grid.Column="2" Header="FILE STRUCTURE">
-                                    <ItemsControl ItemsSource="{Binding FileRegions}">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <Grid Margin="0,1">
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="Auto" />
-                                                        <ColumnDefinition Width="Auto" />
-                                                        <ColumnDefinition Width="Auto" />
-                                                        <ColumnDefinition Width="*" />
-                                                        <ColumnDefinition Width="Auto" />
-                                                    </Grid.ColumnDefinitions>
-                                                    <TextBlock Grid.Column="0" Text="{Binding StartHex}" Foreground="#444444" FontFamily="Consolas" FontSize="12" />
-                                                    <TextBlock Grid.Column="1" Text=" .. "               Foreground="#999999" FontFamily="Consolas" FontSize="12" />
-                                                    <TextBlock Grid.Column="2" Text="{Binding EndHex}"   Foreground="#444444" FontFamily="Consolas" FontSize="12" />
-                                                    <TextBlock Grid.Column="3" Text="{Binding Label}"    Foreground="#222222" FontFamily="Consolas" FontSize="12" FontWeight="SemiBold" Margin="16,0,0,0" />
-                                                    <TextBlock Grid.Column="4" Text="{Binding SizeText}" Foreground="#666666" FontFamily="Consolas" FontSize="12" />
-                                                </Grid>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </GroupBox>
-                            </Grid>
-
-                            <GroupBox Header="ENCODER"
-                                      Margin="0,0,0,0"
-                                      Visibility="{Binding HasEncoder, Converter={StaticResource BoolToVisConverter}}">
-                                <TextBlock Text="{Binding EncoderSummary}" FontFamily="Consolas" FontSize="12" Foreground="#222222" TextWrapping="Wrap" />
-                            </GroupBox>
-                        </StackPanel>
-                    </ScrollViewer>
-                </TabItem>
-
-                <!-- tags tab -->
-                <TabItem>
-                    <TabItem.Header>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="Tags" VerticalAlignment="Center" />
-                            <Button Content="+"
-                                    x:Name="AddTagButton"
-                                    Click="AddTagButton_Click"
-                                    Padding="6,0"
-                                    Margin="8,0,0,0"
-                                    FontSize="11"
-                                    VerticalAlignment="Center">
-                                <Button.ContextMenu>
-                                    <ContextMenu x:Name="AddTagMenu" />
-                                </Button.ContextMenu>
-                            </Button>
-                        </StackPanel>
-                    </TabItem.Header>
-                    <TabControl x:Name="TagTabControl"
-                                ItemsSource="{Binding TagTabs}"
-                                Margin="0">
-                        <TabControl.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Header}" Margin="4,2" />
-                            </DataTemplate>
-                        </TabControl.ItemTemplate>
-                        <TabControl.ItemContainerStyle>
-                            <Style TargetType="TabItem">
-                                <EventSetter Event="PreviewMouseRightButtonUp" Handler="TabItem_PreviewMouseRightButtonUp" />
-                            </Style>
-                        </TabControl.ItemContainerStyle>
-                    </TabControl>
-                </TabItem>
-
-                <!-- hex tab -->
-                <TabItem Header="Hex">
-                    <DockPanel Margin="6">
-                        <ComboBox DockPanel.Dock="Top"
-                                  ItemsSource="{Binding HexRegions}"
-                                  SelectedItem="{Binding SelectedHexRegion, Mode=TwoWay}"
-                                  Margin="0,0,0,6" />
-                        <TextBox Text="{Binding HexText, Mode=OneWay}"
-                                 IsReadOnly="True"
-                                 FontFamily="Consolas"
-                                 FontSize="11"
-                                 Background="#111111"
-                                 Foreground="#DDDDDD"
-                                 VerticalScrollBarVisibility="Auto"
-                                 HorizontalScrollBarVisibility="Auto"
-                                 TextWrapping="NoWrap"
-                                 AcceptsReturn="True" />
-                    </DockPanel>
-                </TabItem>
-            </TabControl>
-        </DockPanel>
+        </TabControl>
     </DockPanel>
 </Window>

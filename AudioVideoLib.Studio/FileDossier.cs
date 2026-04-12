@@ -37,9 +37,11 @@ public sealed class FileDossier : INotifyPropertyChanged
 
     public string LastModifiedText { get; private set; } = string.Empty;
 
-    public ObservableCollection<TechCard> TechCards { get; } = [];
+    public byte[] FileBytes { get; private set; } = [];
 
-    public ObservableCollection<FileRegion> FileRegions { get; } = [];
+    public InspectorNode? InspectorRoot { get; private set; }
+
+    public ObservableCollection<TechCard> TechCards { get; } = [];
 
     public string EncoderSummary { get; private set; } = string.Empty;
 
@@ -457,11 +459,13 @@ public sealed class FileDossier : INotifyPropertyChanged
 
     private void Load()
     {
-        using var fs = File.OpenRead(FilePath);
-        var fileLength = fs.Length;
+        FileBytes = File.ReadAllBytes(FilePath);
+        var fileLength = (long)FileBytes.Length;
         FileSize = fileLength;
         FileSizeText = $"{fileLength:N0} bytes  ({FormatSize(fileLength)})";
         LastModifiedText = File.GetLastWriteTime(FilePath).ToString("yyyy-MM-dd HH:mm:ss");
+
+        using var fs = new MemoryStream(FileBytes);
 
         _offsets = [.. AudioTags.ReadStream(fs).OfType<IAudioTagOffset>()];
         var tagOffsets = _offsets;
@@ -503,7 +507,7 @@ public sealed class FileDossier : INotifyPropertyChanged
         _isFlac = _flacStream != null;
         BuildTechCards(audio);
         BuildEncoder(audio);
-        BuildFileRegions(fileLength);
+        InspectorRoot = InspectorTreeBuilder.Build(FilePath, FileBytes, _offsets, audio);
 
         if (_flacStream != null)
         {
@@ -524,64 +528,6 @@ public sealed class FileDossier : INotifyPropertyChanged
         Notify(nameof(FileSizeText));
         Notify(nameof(LastModifiedText));
     }
-
-    private void BuildFileRegions(long fileLength)
-    {
-        FileRegions.Clear();
-
-        var sorted = _offsets.OrderBy(o => o.StartOffset).ToList();
-        long cursor = 0;
-
-        foreach (var offset in sorted)
-        {
-            if (offset.StartOffset > cursor)
-            {
-                FileRegions.Add(new FileRegion(cursor, offset.StartOffset, "audio"));
-            }
-
-            FileRegions.Add(new FileRegion(offset.StartOffset, offset.EndOffset, LabelForTag(offset.AudioTag)));
-            cursor = offset.EndOffset;
-        }
-
-        if (cursor < fileLength)
-        {
-            FileRegions.Add(new FileRegion(cursor, fileLength, "audio"));
-        }
-
-        // FLAC files have no AudioTags offsets — synthesize from metadata block list.
-        if (FileRegions.Count == 1 && FileRegions[0].Label == "audio" && _flacStream != null)
-        {
-            FileRegions.Clear();
-            FileRegions.Add(new FileRegion(0, 4, "fLaC marker"));
-            long blockCursor = 4;
-            foreach (var block in _flacStream.MetadataBlocks)
-            {
-                var blockSize = 4L + (block.Data?.Length ?? 0);
-                FileRegions.Add(new FileRegion(blockCursor, blockCursor + blockSize, block.BlockType.ToString()));
-                blockCursor += blockSize;
-            }
-
-            if (_flacStream.StartOffset > blockCursor)
-            {
-                blockCursor = _flacStream.StartOffset;
-            }
-
-            if (blockCursor < fileLength)
-            {
-                FileRegions.Add(new FileRegion(blockCursor, fileLength, "audio frames"));
-            }
-        }
-    }
-
-    private static string LabelForTag(IAudioTag tag) => tag switch
-    {
-        Id3v2Tag v2 => $"ID3{v2.Version.ToString().Replace("Id3v", "v")}",
-        Id3v1Tag v1 => $"ID3{v1.Version.ToString().Replace("Id3v", "v")}",
-        ApeTag ape => ape.Version.ToString().Replace("Version", "APEv"),
-        Lyrics3v2Tag => "Lyrics3v2",
-        MusicMatchTag => "MusicMatch",
-        _ => tag.GetType().Name.Replace("Tag", string.Empty),
-    };
 
     private void BuildTechCards(IAudioStream? audio)
     {
@@ -716,21 +662,6 @@ public sealed class FileDossier : INotifyPropertyChanged
 }
 
 public sealed record TechCard(string Label, string Value);
-
-public sealed record FileRegion(long Start, long End, string Label)
-{
-    public string StartHex => $"0x{Start:X8}";
-
-    public string EndHex => $"0x{End:X8}";
-
-    public long Size => End - Start;
-
-    public string SizeText => Size < 1024
-        ? $"{Size:N0} B"
-        : Size < 1024 * 1024
-            ? $"{Size / 1024.0:0.#} KB"
-            : $"{Size / (1024.0 * 1024.0):0.##} MB";
-}
 
 public sealed record HexRegion(string Label, long StartOffset, string Hex)
 {

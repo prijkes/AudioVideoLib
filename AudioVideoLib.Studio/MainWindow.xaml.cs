@@ -1,20 +1,17 @@
 namespace AudioVideoLib.Studio;
 
 using System;
-using System.ComponentModel;
 using System.IO;
-using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-
 using System.Windows.Media;
 
 using AudioVideoLib.Tags;
 
 using Microsoft.Win32;
 
-public partial class MainWindow : Window, INotifyPropertyChanged
+public partial class MainWindow : Window
 {
     public MainWindow()
     {
@@ -28,29 +25,23 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         InputBindings.Add(new KeyBinding(new RelayCommand(_ => RefreshCurrent()),   Key.F5,    ModifierKeys.None));
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
+    public FileDossier? CurrentDossier { get; private set; }
 
-    public FileDossier? CurrentDossier
-    {
-        get;
-        private set
-        {
-            if (field == value)
-            {
-                return;
-            }
-
-            field = value;
-            OnPropertyChanged();
-            DossierPanel.DataContext = value;
-        }
-    }
+    private InspectorNode? _selectedNode;
 
     private void OpenDossierFromPath(string path)
     {
         try
         {
             CurrentDossier = new FileDossier(path);
+            FilePathText.Text = $"{path}   ({CurrentDossier.FileSizeText})";
+            FilePathText.ToolTip = path;
+
+            if (CurrentDossier.InspectorRoot != null)
+            {
+                InspectorTreeView.ItemsSource = new[] { CurrentDossier.InspectorRoot };
+            }
+
             UpdateStatus($"Loaded {Path.GetFileName(path)}");
         }
         catch (Exception ex)
@@ -58,7 +49,53 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             MessageBox.Show(this, $"Failed to open {Path.GetFileName(path)}:\n\n{ex.Message}", "Load error",
                 MessageBoxButton.OK, MessageBoxImage.Warning);
             CurrentDossier = null;
+            FilePathText.Text = "No file loaded.";
+            InspectorTreeView.ItemsSource = null;
         }
+    }
+
+    private void InspectorTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+    {
+        if (e.NewValue is not InspectorNode node || CurrentDossier == null)
+        {
+            return;
+        }
+
+        _selectedNode = node;
+        PropertiesGrid.ItemsSource = node.Properties;
+        RenderHex(node.StartOffset, node.EndOffset);
+    }
+
+    private void PropertiesGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (_selectedNode == null || CurrentDossier == null)
+        {
+            return;
+        }
+
+        if (PropertiesGrid.SelectedItem is InspectorProperty prop && prop.HighlightStart.HasValue && prop.HighlightLength.HasValue)
+        {
+            RenderHex(_selectedNode.StartOffset, _selectedNode.EndOffset, prop.HighlightStart.Value, prop.HighlightLength.Value);
+        }
+        else
+        {
+            RenderHex(_selectedNode.StartOffset, _selectedNode.EndOffset);
+        }
+    }
+
+    private void RenderHex(long regionStart, long regionEnd, long? highlightStart = null, int? highlightLength = null)
+    {
+        if (CurrentDossier?.FileBytes == null || CurrentDossier.FileBytes.Length == 0)
+        {
+            return;
+        }
+
+        HexViewBox.Document = HexRenderer.Render(
+            CurrentDossier.FileBytes,
+            regionStart,
+            regionEnd,
+            highlightStart,
+            highlightLength);
     }
 
     private static readonly (string Id, string Label)[] CommonTextFrames =
@@ -652,6 +689,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         {
             var name = Path.GetFileName(CurrentDossier.FilePath);
             CurrentDossier = null;
+            _selectedNode = null;
+            InspectorTreeView.ItemsSource = null;
+            PropertiesGrid.ItemsSource = null;
+            HexViewBox.Document = new System.Windows.Documents.FlowDocument();
+            FilePathText.Text = "No file loaded. Use File > Open (Ctrl+O).";
             UpdateStatus($"Closed {name}");
         }
     }
@@ -668,11 +710,6 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         StatusLeft.Text = left;
         StatusRight.Text = CurrentDossier == null ? string.Empty : Path.GetFileName(CurrentDossier.FilePath);
-    }
-
-    private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
     private sealed class RelayCommand(Action<object?> execute) : ICommand
