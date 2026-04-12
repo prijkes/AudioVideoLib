@@ -7,7 +7,6 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Windows.Media.Imaging;
 
 using AudioVideoLib.Formats;
 using AudioVideoLib.IO;
@@ -36,19 +35,11 @@ public sealed class FileDossier : INotifyPropertyChanged
 
     public string FileName => Path.GetFileName(FilePath);
 
-    public BitmapImage? CoverArt { get; private set; }
-
-    public string HeaderTitle { get; private set; } = string.Empty;
-
-    public string HeaderArtist { get; private set; } = string.Empty;
-
-    public string HeaderAlbum { get; private set; } = string.Empty;
-
-    public string HeaderYear { get; private set; } = string.Empty;
-
-    public string HeaderSourceBadge { get; private set; } = string.Empty;
+    public string LastModifiedText { get; private set; } = string.Empty;
 
     public ObservableCollection<TechCard> TechCards { get; } = [];
+
+    public ObservableCollection<FileRegion> FileRegions { get; } = [];
 
     public string EncoderSummary { get; private set; } = string.Empty;
 
@@ -76,9 +67,9 @@ public sealed class FileDossier : INotifyPropertyChanged
 
     public string HexText => SelectedHexRegion?.Hex ?? string.Empty;
 
-    public string FileSizeText { get; private set; } = string.Empty;
+    public long FileSize { get; private set; }
 
-    public string FilePathDisplay => FilePath;
+    public string FileSizeText { get; private set; } = string.Empty;
 
     public FileDossier(string filePath)
     {
@@ -468,7 +459,9 @@ public sealed class FileDossier : INotifyPropertyChanged
     {
         using var fs = File.OpenRead(FilePath);
         var fileLength = fs.Length;
-        FileSizeText = FormatSize(fileLength);
+        FileSize = fileLength;
+        FileSizeText = $"{fileLength:N0} bytes  ({FormatSize(fileLength)})";
+        LastModifiedText = File.GetLastWriteTime(FilePath).ToString("yyyy-MM-dd HH:mm:ss");
 
         _offsets = [.. AudioTags.ReadStream(fs).OfType<IAudioTagOffset>()];
         var tagOffsets = _offsets;
@@ -504,38 +497,13 @@ public sealed class FileDossier : INotifyPropertyChanged
             TagTabs.Add(new Id3v1TabViewModel(id3v1));
         }
 
-        if (id3v2 is { } v2)
-        {
-            HeaderTitle = TryText(v2, "TIT2") ?? TryText(v2, "TT2") ?? Path.GetFileNameWithoutExtension(FilePath);
-            HeaderArtist = TryText(v2, "TPE1") ?? TryText(v2, "TP1") ?? string.Empty;
-            HeaderAlbum = TryText(v2, "TALB") ?? TryText(v2, "TAL") ?? string.Empty;
-            HeaderYear = TryText(v2, "TDRC") ?? TryText(v2, "TYER") ?? TryText(v2, "TYE") ?? string.Empty;
-            HeaderSourceBadge = $"ID3{v2.Version.ToString().Replace("Id3v", "v")}";
-            var apic = v2.GetFrame<Id3v2AttachedPictureFrame>();
-            if (apic?.PictureData is { Length: > 0 } picData)
-            {
-                CoverArt = TryLoadImage(picData);
-            }
-        }
-        else if (id3v1 is { } v1)
-        {
-            HeaderTitle = v1.TrackTitle ?? Path.GetFileNameWithoutExtension(FilePath);
-            HeaderArtist = v1.Artist ?? string.Empty;
-            HeaderAlbum = v1.AlbumTitle ?? string.Empty;
-            HeaderYear = v1.AlbumYear ?? string.Empty;
-            HeaderSourceBadge = "ID3v1";
-        }
-        else
-        {
-            HeaderTitle = Path.GetFileNameWithoutExtension(FilePath);
-        }
-
         fs.Position = 0;
         var audio = AudioStreams.ReadStream(fs).FirstOrDefault();
         _flacStream = audio as FlacStream;
         _isFlac = _flacStream != null;
         BuildTechCards(audio);
         BuildEncoder(audio);
+        BuildFileRegions(fileLength);
 
         if (_flacStream != null)
         {
@@ -550,16 +518,70 @@ public sealed class FileDossier : INotifyPropertyChanged
 
         BuildHexRegions(fs, tagOffsets);
 
-        Notify(nameof(HeaderTitle));
-        Notify(nameof(HeaderArtist));
-        Notify(nameof(HeaderAlbum));
-        Notify(nameof(HeaderYear));
-        Notify(nameof(HeaderSourceBadge));
-        Notify(nameof(CoverArt));
         Notify(nameof(EncoderSummary));
         Notify(nameof(HasEncoder));
+        Notify(nameof(FileSize));
         Notify(nameof(FileSizeText));
+        Notify(nameof(LastModifiedText));
     }
+
+    private void BuildFileRegions(long fileLength)
+    {
+        FileRegions.Clear();
+
+        var sorted = _offsets.OrderBy(o => o.StartOffset).ToList();
+        long cursor = 0;
+
+        foreach (var offset in sorted)
+        {
+            if (offset.StartOffset > cursor)
+            {
+                FileRegions.Add(new FileRegion(cursor, offset.StartOffset, "audio"));
+            }
+
+            FileRegions.Add(new FileRegion(offset.StartOffset, offset.EndOffset, LabelForTag(offset.AudioTag)));
+            cursor = offset.EndOffset;
+        }
+
+        if (cursor < fileLength)
+        {
+            FileRegions.Add(new FileRegion(cursor, fileLength, "audio"));
+        }
+
+        // FLAC files have no AudioTags offsets — synthesize from metadata block list.
+        if (FileRegions.Count == 1 && FileRegions[0].Label == "audio" && _flacStream != null)
+        {
+            FileRegions.Clear();
+            FileRegions.Add(new FileRegion(0, 4, "fLaC marker"));
+            long blockCursor = 4;
+            foreach (var block in _flacStream.MetadataBlocks)
+            {
+                var blockSize = 4L + (block.Data?.Length ?? 0);
+                FileRegions.Add(new FileRegion(blockCursor, blockCursor + blockSize, block.BlockType.ToString()));
+                blockCursor += blockSize;
+            }
+
+            if (_flacStream.StartOffset > blockCursor)
+            {
+                blockCursor = _flacStream.StartOffset;
+            }
+
+            if (blockCursor < fileLength)
+            {
+                FileRegions.Add(new FileRegion(blockCursor, fileLength, "audio frames"));
+            }
+        }
+    }
+
+    private static string LabelForTag(IAudioTag tag) => tag switch
+    {
+        Id3v2Tag v2 => $"ID3{v2.Version.ToString().Replace("Id3v", "v")}",
+        Id3v1Tag v1 => $"ID3{v1.Version.ToString().Replace("Id3v", "v")}",
+        ApeTag ape => ape.Version.ToString().Replace("Version", "APEv"),
+        Lyrics3v2Tag => "Lyrics3v2",
+        MusicMatchTag => "MusicMatch",
+        _ => tag.GetType().Name.Replace("Tag", string.Empty),
+    };
 
     private void BuildTechCards(IAudioStream? audio)
     {
@@ -671,29 +693,6 @@ public sealed class FileDossier : INotifyPropertyChanged
         SelectedHexRegion = HexRegions.FirstOrDefault();
     }
 
-    private static string? TryText(Id3v2Tag tag, string identifier)
-    {
-        return tag.GetFrame<Id3v2TextFrame>(identifier)?.Values.FirstOrDefault();
-    }
-
-    private static BitmapImage? TryLoadImage(byte[] data)
-    {
-        try
-        {
-            var bi = new BitmapImage();
-            bi.BeginInit();
-            bi.CacheOption = BitmapCacheOption.OnLoad;
-            bi.StreamSource = new MemoryStream(data);
-            bi.EndInit();
-            bi.Freeze();
-            return bi;
-        }
-        catch
-        {
-            return null;
-        }
-    }
-
     private static string FormatSize(long bytes)
     {
         return bytes switch
@@ -717,6 +716,21 @@ public sealed class FileDossier : INotifyPropertyChanged
 }
 
 public sealed record TechCard(string Label, string Value);
+
+public sealed record FileRegion(long Start, long End, string Label)
+{
+    public string StartHex => $"0x{Start:X8}";
+
+    public string EndHex => $"0x{End:X8}";
+
+    public long Size => End - Start;
+
+    public string SizeText => Size < 1024
+        ? $"{Size:N0} B"
+        : Size < 1024 * 1024
+            ? $"{Size / 1024.0:0.#} KB"
+            : $"{Size / (1024.0 * 1024.0):0.##} MB";
+}
 
 public sealed record HexRegion(string Label, long StartOffset, string Hex)
 {

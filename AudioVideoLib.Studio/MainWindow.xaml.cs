@@ -1,11 +1,8 @@
 namespace AudioVideoLib.Studio;
 
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -19,43 +16,19 @@ using Microsoft.Win32;
 
 public partial class MainWindow : Window, INotifyPropertyChanged
 {
-    private static readonly HashSet<string> AudioExtensions = new(StringComparer.OrdinalIgnoreCase)
-    {
-        ".mp3", ".flac", ".m4a", ".ogg", ".wav",
-    };
-
     public MainWindow()
     {
         InitializeComponent();
         DataContext = this;
         UpdateStatus("Ready");
 
-        InputBindings.Add(new KeyBinding(new RelayCommand(_ => OpenFiles()),  Key.O,      ModifierKeys.Control));
-        InputBindings.Add(new KeyBinding(new RelayCommand(_ => OpenFolder()), Key.O,      ModifierKeys.Control | ModifierKeys.Shift));
-        InputBindings.Add(new KeyBinding(new RelayCommand(_ => SaveCurrent()), Key.S,     ModifierKeys.Control));
-        InputBindings.Add(new KeyBinding(new RelayCommand(_ => CloseCurrentFile()), Key.Delete, ModifierKeys.None));
-        InputBindings.Add(new KeyBinding(new RelayCommand(_ => RefreshCurrent()), Key.F5, ModifierKeys.None));
+        InputBindings.Add(new KeyBinding(new RelayCommand(_ => OpenFile()),        Key.O,      ModifierKeys.Control));
+        InputBindings.Add(new KeyBinding(new RelayCommand(_ => SaveCurrent()),     Key.S,      ModifierKeys.Control));
+        InputBindings.Add(new KeyBinding(new RelayCommand(_ => CloseCurrentFile()), Key.W,     ModifierKeys.Control));
+        InputBindings.Add(new KeyBinding(new RelayCommand(_ => RefreshCurrent()),   Key.F5,    ModifierKeys.None));
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
-
-    public ObservableCollection<FileEntry> Files { get; } = [];
-
-    public FileEntry? Current
-    {
-        get;
-        set
-        {
-            if (field == value)
-            {
-                return;
-            }
-
-            field = value;
-            OnPropertyChanged();
-            OpenDossier(value);
-        }
-    }
 
     public FileDossier? CurrentDossier
     {
@@ -73,23 +46,16 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
     }
 
-    private void OpenDossier(FileEntry? entry)
+    private void OpenDossierFromPath(string path)
     {
-        if (entry == null)
-        {
-            CurrentDossier = null;
-            UpdateStatus("Ready");
-            return;
-        }
-
         try
         {
-            CurrentDossier = new FileDossier(entry.FilePath);
-            UpdateStatus($"Loaded {entry.FileName}");
+            CurrentDossier = new FileDossier(path);
+            UpdateStatus($"Loaded {Path.GetFileName(path)}");
         }
         catch (Exception ex)
         {
-            MessageBox.Show(this, $"Failed to open {entry.FileName}:\n\n{ex.Message}", "Load error",
+            MessageBox.Show(this, $"Failed to open {Path.GetFileName(path)}:\n\n{ex.Message}", "Load error",
                 MessageBoxButton.OK, MessageBoxImage.Warning);
             CurrentDossier = null;
         }
@@ -624,8 +590,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
     }
 
-    private void OpenFiles_Click(object sender, RoutedEventArgs e) => OpenFiles();
-    private void OpenFolder_Click(object sender, RoutedEventArgs e) => OpenFolder();
+    private void OpenFile_Click(object sender, RoutedEventArgs e) => OpenFile();
     private void Save_Click(object sender, RoutedEventArgs e) => SaveCurrent();
     private void CloseFile_Click(object sender, RoutedEventArgs e) => CloseCurrentFile();
     private void Refresh_Click(object sender, RoutedEventArgs e) => RefreshCurrent();
@@ -636,72 +601,25 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         MessageBox.Show(
             this,
             "AudioVideoLib Studio\n\n" +
-            "Single-file audio tag editor and technical inspector.\n" +
-            "Editable: ID3v1, ID3v2 (2.3/2.4)\n" +
-            "Read-only: APE, Lyrics3, MusicMatch, Vorbis/FLAC metadata",
+            "Audio file inspector and tag editor for developers.\n" +
+            "Editable: ID3v1, ID3v2, APE, Lyrics3v2, Vorbis comments.",
             "About",
             MessageBoxButton.OK,
             MessageBoxImage.Information);
     }
 
-    private void FileList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        Current = FileList.SelectedItem as FileEntry;
-    }
-
-    private void OpenFiles()
+    private void OpenFile()
     {
         var dlg = new OpenFileDialog
         {
             Filter = "Audio files|*.mp3;*.flac;*.m4a;*.ogg;*.wav|All files|*.*",
-            Multiselect = true,
-            Title = "Open audio files",
+            Multiselect = false,
+            Title = "Open audio file",
         };
         if (dlg.ShowDialog(this) == true)
         {
-            LoadFiles(dlg.FileNames);
+            OpenDossierFromPath(dlg.FileName);
         }
-    }
-
-    private void OpenFolder()
-    {
-        var dlg = new OpenFolderDialog { Title = "Open audio folder" };
-        if (dlg.ShowDialog(this) == true)
-        {
-            var files = Directory
-                .EnumerateFiles(dlg.FolderName, "*.*", SearchOption.AllDirectories)
-                .Where(p => AudioExtensions.Contains(Path.GetExtension(p)))
-                .ToList();
-            LoadFiles(files);
-        }
-    }
-
-    private void LoadFiles(IEnumerable<string> paths)
-    {
-        Files.Clear();
-        var loaded = 0;
-        var failed = 0;
-        foreach (var path in paths)
-        {
-            try
-            {
-                Files.Add(FileEntry.Load(path));
-                loaded++;
-            }
-            catch
-            {
-                failed++;
-            }
-        }
-
-        if (Files.Count > 0)
-        {
-            FileList.SelectedIndex = 0;
-        }
-
-        UpdateStatus(failed == 0
-            ? $"Loaded {loaded} file(s)"
-            : $"Loaded {loaded} file(s), {failed} failed");
     }
 
     private void SaveCurrent()
@@ -715,8 +633,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         try
         {
             CurrentDossier.Save();
-            Current?.Refresh();
-            UpdateStatus($"Saved {Current?.FileName ?? "file"}");
+            UpdateStatus($"Saved {Path.GetFileName(CurrentDossier.FilePath)}");
         }
         catch (Exception ex)
         {
@@ -731,29 +648,26 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void CloseCurrentFile()
     {
-        if (Current != null)
+        if (CurrentDossier != null)
         {
-            var toRemove = Current;
-            Files.Remove(toRemove);
-            Current = Files.FirstOrDefault();
-            UpdateStatus($"Closed {toRemove.FileName}");
+            var name = Path.GetFileName(CurrentDossier.FilePath);
+            CurrentDossier = null;
+            UpdateStatus($"Closed {name}");
         }
     }
 
     private void RefreshCurrent()
     {
-        if (Current != null)
+        if (CurrentDossier != null)
         {
-            OpenDossier(Current);
+            OpenDossierFromPath(CurrentDossier.FilePath);
         }
     }
 
     private void UpdateStatus(string left)
     {
         StatusLeft.Text = left;
-        StatusRight.Text = Files.Count == 0
-            ? string.Empty
-            : $"{Files.Count} file{(Files.Count == 1 ? string.Empty : "s")} loaded";
+        StatusRight.Text = CurrentDossier == null ? string.Empty : Path.GetFileName(CurrentDossier.FilePath);
     }
 
     private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
