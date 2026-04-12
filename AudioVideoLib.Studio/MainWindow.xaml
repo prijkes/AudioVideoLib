@@ -140,14 +140,7 @@
                               MouseDoubleClick="AdvancedGrid_MouseDoubleClick">
                         <DataGrid.RowStyle>
                             <Style TargetType="DataGridRow">
-                                <Setter Property="ContextMenu">
-                                    <Setter.Value>
-                                        <ContextMenu>
-                                            <MenuItem Header="Delete frame"
-                                                      Click="DeleteFrameMenuItem_Click" />
-                                        </ContextMenu>
-                                    </Setter.Value>
-                                </Setter>
+                                <EventSetter Event="PreviewMouseRightButtonUp" Handler="AdvancedFrameRow_PreviewMouseRightButtonUp" />
                             </Style>
                         </DataGrid.RowStyle>
                         <DataGrid.Columns>
@@ -464,13 +457,7 @@
                                 </TabControl.ItemTemplate>
                                 <TabControl.ItemContainerStyle>
                                     <Style TargetType="TabItem">
-                                        <Setter Property="ContextMenu">
-                                            <Setter.Value>
-                                                <ContextMenu>
-                                                    <MenuItem Header="Remove tag" Click="RemoveTagMenuItem_Click" />
-                                                </ContextMenu>
-                                            </Setter.Value>
-                                        </Setter>
+                                        <EventSetter Event="PreviewMouseRightButtonUp" Handler="TabItem_PreviewMouseRightButtonUp" />
                                     </Style>
                                 </TabControl.ItemContainerStyle>
                             </TabControl>

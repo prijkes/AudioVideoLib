@@ -303,16 +303,21 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
     }
 
-    private void RemoveTagMenuItem_Click(object sender, RoutedEventArgs e)
+    private void TabItem_PreviewMouseRightButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
     {
+        if (sender is not TabItem tabItem || tabItem.DataContext is not TagTabViewModel tabVm)
+        {
+            return;
+        }
+
         if (CurrentDossier == null)
         {
             return;
         }
 
-        if (sender is MenuItem { Parent: ContextMenu menu }
-            && menu.PlacementTarget is TabItem tabItem
-            && tabItem.DataContext is TagTabViewModel tabVm)
+        var menu = new ContextMenu();
+        var remove = new MenuItem { Header = $"Remove {tabVm.Header}" };
+        remove.Click += (_, _) =>
         {
             var confirm = MessageBox.Show(
                 this,
@@ -327,7 +332,12 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
             CurrentDossier.RemoveTag(tabVm);
             UpdateStatus($"Marked {tabVm.Header} for removal on save");
-        }
+        };
+
+        menu.Items.Add(remove);
+        menu.PlacementTarget = tabItem;
+        menu.IsOpen = true;
+        e.Handled = true;
     }
 
     private void AddApeItem_Click(object sender, RoutedEventArgs e)
@@ -542,21 +552,33 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
     }
 
-    private void DeleteFrameMenuItem_Click(object sender, RoutedEventArgs e)
+    private void AdvancedFrameRow_PreviewMouseRightButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
     {
+        if (sender is not DataGridRow row || row.Item is not Id3v2FrameRow frameRow)
+        {
+            return;
+        }
+
         var tab = CurrentId3v2Tab;
         if (tab == null)
         {
             return;
         }
 
-        if (sender is MenuItem { Parent: ContextMenu menu }
-            && menu.PlacementTarget is DataGridRow row
-            && row.Item is Id3v2FrameRow frameRow)
+        row.IsSelected = true;
+
+        var menu = new ContextMenu();
+        var delete = new MenuItem { Header = $"Delete {frameRow.Identifier}" };
+        delete.Click += (_, _) =>
         {
             tab.RemoveFrameRow(frameRow);
             UpdateStatus($"Removed {frameRow.Identifier}");
-        }
+        };
+
+        menu.Items.Add(delete);
+        menu.PlacementTarget = row;
+        menu.IsOpen = true;
+        e.Handled = true;
     }
 
     private void AddTagButton_Click(object sender, RoutedEventArgs e)
