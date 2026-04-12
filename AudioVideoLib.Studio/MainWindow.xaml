@@ -210,28 +210,38 @@
         <!-- ==================== APE editor template ==================== -->
 
         <DataTemplate DataType="{x:Type local:ApeTabViewModel}">
-            <Grid Margin="10">
-                <DataGrid ItemsSource="{Binding Items}"
+            <DockPanel Margin="10">
+                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,6">
+                    <Button Content="+ Item"    Padding="8,2" FontSize="11" Click="AddApeItem_Click"    Tag="{Binding}" />
+                    <Button Content="Remove"    Padding="8,2" FontSize="11" Margin="6,0,0,0" Click="RemoveApeItem_Click"    Tag="{Binding}" />
+                </StackPanel>
+                <DataGrid x:Name="ApeGrid"
+                          ItemsSource="{Binding Items}"
                           AutoGenerateColumns="False"
                           CanUserAddRows="False"
                           CanUserDeleteRows="False"
                           IsReadOnly="False"
                           HeadersVisibility="Column"
                           AlternatingRowBackground="#F7F7F7"
-                          MinHeight="300">
+                          SelectionMode="Single"
+                          MinHeight="280">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Key"   Binding="{Binding Key}"   Width="200" IsReadOnly="True" />
                         <DataGridTextColumn Header="Type"  Binding="{Binding Type}"  Width="90"  IsReadOnly="True" />
                         <DataGridTextColumn Header="Value" Binding="{Binding Value, UpdateSourceTrigger=LostFocus}" Width="*" />
                     </DataGrid.Columns>
                 </DataGrid>
-            </Grid>
+            </DockPanel>
         </DataTemplate>
 
         <!-- ==================== Lyrics3v2 editor template ==================== -->
 
         <DataTemplate DataType="{x:Type local:Lyrics3v2TabViewModel}">
-            <Grid Margin="10">
+            <DockPanel Margin="10">
+                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,6">
+                    <Button Content="+ Field"  Padding="8,2" FontSize="11" Click="AddLyrics3Field_Click"    Tag="{Binding}" />
+                    <Button Content="Remove"   Padding="8,2" FontSize="11" Margin="6,0,0,0" Click="RemoveLyrics3Field_Click" Tag="{Binding}" />
+                </StackPanel>
                 <DataGrid ItemsSource="{Binding Fields}"
                           AutoGenerateColumns="False"
                           CanUserAddRows="False"
@@ -239,19 +249,24 @@
                           IsReadOnly="False"
                           HeadersVisibility="Column"
                           AlternatingRowBackground="#F7F7F7"
-                          MinHeight="260">
+                          SelectionMode="Single"
+                          MinHeight="240">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="ID"    Binding="{Binding Identifier}" Width="80" IsReadOnly="True" />
                         <DataGridTextColumn Header="Value" Binding="{Binding Value, UpdateSourceTrigger=LostFocus}" Width="*" />
                     </DataGrid.Columns>
                 </DataGrid>
-            </Grid>
+            </DockPanel>
         </DataTemplate>
 
         <!-- ==================== MusicMatch editor template ==================== -->
 
         <DataTemplate DataType="{x:Type local:VorbisTabViewModel}">
-            <Grid Margin="10">
+            <DockPanel Margin="10">
+                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,6">
+                    <Button Content="+ Comment" Padding="8,2" FontSize="11" Click="AddVorbisComment_Click"    Tag="{Binding}" />
+                    <Button Content="Remove"    Padding="8,2" FontSize="11" Margin="6,0,0,0" Click="RemoveVorbisComment_Click" Tag="{Binding}" />
+                </StackPanel>
                 <DataGrid ItemsSource="{Binding Entries}"
                           AutoGenerateColumns="False"
                           CanUserAddRows="False"
@@ -259,13 +274,14 @@
                           IsReadOnly="False"
                           HeadersVisibility="Column"
                           AlternatingRowBackground="#F7F7F7"
-                          MinHeight="300">
+                          SelectionMode="Single"
+                          MinHeight="280">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Name"  Binding="{Binding Name,  UpdateSourceTrigger=LostFocus}" Width="200" />
                         <DataGridTextColumn Header="Value" Binding="{Binding Value, UpdateSourceTrigger=LostFocus}" Width="*" />
                     </DataGrid.Columns>
                 </DataGrid>
-            </Grid>
+            </DockPanel>
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type local:MusicMatchTabViewModel}">
@@ -445,6 +461,17 @@
                                         <TextBlock Text="{Binding Header}" Margin="4,2" />
                                     </DataTemplate>
                                 </TabControl.ItemTemplate>
+                                <TabControl.ItemContainerStyle>
+                                    <Style TargetType="TabItem">
+                                        <Setter Property="ContextMenu">
+                                            <Setter.Value>
+                                                <ContextMenu>
+                                                    <MenuItem Header="Remove tag" Click="RemoveTagMenuItem_Click" />
+                                                </ContextMenu>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </TabControl.ItemContainerStyle>
                             </TabControl>
                         </StackPanel>
                     </Border>

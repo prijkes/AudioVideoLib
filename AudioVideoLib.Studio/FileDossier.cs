@@ -26,6 +26,7 @@ public sealed class FileDossier : INotifyPropertyChanged
 {
     private List<IAudioTagOffset> _offsets = [];
     private readonly HashSet<IAudioTag> _newTags = new(ReferenceEqualityComparer.Instance);
+    private readonly HashSet<IAudioTag> _removedTags = new(ReferenceEqualityComparer.Instance);
     private FlacStream? _flacStream;
     private bool _isFlac;
 
@@ -85,7 +86,10 @@ public sealed class FileDossier : INotifyPropertyChanged
         Load();
     }
 
-    public bool HasUnsavedChanges => TagTabs.OfType<TagTabViewModel>().Any(t => t.IsDirty);
+    public bool HasUnsavedChanges =>
+        TagTabs.Any(t => t.IsDirty) ||
+        _newTags.Count > 0 ||
+        _removedTags.Count > 0;
 
     public IReadOnlyList<TagKind> AddableTagKinds
     {
@@ -155,6 +159,43 @@ public sealed class FileDossier : INotifyPropertyChanged
         return vm;
     }
 
+    public bool RemoveTag(TagTabViewModel tab)
+    {
+        if (tab == null || !TagTabs.Contains(tab))
+        {
+            return false;
+        }
+
+        IAudioTag? underlying = tab switch
+        {
+            Id3v2TabViewModel v2 => v2.Tag,
+            Id3v1TabViewModel v1 => v1.Tag,
+            ApeTabViewModel ape => ape.Tag,
+            Lyrics3v2TabViewModel l3 => l3.Tag,
+            MusicMatchTabViewModel mm => mm.Tag,
+            _ => null,
+        };
+
+        if (underlying != null)
+        {
+            if (_newTags.Contains(underlying))
+            {
+                // Brand new, never saved — just forget about it.
+                _newTags.Remove(underlying);
+            }
+            else
+            {
+                // Previously persisted — track it so the save path skips it.
+                _removedTags.Add(underlying);
+            }
+        }
+
+        TagTabs.Remove(tab);
+        Notify(nameof(AddableTagKinds));
+        Notify(nameof(HasUnsavedChanges));
+        return true;
+    }
+
     public static string GetKindLabel(TagKind kind) => kind switch
     {
         TagKind.Id3v2     => "ID3v2.4 (file start)",
@@ -212,16 +253,27 @@ public sealed class FileDossier : INotifyPropertyChanged
         var fileBytes = File.ReadAllBytes(FilePath);
 
         var existingStart = _offsets
-            .Where(o => o.TagOrigin == TagOrigin.Start)
+            .Where(o => o.TagOrigin == TagOrigin.Start && !_removedTags.Contains(o.AudioTag))
             .OrderBy(o => o.StartOffset)
             .ToList();
         var existingEnd = _offsets
-            .Where(o => o.TagOrigin == TagOrigin.End)
+            .Where(o => o.TagOrigin == TagOrigin.End && !_removedTags.Contains(o.AudioTag))
             .OrderBy(o => o.StartOffset)
             .ToList();
 
-        var audioStart = existingStart.Count > 0 ? existingStart.Max(o => o.EndOffset) : 0L;
-        var audioEnd = existingEnd.Count > 0 ? existingEnd.Min(o => o.StartOffset) : fileBytes.Length;
+        // For audio-region boundaries we still need the ORIGINAL start/end
+        // positions — even a removed tag contributed bytes to the original file,
+        // so the audio middle starts where the (possibly removed) start tags
+        // ended and ends where the (possibly removed) end tags began.
+        var allStartOffsets = _offsets
+            .Where(o => o.TagOrigin == TagOrigin.Start)
+            .ToList();
+        var allEndOffsets = _offsets
+            .Where(o => o.TagOrigin == TagOrigin.End)
+            .ToList();
+
+        var audioStart = allStartOffsets.Count > 0 ? allStartOffsets.Max(o => o.EndOffset) : 0L;
+        var audioEnd = allEndOffsets.Count > 0 ? allEndOffsets.Min(o => o.StartOffset) : fileBytes.Length;
 
         if (audioStart < 0 || audioEnd < audioStart || audioEnd > fileBytes.Length)
         {
@@ -253,6 +305,7 @@ public sealed class FileDossier : INotifyPropertyChanged
         File.Move(tmp, FilePath, overwrite: true);
 
         _newTags.Clear();
+        _removedTags.Clear();
 
         foreach (var tab in TagTabs)
         {

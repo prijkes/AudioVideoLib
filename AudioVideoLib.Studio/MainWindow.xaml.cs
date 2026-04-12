@@ -11,6 +11,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
+using System.Windows.Media;
+
 using Microsoft.Win32;
 
 public partial class MainWindow : Window, INotifyPropertyChanged
@@ -155,6 +157,15 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             textMenu.Items.Add(mi);
         }
 
+        textMenu.Items.Add(new Separator());
+        var customText = new MenuItem
+        {
+            Header = "Custom identifier…",
+            Tag = ("TEXT", string.Empty),
+        };
+        customText.Click += AddFrameMenuItem_Click;
+        textMenu.Items.Add(customText);
+
         var urlMenu = new MenuItem { Header = "URL frame" };
         foreach (var (id, label) in CommonUrlFrames)
         {
@@ -166,6 +177,15 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             mi.Click += AddFrameMenuItem_Click;
             urlMenu.Items.Add(mi);
         }
+
+        urlMenu.Items.Add(new Separator());
+        var customUrl = new MenuItem
+        {
+            Header = "Custom identifier…",
+            Tag = ("URL", string.Empty),
+        };
+        customUrl.Click += AddFrameMenuItem_Click;
+        urlMenu.Items.Add(customUrl);
 
         menu.Items.Add(textMenu);
         menu.Items.Add(urlMenu);
@@ -189,6 +209,26 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
 
         var (kind, identifier) = tag;
+
+        if (string.IsNullOrEmpty(identifier))
+        {
+            var kindLabel = kind == "TEXT" ? "text" : "URL";
+            var prompt = $"Enter a 4-character {kindLabel} frame identifier (e.g., {(kind == "TEXT" ? "TSST" : "WFED")}):";
+            var input = InputDialog.Ask(this, $"Custom {kindLabel} frame", prompt);
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                return;
+            }
+
+            identifier = input.Trim().ToUpperInvariant();
+            if (identifier.Length != 4)
+            {
+                MessageBox.Show(this, "Frame identifier must be exactly 4 characters.", "Add frame",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+        }
+
         try
         {
             var row = kind == "TEXT"
@@ -205,6 +245,192 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 MessageBoxButton.OK,
                 MessageBoxImage.Warning);
         }
+    }
+
+    private void RemoveTagMenuItem_Click(object sender, RoutedEventArgs e)
+    {
+        if (CurrentDossier == null)
+        {
+            return;
+        }
+
+        if (sender is MenuItem { Parent: ContextMenu menu }
+            && menu.PlacementTarget is TabItem tabItem
+            && tabItem.DataContext is TagTabViewModel tabVm)
+        {
+            var confirm = MessageBox.Show(
+                this,
+                $"Remove {tabVm.Header} from this file on next save?",
+                "Remove tag",
+                MessageBoxButton.OKCancel,
+                MessageBoxImage.Question);
+            if (confirm != MessageBoxResult.OK)
+            {
+                return;
+            }
+
+            CurrentDossier.RemoveTag(tabVm);
+            UpdateStatus($"Marked {tabVm.Header} for removal on save");
+        }
+    }
+
+    private void AddApeItem_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not Button { Tag: ApeTabViewModel tab })
+        {
+            return;
+        }
+
+        var key = InputDialog.Ask(this, "Add APE item", "Item key (e.g., Title, Artist, Album, BPM):");
+        if (string.IsNullOrWhiteSpace(key))
+        {
+            return;
+        }
+
+        try
+        {
+            tab.AddTextItem(key.Trim());
+            UpdateStatus($"Added APE item {key}");
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(this, $"Could not add APE item:\n\n{ex.Message}", "Add item",
+                MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+    }
+
+    private void RemoveApeItem_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not Button { Tag: ApeTabViewModel tab })
+        {
+            return;
+        }
+
+        var grid = FindFirstDescendantDataGrid(sender as DependencyObject);
+        if (grid?.SelectedItem is ApeItemRow row)
+        {
+            tab.RemoveItem(row);
+            UpdateStatus($"Removed APE item {row.Key}");
+        }
+    }
+
+    private void AddLyrics3Field_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not Button { Tag: Lyrics3v2TabViewModel tab })
+        {
+            return;
+        }
+
+        var id = InputDialog.Ask(this, "Add Lyrics3v2 field", "3-character field identifier (e.g., IND, LYR, INF, AUT, EAL, EAR, ETT):");
+        if (string.IsNullOrWhiteSpace(id))
+        {
+            return;
+        }
+
+        try
+        {
+            tab.AddTextField(id.Trim().ToUpperInvariant());
+            UpdateStatus($"Added Lyrics3v2 field {id}");
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(this, $"Could not add field:\n\n{ex.Message}", "Add field",
+                MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+    }
+
+    private void RemoveLyrics3Field_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not Button { Tag: Lyrics3v2TabViewModel tab })
+        {
+            return;
+        }
+
+        var grid = FindFirstDescendantDataGrid(sender as DependencyObject);
+        if (grid?.SelectedItem is Lyrics3v2FieldRow row)
+        {
+            tab.RemoveField(row);
+            UpdateStatus($"Removed Lyrics3v2 field {row.Identifier}");
+        }
+    }
+
+    private void AddVorbisComment_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not Button { Tag: VorbisTabViewModel tab })
+        {
+            return;
+        }
+
+        var name = InputDialog.Ask(this, "Add Vorbis comment", "Comment name (e.g., TITLE, ARTIST, ALBUM):");
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            return;
+        }
+
+        try
+        {
+            tab.AddComment(name.Trim());
+            UpdateStatus($"Added Vorbis comment {name}");
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(this, $"Could not add Vorbis comment:\n\n{ex.Message}", "Add comment",
+                MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+    }
+
+    private void RemoveVorbisComment_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not Button { Tag: VorbisTabViewModel tab })
+        {
+            return;
+        }
+
+        var grid = FindFirstDescendantDataGrid(sender as DependencyObject);
+        if (grid?.SelectedItem is VorbisCommentRow row)
+        {
+            tab.RemoveComment(row);
+            UpdateStatus($"Removed Vorbis comment {row.Name}");
+        }
+    }
+
+    private static DataGrid? FindFirstDescendantDataGrid(DependencyObject? start)
+    {
+        if (start == null)
+        {
+            return null;
+        }
+
+        // Walk up to the closest DockPanel/Grid holding both the button and the grid,
+        // then walk down into it to find the first DataGrid child.
+        var parent = VisualTreeHelper.GetParent(start);
+        while (parent is not null and not Panel)
+        {
+            parent = VisualTreeHelper.GetParent(parent);
+        }
+
+        return parent == null ? null : FindFirstDataGrid(parent);
+    }
+
+    private static DataGrid? FindFirstDataGrid(DependencyObject root)
+    {
+        if (root is DataGrid dg)
+        {
+            return dg;
+        }
+
+        var count = VisualTreeHelper.GetChildrenCount(root);
+        for (var i = 0; i < count; i++)
+        {
+            var child = VisualTreeHelper.GetChild(root, i);
+            var found = FindFirstDataGrid(child);
+            if (found != null)
+            {
+                return found;
+            }
+        }
+
+        return null;
     }
 
     private void DeleteFrameMenuItem_Click(object sender, RoutedEventArgs e)

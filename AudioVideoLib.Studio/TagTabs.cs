@@ -461,6 +461,38 @@ public sealed class ApeTabViewModel : TagTabViewModel
     public ApeTag Tag { get; }
 
     public ObservableCollection<ApeItemRow> Items { get; } = [];
+
+    public ApeItemRow AddTextItem(string key, string value = "")
+    {
+        var item = new ApeUtf8Item(Tag.Version, key);
+        if (!string.IsNullOrEmpty(value))
+        {
+            item.Values.Add(value);
+        }
+
+        Tag.SetItem(item);
+        var row = new ApeItemRow(item, () => IsDirty = true);
+        Items.Add(row);
+        IsDirty = true;
+        return row;
+    }
+
+    public void RemoveItem(ApeItemRow row)
+    {
+        if (row == null || !Items.Contains(row))
+        {
+            return;
+        }
+
+        var target = Tag.GetItem(row.Key);
+        if (target != null)
+        {
+            Tag.RemoveItem(target);
+        }
+
+        Items.Remove(row);
+        IsDirty = true;
+    }
 }
 
 public sealed class ApeItemRow(ApeItem item, Action markDirty) : INotifyPropertyChanged
@@ -541,6 +573,36 @@ public sealed class Lyrics3v2TabViewModel : TagTabViewModel
     public Lyrics3v2Tag Tag { get; }
 
     public ObservableCollection<Lyrics3v2FieldRow> Fields { get; } = [];
+
+    public Lyrics3v2FieldRow AddTextField(string identifier, string value = "")
+    {
+        var field = new Lyrics3v2TextField(identifier)
+        {
+            Value = value ?? string.Empty,
+        };
+        Tag.SetField(field);
+        var row = new Lyrics3v2FieldRow(field, () => IsDirty = true);
+        Fields.Add(row);
+        IsDirty = true;
+        return row;
+    }
+
+    public void RemoveField(Lyrics3v2FieldRow row)
+    {
+        if (row == null || !Fields.Contains(row))
+        {
+            return;
+        }
+
+        var existing = Tag.GetField<Lyrics3v2Field>(row.Identifier);
+        if (existing != null)
+        {
+            Tag.RemoveField(existing);
+        }
+
+        Fields.Remove(row);
+        IsDirty = true;
+    }
 }
 
 public sealed class Lyrics3v2FieldRow(Lyrics3v2Field source, Action markDirty) : INotifyPropertyChanged
@@ -605,6 +667,35 @@ public sealed class VorbisTabViewModel : TagTabViewModel
     public VorbisComments Comments { get; }
 
     public ObservableCollection<VorbisCommentRow> Entries { get; } = [];
+
+    public VorbisCommentRow AddComment(string name, string value = "")
+    {
+        var comment = new VorbisComment { Name = name, Value = value ?? string.Empty };
+        Comments.Comments.Add(comment);
+        var row = new VorbisCommentRow(comment, () => IsDirty = true);
+        Entries.Add(row);
+        IsDirty = true;
+        return row;
+    }
+
+    public void RemoveComment(VorbisCommentRow row)
+    {
+        if (row == null || !Entries.Contains(row))
+        {
+            return;
+        }
+
+        var target = Comments.Comments.FirstOrDefault(c =>
+            string.Equals(c.Name, row.Name, StringComparison.OrdinalIgnoreCase) &&
+            c.Value == row.Value);
+        if (target != null)
+        {
+            Comments.Comments.Remove(target);
+        }
+
+        Entries.Remove(row);
+        IsDirty = true;
+    }
 }
 
 public sealed class VorbisCommentRow(VorbisComment comment, Action markDirty) : INotifyPropertyChanged
