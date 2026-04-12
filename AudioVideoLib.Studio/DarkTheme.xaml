@@ -36,6 +36,21 @@
     <Color x:Key="WarningColor">#FFCCA700</Color>
     <Color x:Key="SuccessColor">#FF6A9955</Color>
 
+    <!-- System color overrides (needed because built-in Menu/MenuItem/ComboBox
+         templates read these directly and ignore implicit style setters) -->
+    <SolidColorBrush x:Key="{x:Static SystemColors.MenuBrushKey}"          Color="{StaticResource Surface2Color}" />
+    <SolidColorBrush x:Key="{x:Static SystemColors.MenuTextBrushKey}"       Color="{StaticResource TextPrimaryColor}" />
+    <SolidColorBrush x:Key="{x:Static SystemColors.MenuHighlightBrushKey}"  Color="{StaticResource SelectionColor}" />
+    <SolidColorBrush x:Key="{x:Static SystemColors.MenuBarBrushKey}"        Color="{StaticResource Surface2Color}" />
+    <SolidColorBrush x:Key="{x:Static SystemColors.WindowBrushKey}"         Color="{StaticResource Surface1Color}" />
+    <SolidColorBrush x:Key="{x:Static SystemColors.WindowTextBrushKey}"     Color="{StaticResource TextPrimaryColor}" />
+    <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"        Color="{StaticResource Surface2Color}" />
+    <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}"    Color="{StaticResource TextPrimaryColor}" />
+    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"      Color="{StaticResource SelectionColor}" />
+    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}"  Color="#FFFFFFFF" />
+    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"     Color="{StaticResource SelectionInactiveColor}" />
+    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="{StaticResource TextPrimaryColor}" />
+
     <!-- Frozen brushes from tokens -->
     <SolidColorBrush x:Key="Surface0Brush" Color="{StaticResource Surface0Color}" />
     <SolidColorBrush x:Key="Surface1Brush" Color="{StaticResource Surface1Color}" />
@@ -88,14 +103,6 @@
                 <Setter Property="Background" Value="{StaticResource SelectionBrush}" />
             </Trigger>
         </Style.Triggers>
-        <Style.Resources>
-            <!-- Override the system brushes the built-in MenuItem template reads -->
-            <SolidColorBrush x:Key="{x:Static SystemColors.MenuBrushKey}"          Color="{StaticResource Surface2Color}" />
-            <SolidColorBrush x:Key="{x:Static SystemColors.MenuTextBrushKey}"       Color="{StaticResource TextPrimaryColor}" />
-            <SolidColorBrush x:Key="{x:Static SystemColors.MenuHighlightBrushKey}"  Color="{StaticResource SelectionColor}" />
-            <SolidColorBrush x:Key="{x:Static SystemColors.MenuBarBrushKey}"        Color="{StaticResource Surface2Color}" />
-            <SolidColorBrush x:Key="{x:Static SystemColors.WindowBrushKey}"         Color="{StaticResource Surface2Color}" />
-        </Style.Resources>
     </Style>
 
     <Style TargetType="Separator" x:Key="{x:Static MenuItem.SeparatorStyleKey}">
@@ -242,13 +249,6 @@
                 <Setter Property="Background" Value="{StaticResource HoverBrush}" />
             </Trigger>
         </Style.Triggers>
-        <Style.Resources>
-            <!-- Inactive selection (when tree loses focus) -->
-            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
-                             Color="{StaticResource SelectionInactiveColor}" />
-            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
-                             Color="{StaticResource TextPrimaryColor}" />
-        </Style.Resources>
     </Style>
 
     <!-- ══════════════════════════════════════════════════════════════
