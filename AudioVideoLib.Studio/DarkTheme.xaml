@@ -88,6 +88,26 @@
                 <Setter Property="Background" Value="{StaticResource SelectionBrush}" />
             </Trigger>
         </Style.Triggers>
+        <Style.Resources>
+            <!-- Override the system brushes the built-in MenuItem template reads -->
+            <SolidColorBrush x:Key="{x:Static SystemColors.MenuBrushKey}"          Color="{StaticResource Surface2Color}" />
+            <SolidColorBrush x:Key="{x:Static SystemColors.MenuTextBrushKey}"       Color="{StaticResource TextPrimaryColor}" />
+            <SolidColorBrush x:Key="{x:Static SystemColors.MenuHighlightBrushKey}"  Color="{StaticResource SelectionColor}" />
+            <SolidColorBrush x:Key="{x:Static SystemColors.MenuBarBrushKey}"        Color="{StaticResource Surface2Color}" />
+            <SolidColorBrush x:Key="{x:Static SystemColors.WindowBrushKey}"         Color="{StaticResource Surface2Color}" />
+        </Style.Resources>
+    </Style>
+
+    <Style TargetType="Separator" x:Key="{x:Static MenuItem.SeparatorStyleKey}">
+        <Setter Property="Background" Value="{StaticResource BorderBrush}" />
+        <Setter Property="Margin" Value="4,2" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Separator">
+                    <Border Height="1" Background="{StaticResource BorderBrush}" Margin="28,2,4,2" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <!-- ══════════════════════════════════════════════════════════════
