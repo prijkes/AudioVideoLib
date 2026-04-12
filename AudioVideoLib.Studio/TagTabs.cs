@@ -161,6 +161,50 @@ public sealed class Id3v2TabViewModel : TagTabViewModel
         return row;
     }
 
+    public Id3v2FrameRow AddLyricsFrame()
+    {
+        var frame = new Id3v2UnsynchronizedLyricsFrame(Tag.Version)
+        {
+            TextEncoding = Id3v2FrameEncodingType.UTF8,
+            Language = "eng",
+            ContentDescriptor = string.Empty,
+            Lyrics = string.Empty,
+        };
+        Tag.SetFrame(frame);
+        var row = new Id3v2FrameRow(frame, () => IsDirty = true);
+        AdvancedFrames.Add(row);
+        IsDirty = true;
+        return row;
+    }
+
+    public Id3v2FrameRow AddPrivateFrame()
+    {
+        var frame = new Id3v2PrivateFrame(Tag.Version)
+        {
+            OwnerIdentifier = string.Empty,
+            PrivateData = [],
+        };
+        Tag.SetFrame(frame);
+        var row = new Id3v2FrameRow(frame, () => IsDirty = true);
+        AdvancedFrames.Add(row);
+        IsDirty = true;
+        return row;
+    }
+
+    public Id3v2FrameRow AddUniqueFileIdentifierFrame()
+    {
+        var frame = new Id3v2UniqueFileIdentifierFrame(Tag.Version)
+        {
+            OwnerIdentifier = string.Empty,
+            IdentifierData = [],
+        };
+        Tag.SetFrame(frame);
+        var row = new Id3v2FrameRow(frame, () => IsDirty = true);
+        AdvancedFrames.Add(row);
+        IsDirty = true;
+        return row;
+    }
+
     public void RefreshRow(Id3v2FrameRow row)
     {
         if (row == null)

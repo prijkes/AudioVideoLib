@@ -200,6 +200,30 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         pictureItem.Click += AddFrameMenuItem_Click;
         menu.Items.Add(pictureItem);
 
+        var lyricsItem = new MenuItem
+        {
+            Header = "Unsynchronized lyrics (USLT)…",
+            Tag = ("LYRICS", "USLT"),
+        };
+        lyricsItem.Click += AddFrameMenuItem_Click;
+        menu.Items.Add(lyricsItem);
+
+        var privItem = new MenuItem
+        {
+            Header = "Private (PRIV)…",
+            Tag = ("PRIVATE", "PRIV"),
+        };
+        privItem.Click += AddFrameMenuItem_Click;
+        menu.Items.Add(privItem);
+
+        var ufidItem = new MenuItem
+        {
+            Header = "Unique file identifier (UFID)…",
+            Tag = ("UFID", "UFID"),
+        };
+        ufidItem.Click += AddFrameMenuItem_Click;
+        menu.Items.Add(ufidItem);
+
         menu.PlacementTarget = button;
         menu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
         menu.IsOpen = true;
@@ -246,15 +270,24 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 "TEXT" => tab.AddTextFrame(identifier),
                 "URL" => tab.AddUrlFrame(identifier),
                 "PICTURE" => tab.AddPictureFrame(),
+                "LYRICS" => tab.AddLyricsFrame(),
+                "PRIVATE" => tab.AddPrivateFrame(),
+                "UFID" => tab.AddUniqueFileIdentifierFrame(),
                 _ => throw new InvalidOperationException($"Unknown frame kind {kind}"),
             };
 
-            if (kind == "PICTURE" && row.Frame is Id3v2AttachedPictureFrame apic)
+            var edited = row.Frame switch
             {
-                if (ApicEditorDialog.Edit(this, apic))
-                {
-                    tab.RefreshRow(row);
-                }
+                Id3v2AttachedPictureFrame apic => ApicEditorDialog.Edit(this, apic),
+                Id3v2UnsynchronizedLyricsFrame uslt => UsltEditorDialog.Edit(this, uslt),
+                Id3v2PrivateFrame priv => BinaryDataDialog.Edit(this, priv),
+                Id3v2UniqueFileIdentifierFrame ufid => BinaryDataDialog.Edit(this, ufid),
+                _ => false,
+            };
+
+            if (edited)
+            {
+                tab.RefreshRow(row);
             }
 
             UpdateStatus($"Added {identifier}");
@@ -476,6 +509,34 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 {
                     tab.RefreshRow(row);
                 }
+
+                e.Handled = true;
+                break;
+
+            case Id3v2UnsynchronizedLyricsFrame uslt:
+                if (UsltEditorDialog.Edit(this, uslt))
+                {
+                    tab.RefreshRow(row);
+                }
+
+                e.Handled = true;
+                break;
+
+            case Id3v2PrivateFrame priv:
+                if (BinaryDataDialog.Edit(this, priv))
+                {
+                    tab.RefreshRow(row);
+                }
+
+                e.Handled = true;
+                break;
+
+            case Id3v2UniqueFileIdentifierFrame ufid:
+                if (BinaryDataDialog.Edit(this, ufid))
+                {
+                    tab.RefreshRow(row);
+                }
+
                 e.Handled = true;
                 break;
         }
