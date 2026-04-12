@@ -170,7 +170,7 @@
                             <Setter TargetName="TabBorder" Property="Margin" Value="0,0,2,-1" />
                             <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
                         </Trigger>
-                        <Trigger Property="IsMouseOver" Value="True">
+                        <Trigger SourceName="TabBorder" Property="IsMouseOver" Value="True">
                             <Setter TargetName="TabBorder" Property="Background" Value="{StaticResource Surface3Brush}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
