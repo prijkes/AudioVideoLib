@@ -11,11 +11,11 @@
         <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
 
         <Style TargetType="TextBlock" x:Key="FieldLabel">
-            <Setter Property="Foreground" Value="#666666" />
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
             <Setter Property="FontSize" Value="11" />
             <Setter Property="Margin" Value="0,0,0,2" />
         </Style>
-        <Style TargetType="TextBox" x:Key="EditField">
+        <Style TargetType="TextBox" x:Key="EditField" BasedOn="{StaticResource {x:Type TextBox}}">
             <Setter Property="Margin" Value="0,0,0,6" />
             <Setter Property="Padding" Value="4,3" />
         </Style>
@@ -291,12 +291,16 @@
 
         <!-- ==================== file info strip ==================== -->
 
-        <Border DockPanel.Dock="Top" Background="#FAFAFA" BorderBrush="#DDDDDD" BorderThickness="0,0,0,1" Padding="14,6">
+        <Border DockPanel.Dock="Top"
+                Background="{DynamicResource Surface2Brush}"
+                BorderBrush="{DynamicResource BorderBrush}"
+                BorderThickness="0,0,0,1"
+                Padding="14,6">
             <TextBlock x:Name="FilePathText"
                        Text="No file loaded. Use File > Open (Ctrl+O)."
                        FontFamily="Consolas"
                        FontSize="12"
-                       Foreground="#444444"
+                       Foreground="{DynamicResource TextSecondaryBrush}"
                        TextTrimming="CharacterEllipsis" />
         </Border>
 
@@ -346,7 +350,7 @@
                                         <StackPanel Orientation="Horizontal" ToolTip="{Binding OffsetTooltip}">
                                             <TextBlock Text="{Binding Label}" FontWeight="SemiBold" />
                                             <TextBlock Text="{Binding SizeLabel}"
-                                                       Foreground="#999999"
+                                                       Foreground="{DynamicResource TextSecondaryBrush}"
                                                        FontWeight="Normal"
                                                        FontSize="10"
                                                        Margin="6,0,0,0"
@@ -355,9 +359,8 @@
                                     </HierarchicalDataTemplate>
                                 </TreeView.ItemTemplate>
                                 <TreeView.ItemContainerStyle>
-                                    <Style TargetType="TreeViewItem">
+                                    <Style TargetType="TreeViewItem" BasedOn="{StaticResource {x:Type TreeViewItem}}">
                                         <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
-                                        <Setter Property="Padding" Value="2,1" />
                                     </Style>
                                 </TreeView.ItemContainerStyle>
                             </TreeView>
@@ -374,7 +377,6 @@
                                       IsReadOnly="True"
                                       HeadersVisibility="Column"
                                       GridLinesVisibility="Horizontal"
-                                      AlternatingRowBackground="#F5F8FA"
                                       BorderThickness="0"
                                       RowHeight="24"
                                       SelectionChanged="PropertiesGrid_SelectionChanged">
@@ -382,13 +384,8 @@
                                     <DataGridTextColumn Header="Property" Binding="{Binding Name}" Width="140">
                                         <DataGridTextColumn.ElementStyle>
                                             <Style TargetType="TextBlock">
-                                                <Setter Property="Foreground" Value="#777777" />
+                                                <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
                                                 <Setter Property="Padding" Value="4,3" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=DataGridRow}}" Value="True">
-                                                        <Setter Property="Foreground" Value="White" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
                                             </Style>
                                         </DataGridTextColumn.ElementStyle>
                                     </DataGridTextColumn>
@@ -398,11 +395,6 @@
                                                 <Setter Property="FontFamily" Value="Consolas" />
                                                 <Setter Property="FontSize" Value="12" />
                                                 <Setter Property="Padding" Value="4,3" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=DataGridRow}}" Value="True">
-                                                        <Setter Property="Foreground" Value="White" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
                                             </Style>
                                         </DataGridTextColumn.ElementStyle>
                                     </DataGridTextColumn>

@@ -7,15 +7,15 @@ using System.Windows.Media;
 
 public static class HexRenderer
 {
-    private const int MaxBytes = 64 * 1024;
+    private const int MaxBytes = 4 * 1024;
     private const int BytesPerRow = 16;
 
-    private static readonly Brush AddressBrush = new SolidColorBrush(Color.FromRgb(0x88, 0x88, 0x88));
+    private static readonly Brush AddressBrush = new SolidColorBrush(Color.FromRgb(0x6A, 0x99, 0x55));
     private static readonly Brush NormalHexBrush = new SolidColorBrush(Color.FromRgb(0xCC, 0xCC, 0xCC));
-    private static readonly Brush NormalAsciiBrush = new SolidColorBrush(Color.FromRgb(0xAA, 0xAA, 0xAA));
+    private static readonly Brush NormalAsciiBrush = new SolidColorBrush(Color.FromRgb(0x9C, 0xDC, 0xFE));
     private static readonly Brush HighlightFg = Brushes.Black;
     private static readonly Brush HighlightBg = new SolidColorBrush(Color.FromRgb(0xFF, 0xB8, 0x2E));
-    private static readonly Brush SeparatorBrush = new SolidColorBrush(Color.FromRgb(0x55, 0x55, 0x55));
+    private static readonly Brush SeparatorBrush = new SolidColorBrush(Color.FromRgb(0x3F, 0x3F, 0x46));
     private static readonly FontFamily Mono = new("Consolas");
 
     static HexRenderer()
