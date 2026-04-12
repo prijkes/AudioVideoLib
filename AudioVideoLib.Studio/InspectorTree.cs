@@ -21,7 +21,9 @@ public sealed class InspectorNode
 
     public long Size => EndOffset - StartOffset;
 
-    public string OffsetLabel => $"0x{StartOffset:X8}..0x{EndOffset:X8}  ({FormatSize(Size)})";
+    public string SizeLabel => Size > 0 ? $"({FormatSize(Size)})" : string.Empty;
+
+    public string OffsetTooltip => $"0x{StartOffset:X8} .. 0x{EndOffset:X8}  ({Size:N0} bytes)";
 
     public ObservableCollection<InspectorNode> Children { get; } = [];
 
@@ -64,6 +66,7 @@ public static class InspectorTreeBuilder
         root.Properties.Add(Prop("Path", filePath));
         root.Properties.Add(Prop("Size", $"{fileBytes.Length:N0} bytes"));
         root.Properties.Add(Prop("Modified", File.GetLastWriteTime(filePath).ToString("yyyy-MM-dd HH:mm:ss")));
+        root.Properties.Add(Prop("Offset", $"0x{0:X8} .. 0x{fileBytes.Length:X8}"));
 
         var sorted = offsets.OrderBy(o => o.StartOffset).ToList();
         long cursor = 0;
@@ -520,15 +523,19 @@ public static class InspectorTreeBuilder
                 for (var i = 0; i < shown; i++)
                 {
                     var frame = framesInRange[i];
+                    // EndOffset is 0 when the frame has no audio data (e.g. Xing info frame)
+                    var frameEnd = frame.EndOffset > frame.StartOffset
+                        ? frame.EndOffset
+                        : frame.StartOffset + frame.FrameLength;
                     var frameNode = new InspectorNode
                     {
                         Label = $"Frame {i + 1}",
                         StartOffset = frame.StartOffset,
-                        EndOffset = frame.EndOffset,
+                        EndOffset = frameEnd,
                     };
 
-                    frameNode.Properties.Add(Prop("Offset", $"0x{frame.StartOffset:X8}"));
-                    frameNode.Properties.Add(Prop("Length", $"{frame.FrameLength} bytes", frame.StartOffset, 4));
+                    frameNode.Properties.Add(Prop("Offset", $"0x{frame.StartOffset:X8}", frame.StartOffset, 4));
+                    frameNode.Properties.Add(Prop("Length", $"{frame.FrameLength} bytes"));
                     frameNode.Properties.Add(Prop("Bitrate", $"{frame.Bitrate} kbps"));
                     frameNode.Properties.Add(Prop("Padded", frame.IsPadded.ToString()));
                     frameNode.Properties.Add(Prop("Protected", frame.IsCrcProtected ? "CRC present" : "none"));
@@ -539,7 +546,7 @@ public static class InspectorTreeBuilder
                         {
                             Label = $"VBR ({vbrH.HeaderType})",
                             StartOffset = frame.StartOffset + vbrH.Offset,
-                            EndOffset = Math.Min(frame.StartOffset + vbrH.Offset + 120, frame.EndOffset),
+                            EndOffset = Math.Min(frame.StartOffset + vbrH.Offset + 120, frameEnd),
                         };
 
                         vbrNode.Properties.Add(Prop("Type", vbrH.HeaderType.ToString()));
@@ -554,7 +561,7 @@ public static class InspectorTreeBuilder
                             {
                                 Label = "LAME tag",
                                 StartOffset = frame.StartOffset + vbrH.Offset + 120,
-                                EndOffset = frame.EndOffset,
+                                EndOffset = frameEnd,
                             };
 
                             lameNode.Properties.Add(Prop("Encoder", lame.EncoderVersion ?? string.Empty));

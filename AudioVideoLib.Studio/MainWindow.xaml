@@ -338,19 +338,26 @@
                         <GroupBox Grid.Column="0" Header="Structure" Margin="4">
                             <TreeView x:Name="InspectorTreeView"
                                       BorderThickness="0"
+                                      FontFamily="Consolas"
+                                      FontSize="12"
                                       SelectedItemChanged="InspectorTreeView_SelectedItemChanged">
                                 <TreeView.ItemTemplate>
                                     <HierarchicalDataTemplate ItemsSource="{Binding Children}">
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="{Binding Label}" FontFamily="Consolas" FontSize="12" />
-                                            <TextBlock Text="  " />
-                                            <TextBlock Text="{Binding OffsetLabel}" Foreground="#888888" FontFamily="Consolas" FontSize="10" VerticalAlignment="Center" />
+                                        <StackPanel Orientation="Horizontal" ToolTip="{Binding OffsetTooltip}">
+                                            <TextBlock Text="{Binding Label}" FontWeight="SemiBold" />
+                                            <TextBlock Text="{Binding SizeLabel}"
+                                                       Foreground="#999999"
+                                                       FontWeight="Normal"
+                                                       FontSize="10"
+                                                       Margin="6,0,0,0"
+                                                       VerticalAlignment="Center" />
                                         </StackPanel>
                                     </HierarchicalDataTemplate>
                                 </TreeView.ItemTemplate>
                                 <TreeView.ItemContainerStyle>
                                     <Style TargetType="TreeViewItem">
                                         <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+                                        <Setter Property="Padding" Value="2,1" />
                                     </Style>
                                 </TreeView.ItemContainerStyle>
                             </TreeView>
@@ -367,22 +374,25 @@
                                       IsReadOnly="True"
                                       HeadersVisibility="Column"
                                       GridLinesVisibility="Horizontal"
-                                      AlternatingRowBackground="#F7F7F7"
+                                      AlternatingRowBackground="#F5F8FA"
                                       BorderThickness="0"
+                                      RowHeight="24"
                                       SelectionChanged="PropertiesGrid_SelectionChanged">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="Property" Binding="{Binding Name}"  Width="150">
+                                    <DataGridTextColumn Header="Property" Binding="{Binding Name}" Width="140">
                                         <DataGridTextColumn.ElementStyle>
                                             <Style TargetType="TextBlock">
-                                                <Setter Property="Foreground" Value="#666666" />
+                                                <Setter Property="Foreground" Value="#777777" />
+                                                <Setter Property="Padding" Value="4,3" />
                                             </Style>
                                         </DataGridTextColumn.ElementStyle>
                                     </DataGridTextColumn>
-                                    <DataGridTextColumn Header="Value"    Binding="{Binding Value}" Width="*">
+                                    <DataGridTextColumn Header="Value" Binding="{Binding Value}" Width="*">
                                         <DataGridTextColumn.ElementStyle>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="FontFamily" Value="Consolas" />
-                                                <Setter Property="FontWeight" Value="SemiBold" />
+                                                <Setter Property="FontSize" Value="12" />
+                                                <Setter Property="Padding" Value="4,3" />
                                             </Style>
                                         </DataGridTextColumn.ElementStyle>
                                     </DataGridTextColumn>
