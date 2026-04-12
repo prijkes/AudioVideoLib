@@ -199,19 +199,27 @@ public sealed class FileDossier : INotifyPropertyChanged
         _                 => kind.ToString(),
     };
 
-    public void Save()
+    public void Save() => SaveTo(FilePath);
+
+    public void SaveAs(string destinationPath)
+    {
+        // Write the modified file to the destination path (original file untouched)
+        SaveTo(destinationPath);
+    }
+
+    private void SaveTo(string targetPath)
     {
         if (_isFlac)
         {
-            SaveFlac();
+            SaveFlac(targetPath);
         }
         else
         {
-            SaveMp3Style();
+            SaveMp3Style(targetPath);
         }
     }
 
-    private void SaveMp3Style()
+    private void SaveMp3Style(string targetPath)
     {
         // Commit editable tab VMs back to their library tag instances, and snapshot
         // which tag instances have unsaved edits so we know which regions to
@@ -279,7 +287,7 @@ public sealed class FileDossier : INotifyPropertyChanged
         var startWrites = BuildWriteList(existingStart, _newTags.Where(IsStartOrigin));
         var endWrites = BuildWriteList(existingEnd, _newTags.Where(IsEndOrigin));
 
-        var tmp = FilePath + ".avs-tmp";
+        var tmp = targetPath + ".avs-tmp";
         using (var outFile = File.Create(tmp))
         {
             foreach (var item in startWrites)
@@ -295,7 +303,7 @@ public sealed class FileDossier : INotifyPropertyChanged
             }
         }
 
-        File.Move(tmp, FilePath, overwrite: true);
+        File.Move(tmp, targetPath, overwrite: true);
 
         _newTags.Clear();
         _removedTags.Clear();
@@ -303,11 +311,6 @@ public sealed class FileDossier : INotifyPropertyChanged
         foreach (var tab in TagTabs)
         {
             tab.ResetDirty();
-        }
-
-        using (var fs = File.OpenRead(FilePath))
-        {
-            _offsets = [.. AudioTags.ReadStream(fs).OfType<IAudioTagOffset>()];
         }
 
         Notify(nameof(HasUnsavedChanges));
@@ -357,7 +360,7 @@ public sealed class FileDossier : INotifyPropertyChanged
         }
     }
 
-    private void SaveFlac()
+    private void SaveFlac(string targetPath)
     {
         if (_flacStream == null)
         {
@@ -388,7 +391,7 @@ public sealed class FileDossier : INotifyPropertyChanged
             blocks[i].IsLastBlock = i == blocks.Count - 1;
         }
 
-        var tmp = FilePath + ".avs-tmp";
+        var tmp = targetPath + ".avs-tmp";
         using (var outFile = File.Create(tmp))
         {
             // "fLaC" marker — 4 bytes at offset 0.
@@ -404,17 +407,11 @@ public sealed class FileDossier : INotifyPropertyChanged
             outFile.Write(fileBytes, (int)audioStart, fileBytes.Length - (int)audioStart);
         }
 
-        File.Move(tmp, FilePath, overwrite: true);
+        File.Move(tmp, targetPath, overwrite: true);
 
         foreach (var tab in TagTabs)
         {
             tab.ResetDirty();
-        }
-
-        // Re-read the FlacStream so _flacStream references the fresh blocks.
-        using (var fs = File.OpenRead(FilePath))
-        {
-            _flacStream = AudioStreams.ReadStream(fs).OfType<FlacStream>().FirstOrDefault();
         }
 
         Notify(nameof(HasUnsavedChanges));

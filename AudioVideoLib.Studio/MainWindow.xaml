@@ -277,13 +277,14 @@
 
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
-                <MenuItem Header="_Open..."     Click="OpenFile_Click"  InputGestureText="Ctrl+O" />
+                <MenuItem Header="_Open..."      Click="OpenFile_Click"  InputGestureText="Ctrl+O" />
                 <Separator />
-                <MenuItem Header="_Save"        Click="Save_Click"      InputGestureText="Ctrl+S" />
+                <MenuItem Header="_Save"         Click="Save_Click"      InputGestureText="Ctrl+S" />
+                <MenuItem Header="Save _As..."   Click="SaveAs_Click"    InputGestureText="Ctrl+Shift+S" />
                 <Separator />
-                <MenuItem Header="_Close file"  Click="CloseFile_Click" InputGestureText="Ctrl+W" />
+                <MenuItem Header="_Close file"   Click="CloseFile_Click" InputGestureText="Ctrl+W" />
                 <Separator />
-                <MenuItem Header="E_xit"        Click="Exit_Click" />
+                <MenuItem Header="E_xit"         Click="Exit_Click" />
             </MenuItem>
             <MenuItem Header="_View">
                 <MenuItem Header="_Refresh" Click="Refresh_Click" InputGestureText="F5" />
@@ -426,6 +427,23 @@
 
             <TabItem Header="Tags">
                 <DockPanel>
+                    <!-- unsaved changes banner -->
+                    <Border x:Name="UnsavedBanner"
+                            DockPanel.Dock="Top"
+                            Background="#FF3C3C14"
+                            BorderBrush="#FF8C8C00"
+                            BorderThickness="0,0,0,1"
+                            Padding="10,6"
+                            Visibility="Collapsed">
+                        <DockPanel>
+                            <Button DockPanel.Dock="Right" Content="Save As..." Click="SaveAs_Click" Padding="10,2" FontSize="11" Margin="8,0,0,0" />
+                            <Button DockPanel.Dock="Right" Content="Save" Click="Save_Click" Padding="10,2" FontSize="11" />
+                            <TextBlock Text="You have unsaved changes. Use Save to overwrite or Save As to create a copy."
+                                       Foreground="#FFCCAA00"
+                                       FontSize="11"
+                                       VerticalAlignment="Center" />
+                        </DockPanel>
+                    </Border>
                     <Border DockPanel.Dock="Top" Padding="6,4"
                             Background="{DynamicResource Surface2Brush}"
                             BorderBrush="{DynamicResource BorderBrush}"

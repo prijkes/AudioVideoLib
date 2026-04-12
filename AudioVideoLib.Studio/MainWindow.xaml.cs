@@ -21,6 +21,7 @@ public partial class MainWindow : Window
 
         InputBindings.Add(new KeyBinding(new RelayCommand(_ => OpenFile()),        Key.O,      ModifierKeys.Control));
         InputBindings.Add(new KeyBinding(new RelayCommand(_ => SaveCurrent()),     Key.S,      ModifierKeys.Control));
+        InputBindings.Add(new KeyBinding(new RelayCommand(_ => SaveAsFile()),      Key.S,      ModifierKeys.Control | ModifierKeys.Shift));
         InputBindings.Add(new KeyBinding(new RelayCommand(_ => CloseCurrentFile()), Key.W,     ModifierKeys.Control));
         InputBindings.Add(new KeyBinding(new RelayCommand(_ => RefreshCurrent()),   Key.F5,    ModifierKeys.None));
     }
@@ -632,6 +633,7 @@ public partial class MainWindow : Window
 
     private void OpenFile_Click(object sender, RoutedEventArgs e) => OpenFile();
     private void Save_Click(object sender, RoutedEventArgs e) => SaveCurrent();
+    private void SaveAs_Click(object sender, RoutedEventArgs e) => SaveAsFile();
     private void CloseFile_Click(object sender, RoutedEventArgs e) => CloseCurrentFile();
     private void Refresh_Click(object sender, RoutedEventArgs e) => RefreshCurrent();
     private void Exit_Click(object sender, RoutedEventArgs e) => Close();
@@ -674,6 +676,46 @@ public partial class MainWindow : Window
         {
             CurrentDossier.Save();
             UpdateStatus($"Saved {Path.GetFileName(CurrentDossier.FilePath)}");
+            UpdateDirtyState();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                this,
+                $"Failed to save:\n\n{ex.Message}",
+                "Save error",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+        }
+    }
+
+    private void SaveAsFile()
+    {
+        if (CurrentDossier == null)
+        {
+            UpdateStatus("Nothing to save");
+            return;
+        }
+
+        var dlg = new SaveFileDialog
+        {
+            Title = "Save As",
+            Filter = "All files|*.*",
+            FileName = Path.GetFileName(CurrentDossier.FilePath),
+            InitialDirectory = Path.GetDirectoryName(CurrentDossier.FilePath) ?? string.Empty,
+        };
+        if (dlg.ShowDialog(this) != true)
+        {
+            return;
+        }
+
+        try
+        {
+            CurrentDossier.SaveAs(dlg.FileName);
+            UpdateStatus($"Saved as {Path.GetFileName(dlg.FileName)}");
+
+            // Open the new copy
+            OpenDossierFromPath(dlg.FileName);
         }
         catch (Exception ex)
         {
@@ -711,10 +753,19 @@ public partial class MainWindow : Window
         }
     }
 
+    private void UpdateDirtyState()
+    {
+        var isDirty = CurrentDossier?.HasUnsavedChanges == true;
+        UnsavedBanner.Visibility = isDirty ? Visibility.Visible : Visibility.Collapsed;
+        var fileName = CurrentDossier != null ? Path.GetFileName(CurrentDossier.FilePath) : string.Empty;
+        Title = isDirty ? $"AudioVideoLib Studio - {fileName} *" : "AudioVideoLib Studio";
+    }
+
     private void UpdateStatus(string left)
     {
         StatusLeft.Text = left;
         StatusRight.Text = CurrentDossier == null ? string.Empty : Path.GetFileName(CurrentDossier.FilePath);
+        UpdateDirtyState();
     }
 
     private sealed class RelayCommand(Action<object?> execute) : ICommand
