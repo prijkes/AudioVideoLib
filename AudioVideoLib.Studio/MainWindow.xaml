@@ -326,111 +326,116 @@
 
         <!-- ==================== main content ==================== -->
 
-        <ScrollViewer x:Name="DossierScroller"
-                      VerticalScrollBarVisibility="Auto"
-                      HorizontalScrollBarVisibility="Disabled">
-            <StackPanel x:Name="DossierPanel" Margin="16">
+        <DockPanel x:Name="DossierPanel">
 
-                <!-- file info strip -->
-                <Border Background="#FAFAFA" BorderBrush="#DDDDDD" BorderThickness="1" Padding="12,8" Margin="0,0,0,14">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="100" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-
-                        <TextBlock Grid.Row="0" Grid.Column="0" Text="path"     Style="{StaticResource InfoStripLabel}" />
-                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding FilePath}" Style="{StaticResource InfoStripValue}" TextTrimming="CharacterEllipsis" ToolTip="{Binding FilePath}" />
-
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="size"     Style="{StaticResource InfoStripLabel}" />
-                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding FileSizeText}" Style="{StaticResource InfoStripValue}" />
-
-                        <TextBlock Grid.Row="2" Grid.Column="0" Text="modified" Style="{StaticResource InfoStripLabel}" />
-                        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding LastModifiedText}" Style="{StaticResource InfoStripValue}" />
-                    </Grid>
-                </Border>
-
-                <!-- stream + file structure, two-column -->
-                <Grid Margin="0,0,0,14">
+            <!-- file info strip (always visible) -->
+            <Border DockPanel.Dock="Top" Background="#FAFAFA" BorderBrush="#DDDDDD" BorderThickness="0,0,0,1" Padding="14,8">
+                <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="16" />
+                        <ColumnDefinition Width="80" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
 
-                    <GroupBox Grid.Column="0" Header="STREAM">
-                        <ItemsControl ItemsSource="{Binding TechCards}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid Margin="0,1">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="110" />
-                                            <ColumnDefinition Width="*" />
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Grid.Column="0" Text="{Binding Label}" Foreground="#888888" FontSize="11" VerticalAlignment="Center" />
-                                        <TextBlock Grid.Column="1" Text="{Binding Value}" FontFamily="Consolas" FontWeight="SemiBold" FontSize="12" Foreground="#222222" VerticalAlignment="Center" />
-                                    </Grid>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </GroupBox>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="path"     Style="{StaticResource InfoStripLabel}" />
+                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding FilePath}" Style="{StaticResource InfoStripValue}" TextTrimming="CharacterEllipsis" ToolTip="{Binding FilePath}" />
 
-                    <GroupBox Grid.Column="2" Header="FILE STRUCTURE">
-                        <ItemsControl ItemsSource="{Binding FileRegions}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid Margin="0,1">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="Auto" />
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Grid.Column="0" Text="{Binding StartHex}" Foreground="#444444" FontFamily="Consolas" FontSize="12" />
-                                        <TextBlock Grid.Column="1" Text=" .. "                Foreground="#999999" FontFamily="Consolas" FontSize="12" />
-                                        <TextBlock Grid.Column="2" Text="{Binding EndHex}"    Foreground="#444444" FontFamily="Consolas" FontSize="12" />
-                                        <TextBlock Grid.Column="3" Text="{Binding Label}"     Foreground="#222222" FontFamily="Consolas" FontSize="12" FontWeight="SemiBold" Margin="16,0,0,0" />
-                                        <TextBlock Grid.Column="4" Text="{Binding SizeText}"  Foreground="#666666" FontFamily="Consolas" FontSize="12" />
-                                    </Grid>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </GroupBox>
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="size"     Style="{StaticResource InfoStripLabel}" />
+                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding FileSizeText}" Style="{StaticResource InfoStripValue}" />
+
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="modified" Style="{StaticResource InfoStripLabel}" />
+                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding LastModifiedText}" Style="{StaticResource InfoStripValue}" />
                 </Grid>
+            </Border>
 
-                <!-- encoder line -->
-                <GroupBox Header="ENCODER"
-                          Margin="0,0,0,14"
-                          Visibility="{Binding HasEncoder, Converter={StaticResource BoolToVisConverter}}">
-                    <TextBlock Text="{Binding EncoderSummary}" FontFamily="Consolas" FontSize="12" Foreground="#222222" TextWrapping="Wrap" />
-                </GroupBox>
+            <!-- main tabs -->
+            <TabControl Margin="0">
+                <!-- overview tab -->
+                <TabItem Header="Overview">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="14">
+                        <StackPanel Margin="14">
+                            <Grid Margin="0,0,0,14">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="16" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
 
-                <!-- tags -->
-                <GroupBox Margin="0,0,0,14">
-                    <GroupBox.Header>
-                        <DockPanel LastChildFill="False">
-                            <TextBlock Text="TAGS" FontSize="11" FontWeight="SemiBold" Foreground="#999999" VerticalAlignment="Center" />
-                            <Button x:Name="AddTagButton"
-                                    DockPanel.Dock="Right"
-                                    Content="+ Add tag"
+                                <GroupBox Grid.Column="0" Header="STREAM">
+                                    <ItemsControl ItemsSource="{Binding TechCards}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid Margin="0,1">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="110" />
+                                                        <ColumnDefinition Width="*" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Grid.Column="0" Text="{Binding Label}" Foreground="#888888" FontSize="11" VerticalAlignment="Center" />
+                                                    <TextBlock Grid.Column="1" Text="{Binding Value}" FontFamily="Consolas" FontWeight="SemiBold" FontSize="12" Foreground="#222222" VerticalAlignment="Center" />
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </GroupBox>
+
+                                <GroupBox Grid.Column="2" Header="FILE STRUCTURE">
+                                    <ItemsControl ItemsSource="{Binding FileRegions}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid Margin="0,1">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Grid.Column="0" Text="{Binding StartHex}" Foreground="#444444" FontFamily="Consolas" FontSize="12" />
+                                                    <TextBlock Grid.Column="1" Text=" .. "               Foreground="#999999" FontFamily="Consolas" FontSize="12" />
+                                                    <TextBlock Grid.Column="2" Text="{Binding EndHex}"   Foreground="#444444" FontFamily="Consolas" FontSize="12" />
+                                                    <TextBlock Grid.Column="3" Text="{Binding Label}"    Foreground="#222222" FontFamily="Consolas" FontSize="12" FontWeight="SemiBold" Margin="16,0,0,0" />
+                                                    <TextBlock Grid.Column="4" Text="{Binding SizeText}" Foreground="#666666" FontFamily="Consolas" FontSize="12" />
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </GroupBox>
+                            </Grid>
+
+                            <GroupBox Header="ENCODER"
+                                      Margin="0,0,0,0"
+                                      Visibility="{Binding HasEncoder, Converter={StaticResource BoolToVisConverter}}">
+                                <TextBlock Text="{Binding EncoderSummary}" FontFamily="Consolas" FontSize="12" Foreground="#222222" TextWrapping="Wrap" />
+                            </GroupBox>
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+
+                <!-- tags tab -->
+                <TabItem>
+                    <TabItem.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Tags" VerticalAlignment="Center" />
+                            <Button Content="+"
+                                    x:Name="AddTagButton"
                                     Click="AddTagButton_Click"
-                                    Padding="10,2"
-                                    FontSize="11">
+                                    Padding="6,0"
+                                    Margin="8,0,0,0"
+                                    FontSize="11"
+                                    VerticalAlignment="Center">
                                 <Button.ContextMenu>
                                     <ContextMenu x:Name="AddTagMenu" />
                                 </Button.ContextMenu>
                             </Button>
-                        </DockPanel>
-                    </GroupBox.Header>
+                        </StackPanel>
+                    </TabItem.Header>
                     <TabControl x:Name="TagTabControl"
                                 ItemsSource="{Binding TagTabs}"
-                                MinHeight="320">
+                                Margin="0">
                         <TabControl.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Header}" Margin="4,2" />
@@ -442,12 +447,13 @@
                             </Style>
                         </TabControl.ItemContainerStyle>
                     </TabControl>
-                </GroupBox>
+                </TabItem>
 
-                <!-- hex viewer (always visible, not in an expander) -->
-                <GroupBox Header="HEX" Margin="0,0,0,4">
-                    <StackPanel>
-                        <ComboBox ItemsSource="{Binding HexRegions}"
+                <!-- hex tab -->
+                <TabItem Header="Hex">
+                    <DockPanel Margin="6">
+                        <ComboBox DockPanel.Dock="Top"
+                                  ItemsSource="{Binding HexRegions}"
                                   SelectedItem="{Binding SelectedHexRegion, Mode=TwoWay}"
                                   Margin="0,0,0,6" />
                         <TextBox Text="{Binding HexText, Mode=OneWay}"
@@ -456,14 +462,13 @@
                                  FontSize="11"
                                  Background="#111111"
                                  Foreground="#DDDDDD"
-                                 Height="360"
                                  VerticalScrollBarVisibility="Auto"
                                  HorizontalScrollBarVisibility="Auto"
                                  TextWrapping="NoWrap"
                                  AcceptsReturn="True" />
-                    </StackPanel>
-                </GroupBox>
-            </StackPanel>
-        </ScrollViewer>
+                    </DockPanel>
+                </TabItem>
+            </TabControl>
+        </DockPanel>
     </DockPanel>
 </Window>
