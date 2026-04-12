@@ -136,7 +136,8 @@
                               HeadersVisibility="Column"
                               GridLinesVisibility="Horizontal"
                               AlternatingRowBackground="#F7F7F7"
-                              MinHeight="150">
+                              MinHeight="150"
+                              MouseDoubleClick="AdvancedGrid_MouseDoubleClick">
                         <DataGrid.RowStyle>
                             <Style TargetType="DataGridRow">
                                 <Setter Property="ContextMenu">

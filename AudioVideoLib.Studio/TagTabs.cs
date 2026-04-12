@@ -144,6 +144,43 @@ public sealed class Id3v2TabViewModel : TagTabViewModel
         return row;
     }
 
+    public Id3v2FrameRow AddPictureFrame()
+    {
+        var frame = new Id3v2AttachedPictureFrame(Tag.Version)
+        {
+            TextEncoding = Id3v2FrameEncodingType.UTF8,
+            ImageFormat = Tag.Version < Id3v2Version.Id3v230 ? "JPG" : "image/jpeg",
+            PictureType = Id3v2AttachedPictureType.CoverFront,
+            Description = string.Empty,
+            PictureData = [],
+        };
+        Tag.SetFrame(frame);
+        var row = new Id3v2FrameRow(frame, () => IsDirty = true);
+        AdvancedFrames.Add(row);
+        IsDirty = true;
+        return row;
+    }
+
+    public void RefreshRow(Id3v2FrameRow row)
+    {
+        if (row == null)
+        {
+            return;
+        }
+
+        var index = AdvancedFrames.IndexOf(row);
+        if (index < 0)
+        {
+            return;
+        }
+
+        // Re-wrap so the row picks up the fresh Describe() summary after a per-type
+        // editor mutates the underlying frame.
+        var replacement = new Id3v2FrameRow(row.Frame, () => IsDirty = true);
+        AdvancedFrames[index] = replacement;
+        IsDirty = true;
+    }
+
     public override bool IsEditable => true;
 
     public string? Title       { get; set => SetFieldFor(ref field, value); }

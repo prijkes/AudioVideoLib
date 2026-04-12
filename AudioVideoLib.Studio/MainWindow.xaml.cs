@@ -13,6 +13,8 @@ using System.Windows.Input;
 
 using System.Windows.Media;
 
+using AudioVideoLib.Tags;
+
 using Microsoft.Win32;
 
 public partial class MainWindow : Window, INotifyPropertyChanged
@@ -190,6 +192,14 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         menu.Items.Add(textMenu);
         menu.Items.Add(urlMenu);
 
+        var pictureItem = new MenuItem
+        {
+            Header = "Picture (APIC)…",
+            Tag = ("PICTURE", "APIC"),
+        };
+        pictureItem.Click += AddFrameMenuItem_Click;
+        menu.Items.Add(pictureItem);
+
         menu.PlacementTarget = button;
         menu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
         menu.IsOpen = true;
@@ -231,9 +241,22 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         try
         {
-            var row = kind == "TEXT"
-                ? tab.AddTextFrame(identifier)
-                : tab.AddUrlFrame(identifier);
+            var row = kind switch
+            {
+                "TEXT" => tab.AddTextFrame(identifier),
+                "URL" => tab.AddUrlFrame(identifier),
+                "PICTURE" => tab.AddPictureFrame(),
+                _ => throw new InvalidOperationException($"Unknown frame kind {kind}"),
+            };
+
+            if (kind == "PICTURE" && row.Frame is Id3v2AttachedPictureFrame apic)
+            {
+                if (ApicEditorDialog.Edit(this, apic))
+                {
+                    tab.RefreshRow(row);
+                }
+            }
+
             UpdateStatus($"Added {identifier}");
         }
         catch (Exception ex)
@@ -431,6 +454,31 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
 
         return null;
+    }
+
+    private void AdvancedGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        if (sender is not DataGrid grid || grid.SelectedItem is not Id3v2FrameRow row)
+        {
+            return;
+        }
+
+        var tab = CurrentId3v2Tab;
+        if (tab == null)
+        {
+            return;
+        }
+
+        switch (row.Frame)
+        {
+            case Id3v2AttachedPictureFrame apic:
+                if (ApicEditorDialog.Edit(this, apic))
+                {
+                    tab.RefreshRow(row);
+                }
+                e.Handled = true;
+                break;
+        }
     }
 
     private void DeleteFrameMenuItem_Click(object sender, RoutedEventArgs e)
