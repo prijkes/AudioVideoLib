@@ -42,6 +42,9 @@ public partial class MainWindow : Window
                 InspectorTreeView.ItemsSource = new[] { CurrentDossier.InspectorRoot };
             }
 
+            TagTabControl.DataContext = CurrentDossier;
+            TagTabControl.ItemsSource = CurrentDossier.TagTabs;
+
             UpdateStatus($"Loaded {Path.GetFileName(path)}");
         }
         catch (Exception ex)
@@ -692,6 +695,8 @@ public partial class MainWindow : Window
             _selectedNode = null;
             InspectorTreeView.ItemsSource = null;
             PropertiesGrid.ItemsSource = null;
+            TagTabControl.DataContext = null;
+            TagTabControl.ItemsSource = null;
             HexViewBox.Document = new System.Windows.Documents.FlowDocument();
             FilePathText.Text = "No file loaded. Use File > Open (Ctrl+O).";
             UpdateStatus($"Closed {name}");
