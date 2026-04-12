@@ -455,7 +455,7 @@
                         </DataTemplate>
                     </TabControl.ItemTemplate>
                     <TabControl.ItemContainerStyle>
-                        <Style TargetType="TabItem">
+                        <Style TargetType="TabItem" BasedOn="{StaticResource {x:Type TabItem}}">
                             <EventSetter Event="PreviewMouseRightButtonUp" Handler="TabItem_PreviewMouseRightButtonUp" />
                         </Style>
                     </TabControl.ItemContainerStyle>
