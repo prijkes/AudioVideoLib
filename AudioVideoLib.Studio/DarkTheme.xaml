@@ -93,25 +93,156 @@
         <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
         <Setter Property="BorderThickness" Value="0,0,0,1" />
         <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Menu">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Padding="2,2">
+                        <StackPanel IsItemsHost="True" Orientation="Horizontal" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <Style TargetType="MenuItem">
         <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
         <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <!-- Default: SubmenuItem (leaf items inside a dropdown) -->
+                <ControlTemplate TargetType="MenuItem">
+                    <Border x:Name="Bg" Background="Transparent" Padding="24,4,16,4">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <ContentPresenter Grid.Column="0" ContentSource="Header" RecognizesAccessKey="True" VerticalAlignment="Center" />
+                            <TextBlock Grid.Column="1"
+                                       Text="{TemplateBinding InputGestureText}"
+                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                       Margin="24,0,0,0"
+                                       VerticalAlignment="Center" />
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsHighlighted" Value="True">
+                            <Setter TargetName="Bg" Property="Background" Value="{StaticResource SelectionBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground" Value="{StaticResource TextDisabledBrush}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
         <Style.Triggers>
-            <Trigger Property="IsHighlighted" Value="True">
-                <Setter Property="Background" Value="{StaticResource SelectionBrush}" />
+            <!-- TopLevelHeader: "File", "View", "Help" in menu bar with submenus -->
+            <Trigger Property="Role" Value="TopLevelHeader">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="MenuItem">
+                            <Grid>
+                                <Border x:Name="Bg" Background="Transparent" Padding="8,4">
+                                    <ContentPresenter ContentSource="Header" RecognizesAccessKey="True" VerticalAlignment="Center" />
+                                </Border>
+                                <Popup x:Name="PART_Popup"
+                                       IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                                       Placement="Bottom"
+                                       AllowsTransparency="True"
+                                       Focusable="False"
+                                       PopupAnimation="Fade">
+                                    <Border Background="{StaticResource Surface2Brush}"
+                                            BorderBrush="{StaticResource BorderBrush}"
+                                            BorderThickness="1"
+                                            Padding="0,2">
+                                        <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle" />
+                                    </Border>
+                                </Popup>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsHighlighted" Value="True">
+                                    <Setter TargetName="Bg" Property="Background" Value="{StaticResource SelectionBrush}" />
+                                </Trigger>
+                                <Trigger Property="IsSubmenuOpen" Value="True">
+                                    <Setter TargetName="Bg" Property="Background" Value="{StaticResource SelectionBrush}" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+            <!-- TopLevelItem: menu bar item WITHOUT submenu -->
+            <Trigger Property="Role" Value="TopLevelItem">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="MenuItem">
+                            <Border x:Name="Bg" Background="Transparent" Padding="8,4">
+                                <ContentPresenter ContentSource="Header" RecognizesAccessKey="True" VerticalAlignment="Center" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsHighlighted" Value="True">
+                                    <Setter TargetName="Bg" Property="Background" Value="{StaticResource SelectionBrush}" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+            <!-- SubmenuHeader: item inside dropdown that opens a sub-submenu -->
+            <Trigger Property="Role" Value="SubmenuHeader">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="MenuItem">
+                            <Grid>
+                                <Border x:Name="Bg" Background="Transparent" Padding="24,4,16,4">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <ContentPresenter Grid.Column="0" ContentSource="Header" RecognizesAccessKey="True" VerticalAlignment="Center" />
+                                        <Path Grid.Column="1"
+                                              Data="M0,0 L4,4 0,8"
+                                              Fill="{StaticResource TextSecondaryBrush}"
+                                              Margin="12,0,0,0"
+                                              VerticalAlignment="Center" />
+                                    </Grid>
+                                </Border>
+                                <Popup x:Name="PART_Popup"
+                                       IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                                       Placement="Right"
+                                       AllowsTransparency="True"
+                                       Focusable="False"
+                                       PopupAnimation="Fade">
+                                    <Border Background="{StaticResource Surface2Brush}"
+                                            BorderBrush="{StaticResource BorderBrush}"
+                                            BorderThickness="1"
+                                            Padding="0,2">
+                                        <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle" />
+                                    </Border>
+                                </Popup>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsHighlighted" Value="True">
+                                    <Setter TargetName="Bg" Property="Background" Value="{StaticResource SelectionBrush}" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
             </Trigger>
         </Style.Triggers>
     </Style>
 
     <Style TargetType="Separator" x:Key="{x:Static MenuItem.SeparatorStyleKey}">
-        <Setter Property="Background" Value="{StaticResource BorderBrush}" />
-        <Setter Property="Margin" Value="4,2" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Separator">
-                    <Border Height="1" Background="{StaticResource BorderBrush}" Margin="28,2,4,2" />
+                    <Border Height="1" Background="{StaticResource BorderBrush}" Margin="24,2,4,2" />
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
