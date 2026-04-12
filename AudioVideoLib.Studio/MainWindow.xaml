@@ -18,6 +18,10 @@
         <Style TargetType="TextBox" x:Key="EditField" BasedOn="{StaticResource {x:Type TextBox}}">
             <Setter Property="Margin" Value="0,0,0,6" />
             <Setter Property="Padding" Value="4,3" />
+            <Setter Property="Background" Value="{DynamicResource Surface2Brush}" />
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+            <Setter Property="CaretBrush" Value="{DynamicResource TextPrimaryBrush}" />
         </Style>
 
         <!-- ==================== ID3v2 editor template ==================== -->
@@ -420,25 +424,31 @@
 
             <!-- ==================== Tags tab ==================== -->
 
-            <TabItem>
-                <TabItem.Header>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Tags" VerticalAlignment="Center" />
-                        <Button Content="+"
-                                x:Name="AddTagButton"
-                                Click="AddTagButton_Click"
-                                Padding="6,0"
-                                Margin="8,0,0,0"
-                                FontSize="11"
-                                VerticalAlignment="Center">
-                            <Button.ContextMenu>
-                                <ContextMenu x:Name="AddTagMenu" />
-                            </Button.ContextMenu>
-                        </Button>
-                    </StackPanel>
-                </TabItem.Header>
-                <TabControl x:Name="TagTabControl"
-                            Margin="0">
+            <TabItem Header="Tags">
+                <DockPanel>
+                    <Border DockPanel.Dock="Top" Padding="6,4"
+                            Background="{DynamicResource Surface2Brush}"
+                            BorderBrush="{DynamicResource BorderBrush}"
+                            BorderThickness="0,0,0,1">
+                        <DockPanel>
+                            <Button x:Name="AddTagButton"
+                                    DockPanel.Dock="Right"
+                                    Content="+ Add tag format"
+                                    Click="AddTagButton_Click"
+                                    Padding="10,2"
+                                    FontSize="11">
+                                <Button.ContextMenu>
+                                    <ContextMenu x:Name="AddTagMenu" />
+                                </Button.ContextMenu>
+                            </Button>
+                            <TextBlock Text="Select a tag format to edit, or add a new one."
+                                       Foreground="{DynamicResource TextSecondaryBrush}"
+                                       FontSize="11"
+                                       VerticalAlignment="Center" />
+                        </DockPanel>
+                    </Border>
+                    <TabControl x:Name="TagTabControl"
+                                Margin="0">
                     <TabControl.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Header}" Margin="4,2" />
@@ -450,6 +460,7 @@
                         </Style>
                     </TabControl.ItemContainerStyle>
                 </TabControl>
+                </DockPanel>
             </TabItem>
 
         </TabControl>

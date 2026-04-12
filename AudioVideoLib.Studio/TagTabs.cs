@@ -75,7 +75,14 @@ public sealed class Id3v2TabViewModel : TagTabViewModel
     public Id3v2TabViewModel(Id3v2Tag tag)
     {
         Tag = tag;
-        Header = $"ID3{tag.Version.ToString().Replace("Id3v", "v")}";
+        Header = tag.Version switch
+        {
+            Id3v2Version.Id3v220 => "ID3v2.2",
+            Id3v2Version.Id3v221 => "ID3v2.2.1",
+            Id3v2Version.Id3v230 => "ID3v2.3",
+            Id3v2Version.Id3v240 => "ID3v2.4",
+            _ => $"ID3v2 ({tag.Version})",
+        };
         SourceBadge = Header;
 
         var yearId = tag.Version >= Id3v2Version.Id3v240 ? "TDRC" : "TYER";
@@ -452,8 +459,13 @@ public sealed class Id3v1TabViewModel : TagTabViewModel
     public Id3v1TabViewModel(Id3v1Tag tag)
     {
         Tag = tag;
-        Header = tag.Version.ToString().Replace("Id3v", "v");
-        SourceBadge = $"ID3{Header}";
+        Header = tag.Version switch
+        {
+            Id3v1Version.Id3v10 => "ID3v1.0",
+            Id3v1Version.Id3v11 => "ID3v1.1",
+            _ => $"ID3v1 ({tag.Version})",
+        };
+        SourceBadge = Header;
         Title = tag.TrackTitle;
         Artist = tag.Artist;
         Album = tag.AlbumTitle;
