@@ -1,9 +1,3 @@
-/*
- * Date: 2013-10-16
- * Sources used: 
- *  http://www.id3.org/lyrics3.html
- */
-
 namespace AudioVideoLib.Tags;
 
 using System;

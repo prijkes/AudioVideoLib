@@ -1,7 +1,3 @@
-/*
- * Date: 2012-05-26
- */
-
 namespace AudioVideoLib.Tags;
 
 /// <summary>

@@ -1,10 +1,3 @@
-/*
- * Date: 2013-01-20
- * Sources used: 
- *  http://www.codeproject.com/KB/audio-video/mpegaudioinfo.aspx
- *  http://gabriel.mp3-tech.org/mp3infotag.html
- */
-
 namespace AudioVideoLib.Formats;
 
 /// <summary>

@@ -1,9 +1,3 @@
-/*
- * Date: 2010-05-19
- * Sources used: 
- *  http://www.codeproject.com/KB/audio-video/mpegaudioinfo.aspx
- */
-
 namespace AudioVideoLib.Tags;
 
 using System;

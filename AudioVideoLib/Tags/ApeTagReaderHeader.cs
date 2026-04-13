@@ -1,15 +1,3 @@
-/*
- * Date: 2011-04-11
- * Sources used: 
- *  http://www.codeproject.com/KB/audio-video/mpegaudioinfo.aspx
- *  http://en.wikipedia.org/wiki/APE_tag
- *  http://wiki.hydrogenaudio.org/index.php?title=APEv1
- *  http://wiki.hydrogenaudio.org/index.php?title=APEv1_specification
- *  http://wiki.hydrogenaudio.org/index.php?title=APEv2
- *  http://wiki.hydrogenaudio.org/index.php?title=APEv2_specification
- *  http://www.monkeysaudio.com/developers.html
- */
-
 namespace AudioVideoLib.Tags;
 
 using System;

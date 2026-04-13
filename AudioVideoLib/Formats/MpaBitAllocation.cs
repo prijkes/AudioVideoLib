@@ -1,10 +1,3 @@
-/*
- * Date: 2013-01-28
- * Sources used: 
- *  http://sourceforge.net/tracker/index.php?func=detail&aid=3534143&group_id=979&atid=100979
- *  https://github.com/Sjord/checkmate/blob/master/mpck/layer2.c
- */
-
 namespace AudioVideoLib.Formats;
 
 /// <summary>

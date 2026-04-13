@@ -1,14 +1,3 @@
-/*
- * Date: 2014-02-17
- * Sources used:
- *  http://www.id3.org/Id3v2-00
- *  http://www.id3.org/Id3v2.3.0
- *  http://www.id3.org/id3guide
- *  http://www.id3.org/Id3v2.4.0-structure
- *  http://www.id3.org/Id3v2.4.0-frames
- *  http://www.id3.org/Id3v2.4.0-changes
- */
-
 namespace AudioVideoLib.Tags;
 
 public sealed partial class Id3v2TagReader

@@ -1,8 +1,3 @@
-/*
- * Date: 2010-09-03
- * Sources used:
- *  http://www.loc.gov/standards/iso639-2/php/code_list.php
- */
 namespace AudioVideoLib.Tags;
 
 using System;

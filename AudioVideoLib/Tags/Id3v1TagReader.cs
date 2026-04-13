@@ -1,11 +1,3 @@
-/*
- * Date: 2013-10-16
- * Sources used: 
- *  http://www.codeproject.com/KB/audio-video/mpegaudioinfo.aspx
- *  http://www.id3.org/Id3v1
- *  http://en.wikipedia.org/wiki/ID3#Extended_tag
- *  http://lib313.sourceforge.net/id3v13.html
- */
 namespace AudioVideoLib.Tags;
 
 using System;

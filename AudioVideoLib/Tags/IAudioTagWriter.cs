@@ -1,8 +1,3 @@
-/*
- * Date: 2013-10-27
- * Sources used: 
- */
-
 namespace AudioVideoLib.Tags;
 
 /// <summary>

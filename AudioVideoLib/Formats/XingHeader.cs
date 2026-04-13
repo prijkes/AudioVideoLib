@@ -1,10 +1,3 @@
-/*
- * Date: 2010-05-25
- * Sources used: 
- *  http://www.codeproject.com/KB/audio-video/mpegaudioinfo.aspx
- *  http://www.mp3-tech.org/programmer/decoding.html
- *  http://www.hydrogenaudio.org/forums/index.php?showtopic=85690
- */
 namespace AudioVideoLib.Formats;
 
 using System;

@@ -1,7 +1,3 @@
-/*
- * Date: 2011-04-02
- */
-
 namespace AudioVideoLib;
 
 using System;

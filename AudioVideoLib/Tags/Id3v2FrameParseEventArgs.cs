@@ -1,10 +1,3 @@
-/*
- * Date: 2012-12-30
- * Sources used:
- *  http://forums.asp.net/t/1057992.aspx/1
- *  http://www.codeproject.com/Articles/1474/Events-and-event-handling-in-C
- */
-
 namespace AudioVideoLib.Tags;
 
 using System;

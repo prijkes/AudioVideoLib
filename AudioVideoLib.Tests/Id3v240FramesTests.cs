@@ -1,8 +1,3 @@
-/*
- * Date: 2026-04-11
- * Sources used:
- *  docs/id3v2_4_0-frames - ID3_org.mht
- */
 namespace AudioVideoLib.Tests;
 
 using System.IO;

@@ -1,10 +1,3 @@
-/*
- * Date: 2013-02-02
- * Sources used: 
- *  http://xiph.org/flac/format.html
- *  http://py.thoulon.free.fr/
- */
-
 namespace AudioVideoLib.IO;
 
 using System.Collections.Generic;

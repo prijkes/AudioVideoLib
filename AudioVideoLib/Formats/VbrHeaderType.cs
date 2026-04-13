@@ -1,9 +1,3 @@
-/*
- * Date: 2013-01-12
- * Sources used: 
- *  http://www.codeproject.com/KB/audio-video/mpegaudioinfo.aspx
- */
-
 namespace AudioVideoLib.Formats;
 
 /// <summary>

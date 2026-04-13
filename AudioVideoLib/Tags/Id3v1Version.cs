@@ -1,9 +1,3 @@
-/*
- * Date: 2011-09-05
- * Sources used:
- *  http://www.id3.org/Id3v1
- */
-
 namespace AudioVideoLib.Tags;
 
 /// <summary>

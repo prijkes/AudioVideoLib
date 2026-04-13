@@ -1,8 +1,3 @@
-/*
- * Date: 2012-12-20
- * Sources used:
- *  http://www.iso.org/iso/iso_3166_code_lists
- */
 namespace AudioVideoLib.Tags;
 
 using System;

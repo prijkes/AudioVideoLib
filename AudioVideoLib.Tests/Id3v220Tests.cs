@@ -1,8 +1,3 @@
-/*
- * Date: 2026-04-11
- * Sources used:
- *  E:/Projects/AudioVideoLib/docs/id3v2_0_0 - ID3_org.mht (ID3v2.2.0 spec)
- */
 namespace AudioVideoLib.Tests;
 
 using System.Linq;

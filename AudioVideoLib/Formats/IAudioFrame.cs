@@ -1,8 +1,3 @@
-/*
- * Date: 2013-01-26
- * Sources used: 
- */
-
 namespace AudioVideoLib.Formats;
 
 /// <summary>

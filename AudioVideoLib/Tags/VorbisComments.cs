@@ -1,8 +1,3 @@
-/*
- * Date: 2013-02-17
- * Sources used: 
- *  http://www.xiph.org/vorbis/doc/v-comment.html
- */
 namespace AudioVideoLib.Tags;
 
 using System;

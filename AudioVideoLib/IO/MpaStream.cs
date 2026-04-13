@@ -1,10 +1,3 @@
-/*
- * Date: 2010-02-12
- * Sources used: 
- *  http://www.codeproject.com/KB/audio-video/mpegaudioinfo.aspx
- *  http://www.datavoyage.com/mpgscript/mpeghdr.htm
- */
-
 namespace AudioVideoLib.IO;
 
 using System;

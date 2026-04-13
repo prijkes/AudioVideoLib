@@ -1,7 +1,3 @@
-/*
- * Date: 2013-10-16
- * Sources used: 
- */
 namespace AudioVideoLib.IO;
 
 using System.IO;

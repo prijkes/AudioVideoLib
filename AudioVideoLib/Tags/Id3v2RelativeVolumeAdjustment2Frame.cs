@@ -1,15 +1,3 @@
-/*
- * Date: 2011-07-06
- * Sources used:
- *  http://www.id3.org/Id3v2-00
- *  http://www.id3.org/Id3v2.3.0
- *  http://www.id3.org/id3guide
- *  http://www.id3.org/Id3v2.4.0-structure
- *  http://www.id3.org/Id3v2.4.0-frames
- *  http://www.id3.org/Id3v2.4.0-changes
- *  http://www.getid3.org/source/index.php?p=module.tag.id3v2.phps
- *  https://github.com/taglib/taglib/blob/master/taglib/mpeg/id3v2/frames/relativevolumeframe.cpp
- */
 namespace AudioVideoLib.Tags;
 
 using System;

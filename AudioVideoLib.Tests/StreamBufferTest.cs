@@ -1,7 +1,3 @@
-/*
- * Date: 2012-11-16
- * Sources used:
- */
 namespace AudioVideoLib.Tests;
 
 using System;

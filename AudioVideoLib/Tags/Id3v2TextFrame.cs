@@ -1,15 +1,3 @@
-/*
- * Date: 2011-08-14
- * Sources used:
- *  http://www.id3.org/Id3v2-00
- *  http://www.id3.org/Id3v2.3.0
- *  http://www.id3.org/id3guide
- *  http://www.id3.org/Id3v2.4.0-structure
- *  http://www.id3.org/Id3v2.4.0-frames
- *  http://www.id3.org/Id3v2.4.0-changes
- *  http://forums.asp.net/t/1057992.aspx/1
- *  http://www.codeproject.com/Articles/1474/Events-and-event-handling-in-C
- */
 namespace AudioVideoLib.Tags;
 
 using System;

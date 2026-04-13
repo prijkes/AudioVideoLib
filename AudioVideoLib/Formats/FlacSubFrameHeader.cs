@@ -1,9 +1,3 @@
-/*
- * Date: 2013-03-22
- * Sources used: 
- *  http://flac.sourceforge.net/format.html
- *  http://py.thoulon.free.fr/
- */
 namespace AudioVideoLib.Formats;
 
 using System;

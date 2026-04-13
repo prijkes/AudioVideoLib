@@ -1,11 +1,3 @@
-/*
- * Date: 2010-02-12
- * Sources used: 
- *  http://www.codeproject.com/KB/audio-video/mpegaudioinfo.aspx
- *  http://www.datavoyage.com/mpgscript/mpeghdr.htm
- *  http://sourceforge.net/tracker/index.php?func=detail&aid=3534143&group_id=979&atid=100979
- *  https://github.com/Sjord/checkmate/blob/master/mpck/layer2.c
- */
 namespace AudioVideoLib.Formats;
 
 using System;

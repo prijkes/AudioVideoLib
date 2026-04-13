@@ -1,10 +1,3 @@
-/*
- * Date: 2012-11-09
- * Sources used: 
- *  http://id3.org/Lyrics3v2
- *  http://www.mpx.cz/mp3manager/tags.htm
- */
-
 namespace AudioVideoLib.Tags;
 
 /// <summary>

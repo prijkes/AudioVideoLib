@@ -1,9 +1,3 @@
-/*
- * Date: 2013-03-09
- * Sources used: 
- *  http://py.thoulon.free.fr/
- */
-
 namespace AudioVideoLib.IO;
 
 using System;

@@ -1,14 +1,3 @@
-/*
- * Date: 2012-12-28
- * Sources used:
- *  http://www.id3.org/Id3v2-00
- *  http://www.id3.org/Id3v2.3.0
- *  http://www.id3.org/id3guide
- *  http://www.id3.org/Id3v2.4.0-structure
- *  http://www.id3.org/Id3v2.4.0-frames
- *  http://www.id3.org/Id3v2.4.0-changes
- *  http://id3.org/Experimental%20RVA2
- */
 namespace AudioVideoLib.Tags;
 
 using System;

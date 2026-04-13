@@ -1,8 +1,3 @@
-/*
- * Date: 2010-08-12
- * Sources used: 
- *  http://emule-xtreme.googlecode.com/svn-history/r6/branches/emule/id3lib/doc/musicmatch.txt
- */
 namespace AudioVideoLib.Tags;
 
 using System;

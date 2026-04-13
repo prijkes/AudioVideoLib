@@ -1,8 +1,3 @@
-/*
- * Date: 2014-02-01
- * Sources used: 
- */
-
 using System;
 using System.IO;
 using System.Linq;

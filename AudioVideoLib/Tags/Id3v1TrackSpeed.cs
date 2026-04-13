@@ -1,9 +1,3 @@
-/*
- * Date: 2012-11-17
- * Sources used:
- *  http://en.wikipedia.org/wiki/ID3#Extended_tag
- */
-
 namespace AudioVideoLib.Tags;
 
 /// <summary>

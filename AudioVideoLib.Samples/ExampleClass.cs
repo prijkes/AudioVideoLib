@@ -1,8 +1,3 @@
-/*
- * Date: 2012-12-01
- * Sources used: 
- */
-
 using System;
 using System.Collections.Generic;
 using System.IO;

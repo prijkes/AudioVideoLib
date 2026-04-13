@@ -1,10 +1,3 @@
-/*
- * Date: 2013-03-02
- * Author: NullFX
- * Sources used: 
- *  http://www.sanity-free.com/134/standard_crc_16_in_csharp.html
- */
-
 namespace AudioVideoLib.Cryptography;
 
 using System;
