@@ -245,6 +245,10 @@ public sealed class FileDossier : INotifyPropertyChanged
                 case ApeTabViewModel ape:
                     dirtyTags.Add(ape.Tag);
                     break;
+                case Lyrics3v1TabViewModel l3v1:
+                    l3v1.CommitToTag();
+                    dirtyTags.Add(l3v1.Tag);
+                    break;
                 case Lyrics3v2TabViewModel l3:
                     dirtyTags.Add(l3.Tag);
                     break;
@@ -470,6 +474,7 @@ public sealed class FileDossier : INotifyPropertyChanged
         var id3v2 = tagOffsets.Select(o => o.AudioTag).OfType<Id3v2Tag>().FirstOrDefault();
         var id3v1 = tagOffsets.Select(o => o.AudioTag).OfType<Id3v1Tag>().FirstOrDefault();
         var ape = tagOffsets.Select(o => o.AudioTag).OfType<ApeTag>().FirstOrDefault();
+        var lyrics3v1 = tagOffsets.Select(o => o.AudioTag).OfType<Lyrics3Tag>().FirstOrDefault();
         var lyrics3v2 = tagOffsets.Select(o => o.AudioTag).OfType<Lyrics3v2Tag>().FirstOrDefault();
         var musicMatch = tagOffsets.Select(o => o.AudioTag).OfType<MusicMatchTag>().FirstOrDefault();
 
@@ -481,6 +486,11 @@ public sealed class FileDossier : INotifyPropertyChanged
         if (ape != null)
         {
             TagTabs.Add(new ApeTabViewModel(ape));
+        }
+
+        if (lyrics3v1 != null)
+        {
+            TagTabs.Add(new Lyrics3v1TabViewModel(lyrics3v1));
         }
 
         if (lyrics3v2 != null)

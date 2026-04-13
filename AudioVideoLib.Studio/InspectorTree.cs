@@ -104,6 +104,7 @@ public static class InspectorTreeBuilder
             Id3v2Tag v2 => BuildId3v2(fileBytes, offset.StartOffset, offset.EndOffset, v2),
             Id3v1Tag v1 => BuildId3v1(fileBytes, offset.StartOffset, offset.EndOffset, v1),
             ApeTag ape => BuildApe(fileBytes, offset.StartOffset, offset.EndOffset, ape),
+            Lyrics3Tag l3v1 => BuildLyrics3v1(offset.StartOffset, offset.EndOffset, l3v1),
             Lyrics3v2Tag l3 => BuildLyrics3v2(offset.StartOffset, offset.EndOffset, l3),
             MusicMatchTag mm => BuildMusicMatch(offset.StartOffset, offset.EndOffset, mm),
             _ => SimpleNode(offset.AudioTag.GetType().Name, offset.StartOffset, offset.EndOffset),
@@ -421,6 +422,38 @@ public static class InspectorTreeBuilder
     ////------------------------------------------------------------------------------------------------------------------------------
     //// Lyrics3v2
     ////------------------------------------------------------------------------------------------------------------------------------
+
+    private static InspectorNode BuildLyrics3v1(long start, long end, Lyrics3Tag tag)
+    {
+        var node = new InspectorNode
+        {
+            Label = "Lyrics3",
+            StartOffset = start,
+            EndOffset = end,
+            IsExpanded = true,
+        };
+
+        var headerLen = 11; // "LYRICSBEGIN"
+        var footerLen = 9;  // "LYRICSEND"
+        node.Properties.Add(Prop("Size", $"{end - start:N0} bytes"));
+        node.Properties.Add(Prop("Header", "LYRICSBEGIN", start, headerLen));
+        node.Properties.Add(Prop("Footer", "LYRICSEND", end - footerLen, footerLen));
+
+        var lyricsLen = (int)(end - start - headerLen - footerLen);
+        if (lyricsLen > 0)
+        {
+            var preview = tag.Lyrics ?? string.Empty;
+            if (preview.Length > 200)
+            {
+                preview = preview[..200] + "...";
+            }
+
+            node.Properties.Add(Prop("Lyrics", preview, start + headerLen, lyricsLen));
+            node.Properties.Add(Prop("Lyrics length", $"{lyricsLen:N0} bytes"));
+        }
+
+        return node;
+    }
 
     private static InspectorNode BuildLyrics3v2(long start, long end, Lyrics3v2Tag tag)
     {

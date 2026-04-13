@@ -258,6 +258,19 @@
 
         <!-- ==================== MusicMatch editor template ==================== -->
 
+        <DataTemplate DataType="{x:Type local:Lyrics3v1TabViewModel}">
+            <DockPanel Margin="10">
+                <TextBlock DockPanel.Dock="Top" Text="Lyrics" Style="{StaticResource FieldLabel}" Margin="0,0,0,4" />
+                <TextBox Text="{Binding Lyrics, UpdateSourceTrigger=PropertyChanged}"
+                         Style="{StaticResource EditField}"
+                         AcceptsReturn="True"
+                         TextWrapping="Wrap"
+                         VerticalScrollBarVisibility="Auto"
+                         FontFamily="Consolas"
+                         FontSize="12" />
+            </DockPanel>
+        </DataTemplate>
+
         <DataTemplate DataType="{x:Type local:MusicMatchTabViewModel}">
             <StackPanel Margin="10" MaxWidth="520" HorizontalAlignment="Left">
                 <TextBlock Text="Version"              Style="{StaticResource FieldLabel}" />

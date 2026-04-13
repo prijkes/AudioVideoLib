@@ -841,6 +841,40 @@ public sealed class VorbisCommentRow(VorbisComment comment, Action markDirty) : 
     } = comment.Value ?? string.Empty;
 }
 
+public sealed class Lyrics3v1TabViewModel : TagTabViewModel
+{
+    public Lyrics3v1TabViewModel(Lyrics3Tag tag)
+    {
+        Tag = tag;
+        Header = "Lyrics3";
+        SourceBadge = "Lyrics3";
+        Lyrics = tag.Lyrics ?? string.Empty;
+    }
+
+    public Lyrics3Tag Tag { get; }
+
+    public string Lyrics
+    {
+        get;
+        set
+        {
+            if (field == value)
+            {
+                return;
+            }
+
+            field = value ?? string.Empty;
+            Notify();
+            IsDirty = true;
+        }
+    } = string.Empty;
+
+    public void CommitToTag()
+    {
+        Tag.Lyrics = Lyrics;
+    }
+}
+
 public sealed class MusicMatchTabViewModel : TagTabViewModel
 {
     public MusicMatchTabViewModel(MusicMatchTag tag)
