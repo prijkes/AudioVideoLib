@@ -645,15 +645,19 @@ public static class InspectorTreeBuilder
                             // LAME tag layout (36 bytes): encoder(9) rev+vbr(1) lowpass(1) replaygain(8) flags(1) bitrate(1) delays(3) misc(1) gain(1) preset(2) musiclen(4) musiccrc(2) infocrc(2)
                             lameNode.Properties.Add(Prop("Encoder", lame.EncoderVersion ?? string.Empty, ls, 9));
                             lameNode.Properties.Add(Prop("Revision", lame.InfoTagRevision.ToString(), ls + 9, 1));
-                            lameNode.Properties.Add(Prop("VBR method", lame.VbrMethod.ToString(), ls + 9, 1));
+                            lameNode.Properties.Add(Prop("VBR method", $"{lame.VbrMethod} ({lame.VbrMethodName})", ls + 9, 1));
                             lameNode.Properties.Add(Prop("Lowpass", $"{lame.LowpassFilterValue} Hz", ls + 10, 1));
-                            lameNode.Properties.Add(Prop("Peak amplitude", string.Empty, ls + 11, 4));
-                            lameNode.Properties.Add(Prop("Radio replay gain", string.Empty, ls + 15, 2));
-                            lameNode.Properties.Add(Prop("Audiophile replay gain", string.Empty, ls + 17, 2));
-                            lameNode.Properties.Add(Prop("Encoding flags", string.Empty, ls + 19, 1));
-                            lameNode.Properties.Add(Prop("Bitrate", string.Empty, ls + 20, 1));
-                            lameNode.Properties.Add(Prop("Encoder delays", string.Empty, ls + 21, 3));
-                            lameNode.Properties.Add(Prop("Music length", string.Empty, ls + 28, 4));
+                            lameNode.Properties.Add(Prop("Peak amplitude", lame.PeakSignalAmplitude.ToString("F6"), ls + 11, 4));
+                            lameNode.Properties.Add(Prop("Radio replay gain", $"0x{lame.RadioReplayGain:X4}", ls + 15, 2));
+                            lameNode.Properties.Add(Prop("Audiophile replay gain", $"0x{lame.AudiophileReplayGain:X4}", ls + 17, 2));
+                            lameNode.Properties.Add(Prop("Encoding flags", $"0x{lame.EncodingFlags:X2}", ls + 19, 1));
+                            lameNode.Properties.Add(Prop("ATH type", lame.AthType.ToString(), ls + 19, 1));
+                            lameNode.Properties.Add(Prop("Bitrate", $"{lame.BitRate} kbps", ls + 20, 1));
+                            lameNode.Properties.Add(Prop("Encoder delay", $"{lame.EncoderDelaySamples} / {lame.EncoderDelayPaddingSamples} samples", ls + 21, 3));
+                            lameNode.Properties.Add(Prop("Misc", $"0x{lame.Misc:X2}", ls + 24, 1));
+                            lameNode.Properties.Add(Prop("MP3 gain", $"{lame.Mp3Gain} dB", ls + 25, 1));
+                            lameNode.Properties.Add(Prop("Preset", $"0x{lame.PresetSurroundInfo:X4}", ls + 26, 2));
+                            lameNode.Properties.Add(Prop("Music length", $"{lame.MusicLength:N0} bytes", ls + 28, 4));
                             lameNode.Properties.Add(Prop("Music CRC", $"0x{lame.MusicCrc:X4}", ls + 32, 2));
                             lameNode.Properties.Add(Prop("Info CRC", $"0x{lame.InfoTagCrc:X4}", ls + 34, 2));
 
