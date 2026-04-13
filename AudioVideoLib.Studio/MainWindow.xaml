@@ -114,7 +114,7 @@
                               IsReadOnly="False"
                               HeadersVisibility="Column"
                               GridLinesVisibility="Horizontal"
-                              AlternatingRowBackground="#F7F7F7"
+                              AlternatingRowBackground="{DynamicResource Surface2Brush}"
                               MinHeight="150"
                               MouseDoubleClick="AdvancedGrid_MouseDoubleClick">
                         <DataGrid.RowStyle>
@@ -194,7 +194,7 @@
                           CanUserDeleteRows="False"
                           IsReadOnly="False"
                           HeadersVisibility="Column"
-                          AlternatingRowBackground="#F7F7F7"
+                          AlternatingRowBackground="{DynamicResource Surface2Brush}"
                           SelectionMode="Single"
                           MinHeight="280">
                     <DataGrid.Columns>
@@ -220,7 +220,7 @@
                           CanUserDeleteRows="False"
                           IsReadOnly="False"
                           HeadersVisibility="Column"
-                          AlternatingRowBackground="#F7F7F7"
+                          AlternatingRowBackground="{DynamicResource Surface2Brush}"
                           SelectionMode="Single"
                           MinHeight="240">
                     <DataGrid.Columns>
@@ -245,7 +245,7 @@
                           CanUserDeleteRows="False"
                           IsReadOnly="False"
                           HeadersVisibility="Column"
-                          AlternatingRowBackground="#F7F7F7"
+                          AlternatingRowBackground="{DynamicResource Surface2Brush}"
                           SelectionMode="Single"
                           MinHeight="280">
                     <DataGrid.Columns>

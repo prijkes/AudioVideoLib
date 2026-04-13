@@ -345,14 +345,29 @@
         <Setter Property="BorderBrush" Value="{StaticResource BorderSubtleBrush}" />
         <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
         <Setter Property="Padding" Value="8" />
-        <Setter Property="HeaderTemplate">
+        <Setter Property="Template">
             <Setter.Value>
-                <DataTemplate>
-                    <TextBlock Text="{Binding}"
-                               FontSize="11"
-                               FontWeight="SemiBold"
-                               Foreground="{StaticResource TextSecondaryBrush}" />
-                </DataTemplate>
+                <ControlTemplate TargetType="GroupBox">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Border Grid.Row="0" Padding="2,0,2,4">
+                            <ContentPresenter ContentSource="Header"
+                                              RecognizesAccessKey="True"
+                                              TextBlock.FontSize="11"
+                                              TextBlock.FontWeight="SemiBold"
+                                              TextBlock.Foreground="{StaticResource TextSecondaryBrush}" />
+                        </Border>
+                        <Border Grid.Row="1"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="1"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter />
+                        </Border>
+                    </Grid>
+                </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
@@ -416,6 +431,12 @@
                 <Setter Property="Background" Value="{StaticResource HoverBrush}" />
             </Trigger>
         </Style.Triggers>
+        <Style.Resources>
+            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="{StaticResource SelectionColor}" />
+            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="#FFFFFFFF" />
+            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{StaticResource SelectionInactiveColor}" />
+            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="{StaticResource TextPrimaryColor}" />
+        </Style.Resources>
     </Style>
 
     <Style TargetType="DataGridCell">
