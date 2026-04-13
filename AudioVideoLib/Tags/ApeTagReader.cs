@@ -42,7 +42,7 @@ public sealed partial class ApeTagReader : IAudioTagReader
 
         var tag = new ApeTag(headerOrFooter.Version, headerOrFooter.Flags);
         long startOffset, endOffset;
-        ApeHeader? header = null, footer = null;
+        ApeHeader? header;
         if (tag.IsHeader)
         {
             header = headerOrFooter;
@@ -50,26 +50,18 @@ public sealed partial class ApeTagReader : IAudioTagReader
             endOffset = Math.Min(startOffset + ApeTag.HeaderSize + header.Size, sb.Length);
             if (endOffset > sb.Length)
             {
-#if DEBUG
-                throw new EndOfStreamException("Tag at start could not be read: stream is truncated.");
-#else
                 return null;
-#endif
             }
             tag.UseHeader = true;
         }
         else
         {
-            footer = headerOrFooter;
+            var footer = headerOrFooter;
             endOffset = Math.Min(footer.Position + ApeTag.FooterSize, sb.Length);
             startOffset = Math.Max(endOffset - footer.Size - (tag.UseHeader ? ApeTag.HeaderSize : 0), 0);
             if (endOffset > sb.Length)
             {
-#if DEBUG
-                throw new EndOfStreamException("Tag at end could not be read: stream is truncated.");
-#else
                 return null;
-#endif
             }
             tag.UseFooter = true;
 
@@ -102,26 +94,15 @@ public sealed partial class ApeTagReader : IAudioTagReader
 
                 if (footer.Size > ApeTag.MaxAllowedSize)
                 {
-#if DEBUG
-                    throw new InvalidDataException(
-                        string.Format("Size ({0}) is larger than the max allowed size ({1})", footer.Size, ApeTag.MaxAllowedSize));
-#else
                     return null;
-#endif
                 }
             }
-            ValidateHeader(header, footer);
         }
 
         var totalSizeItems = Math.Max(headerOrFooter.Size - ApeTag.FooterSize, 0);
         if ((sb.Length - sb.Position) < totalSizeItems)
         {
-#if DEBUG
-            throw new IndexOutOfRangeException(
-                string.Format("Ape field ({0}) is bigger than amount of bytes left in stream ({1}).", totalSizeItems, sb.Length - sb.Position));
-#else
             return null;
-#endif
         }
 
         // Parse the individual frames.
@@ -157,30 +138,13 @@ public sealed partial class ApeTagReader : IAudioTagReader
             bytesRead += sb.Position - startPosition;
         }
 
-#if DEBUG
-        //if (items.Count != headerOrFooter.FrameCount)
-        //throw new InvalidDataException("items.Count does not match FrameCount");
-
-        if (items.Count > ApeTag.MaxAllowedFields)
-        {
-            throw new InvalidDataException(
-                string.Format("Tag has more fields ('{0}') than the allowed max fields count ('{1}').", items.Count, ApeTag.MaxAllowedFields));
-        }
-
-        //if (bytesRead != totalSizeItems)
-        //{
-        //    throw new InvalidDataException(
-        //        String.Format("Amount of bytes read ({0}) does not match expected size ({1}).", bytesRead, totalSizeItems));
-        //}
-#endif
 
         if (tag.IsHeader && tag.UseFooter)
         {
             sb.Position += ApeTag.FooterSize;
-            footer = ReadHeader(sb, TagOrigin.End);
+            _ = ReadHeader(sb, TagOrigin.End);
         }
 
-        ValidateHeader(header, footer);
 
         return new AudioTagOffset(tagOrigin, startOffset, endOffset, tag);
     }

@@ -142,11 +142,9 @@ public sealed partial class StreamBuffer
     /// </remarks>
     /// <exception cref="T:System.NotSupportedException">The stream does not support writing, or the stream is already closed.</exception>
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    public void WriteString(string value)
+    public void WriteString(string? value)
     {
-        ArgumentNullException.ThrowIfNull(value);
-
-        WriteString(value, Encoding.ASCII);
+        WriteString(value ?? string.Empty, Encoding.ASCII);
     }
 
     /// <summary>
@@ -159,10 +157,9 @@ public sealed partial class StreamBuffer
     /// </remarks>
     /// <exception cref="T:System.NotSupportedException">The stream does not support writing, or the stream is already closed.</exception>
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    public void WriteString(string value, Encoding encoding)
+    public void WriteString(string? value, Encoding encoding)
     {
-        ArgumentNullException.ThrowIfNull(value);
-
+        value ??= string.Empty;
         ArgumentNullException.ThrowIfNull(encoding);
 
         var buffer = encoding.GetBytes(value);
@@ -185,10 +182,9 @@ public sealed partial class StreamBuffer
     /// </remarks>
     /// <exception cref="T:System.NotSupportedException">The stream does not support writing, or the stream is already closed.</exception>
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    public void WriteString(string value, Encoding encoding, int maxBytesToWrite)
+    public void WriteString(string? value, Encoding encoding, int maxBytesToWrite)
     {
-        ArgumentNullException.ThrowIfNull(value);
-
+        value ??= string.Empty;
         ArgumentNullException.ThrowIfNull(encoding);
 
         var subLength = value.Length;

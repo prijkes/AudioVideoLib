@@ -141,11 +141,7 @@ public sealed partial class MusicMatchTagReader : IAudioTagReader
 
         if (tag.UseHeader && !versionInformation.Equals(header))
         {
-#if DEBUG
-            throw new InvalidDataException("Version information field(s) mismatch the header fields.");
-#else
             return null;
-#endif
         }
 
         tag.XingEncoderVersion = versionInformation.XingEncoderVersion;
@@ -336,7 +332,6 @@ public sealed partial class MusicMatchTagReader : IAudioTagReader
                     // Space padding <226 * 0x20 >                    
                     stream.Read(header.SpacePadding2, header.SpacePadding2.Length);
 
-                    ValidateHeader(header, null);
                     return header;
                 }
 
@@ -358,7 +353,6 @@ public sealed partial class MusicMatchTagReader : IAudioTagReader
                     // Space padding <12 * 0x20>
                     stream.Read(footer.SpacePadding2, 12);
 
-                    ValidateHeader(null, footer);
                     return footer;
                 }
             }
@@ -413,12 +407,12 @@ public sealed partial class MusicMatchTagReader : IAudioTagReader
         return sb == null
             ? throw new ArgumentNullException("sb")
             : new MusicMatchDataOffsets
-        {
-            ImageExtensionOffset = sb.ReadInt32(),
-            ImageBinaryOffset = sb.ReadInt32(),
-            UnusedOffset = sb.ReadInt32(),
-            VersionInfoOffset = sb.ReadInt32(),
-            AudioMetaDataOffset = sb.ReadInt32()
-        };
+            {
+                ImageExtensionOffset = sb.ReadInt32(),
+                ImageBinaryOffset = sb.ReadInt32(),
+                UnusedOffset = sb.ReadInt32(),
+                VersionInfoOffset = sb.ReadInt32(),
+                AudioMetaDataOffset = sb.ReadInt32()
+            };
     }
 }

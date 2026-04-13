@@ -137,11 +137,11 @@ public partial class Id3v2Frame
         return textString == null
             ? throw new ArgumentNullException("textString")
             : frameEncodingType switch
-        {
-            Id3v2FrameEncodingType.Default => textString.All(c => ((c >= (char)0x20) && (c <= (char)0xFF)) || (newLineAllowed && (c == '\n'))),
-            Id3v2FrameEncodingType.UTF16LittleEndian or Id3v2FrameEncodingType.UTF16BigEndian or Id3v2FrameEncodingType.UTF16BigEndianWithoutBom or Id3v2FrameEncodingType.UTF7 or Id3v2FrameEncodingType.UTF8 => textString.All(c => (newLineAllowed && (c == '\n')) || (c != '\0')),
-            _ => true,
-        };
+            {
+                Id3v2FrameEncodingType.Default => textString.All(c => ((c >= (char)0x20) && (c <= (char)0xFF)) || (newLineAllowed && (c == '\n'))),
+                Id3v2FrameEncodingType.UTF16LittleEndian or Id3v2FrameEncodingType.UTF16BigEndian or Id3v2FrameEncodingType.UTF16BigEndianWithoutBom or Id3v2FrameEncodingType.UTF7 or Id3v2FrameEncodingType.UTF8 => textString.All(c => (newLineAllowed && (c == '\n')) || (c != '\0')),
+                _ => true,
+            };
     }
 
     /// <summary>

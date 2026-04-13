@@ -1,6 +1,5 @@
 namespace AudioVideoLib.Tags;
 
-using System;
 using System.Text;
 
 /// <summary>
@@ -66,11 +65,11 @@ public class ApeBinaryItem : ApeItem
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Sets the data.
+    /// Gets or sets the binary data.
     /// </summary>
-    /// <param name="data">The data.</param>
-    public void SetData(byte[] data)
+    public new byte[] Data
     {
-        Data = data ?? throw new ArgumentNullException("data");
+        get => base.Data;
+        set => base.Data = value;
     }
 }

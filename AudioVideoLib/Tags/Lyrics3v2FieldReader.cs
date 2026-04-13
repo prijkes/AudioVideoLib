@@ -43,14 +43,9 @@ public partial class Lyrics3v2Field
         var identifier = sb.ReadString(FieldIdentifierLength);
         var strFieldSize = sb.ReadString(FieldSizeLength);
 
-        int fieldSize;
-        if (!int.TryParse(strFieldSize, out fieldSize))
+        if (!int.TryParse(strFieldSize, out var fieldSize) || fieldSize > maximumFieldSize)
         {
-#if DEBUG
-            return false;//throw new InvalidDataException(String.Format("Size value for field {0} is not an int: {1}", identifier, strFieldSize));
-#else
             return false;
-#endif
         }
         Identifier = identifier;
         _data = new byte[fieldSize];

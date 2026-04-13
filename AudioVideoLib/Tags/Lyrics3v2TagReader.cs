@@ -49,11 +49,7 @@ public sealed partial class Lyrics3v2TagReader : IAudioTagReader
             long tagSize;
             if (!long.TryParse(strTagSize, out tagSize) || tagSize < 0 || tagSize > sb.Position)
             {
-#if DEBUG
-                throw new InvalidDataException(string.Format("Can't parse size value {0} before footer.", strTagSize));
-#else
                 return null;
-#endif
             }
             var currentPosition = sb.Position;
 
@@ -115,42 +111,20 @@ public sealed partial class Lyrics3v2TagReader : IAudioTagReader
             // The Lyrics3 block ends with a six character size descriptor and the string "LYRICS200".
             // The size value includes the "LYRICSBEGIN" string, but does not include the 6 character size descriptor and the trailing "LYRICS200" string.
             var strTagSize = sb.ReadString(6);
-            long tagSize;
-            if (!long.TryParse(strTagSize, out tagSize))
+            if (!long.TryParse(strTagSize, out _))
             {
-#if DEBUG
-                throw new InvalidDataException(string.Format("Can't parse size value {0} before footer.", strTagSize));
-#else
                 return null;
-#endif
             }
 
             int bRead;
             var footerIdentifier = sb.ReadString(FooterIdentifierBytes.Length, true, out bRead);
             if (!string.Equals(footerIdentifier, Lyrics3v2Tag.FooterIdentifier))
             {
-#if DEBUG
-                throw new InvalidDataException(
-                    string.Format("Footer identifier {0} not recognized; expected {1}", footerIdentifier, Lyrics3v2Tag.FooterIdentifier));
-#else
                 sb.Position -= bRead;
-#endif
             }
             endOffset = sb.Position;
         }
 
-#if DEBUG
-        var totalDataSize = endOffset - startOffset - Lyrics3v2Tag.TagSizeLength - FooterIdentifierBytes.Length;
-        //if (totalDataSize != bytesRead)
-        //{
-        //    // If the amount of bytes we read doesn't match the size of the tag indicated in the header,
-        //    throw new InvalidDataException(
-        //        String.Format(
-        //            "Amount of bytes read ({0}) does not match size indicated before footer ({1}).",
-        //            totalDataSize,
-        //            bytesRead));
-        //}
-#endif
 
         var tag = new Lyrics3v2Tag();
         tag.SetFields(fields);

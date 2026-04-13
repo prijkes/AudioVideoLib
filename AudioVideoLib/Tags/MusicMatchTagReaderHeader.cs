@@ -1,8 +1,5 @@
 namespace AudioVideoLib.Tags;
 
-#if DEBUG
-using System.Linq;
-#endif
 
 /// <summary>
 /// Class to store a MusicMatch tag.
@@ -14,60 +11,6 @@ public sealed partial class MusicMatchTagReader
     private static readonly byte[] FooterIdentifierBytes = System.Text.Encoding.ASCII.GetBytes(MusicMatchTag.FooterIdentifier);
 
     ////------------------------------------------------------------------------------------------------------------------------------
-
-    private static void ValidateHeader(MusicMatchHeader? header, MusicMatchHeader? footer)
-    {
-#if DEBUG
-        if (header != null && footer != null)
-        {
-            if (header.MusicMatchVersion != footer.MusicMatchVersion)
-            {
-                throw new System.IO.InvalidDataException(
-                    string.Format("The MusicMatch header version {0} does not match footer version {1}.", header.MusicMatchVersion, footer.MusicMatchVersion));
-            }
-        }
-
-        if (header != null)
-        {
-            if (header.Padding1.Any(c => c != 0x00))
-            {
-                throw new System.IO.InvalidDataException(
-                    $"The MusicMatch header has invalid padding1 bytes: {FormatHexBytes(header.Padding1, 0x00)}.");
-            }
-
-            if (header.Padding2.Any(c => c != 0x00))
-            {
-                throw new System.IO.InvalidDataException(
-                    $"The MusicMatch header has invalid padding2 bytes: {FormatHexBytes(header.Padding2, 0x00)}.");
-            }
-
-            if (header.Padding3.Any(c => c != 0x00))
-            {
-                throw new System.IO.InvalidDataException(
-                    $"The MusicMatch header has invalid padding3 bytes: {FormatHexBytes(header.Padding3, 0x00)}.");
-            }
-
-            if (header.SpacePadding2.Any(c => c != 0x20))
-            {
-                throw new System.IO.InvalidDataException(
-                    $"The MusicMatch header has invalid space padding bytes: {FormatHexBytes(header.SpacePadding2, 0x20)}.");
-            }
-        }
-
-        if (footer != null)
-        {
-        }
-#else
-        return;
-#endif
-    }
-
-#if DEBUG
-    private static string FormatHexBytes(byte[] bytes, byte expected)
-    {
-        return string.Join(" ", bytes.Where(b => b != expected).Select(b => $"{b:x2}"));
-    }
-#endif
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

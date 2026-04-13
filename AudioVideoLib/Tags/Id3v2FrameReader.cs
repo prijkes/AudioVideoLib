@@ -263,15 +263,7 @@ public partial class Id3v2Frame
                     frameData = decompressedData;
                     if (frameData.Length != DecompressedFrameSize)
                     {
-#if DEBUG
-                        throw new InvalidDataException(
-                            string.Format(
-                                "decompressed data size {0} does not match decompressed frame size {1}.",
-                                frameData.Length,
-                                DecompressedFrameSize));
-#else
                         return false;
-#endif
                     }
                     _isCompressed = false;
                 }

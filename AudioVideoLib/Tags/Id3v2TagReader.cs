@@ -54,7 +54,7 @@ public sealed partial class Id3v2TagReader : IAudioTagReader
         // startOffset: offset the header starts
         // endOffset: offset the footer ends if available, or when the tag ends
         long startOffset, endOffset;
-        Id3v2Header? header = null, footer = null;
+        Id3v2Header? header;
         if (isHeader)
         {
             header = headerOrFooter;
@@ -62,17 +62,13 @@ public sealed partial class Id3v2TagReader : IAudioTagReader
             endOffset = Math.Min(startOffset + Id3v2Tag.HeaderSize + header.Size + (tag.UseFooter ? Id3v2Tag.FooterSize : 0), sb.Length);
             if (endOffset > sb.Length)
             {
-#if DEBUG
-                throw new EndOfStreamException("Tag at start could not be read: stream is truncated.");
-#else
                 return null;
-#endif
             }
         }
         else
         {
             // We've read the footer.
-            footer = headerOrFooter;
+            var footer = headerOrFooter;
             endOffset = footer.Position + Id3v2Tag.FooterSize;
             startOffset = Math.Max(endOffset - Id3v2Tag.FooterSize - footer.Size - Id3v2Tag.HeaderSize, 0);
 
@@ -112,11 +108,7 @@ public sealed partial class Id3v2TagReader : IAudioTagReader
             // Return if this is the case.
             if (headerOrFooter.Size > Id3v2Tag.MaxAllowedSize)
             {
-#if DEBUG
-                throw new InvalidDataException(string.Format("Size ({0}) is larger than the max allowed size ({1})", footer.Size, Id3v2Tag.MaxAllowedSize));
-#else
                 return null;
-#endif
             }
 
             // A footer is read at this point.
@@ -187,7 +179,7 @@ public sealed partial class Id3v2TagReader : IAudioTagReader
                 // Rest is padding.
                 // We add up to the padding rather than assigning it, because the ExtendedHeader might include padding as well.
                 tag.PaddingSize += (int)(totalSizeItems - bytesRead);
-                bytesRead += tag.PaddingSize;
+                _ = tag.PaddingSize;
                 break;
             }
 
@@ -208,31 +200,12 @@ public sealed partial class Id3v2TagReader : IAudioTagReader
         }
         paddingSize += tag.PaddingSize;
 
-#if DEBUG
-        if (frames.Count() > Id3v2Tag.MaxAllowedFrames)
-        {
-            throw new InvalidDataException(
-                string.Format("Tag has more frames ('{0}') than the allowed max frames count ('{1}').", frames.Count(), Id3v2Tag.MaxAllowedFrames));
-        }
-
-        if (bytesRead != totalSizeItems)
-        {
-            throw new InvalidDataException(
-                string.Format("Amount of bytes read ({0}) does not match expected size ({1}).", bytesRead, totalSizeItems));
-        }
-
-        // Id3v2.4.0 and later do not have a field for padding size.
-        if (!isHeader && (paddingSize > 0))
-        {
-            throw new InvalidDataException("Id3v2 tag can not have padding when footer is set.");
-        }
-#endif
 
         // If the tag is at the start of the stream, is the tag allowed to have a footer?
         if (isHeader && tag.UseFooter)
         {
             sb.Position += Id3v2Tag.FooterSize;
-            footer = ReadHeader(sb, TagOrigin.End);
+            _ = ReadHeader(sb, TagOrigin.End);
         }
 
         // Validate the padding.
@@ -240,14 +213,7 @@ public sealed partial class Id3v2TagReader : IAudioTagReader
         {
             var padding = new byte[paddingSize];
             sb.Read(padding, paddingSize);
-#if DEBUG
-            if (!padding.Any(b => b == 0x00))
-            {
-                throw new InvalidDataException("Padding contains one or more invalid padding bytes.");
-            }
-#endif
         }
-        ValidateHeader(tag, header, footer);
 
         // Sort frames and add them to the tag.
         AddRequiredFrames(tag.Version, frames);
@@ -333,45 +299,6 @@ public sealed partial class Id3v2TagReader : IAudioTagReader
         var frameParsedEventArgs = new Id3v2FrameParsedEventArgs(frame);
         OnFrameParsed(frameParsedEventArgs);
         return frameParsedEventArgs.Frame;
-    }
-
-    private static void ValidateHeader(Id3v2Tag tag, Id3v2Header? header, Id3v2Header? footer)
-    {
-#if DEBUG
-        if (tag == null)
-        {
-            return;
-        }
-
-        if (header != null && footer != null)
-        {
-            if (header.Version != footer.Version)
-            {
-                throw new InvalidDataException(
-                    string.Format("The APE header version {0} does not match footer version {1}.", header.Version, footer.Version));
-            }
-
-            if (tag.PaddingSize != 0)
-            {
-                throw new InvalidDataException("Id3v2 tag can not have padding when footer is set.");
-            }
-        }
-
-        if (header != null)
-        {
-        }
-
-        if (footer != null)
-        {
-            // If the tag is after the MPEG frames and there's no footer.
-            if (!tag.UseFooter)
-            {
-                throw new InvalidDataException("Footer not found; footer is required for Id3v2 tags at the end of a stream.");
-            }
-        }
-#else
-        return;
-#endif
     }
 
     private static Id3v2Header? ReadHeader(StreamBuffer stream, TagOrigin tagOrigin)
