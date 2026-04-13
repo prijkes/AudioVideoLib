@@ -734,7 +734,7 @@ public sealed class Lyrics3v2FieldRow(Lyrics3v2Field source, Action markDirty) :
     } = source switch
     {
         Lyrics3v2TextField t => t.Value ?? string.Empty,
-        _ when source.Data is { Length: > 0 } d => $"<{d.Length:N0} bytes>",
+        _ when source.Data is { Length: > 0 } d => System.Text.Encoding.ASCII.GetString(d),
         _ => string.Empty,
     };
 }

@@ -471,16 +471,21 @@ public static class InspectorTreeBuilder
         foreach (var field in tag.Fields)
         {
             var fieldData = field.Data;
-            var value = field is Lyrics3v2TextField t ? t.Value : $"<{fieldData?.Length ?? 0:N0} bytes>";
+            var value = field switch
+            {
+                Lyrics3v2TextField t => t.Value ?? string.Empty,
+                _ when fieldData is { Length: > 0 } => Encoding.ASCII.GetString(fieldData),
+                _ => string.Empty,
+            };
             node.Children.Add(new InspectorNode
             {
                 Label = field.Identifier,
-                StartOffset = start, // exact offsets not tracked by library
-                EndOffset = start,
+                StartOffset = start,
+                EndOffset = end,
                 Properties =
                 {
                     Prop("Identifier", field.Identifier),
-                    Prop("Value", value ?? string.Empty),
+                    Prop("Value", value),
                     Prop("Data size", $"{fieldData?.Length ?? 0:N0} bytes"),
                 },
             });
