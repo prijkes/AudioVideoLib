@@ -572,11 +572,14 @@ public static class InspectorTreeBuilder
                         EndOffset = frameEnd,
                     };
 
-                    frameNode.Properties.Add(Prop("Offset", $"0x{frame.StartOffset:X8}", frame.StartOffset, 4));
+                    var fh = frame.StartOffset;
+                    frameNode.Properties.Add(Prop("Offset", $"0x{fh:X8}", fh, 4));
                     frameNode.Properties.Add(Prop("Length", $"{frame.FrameLength} bytes"));
-                    frameNode.Properties.Add(Prop("Bitrate", $"{frame.Bitrate} kbps"));
-                    frameNode.Properties.Add(Prop("Padded", frame.IsPadded.ToString()));
-                    frameNode.Properties.Add(Prop("Protected", frame.IsCrcProtected ? "CRC present" : "none"));
+                    // MPEG frame header is 4 bytes: sync(11)+version(2)+layer(2)+protection(1)+bitrate(4)+samplerate(2)+padding(1)+private(1)+channelmode(2)+...
+                    frameNode.Properties.Add(Prop("Bitrate", $"{frame.Bitrate} kbps", fh + 2, 1));
+                    frameNode.Properties.Add(Prop("Sample rate", $"{frame.SamplingRate} Hz", fh + 2, 1));
+                    frameNode.Properties.Add(Prop("Padded", frame.IsPadded.ToString(), fh + 2, 1));
+                    frameNode.Properties.Add(Prop("Protected", frame.IsCrcProtected ? "CRC present" : "none", fh + 1, 1));
 
                     if (i == 0 && mpa.VbrHeader is { } vbrH)
                     {
@@ -587,11 +590,47 @@ public static class InspectorTreeBuilder
                             EndOffset = Math.Min(frame.StartOffset + vbrH.Offset + 120, frameEnd),
                         };
 
+                        var vbrStart = frame.StartOffset + vbrH.Offset;
+                        vbrNode.Properties.Add(Prop("Name", vbrH.Name ?? string.Empty, vbrStart, 4));
+                        vbrNode.Properties.Add(Prop("Flags", $"0x{vbrH.Flags:X8}", vbrStart + 4, 4));
+                        // Xing: fields are conditional on flags; compute positions
+                        var xCursor = vbrStart + 8;
+                        if ((vbrH.Flags & 0x01) != 0) // FrameCountFlag
+                        {
+                            vbrNode.Properties.Add(Prop("Frame count", vbrH.FrameCount.ToString(), xCursor, 4));
+                            xCursor += 4;
+                        }
+                        else
+                        {
+                            vbrNode.Properties.Add(Prop("Frame count", "(not present)"));
+                        }
+
+                        if ((vbrH.Flags & 0x02) != 0) // FileSizeFlag
+                        {
+                            vbrNode.Properties.Add(Prop("File size", $"{vbrH.FileSize:N0} bytes", xCursor, 4));
+                            xCursor += 4;
+                        }
+                        else
+                        {
+                            vbrNode.Properties.Add(Prop("File size", "(not present)"));
+                        }
+
+                        if ((vbrH.Flags & 0x04) != 0) // TocFlag
+                        {
+                            vbrNode.Properties.Add(Prop("TOC", "100 entries", xCursor, 100));
+                            xCursor += 100;
+                        }
+
+                        if ((vbrH.Flags & 0x08) != 0) // VbrScaleFlag
+                        {
+                            vbrNode.Properties.Add(Prop("Quality", vbrH.Quality.ToString(), xCursor, 4));
+                        }
+                        else
+                        {
+                            vbrNode.Properties.Add(Prop("Quality", "(not present)"));
+                        }
+
                         vbrNode.Properties.Add(Prop("Type", vbrH.HeaderType.ToString()));
-                        vbrNode.Properties.Add(Prop("Name", vbrH.Name ?? string.Empty));
-                        vbrNode.Properties.Add(Prop("Frame count", vbrH.FrameCount.ToString()));
-                        vbrNode.Properties.Add(Prop("File size", $"{vbrH.FileSize:N0} bytes"));
-                        vbrNode.Properties.Add(Prop("Quality", vbrH.Quality.ToString()));
 
                         if (vbrH.LameTag is { } lame)
                         {
@@ -602,12 +641,21 @@ public static class InspectorTreeBuilder
                                 EndOffset = frameEnd,
                             };
 
-                            lameNode.Properties.Add(Prop("Encoder", lame.EncoderVersion ?? string.Empty));
-                            lameNode.Properties.Add(Prop("Revision", lame.InfoTagRevision.ToString()));
-                            lameNode.Properties.Add(Prop("VBR method", lame.VbrMethod.ToString()));
-                            lameNode.Properties.Add(Prop("Lowpass", $"{lame.LowpassFilterValue} Hz"));
-                            lameNode.Properties.Add(Prop("Music CRC", $"0x{lame.MusicCrc:X4}"));
-                            lameNode.Properties.Add(Prop("Info CRC", $"0x{lame.InfoTagCrc:X4}"));
+                            var ls = lameNode.StartOffset;
+                            // LAME tag layout (36 bytes): encoder(9) rev+vbr(1) lowpass(1) replaygain(8) flags(1) bitrate(1) delays(3) misc(1) gain(1) preset(2) musiclen(4) musiccrc(2) infocrc(2)
+                            lameNode.Properties.Add(Prop("Encoder", lame.EncoderVersion ?? string.Empty, ls, 9));
+                            lameNode.Properties.Add(Prop("Revision", lame.InfoTagRevision.ToString(), ls + 9, 1));
+                            lameNode.Properties.Add(Prop("VBR method", lame.VbrMethod.ToString(), ls + 9, 1));
+                            lameNode.Properties.Add(Prop("Lowpass", $"{lame.LowpassFilterValue} Hz", ls + 10, 1));
+                            lameNode.Properties.Add(Prop("Peak amplitude", string.Empty, ls + 11, 4));
+                            lameNode.Properties.Add(Prop("Radio replay gain", string.Empty, ls + 15, 2));
+                            lameNode.Properties.Add(Prop("Audiophile replay gain", string.Empty, ls + 17, 2));
+                            lameNode.Properties.Add(Prop("Encoding flags", string.Empty, ls + 19, 1));
+                            lameNode.Properties.Add(Prop("Bitrate", string.Empty, ls + 20, 1));
+                            lameNode.Properties.Add(Prop("Encoder delays", string.Empty, ls + 21, 3));
+                            lameNode.Properties.Add(Prop("Music length", string.Empty, ls + 28, 4));
+                            lameNode.Properties.Add(Prop("Music CRC", $"0x{lame.MusicCrc:X4}", ls + 32, 2));
+                            lameNode.Properties.Add(Prop("Info CRC", $"0x{lame.InfoTagCrc:X4}", ls + 34, 2));
 
                             vbrNode.Children.Add(lameNode);
                         }
@@ -663,10 +711,17 @@ public static class InspectorTreeBuilder
 
             if (block is FlacStreamInfoMetadataBlock info)
             {
-                blockNode.Properties.Add(Prop("Sample rate", $"{info.SampleRate} Hz"));
-                blockNode.Properties.Add(Prop("Channels", info.Channels.ToString()));
-                blockNode.Properties.Add(Prop("Bits/sample", info.BitsPerSample.ToString()));
-                blockNode.Properties.Add(Prop("Total samples", info.TotalSamples.ToString()));
+                // StreamInfo data layout: minBlock(2) maxBlock(2) minFrame(3) maxFrame(3) sampleRate+ch+bps+samples(8) MD5(16)
+                var d = cursor + 4; // data starts after 4-byte block header
+                blockNode.Properties.Add(Prop("Min block size", string.Empty, d, 2));
+                blockNode.Properties.Add(Prop("Max block size", string.Empty, d + 2, 2));
+                blockNode.Properties.Add(Prop("Min frame size", string.Empty, d + 4, 3));
+                blockNode.Properties.Add(Prop("Max frame size", string.Empty, d + 7, 3));
+                blockNode.Properties.Add(Prop("Sample rate", $"{info.SampleRate} Hz", d + 10, 3));
+                blockNode.Properties.Add(Prop("Channels", info.Channels.ToString(), d + 12, 1));
+                blockNode.Properties.Add(Prop("Bits/sample", info.BitsPerSample.ToString(), d + 12, 2));
+                blockNode.Properties.Add(Prop("Total samples", info.TotalSamples.ToString(), d + 13, 5));
+                blockNode.Properties.Add(Prop("MD5", string.Empty, d + 18, 16));
             }
             else if (block is FlacVorbisCommentsMetadataBlock vc && vc.VorbisComments != null)
             {
@@ -689,11 +744,20 @@ public static class InspectorTreeBuilder
             }
             else if (block is FlacPictureMetadataBlock pic)
             {
-                blockNode.Properties.Add(Prop("Picture type", pic.PictureType.ToString()));
-                blockNode.Properties.Add(Prop("MIME", pic.MimeType ?? string.Empty));
-                blockNode.Properties.Add(Prop("Description", pic.Description ?? string.Empty));
-                blockNode.Properties.Add(Prop("Dimensions", $"{pic.Width}x{pic.Height}"));
-                blockNode.Properties.Add(Prop("Picture size", $"{pic.PictureData?.Length ?? 0:N0} bytes"));
+                // Picture data layout: type(4) + mimeLen(4) + mime + descLen(4) + desc + w(4) + h(4) + depth(4) + colors(4) + dataLen(4) + data
+                var pd = cursor + 4;
+                blockNode.Properties.Add(Prop("Picture type", pic.PictureType.ToString(), pd, 4));
+                var mimeLen = pic.MimeType?.Length ?? 0;
+                blockNode.Properties.Add(Prop("MIME", pic.MimeType ?? string.Empty, pd + 8, mimeLen));
+                var descOffset = pd + 8 + mimeLen + 4;
+                var descLen = pic.Description?.Length ?? 0;
+                blockNode.Properties.Add(Prop("Description", pic.Description ?? string.Empty, descOffset, descLen));
+                var dimsOffset = descOffset + descLen;
+                blockNode.Properties.Add(Prop("Width", pic.Width.ToString(), dimsOffset, 4));
+                blockNode.Properties.Add(Prop("Height", pic.Height.ToString(), dimsOffset + 4, 4));
+                blockNode.Properties.Add(Prop("Color depth", pic.ColorDepth.ToString(), dimsOffset + 8, 4));
+                blockNode.Properties.Add(Prop("Color count", pic.ColorCount.ToString(), dimsOffset + 12, 4));
+                blockNode.Properties.Add(Prop("Picture size", $"{pic.PictureData?.Length ?? 0:N0} bytes", dimsOffset + 16, 4));
             }
 
             root.Children.Add(blockNode);
