@@ -66,17 +66,31 @@ public sealed class BitrateChart : FrameworkElement
             return;
         }
 
-        // Y axis labels (min, max, mid)
-        dc.DrawText(MakeText($"{_max} kbps"), new Point(4, marginTop - 4));
-        dc.DrawText(MakeText($"{_min} kbps"), new Point(4, marginTop + plotH - 14));
-        if (_max != _min)
-        {
-            dc.DrawText(MakeText($"{(_min + _max) / 2} kbps"), new Point(4, marginTop + (plotH / 2) - 7));
-        }
-
         // Axis lines
         dc.DrawLine(AxisPen, new Point(marginLeft, marginTop), new Point(marginLeft, marginTop + plotH));
         dc.DrawLine(AxisPen, new Point(marginLeft, marginTop + plotH), new Point(marginLeft + plotW, marginTop + plotH));
+
+        // X axis range label
+        dc.DrawText(MakeText($"0"), new Point(marginLeft - 4, marginTop + plotH + 4));
+        dc.DrawText(MakeText($"{_bitrates.Count:N0} frames"), new Point(marginLeft + plotW - 70, marginTop + plotH + 4));
+
+        // CBR short-circuit: a single value produces a flat chart with identical min/max labels
+        // and a line glued to the bottom axis. Draw a centred line + a clear caption instead.
+        if (_min == _max)
+        {
+            var midY = marginTop + (plotH / 2);
+            dc.DrawText(MakeText($"{_max} kbps"), new Point(4, midY - 7));
+            dc.DrawLine(LinePen, new Point(marginLeft, midY), new Point(marginLeft + plotW, midY));
+            dc.DrawText(
+                MakeText($"Constant {_max} kbps — no variation (CBR)"),
+                new Point(marginLeft + 12, marginTop + 6));
+            return;
+        }
+
+        // Y axis labels (min, max, mid)
+        dc.DrawText(MakeText($"{_max} kbps"), new Point(4, marginTop - 4));
+        dc.DrawText(MakeText($"{_min} kbps"), new Point(4, marginTop + plotH - 14));
+        dc.DrawText(MakeText($"{(_min + _max) / 2} kbps"), new Point(4, marginTop + (plotH / 2) - 7));
 
         // Grid: horizontal lines at 25/50/75%
         for (var i = 1; i < 4; i++)
@@ -85,16 +99,12 @@ public sealed class BitrateChart : FrameworkElement
             dc.DrawLine(new Pen(GridBrush, 1), new Point(marginLeft, y), new Point(marginLeft + plotW, y));
         }
 
-        // X axis range label
-        dc.DrawText(MakeText($"0"), new Point(marginLeft - 4, marginTop + plotH + 4));
-        dc.DrawText(MakeText($"{_bitrates.Count:N0} frames"), new Point(marginLeft + plotW - 70, marginTop + plotH + 4));
-
-        // Data line
-        var range = (double)(_max - _min);
-        if (range < 1)
-        {
-            range = 1;
-        }
+        // Data line — pad the range so extremes don't sit on the axis edge.
+        var rawRange = (double)(_max - _min);
+        var pad = rawRange * 0.1;
+        var yMin = _min - pad;
+        var yMax = _max + pad;
+        var range = yMax - yMin;
 
         var geometry = new StreamGeometry();
         using (var ctx = geometry.Open())
@@ -102,7 +112,7 @@ public sealed class BitrateChart : FrameworkElement
             for (var i = 0; i < _bitrates.Count; i++)
             {
                 var x = marginLeft + (plotW * i / (double)System.Math.Max(1, _bitrates.Count - 1));
-                var normalized = (_bitrates[i] - _min) / range;
+                var normalized = (_bitrates[i] - yMin) / range;
                 var y = marginTop + plotH - (plotH * normalized);
                 if (i == 0)
                 {
