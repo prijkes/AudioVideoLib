@@ -1,5 +1,6 @@
 namespace AudioVideoLib.IO;
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -7,16 +8,26 @@ using System.Text;
 using AudioVideoLib.Formats;
 
 /// <summary>
-/// Minimal structural walker for AIFF / AIFF-C files.
+/// Minimal structural walker for AIFF and AIFF-C containers. Does not decode audio samples.
 /// </summary>
+/// <remarks>
+/// The walker captures the <c>COMM</c> chunk needed to report format parameters and locates the
+/// <c>SSND</c> chunk, while recording every other chunk structurally without materialising its payload.
+/// Sample rate is decoded from the 80-bit IEEE 754 extended-precision value stored by the AIFF spec.
+/// </remarks>
 public sealed class AiffStream : IAudioStream
 {
+    private const int MaxChunkCaptureSize = 8 * 1024;
+
     private readonly List<AiffChunk> _chunks = [];
 
+    /// <inheritdoc/>
     public long StartOffset { get; private set; }
 
+    /// <inheritdoc/>
     public long EndOffset { get; private set; }
 
+    /// <inheritdoc/>
     public long TotalAudioLength
     {
         get
@@ -26,35 +37,68 @@ public sealed class AiffStream : IAudioStream
                 return 0;
             }
 
-            var seconds = (double)SampleFrames / SampleRate;
+            var seconds = SampleFrames / SampleRate;
             return (long)(seconds * 1000);
         }
     }
 
+    /// <inheritdoc/>
     public long TotalAudioSize => SsndSize;
 
+    /// <inheritdoc/>
     public int MaxFrameSpacingLength { get; set; } = 0;
 
+    /// <summary>
+    /// Gets the chunks discovered inside the AIFF container, in file order.
+    /// </summary>
     public IReadOnlyList<AiffChunk> Chunks => _chunks;
 
+    /// <summary>
+    /// Gets the four-character form type, either <c>"AIFF"</c> or <c>"AIFC"</c>.
+    /// </summary>
     public string FormatType { get; private set; } = string.Empty;
 
+    /// <summary>
+    /// Gets the channel count from the <c>COMM</c> chunk.
+    /// </summary>
     public int Channels { get; private set; }
 
+    /// <summary>
+    /// Gets the total number of sample frames from the <c>COMM</c> chunk.
+    /// </summary>
     public long SampleFrames { get; private set; }
 
+    /// <summary>
+    /// Gets the number of bits per sample from the <c>COMM</c> chunk.
+    /// </summary>
     public int SampleSize { get; private set; }
 
+    /// <summary>
+    /// Gets the sample rate in Hz, decoded from the 80-bit IEEE 754 extended-precision value in the <c>COMM</c> chunk.
+    /// </summary>
     public double SampleRate { get; private set; }
 
+    /// <summary>
+    /// Gets the four-character compression identifier from an AIFF-C <c>COMM</c> chunk, or <c>null</c> for plain AIFF.
+    /// </summary>
     public string? Compression { get; private set; }
 
+    /// <summary>
+    /// Gets the absolute offset of the <c>SSND</c> chunk's payload, or 0 if the chunk is absent.
+    /// </summary>
     public long SsndOffset { get; private set; }
 
+    /// <summary>
+    /// Gets the size of the <c>SSND</c> chunk's payload in bytes.
+    /// </summary>
     public long SsndSize { get; private set; }
 
+    /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="stream"/> is <c>null</c>.</exception>
     public bool ReadStream(Stream stream)
     {
+        ArgumentNullException.ThrowIfNull(stream);
+
         var start = stream.Position;
         if (stream.Length - start < 12)
         {
@@ -67,7 +111,11 @@ public sealed class AiffStream : IAudioStream
             return false;
         }
 
-        var declaredSize = ReadBeU32(stream);
+        if (!TryReadBeU32(stream, out var declaredSize))
+        {
+            return false;
+        }
+
         var formType = ReadAscii(stream, 4);
         if (formType is not ("AIFF" or "AIFC"))
         {
@@ -76,21 +124,30 @@ public sealed class AiffStream : IAudioStream
 
         StartOffset = start;
         FormatType = formType;
-        var containerEnd = System.Math.Min(start + 8 + declaredSize, stream.Length);
+        var containerEnd = Math.Min(start + 8 + declaredSize, stream.Length);
 
         while (stream.Position + 8 <= containerEnd)
         {
             var chunkStart = stream.Position;
             var id = ReadAscii(stream, 4);
-            var size = ReadBeU32(stream);
+            if (id.Length != 4 || !TryReadBeU32(stream, out var size))
+            {
+                break;
+            }
+
             var dataStart = stream.Position;
-            var dataEnd = System.Math.Min(dataStart + size, containerEnd);
+            var dataEnd = Math.Min(dataStart + size, containerEnd);
 
             byte[] data = [];
-            if (id is "COMM" && size is > 0 and < 1024 * 8)
+            if (id is "COMM" && size is > 0 and < MaxChunkCaptureSize)
             {
                 data = new byte[size];
-                stream.ReadExactly(data, 0, (int)size);
+                var read = stream.Read(data, 0, (int)size);
+                if (read != size)
+                {
+                    _chunks.Add(new AiffChunk(id, chunkStart, dataStart + read, data.AsSpan(0, read).ToArray()));
+                    break;
+                }
             }
             else
             {
@@ -126,6 +183,7 @@ public sealed class AiffStream : IAudioStream
         return _chunks.Count > 0;
     }
 
+    /// <inheritdoc/>
     public byte[] ToByteArray() => [];
 
     private static string ReadAscii(Stream s, int n)
@@ -134,10 +192,17 @@ public sealed class AiffStream : IAudioStream
         return s.Read(b, 0, n) != n ? string.Empty : Encoding.ASCII.GetString(b);
     }
 
-    private static int ReadBeU32(Stream s)
+    private static bool TryReadBeU32(Stream s, out int value)
     {
         var b = new byte[4];
-        return s.Read(b, 0, 4) != 4 ? 0 : ReadBeU32(b, 0);
+        if (s.Read(b, 0, 4) != 4)
+        {
+            value = 0;
+            return false;
+        }
+
+        value = ReadBeU32(b, 0);
+        return true;
     }
 
     private static int ReadBeU16(byte[] b, int off) => (b[off] << 8) | b[off + 1];
@@ -165,7 +230,7 @@ public sealed class AiffStream : IAudioStream
         {
             0 when mantissa == 0 => 0,
             0x7FFF => double.NaN,
-            _ => (double)sign * mantissa * System.Math.Pow(2, exponent - 16383 - 63),
+            _ => (double)sign * mantissa * Math.Pow(2, exponent - 16383 - 63),
         };
     }
 }

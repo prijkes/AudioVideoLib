@@ -7,6 +7,8 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
 
 using AudioVideoLib.Formats;
 using AudioVideoLib.IO;
@@ -79,10 +81,28 @@ public sealed class FileDossier : INotifyPropertyChanged
     public string FileSizeText { get; private set; } = string.Empty;
 
     public FileDossier(string filePath)
+        : this(filePath, File.ReadAllBytes(filePath))
+    {
+    }
+
+    private FileDossier(string filePath, byte[] fileBytes)
     {
         FilePath = filePath;
-        Load();
+        Load(fileBytes);
     }
+
+    /// <summary>
+    /// Asynchronously reads and parses a file on a background thread, keeping the caller (typically
+    /// the UI thread) responsive while large files load.
+    /// </summary>
+    public static Task<FileDossier> CreateAsync(string filePath, CancellationToken cancellationToken = default) =>
+        Task.Run(
+            async () =>
+            {
+                var bytes = await File.ReadAllBytesAsync(filePath, cancellationToken).ConfigureAwait(false);
+                return new FileDossier(filePath, bytes);
+            },
+            cancellationToken);
 
     public bool HasUnsavedChanges =>
         TagTabs.Any(t => t.IsDirty) ||
@@ -463,9 +483,9 @@ public sealed class FileDossier : INotifyPropertyChanged
         output.Write(bytes, 0, bytes.Length);
     }
 
-    private void Load()
+    private void Load(byte[] fileBytes)
     {
-        FileBytes = File.ReadAllBytes(FilePath);
+        FileBytes = fileBytes;
         var fileLength = (long)FileBytes.Length;
         FileSize = fileLength;
         FileSizeText = $"{fileLength:N0} bytes  ({FormatSize(fileLength)})";

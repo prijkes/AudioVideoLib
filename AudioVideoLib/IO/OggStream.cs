@@ -1,5 +1,6 @@
 namespace AudioVideoLib.IO;
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -7,26 +8,61 @@ using System.Text;
 using AudioVideoLib.Formats;
 
 /// <summary>
-/// Walks OGG pages structurally. Does not decode Vorbis/Opus/Theora payload.
+/// Walks an Ogg bitstream (RFC 3533) page-by-page. Does not decode Vorbis/Opus/Theora payload.
 /// </summary>
+/// <remarks>
+/// The walker records structural metadata for every page and peeks at the first beginning-of-stream
+/// page to identify the codec (Vorbis or Opus) so it can report channel count, sample rate, and an
+/// approximate duration derived from the largest observed granule position.
+/// </remarks>
 public sealed class OggStream : IAudioStream
 {
+    private const int MaxPages = 100_000;
+    private const int CodecIdentificationPeekSize = 64;
+
     private readonly List<OggPage> _pages = [];
 
+    /// <inheritdoc/>
     public long StartOffset { get; private set; }
 
+    /// <inheritdoc/>
     public long EndOffset { get; private set; }
 
-    public long TotalAudioLength => 0;
+    /// <inheritdoc/>
+    public long TotalAudioLength
+    {
+        get
+        {
+            if (SampleRate == 0)
+            {
+                return 0;
+            }
 
+            // Opus granule is counted at 48 kHz regardless of the input sample rate.
+            var granuleRate = Codec == "opus" ? 48000 : SampleRate;
+            return granuleRate == 0 ? 0 : TotalGranulePosition * 1000 / granuleRate;
+        }
+    }
+
+    /// <inheritdoc/>
     public long TotalAudioSize => EndOffset - StartOffset;
 
+    /// <inheritdoc/>
     public int MaxFrameSpacingLength { get; set; } = 0;
 
+    /// <summary>
+    /// Gets the pages discovered inside the Ogg bitstream, in file order.
+    /// </summary>
     public IReadOnlyList<OggPage> Pages => _pages;
 
+    /// <summary>
+    /// Gets the total number of pages in the bitstream.
+    /// </summary>
     public int PageCount => _pages.Count;
 
+    /// <summary>
+    /// Gets the largest granule position seen across all pages — used to estimate duration.
+    /// </summary>
     public long TotalGranulePosition
     {
         get
@@ -44,22 +80,44 @@ public sealed class OggStream : IAudioStream
         }
     }
 
+    /// <summary>
+    /// Gets the identified codec for the first logical bitstream: <c>"vorbis"</c>, <c>"opus"</c>, or
+    /// <see cref="string.Empty"/> if the codec could not be identified.
+    /// </summary>
+    public string Codec { get; private set; } = string.Empty;
+
+    /// <summary>
+    /// Gets the channel count reported by the codec identification header, or 0 if unidentified.
+    /// </summary>
+    public int Channels { get; private set; }
+
+    /// <summary>
+    /// Gets the input sample rate in Hz reported by the codec identification header, or 0 if unidentified.
+    /// </summary>
+    /// <remarks>
+    /// For Opus this is the original sample rate; Opus always encodes at 48 kHz internally, which is
+    /// what <see cref="TotalAudioLength"/> uses for duration calculation.
+    /// </remarks>
+    public int SampleRate { get; private set; }
+
+    /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="stream"/> is <c>null</c>.</exception>
     public bool ReadStream(Stream stream)
     {
+        ArgumentNullException.ThrowIfNull(stream);
+
         var start = stream.Position;
         var magic = new byte[4];
         if (stream.Read(magic, 0, 4) != 4 || Encoding.ASCII.GetString(magic) != "OggS")
         {
+            stream.Position = start;
             return false;
         }
 
         stream.Position = start;
         StartOffset = start;
 
-        // Max page budget to avoid pathological files locking the inspector.
-        const int MaxPages = 100_000;
         var pagesParsed = 0;
-
         while (stream.Position + 27 <= stream.Length && pagesParsed < MaxPages)
         {
             var pageStart = stream.Position;
@@ -106,23 +164,57 @@ public sealed class OggStream : IAudioStream
                 break;
             }
 
-            stream.Position += payloadSize;
+            var payloadStart = stream.Position;
+            if (Codec.Length == 0 && (flags & 0x02) != 0 && payloadSize > 0)
+            {
+                var peekLen = Math.Min(payloadSize, CodecIdentificationPeekSize);
+                var peek = new byte[peekLen];
+                if (stream.Read(peek, 0, peekLen) == peekLen)
+                {
+                    TryIdentifyCodec(peek);
+                }
+            }
+
+            stream.Position = payloadStart + payloadSize;
             var pageEnd = stream.Position;
 
             _pages.Add(new OggPage(pageStart, pageEnd, version, flags, granule, serial, seq, checksum, segCount, payloadSize));
             pagesParsed++;
-
-            if ((flags & 0x04) != 0 && pagesParsed > 2)
-            {
-                // End-of-stream flag; keep scanning if more bitstreams follow, but stop if we've already read enough.
-            }
         }
 
         EndOffset = stream.Position;
         return _pages.Count > 0;
     }
 
+    /// <inheritdoc/>
     public byte[] ToByteArray() => [];
+
+    private void TryIdentifyCodec(byte[] header)
+    {
+        // Vorbis identification header: packet type 0x01, then "vorbis" magic.
+        // Layout: [0]=0x01, [1..6]="vorbis", [7..10]=version, [11]=channels, [12..15]=sample rate (LE).
+        if (header.Length >= 16
+            && header[0] == 0x01
+            && header[1] == (byte)'v' && header[2] == (byte)'o' && header[3] == (byte)'r'
+            && header[4] == (byte)'b' && header[5] == (byte)'i' && header[6] == (byte)'s')
+        {
+            Codec = "vorbis";
+            Channels = header[11];
+            SampleRate = header[12] | (header[13] << 8) | (header[14] << 16) | (header[15] << 24);
+            return;
+        }
+
+        // Opus identification header: "OpusHead" magic, then version, channels, pre-skip, input sample rate (LE).
+        // Layout: [0..7]="OpusHead", [8]=version, [9]=channels, [10..11]=pre-skip, [12..15]=input sample rate.
+        if (header.Length >= 16
+            && header[0] == (byte)'O' && header[1] == (byte)'p' && header[2] == (byte)'u' && header[3] == (byte)'s'
+            && header[4] == (byte)'H' && header[5] == (byte)'e' && header[6] == (byte)'a' && header[7] == (byte)'d')
+        {
+            Codec = "opus";
+            Channels = header[9];
+            SampleRate = header[12] | (header[13] << 8) | (header[14] << 16) | (header[15] << 24);
+        }
+    }
 
     private static long ReadLeI64(byte[] b, int off)
     {

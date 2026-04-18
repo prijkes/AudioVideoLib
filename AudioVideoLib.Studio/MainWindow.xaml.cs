@@ -201,7 +201,7 @@ public partial class MainWindow : Window
 
     private InspectorNode? _selectedNode;
 
-    private void OpenDossierFromPath(string path)
+    private async void OpenDossierFromPath(string path)
     {
         // If already open, just activate its tab.
         var existing = _openFiles.FirstOrDefault(f =>
@@ -213,9 +213,10 @@ public partial class MainWindow : Window
             return;
         }
 
+        UpdateStatus($"Loading {Path.GetFileName(path)}…");
         try
         {
-            var dossier = new FileDossier(path);
+            var dossier = await FileDossier.CreateAsync(path).ConfigureAwait(true);
             RecentFiles.Add(path);
 
             // Snapshot previous tab so switching back restores it.
@@ -235,6 +236,7 @@ public partial class MainWindow : Window
         {
             MessageBox.Show(this, $"Failed to open {Path.GetFileName(path)}:\n\n{ex.Message}", "Load error",
                 MessageBoxButton.OK, MessageBoxImage.Warning);
+            UpdateStatus("Load failed");
         }
     }
 
@@ -1258,7 +1260,7 @@ public partial class MainWindow : Window
         dlg.Show();
     }
 
-    private void Compare_Click(object sender, RoutedEventArgs e)
+    private async void Compare_Click(object sender, RoutedEventArgs e)
     {
         if (CurrentDossier == null)
         {
@@ -1281,14 +1283,17 @@ public partial class MainWindow : Window
 
         try
         {
-            var other = new FileDossier(dlg.FileName);
+            UpdateStatus($"Loading {Path.GetFileName(dlg.FileName)}…");
+            var other = await FileDossier.CreateAsync(dlg.FileName).ConfigureAwait(true);
             var diff = new DiffWindow(CurrentDossier, other) { Owner = this };
             diff.Show();
+            UpdateStatus("Compare ready");
         }
         catch (Exception ex)
         {
             MessageBox.Show(this, $"Could not load {Path.GetFileName(dlg.FileName)}:\n\n{ex.Message}", "Compare",
                 MessageBoxButton.OK, MessageBoxImage.Warning);
+            UpdateStatus("Compare failed");
         }
     }
 

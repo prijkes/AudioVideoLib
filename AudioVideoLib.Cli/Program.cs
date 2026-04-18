@@ -11,9 +11,9 @@ using AudioVideoLib.Formats;
 using AudioVideoLib.IO;
 using AudioVideoLib.Tags;
 
-public static class Program
+internal static class Program
 {
-    public static int Main(string[] args)
+    internal static int Main(string[] args)
     {
         if (args.Length == 0 || args[0] is "-h" or "--help" or "help")
         {
