@@ -499,6 +499,29 @@ public partial class Id3v2Frame
                 { "zul", "Zulu" },
                 { "zun", "Zuni" },
                 { "zxx", "No linguistic content" },
-                { "zza", "Zaza" }
+                { "zza", "Zaza" },
+
+                // ISO 639-2/T (terminological) aliases for the 20 languages that have both a
+                // bibliographic (/B) and a terminological (/T) code. Both forms are valid.
+                { "bod", "Tibetan" },
+                { "ces", "Czech" },
+                { "cym", "Welsh" },
+                { "deu", "German" },
+                { "ell", "Greek, Modern (1453-)" },
+                { "eus", "Basque" },
+                { "fas", "Persian" },
+                { "fra", "French" },
+                { "hye", "Armenian" },
+                { "isl", "Icelandic" },
+                { "kat", "Georgian" },
+                { "mkd", "Macedonian" },
+                { "mri", "Maori" },
+                { "msa", "Malay" },
+                { "mya", "Burmese" },
+                { "nld", "Dutch" },
+                { "ron", "Romanian" },
+                { "slk", "Slovak" },
+                { "sqi", "Albanian" },
+                { "zho", "Chinese" },
             };
 }
