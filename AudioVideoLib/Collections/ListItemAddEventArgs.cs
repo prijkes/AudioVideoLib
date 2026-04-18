@@ -12,7 +12,7 @@ public sealed class ListItemAddEventArgs<T> : CancelEventArgs
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ListItemAddEventArgs&lt;T&gt;"/> class.
+    /// Initializes a new instance of the <see cref="ListItemAddEventArgs{T}"/> class.
     /// </summary>
     /// <param name="item">The item to be added.</param>
     public ListItemAddEventArgs(T item)
@@ -21,7 +21,7 @@ public sealed class ListItemAddEventArgs<T> : CancelEventArgs
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ListItemAddEventArgs&lt;T&gt;"/> class.
+    /// Initializes a new instance of the <see cref="ListItemAddEventArgs{T}"/> class.
     /// </summary>
     /// <param name="index">The index the <paramref name="item"/> will be added.</param>
     /// <param name="item">The item to be added.</param>

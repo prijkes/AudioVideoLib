@@ -59,10 +59,11 @@ public sealed class Id3v2LinkedInformationFrame : Id3v2Frame
     {
         if (!IsVersionSupported(version))
         {
-            throw new InvalidVersionException(string.Format("Version {0} not supported by this frame.", version));
+            throw new InvalidVersionException($"Version {version} not supported by this frame.");
         }
 
-        FrameIdentifier = frameIdentifier ?? throw new ArgumentNullException("frameIdentifier");
+        ArgumentNullException.ThrowIfNull(frameIdentifier);
+        FrameIdentifier = frameIdentifier;
     }
 
     ////------------------------------------------------------------------------------------------------------------------------------
@@ -75,10 +76,7 @@ public sealed class Id3v2LinkedInformationFrame : Id3v2Frame
     /// </value>
     public string FrameIdentifier
     {
-        get
-        {
-            return _frameIdentifier;
-        }
+        get => _frameIdentifier;
 
         set
         {
@@ -102,10 +100,7 @@ public sealed class Id3v2LinkedInformationFrame : Id3v2Frame
     /// </remarks>
     public string Url
     {
-        get
-        {
-            return _url;
-        }
+        get => _url;
 
         set
         {
@@ -133,10 +128,7 @@ public sealed class Id3v2LinkedInformationFrame : Id3v2Frame
     /// </value>
     public string AdditionalIdData
     {
-        get
-        {
-            return _additionalIdData;
-        }
+        get => _additionalIdData;
 
         set
         {
@@ -195,10 +187,7 @@ public sealed class Id3v2LinkedInformationFrame : Id3v2Frame
     }
 
     /// <inheritdoc />
-    public override string Identifier
-    {
-        get { return (Version < Id3v2Version.Id3v230) ? "LNK" : "LINK"; }
-    }
+    public override string Identifier => (Version < Id3v2Version.Id3v230) ? "LNK" : "LINK";
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

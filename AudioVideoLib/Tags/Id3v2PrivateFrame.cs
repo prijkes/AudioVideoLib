@@ -9,14 +9,13 @@ using AudioVideoLib.IO;
 /// Class for storing a private frame.
 /// </summary>
 /// <remarks>
-/// This frame is used to contain information from a software producer 
+/// This frame is used to contain information from a software producer
 /// that its program uses and does not fit into the other frames.
 /// <para />
 /// This frame supports <see cref="Id3v2Version"/> <see cref="Id3v2Version.Id3v230"/> and later.
 /// </remarks>
 public sealed class Id3v2PrivateFrame : Id3v2Frame
 {
-    private string _ownerIdentifier = null!;
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -38,7 +37,7 @@ public sealed class Id3v2PrivateFrame : Id3v2Frame
     {
         if (!IsVersionSupported(version))
         {
-            throw new InvalidVersionException(string.Format("Version {0} not supported by this frame.", version));
+            throw new InvalidVersionException($"Version {version} not supported by this frame.");
         }
     }
 
@@ -51,7 +50,7 @@ public sealed class Id3v2PrivateFrame : Id3v2Frame
     /// The owner identifier.
     /// </value>
     /// <remarks>
-    /// The 'Owner identifier' is a null-terminated string with a URL containing an email address, 
+    /// The 'Owner identifier' is a null-terminated string with a URL containing an email address,
     /// or a link to a location where an email address can be found, that belongs to the organization responsible for the frame.
     /// Questions regarding the frame should be sent to the indicated email address.
     /// <para />
@@ -59,10 +58,7 @@ public sealed class Id3v2PrivateFrame : Id3v2Frame
     /// </remarks>
     public string OwnerIdentifier
     {
-        get
-        {
-            return _ownerIdentifier;
-        }
+        get => field;
 
         set
         {
@@ -78,9 +74,9 @@ public sealed class Id3v2PrivateFrame : Id3v2Frame
                     throw new InvalidDataException("value is not a valid RFC 1738 URL.");
                 }
             }
-            _ownerIdentifier = value;
+            field = value;
         }
-    }
+    } = null!;
 
     /// <summary>
     /// Gets or sets the private data.
@@ -123,25 +119,19 @@ public sealed class Id3v2PrivateFrame : Id3v2Frame
 
             var defaultEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
             var stream = new StreamBuffer(value);
-            _ownerIdentifier = stream.ReadString(defaultEncoding, true);
+            OwnerIdentifier = stream.ReadString(defaultEncoding, true);
             PrivateData = new byte[stream.Length - stream.Position];
             stream.Read(PrivateData, PrivateData.Length);
         }
     }
 
     /// <inheritdoc />
-    public override string Identifier
-    {
-        get { return "PRIV"; }
-    }
+    public override string Identifier => "PRIV";
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <inheritdoc/>
-    public override bool Equals(Id3v2Frame? frame)
-    {
-        return Equals(frame as Id3v2PrivateFrame);
-    }
+    public override bool Equals(Id3v2Frame? frame) => Equals(frame as Id3v2PrivateFrame);
 
     /// <summary>
     /// Equals the specified <see cref="Id3v2PrivateFrame"/>.
@@ -163,8 +153,5 @@ public sealed class Id3v2PrivateFrame : Id3v2Frame
     /// <returns>
     ///   <c>true</c> if the specified version is supported; otherwise, <c>false</c>.
     /// </returns>
-    public override bool IsVersionSupported(Id3v2Version version)
-    {
-        return version >= Id3v2Version.Id3v230;
-    }
+    public override bool IsVersionSupported(Id3v2Version version) => version >= Id3v2Version.Id3v230;
 }

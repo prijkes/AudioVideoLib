@@ -72,7 +72,7 @@ public partial class Id3v2Tag
         }
 
         FrameRemove(sender, new ListItemRemoveEventArgs<Id3v2Frame>(e.OldItem));
-        FrameAdd(sender, new ListItemAddEventArgs<Id3v2Frame>(e.NewItem));
+        FrameAdd(sender, new ListItemAddEventArgs<Id3v2Frame>(-1, e.NewItem));
     }
 
     private void FrameRemove(object? sender, ListItemRemoveEventArgs<Id3v2Frame> e)

@@ -45,7 +45,7 @@ public sealed class Id3v2EncryptedMetaFrame : Id3v2Frame
     {
         if (!IsVersionSupported(version))
         {
-            throw new InvalidVersionException(string.Format("Version {0} not supported by this frame.", version));
+            throw new InvalidVersionException($"Version {version} not supported by this frame.");
         }
     }
 
@@ -69,10 +69,7 @@ public sealed class Id3v2EncryptedMetaFrame : Id3v2Frame
     /// </remarks>
     public string OwnerIdentifier
     {
-        get
-        {
-            return _ownerIdentifier;
-        }
+        get => _ownerIdentifier;
 
         set
         {
@@ -103,10 +100,7 @@ public sealed class Id3v2EncryptedMetaFrame : Id3v2Frame
     /// </remarks>
     public string ContentExplanation
     {
-        get
-        {
-            return _contentExplanation;
-        }
+        get => _contentExplanation;
 
         set
         {
@@ -177,10 +171,7 @@ public sealed class Id3v2EncryptedMetaFrame : Id3v2Frame
     }
 
     /// <inheritdoc />
-    public override string Identifier
-    {
-        get { return "CRM"; }
-    }
+    public override string Identifier => "CRM";
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

@@ -7,20 +7,14 @@ using AudioVideoLib.IO;
 /// <summary>
 /// Class for FLAC audio frames.
 /// </summary>
-public class FlacStreamInfoMetadataBlock : FlacMetadataBlock
+public sealed class FlacStreamInfoMetadataBlock : FlacMetadataBlock
 {
     private long _samplesChannelRate;
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <inheritdoc/>
-    public override FlacMetadataBlockType BlockType
-    {
-        get
-        {
-            return FlacMetadataBlockType.StreamInfo;
-        }
-    }
+    public override FlacMetadataBlockType BlockType => FlacMetadataBlockType.StreamInfo;
 
     /// <inheritdoc/>
     public override byte[] Data
@@ -99,13 +93,7 @@ public class FlacStreamInfoMetadataBlock : FlacMetadataBlock
     /// The maximum sample rate is limited by the structure of frame headers to 655350Hz.
     /// Also, a value of 0 is invalid.
     /// </remarks>
-    public int SampleRate
-    {
-        get
-        {
-            return (int)((_samplesChannelRate >> 44) & 0xFFFFF);
-        }
-    }
+    public int SampleRate => (int)((_samplesChannelRate >> 44) & 0xFFFFF);
 
     /// <summary>
     /// Gets the number of channels. FLAC supports from 1 to 8 channels.
@@ -113,13 +101,7 @@ public class FlacStreamInfoMetadataBlock : FlacMetadataBlock
     /// <value>
     /// The the number of channels. FLAC supports from 1 to 8 channels.
     /// </value>
-    public int Channels
-    {
-        get
-        {
-            return (int)(((_samplesChannelRate >> 41) & 0x1F) + 1);
-        }
-    }
+    public int Channels => (int)(((_samplesChannelRate >> 41) & 0x1F) + 1);
 
     /// <summary>
     /// Gets the bits per sample.
@@ -127,13 +109,7 @@ public class FlacStreamInfoMetadataBlock : FlacMetadataBlock
     /// <value>
     /// The bits per sample.
     /// </value>
-    public int BitsPerSample
-    {
-        get
-        {
-            return (int)((_samplesChannelRate >> 36) & 0x1F) + 1;
-        }
-    }
+    public int BitsPerSample => (int)((_samplesChannelRate >> 36) & 0x1F) + 1;
 
     /// <summary>
     /// Gets the total samples in the stream.
@@ -145,13 +121,7 @@ public class FlacStreamInfoMetadataBlock : FlacMetadataBlock
     /// 'Samples' means inter-channel sample, i.e. one second of 44.1Khz audio will have 44100 samples regardless of the number of channels.
     /// A value of zero here means the number of total samples is unknown.
     /// </remarks>
-    public long TotalSamples
-    {
-        get
-        {
-            return _samplesChannelRate & 0xFFFFFFFFF;
-        }
-    }
+    public long TotalSamples => _samplesChannelRate & 0xFFFFFFFFF;
 
     /// <summary>
     /// Gets the MD5 signature of the unencoded audio data.

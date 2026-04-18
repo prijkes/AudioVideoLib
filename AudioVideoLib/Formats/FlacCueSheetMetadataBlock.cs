@@ -6,22 +6,16 @@ using System.Collections.Generic;
 using AudioVideoLib.IO;
 
 /// <summary>
-/// 
+///
 /// </summary>
-public class FlacCueSheetMetadataBlock : FlacMetadataBlock
+public sealed class FlacCueSheetMetadataBlock : FlacMetadataBlock
 {
     private readonly List<FlacCueSheetTrack> _tracks = [];
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <inheritdoc/>
-    public override FlacMetadataBlockType BlockType
-    {
-        get
-        {
-            return FlacMetadataBlockType.CueSheet;
-        }
-    }
+    public override FlacMetadataBlockType BlockType => FlacMetadataBlockType.CueSheet;
 
     /// <inheritdoc/>
     public override byte[] Data
@@ -112,7 +106,7 @@ public class FlacCueSheetMetadataBlock : FlacMetadataBlock
     /// </value>
     /// <remarks>
     /// This field has meaning only for CD-DA cuesheets; for other uses it should be 0.
-    /// For CD-DA, the lead-in is the TRACK 00 area where the table of contents is stored; 
+    /// For CD-DA, the lead-in is the TRACK 00 area where the table of contents is stored;
     /// more precisely, it is the number of samples from the first sample of the media to the first sample of the first index point of the first track.
     /// According to the Red Book, the lead-in must be silence and CD grabbing software does not usually store it; additionally, the lead-in must be at least two seconds but may be longer.
     /// For these reasons the lead-in length is stored here so that the absolute position of the first track can be computed.
@@ -157,11 +151,5 @@ public class FlacCueSheetMetadataBlock : FlacMetadataBlock
     /// <value>
     /// The tracks.
     /// </value>
-    public IEnumerable<FlacCueSheetTrack> Tracks
-    {
-        get
-        {
-            return _tracks.AsReadOnly();
-        }
-    }
+    public IEnumerable<FlacCueSheetTrack> Tracks => _tracks.AsReadOnly();
 }

@@ -15,7 +15,7 @@ using AudioVideoLib.IO;
 public sealed partial class Id3v2UrlLinkFrame : Id3v2Frame
 {
     private readonly string _identifier = null!;
-    private string _url = null!;
+
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -39,7 +39,7 @@ public sealed partial class Id3v2UrlLinkFrame : Id3v2Frame
                     urlLinkFramePair.Value.OrderByDescending(f => f.Key).Any(f => f.Key.IndexOf(identifier, StringComparison.OrdinalIgnoreCase) >= 0))];
 
             // Grab the 'real' identifier for the version supplied.
-            var resolved = pairs.Any() ? pairs[0].Value.Where(t => t.Value.Contains(version)).Select(t => t.Key).FirstOrDefault() : null;
+            var resolved = pairs.Length != 0 ? pairs[0].Value.Where(t => t.Value.Contains(version)).Select(t => t.Key).FirstOrDefault() : null;
 
             if (string.IsNullOrEmpty(resolved))
             {
@@ -56,10 +56,7 @@ public sealed partial class Id3v2UrlLinkFrame : Id3v2Frame
     /// <inheritdoc />
     public override byte[] Data
     {
-        get
-        {
-            return Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default).GetBytes(Url);
-        }
+        get => Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default).GetBytes(Url);
 
         protected set
         {
@@ -67,7 +64,7 @@ public sealed partial class Id3v2UrlLinkFrame : Id3v2Frame
 
             var stream = new StreamBuffer(value);
             var defaultEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
-            _url = stream.ReadString(defaultEncoding, true);
+            Url = stream.ReadString(defaultEncoding, true);
         }
     }
 
@@ -84,10 +81,7 @@ public sealed partial class Id3v2UrlLinkFrame : Id3v2Frame
     /// </remarks>
     public string Url
     {
-        get
-        {
-            return _url;
-        }
+        get => field;
 
         set
         {
@@ -103,9 +97,9 @@ public sealed partial class Id3v2UrlLinkFrame : Id3v2Frame
                     throw new InvalidDataException("value is not a valid RFC 1738 URL.");
                 }
             }
-            _url = value;
+            field = value;
         }
-    }
+    } = null!;
 
     /// <inheritdoc />
     public override string? Identifier
@@ -137,8 +131,7 @@ public sealed partial class Id3v2UrlLinkFrame : Id3v2Frame
     /// </returns>
     public static string? GetIdentifier(Id3v2Version version, Id3v2UrlLinkFrameIdentifier identifier)
     {
-        Dictionary<string, Id3v2Version[]>? identifiers;
-        return Identifiers.TryGetValue(identifier, out identifiers)
+        return Identifiers.TryGetValue(identifier, out var identifiers)
                    ? identifiers.Where(v => v.Value != null && v.Value.Contains(version)).Select(i => i.Key).FirstOrDefault()
                    : null;
     }
@@ -153,18 +146,14 @@ public sealed partial class Id3v2UrlLinkFrame : Id3v2Frame
     /// </returns>
     public static bool IsValidUrlLinkIdentifier(Id3v2Version version, string identifier)
     {
-        return identifier == null
-            ? throw new ArgumentNullException("identifier")
-            : IsValidIdentifier(version, identifier) && identifier.StartsWith("W");
+        ArgumentNullException.ThrowIfNull(identifier);
+        return IsValidIdentifier(version, identifier) && identifier.StartsWith('W');
     }
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <inheritdoc/>
-    public override bool Equals(Id3v2Frame? frame)
-    {
-        return Equals(frame as Id3v2UrlLinkFrame);
-    }
+    public override bool Equals(Id3v2Frame? frame) => Equals(frame as Id3v2UrlLinkFrame);
 
     /// <summary>
     /// Equals the specified <see cref="Id3v2UrlLinkFrame"/>.

@@ -64,8 +64,8 @@ public sealed class Lyrics3v2IndicationsField : Lyrics3v2Field
             var fieldSize = value.Length;
             var ind = sb.ReadString(fieldSize);
             LyricsFieldPresent = (fieldSize >= 1) && string.Equals(ind[..1], "1", StringComparison.OrdinalIgnoreCase);
-            LyricsContainTimeStamp = (fieldSize >= 2) && string.Equals(ind.Substring(1, 1), "1", StringComparison.OrdinalIgnoreCase);
-            InhibitTrack = (fieldSize >= 3) && string.Equals(ind.Substring(2, 1), "1", StringComparison.OrdinalIgnoreCase);
+            LyricsContainTimeStamp = (fieldSize >= 2) && string.Equals(ind[1..2], "1", StringComparison.OrdinalIgnoreCase);
+            InhibitTrack = (fieldSize >= 3) && string.Equals(ind[2..3], "1", StringComparison.OrdinalIgnoreCase);
         }
     }
 

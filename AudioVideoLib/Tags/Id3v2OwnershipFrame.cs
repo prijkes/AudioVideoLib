@@ -38,7 +38,7 @@ public sealed class Id3v2OwnershipFrame : Id3v2Frame
     {
         if (!IsVersionSupported(version))
         {
-            throw new InvalidVersionException(string.Format("Version {0} not supported by this frame.", version));
+            throw new InvalidVersionException($"Version {version} not supported by this frame.");
         }
     }
 
@@ -55,10 +55,7 @@ public sealed class Id3v2OwnershipFrame : Id3v2Frame
     /// </remarks>
     public Id3v2FrameEncodingType TextEncoding
     {
-        get
-        {
-            return _frameEncodingType;
-        }
+        get => _frameEncodingType;
 
         set
         {
@@ -86,10 +83,7 @@ public sealed class Id3v2OwnershipFrame : Id3v2Frame
     /// </remarks>
     public string PricePaid
     {
-        get
-        {
-            return _pricePaid;
-        }
+        get => _pricePaid;
 
         set
         {
@@ -125,10 +119,7 @@ public sealed class Id3v2OwnershipFrame : Id3v2Frame
     /// </remarks>
     public string DateOfPurchase
     {
-        get
-        {
-            return _dateOfPurchase;
-        }
+        get => _dateOfPurchase;
 
         set
         {
@@ -159,10 +150,7 @@ public sealed class Id3v2OwnershipFrame : Id3v2Frame
     /// </remarks>
     public string Seller
     {
-        get
-        {
-            return _seller;
-        }
+        get => _seller;
 
         set
         {
@@ -230,10 +218,7 @@ public sealed class Id3v2OwnershipFrame : Id3v2Frame
     }
 
     /// <inheritdoc />
-    public override string Identifier
-    {
-        get { return "OWNE"; }
-    }
+    public override string Identifier => "OWNE";
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

@@ -26,7 +26,7 @@ public sealed partial class Lyrics3TagReader : IAudioTagReader
 
         set
         {
-            field = value ?? throw new ArgumentNullException("value");
+            field = value ?? throw new ArgumentNullException(nameof(value));
         }
     } = Encoding.Default;
 
@@ -87,8 +87,7 @@ public sealed partial class Lyrics3TagReader : IAudioTagReader
 
         var startPosition = stream.Position;
         var streamLength = stream.Length;
-        var headerSize = HeaderIdentifierBytes.Length;
-        if (streamLength < headerSize)
+        if (streamLength < HeaderIdentifierBytes.Length)
         {
             return -1;
         }
@@ -97,7 +96,7 @@ public sealed partial class Lyrics3TagReader : IAudioTagReader
         var startPositionHeader = startPosition;
         var endPositionHeader = Math.Min(startPosition + Lyrics3Tag.MaxLyricsSize, streamLength);
         var tagPosition = ReadIdentifier(stream, startPositionHeader, endPositionHeader, HeaderIdentifierBytes);
-        return (tagPosition >= 0) ? tagPosition : -1;
+        return tagPosition >= 0 ? tagPosition : -1;
     }
 
     private static long FindFooterIdentifier(Stream stream)
@@ -106,15 +105,14 @@ public sealed partial class Lyrics3TagReader : IAudioTagReader
 
         var startPosition = stream.Position;
         var streamLength = stream.Length;
-        var footerSize = FooterIdentifierBytes.Length;
-        if (streamLength < footerSize)
+        if (streamLength < FooterIdentifierBytes.Length)
         {
             return -1;
         }
 
         // Look for a footer at the current position
-        var startPositionHeader = Math.Max(startPosition - footerSize, 0);
-        var endPositionHeader = startPositionHeader + footerSize;
+        var startPositionHeader = Math.Max(startPosition - FooterIdentifierBytes.Length, 0);
+        var endPositionHeader = startPositionHeader + FooterIdentifierBytes.Length;
         var tagPosition = ReadIdentifier(stream, startPositionHeader, endPositionHeader, FooterIdentifierBytes);
         if (tagPosition >= 0)
         {
@@ -122,10 +120,10 @@ public sealed partial class Lyrics3TagReader : IAudioTagReader
         }
 
         // Look for a footer before the current position
-        startPositionHeader = Math.Max(startPositionHeader - footerSize, 0);
-        endPositionHeader = startPositionHeader + footerSize;
+        startPositionHeader = Math.Max(startPositionHeader - FooterIdentifierBytes.Length, 0);
+        endPositionHeader = startPositionHeader + FooterIdentifierBytes.Length;
         tagPosition = ReadIdentifier(stream, endPositionHeader, endPositionHeader, FooterIdentifierBytes);
-        return (tagPosition >= 0) ? tagPosition : -1;
+        return tagPosition >= 0 ? tagPosition : -1;
     }
 
     private static long ReadIdentifier(Stream sb, long startPosition, long endPosition, byte[] identifierBytes)

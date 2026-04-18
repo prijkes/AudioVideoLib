@@ -15,7 +15,7 @@ public sealed class BitStream : Stream
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="BitStream"/> class 
+    /// Initializes a new instance of the <see cref="BitStream"/> class
     /// with an expandable capacity initialized to 1024 bytes, using <see cref="System.IO.MemoryStream"/> as backing data.
     /// </summary>
     public BitStream()
@@ -30,26 +30,24 @@ public sealed class BitStream : Stream
     public BitStream(Stream stream)
     {
         ArgumentNullException.ThrowIfNull(stream);
-
         _sb = new StreamBuffer(stream);
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="BitStream"/> class 
+    /// Initializes a new instance of the <see cref="BitStream"/> class
     /// based on the specified byte array with an expandable capacity, using <see cref="System.IO.MemoryStream"/> as backing data.
     /// </summary>
     /// <param name="buffer">The array of unsigned bytes from which to create the current stream.</param>
     public BitStream(byte[] buffer)
     {
         ArgumentNullException.ThrowIfNull(buffer);
-
         _sb = new StreamBuffer(buffer.Length);
         _sb.Write(buffer, 0, buffer.Length);
         _sb.Position -= buffer.Length;
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="BitStream"/> class 
+    /// Initializes a new instance of the <see cref="BitStream"/> class
     /// with an expandable capacity initialized as specified, using <see cref="System.IO.MemoryStream"/> as backing data.
     /// </summary>
     /// <param name="capacity">The initial size of the internal array in bytes.</param>
@@ -66,13 +64,7 @@ public sealed class BitStream : Stream
     /// <returns>
     /// The number of bytes within the stream.
     /// </returns>
-    public override long Length
-    {
-        get
-        {
-            return _sb.Length;
-        }
-    }
+    public override long Length => _sb.Length;
 
     /// <summary>
     /// Gets or sets the current position within the stream, in bytes.
@@ -82,15 +74,8 @@ public sealed class BitStream : Stream
     /// </returns>
     public override long Position
     {
-        get
-        {
-            return _sb.Position;
-        }
-
-        set
-        {
-            _sb.Position = value;
-        }
+        get => _sb.Position;
+        set => _sb.Position = value;
     }
 
     /// <summary>
@@ -104,11 +89,7 @@ public sealed class BitStream : Stream
     /// </remarks>
     public int BitPosition
     {
-        get
-        {
-            return _bitPosition;
-        }
-
+        get => _bitPosition;
         set
         {
             if (value > 7)
@@ -129,55 +110,28 @@ public sealed class BitStream : Stream
     }
 
     /// <inheritdoc/>
-    public override bool CanRead
-    {
-        get
-        {
-            return _sb.CanRead;
-        }
-    }
+    public override bool CanRead => _sb.CanRead;
 
     /// <inheritdoc/>
-    public override bool CanWrite
-    {
-        get
-        {
-            return _sb.CanWrite;
-        }
-    }
+    public override bool CanWrite => _sb.CanWrite;
 
     /// <inheritdoc/>
-    public override bool CanSeek
-    {
-        get
-        {
-            return _sb.CanSeek;
-        }
-    }
+    public override bool CanSeek => _sb.CanSeek;
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <inheritdoc />
-    public override int Read(byte[] buffer, int offset, int count)
-    {
-        return 0;
-    }
+    public override int Read(byte[] buffer, int offset, int count) => 0;
 
     /// <inheritdoc />
-    public override int ReadByte()
-    {
-        return _sb.ReadByte();
-    }
+    public override int ReadByte() => _sb.ReadByte();
 
     /// <summary>
     /// Reads the bytes.
     /// </summary>
     /// <param name="bytes">The bytes.</param>
     /// <returns>A 32-bit signed integer.</returns>
-    public int ReadBytes(int bytes)
-    {
-        return bytes <= 0 ? 0 : _sb.ReadBigEndianInt(bytes);
-    }
+    public int ReadBytes(int bytes) => bytes <= 0 ? 0 : _sb.ReadBigEndianInt(bytes);
 
     /// <summary>
     /// Reads a 32-bit signed integer.
@@ -194,22 +148,21 @@ public sealed class BitStream : Stream
         // New theoretical bit index; may be 8 or more.
         var newBitIndex = _bitPosition + width;
 
-        var value = newBitIndex <= 8
-            ? (long)(ReadByte() >> (8 - newBitIndex))
-            : newBitIndex <= 16
-                ? ReadBytes(2) >> (16 - newBitIndex)
-                : newBitIndex <= 24
-                    ? ReadBytes(3) >> (24 - newBitIndex)
-                    : newBitIndex <= 32
-                        ? ReadBytes(4) >> (32 - newBitIndex)
-                        : ReadBytes(5) >> (40 - newBitIndex);
+        var value = newBitIndex switch
+        {
+            <= 8 => (long)(ReadByte() >> (8 - newBitIndex)),
+            <= 16 => ReadBytes(2) >> (16 - newBitIndex),
+            <= 24 => ReadBytes(3) >> (24 - newBitIndex),
+            <= 32 => ReadBytes(4) >> (32 - newBitIndex),
+            _ => ReadBytes(5) >> (40 - newBitIndex)
+        };
 
         value &= 0xffffffffff >> (40 - width);
 
         // New bit position.
         _bitPosition = newBitIndex % 8;
 
-        // If we haven't consumed all bits in the last read byte, 
+        // If we haven't consumed all bits in the last read byte,
         // we need to go back to pointing to that last read byte.
         if (_bitPosition != 0)
         {
@@ -221,34 +174,19 @@ public sealed class BitStream : Stream
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
-    /// <summary>
-    /// When overridden in a derived class, writes a sequence of bytes to the current stream and advances the current position within this stream by the number of bytes written.
-    /// </summary>
-    /// <param name="buffer">An array of bytes. This method copies <paramref name="count"/> bytes from <paramref name="buffer"/> to the current stream. </param><param name="offset">The zero-based byte offset in <paramref name="buffer"/> at which to begin copying bytes to the current stream. </param><param name="count">The number of bytes to be written to the current stream. </param><exception cref="T:System.ArgumentException">The sum of <paramref name="offset"/> and <paramref name="count"/> is greater than the buffer length. </exception><exception cref="T:System.ArgumentNullException"><paramref name="buffer"/> is null. </exception><exception cref="T:System.ArgumentOutOfRangeException"><paramref name="offset"/> or <paramref name="count"/> is negative. </exception><exception cref="T:System.IO.IOException">An I/O error occurs. </exception><exception cref="T:System.NotSupportedException">The stream does not support writing. </exception><exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed. </exception><filterpriority>1</filterpriority>
-    public override void Write(byte[] buffer, int offset, int count)
-    {
-        throw new NotImplementedException();
-    }
+    /// <inheritdoc />
+    public override void Write(byte[] buffer, int offset, int count) => throw new NotImplementedException();
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <inheritdoc />
-    public override long Seek(long offset, SeekOrigin loc)
-    {
-        return _sb.Seek(offset, loc);
-    }
+    public override long Seek(long offset, SeekOrigin loc) => _sb.Seek(offset, loc);
 
     /// <summary>
     /// Clears all buffers for this stream and causes any buffered data to be written to the underlying device.
     /// </summary>
-    public override void Flush()
-    {
-        _sb.Flush();
-    }
+    public override void Flush() => _sb.Flush();
 
     /// <inheritdoc/>
-    public override void SetLength(long value)
-    {
-        _sb.SetLength(value);
-    }
+    public override void SetLength(long value) => _sb.SetLength(value);
 }

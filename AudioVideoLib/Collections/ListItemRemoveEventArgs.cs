@@ -12,7 +12,7 @@ public sealed class ListItemRemoveEventArgs<T> : CancelEventArgs
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ListItemRemoveEventArgs&lt;T&gt;" /> class.
+    /// Initializes a new instance of the <see cref="ListItemRemoveEventArgs{T}" /> class.
     /// </summary>
     /// <param name="item">The item to be removed from the list.</param>
     public ListItemRemoveEventArgs(T item)
@@ -21,7 +21,7 @@ public sealed class ListItemRemoveEventArgs<T> : CancelEventArgs
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ListItemRemoveEventArgs&lt;T&gt;" /> class.
+    /// Initializes a new instance of the <see cref="ListItemRemoveEventArgs{T}" /> class.
     /// </summary>
     /// <param name="index">The index of the item in the list to be removed.</param>
     /// <param name="item">The item to be removed from the list.</param>

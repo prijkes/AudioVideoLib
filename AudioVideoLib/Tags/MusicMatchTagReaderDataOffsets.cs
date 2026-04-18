@@ -40,16 +40,11 @@ public sealed partial class MusicMatchTagReader
         /// </summary>
         public int AudioMetaDataOffset { get; set; }
 
-        public long TotalDataOffsetsSize
-        {
-            get
-            {
-                // Offsets are read signed from the file; a malformed header where
-                // AudioMetaDataOffset < ImageExtensionOffset would otherwise produce a
-                // negative size that gets subtracted from the seek cursor and wraps to
-                // the wrong position.
-                return Math.Max(0L, (long)AudioMetaDataOffset - ImageExtensionOffset);
-            }
-        }
+        public long TotalDataOffsetsSize =>
+            // Offsets are read signed from the file; a malformed header where
+            // AudioMetaDataOffset < ImageExtensionOffset would otherwise produce a
+            // negative size that gets subtracted from the seek cursor and wraps to
+            // the wrong position.
+            Math.Max(0L, (long)AudioMetaDataOffset - ImageExtensionOffset);
     }
 }

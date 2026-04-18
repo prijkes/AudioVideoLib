@@ -21,7 +21,7 @@ public partial class Id3v1Tag
 
         set
         {
-            field = value ?? throw new ArgumentNullException("value");
+            field = value ?? throw new ArgumentNullException(nameof(value));
         }
     } = Encoding.Default;
 
@@ -34,7 +34,7 @@ public partial class Id3v1Tag
     /// The artist.
     /// </value>
     /// <remarks>
-    /// If encoding the value in the specified <see cref="Encoding"/> exceeds 30 bytes (or 90 bytes when <see cref="UseExtendedTag"/> is set to true), 
+    /// If encoding the value in the specified <see cref="Encoding"/> exceeds 30 bytes (or 90 bytes when <see cref="UseExtendedTag"/> is set to true),
     /// the value will be cut to the max character count which fits within 30 bytes (or 90 bytes when <see cref="UseExtendedTag"/> is set to true).
     /// <para />
     /// The full string is stored internally and only cut to the max character count on retrieval.
@@ -42,15 +42,8 @@ public partial class Id3v1Tag
     /// </remarks>
     public string? Artist
     {
-        get
-        {
-            return (_artist != null) ? GetExtendedString(_artist, 30, 60) : null;
-        }
-
-        set
-        {
-            _artist = value;
-        }
+        get => _artist != null ? GetExtendedString(_artist, 30, 60) : null;
+        set => _artist = value;
     }
 
     /// <summary>
@@ -60,7 +53,7 @@ public partial class Id3v1Tag
     /// The album title.
     /// </value>
     /// <remarks>
-    /// If encoding the value in the specified <see cref="Encoding"/> exceeds 30 bytes (or 90 bytes when <see cref="UseExtendedTag"/> is set to true), 
+    /// If encoding the value in the specified <see cref="Encoding"/> exceeds 30 bytes (or 90 bytes when <see cref="UseExtendedTag"/> is set to true),
     /// the value will be cut to the max character count which fits within 30 bytes (or 90 bytes when <see cref="UseExtendedTag"/> is set to true).
     /// <para />
     /// The full string is stored internally and only cut to the max character count on retrieval.
@@ -71,15 +64,8 @@ public partial class Id3v1Tag
     /// This is why we have to encode the string in 2 parts: one for 30 bytes max and one fore 60 bytes max.
     public string? AlbumTitle
     {
-        get
-        {
-            return (_albumTitle != null) ? GetExtendedString(_albumTitle, 30, 60) : null;
-        }
-
-        set
-        {
-            _albumTitle = value;
-        }
+        get => _albumTitle != null ? GetExtendedString(_albumTitle, 30, 60) : null;
+        set => _albumTitle = value;
     }
 
     /// <summary>
@@ -96,11 +82,7 @@ public partial class Id3v1Tag
     /// </remarks>
     public string? AlbumYear
     {
-        get
-        {
-            return (field != null) ? GetTruncatedEncodedString(field, 4) : null;
-        }
-
+        get => field != null ? GetTruncatedEncodedString(field, 4) : null;
         set;
     }
 
@@ -111,7 +93,7 @@ public partial class Id3v1Tag
     /// The track comment.
     /// </value>
     /// <remarks>
-    /// If encoding the value in the specified <see cref="Encoding"/> exceeds <see cref="TrackCommentLength"/> bytes, 
+    /// If encoding the value in the specified <see cref="Encoding"/> exceeds <see cref="TrackCommentLength"/> bytes,
     /// the value will be cut to the max character count which fits within <see cref="TrackCommentLength"/> bytes.
     /// <para />
     /// The full string is stored internally and only cut to the max character count on retrieval.
@@ -119,11 +101,7 @@ public partial class Id3v1Tag
     /// </remarks>
     public string? TrackComment
     {
-        get
-        {
-            return (field != null) ? GetTruncatedEncodedString(field, TrackCommentLength) : null;
-        }
-
+        get => field != null ? GetTruncatedEncodedString(field, TrackCommentLength) : null;
         set;
     }
 
@@ -141,7 +119,7 @@ public partial class Id3v1Tag
         {
             if (!IsValidGenre(value))
             {
-                throw new ArgumentOutOfRangeException("value");
+                throw new ArgumentOutOfRangeException(nameof(value));
             }
 
             field = value;
@@ -166,7 +144,7 @@ public partial class Id3v1Tag
     /// The track title.
     /// </value>
     /// <remarks>
-    /// If encoding the value in the specified <see cref="Encoding"/> exceeds 30 bytes (or 90 bytes when <see cref="UseExtendedTag"/> is set to true), 
+    /// If encoding the value in the specified <see cref="Encoding"/> exceeds 30 bytes (or 90 bytes when <see cref="UseExtendedTag"/> is set to true),
     /// the value will be cut to the max character count which fits within 30 bytes (or 90 bytes when <see cref="UseExtendedTag"/> is set to true).
     /// <para />
     /// The full string is stored internally and only cut to the max character count on retrieval.
@@ -174,15 +152,8 @@ public partial class Id3v1Tag
     /// </remarks>
     public string? TrackTitle
     {
-        get
-        {
-            return (_trackTitle != null) ? GetExtendedString(_trackTitle, 30, 60) : null;
-        }
-
-        set
-        {
-            _trackTitle = value;
-        }
+        get => _trackTitle != null ? GetExtendedString(_trackTitle, 30, 60) : null;
+        set => _trackTitle = value;
     }
 
     /// <summary>
@@ -194,13 +165,7 @@ public partial class Id3v1Tag
     /// <remarks>
     /// This is 30 bytes for version <see cref="Id3v1Version.Id3v11"/> and 28 bytes for version <see cref="Id3v1Version.Id3v10"/> and later.
     /// </remarks>
-    public int TrackCommentLength
-    {
-        get
-        {
-            return (Version >= Id3v1Version.Id3v11) ? 28 : 30;
-        }
-    }
+    public int TrackCommentLength => Version >= Id3v1Version.Id3v11 ? 28 : 30;
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
@@ -211,8 +176,8 @@ public partial class Id3v1Tag
     ///   <c>true</c> if the extended tag should be used; otherwise, <c>false</c>.
     /// </value>
     /// <remarks>
-    /// The extended tag is an extra data block before an ID3v1 tag, which extends the title, artist and album fields by 60 bytes each, 
-    /// offers a free text genre, a one-byte (values 0–5) speed and the start and stop time of the music in the MP3 file, e.g., for fading in. 
+    /// The extended tag is an extra data block before an ID3v1 tag, which extends the title, artist and album fields by 60 bytes each,
+    /// offers a free text genre, a one-byte (values 0-5) speed and the start and stop time of the music in the MP3 file, e.g., for fading in.
     /// If none of the fields are used, it will be automatically omitted.
     /// <para />
     /// Some programs supporting ID3v1 tags can read the extended tag, but writing may leave stale values in the extended block.
@@ -238,7 +203,7 @@ public partial class Id3v1Tag
         {
             if (!IsValidTrackSpeed(value))
             {
-                throw new ArgumentOutOfRangeException("value");
+                throw new ArgumentOutOfRangeException(nameof(value));
             }
 
             field = value;
@@ -258,11 +223,7 @@ public partial class Id3v1Tag
     /// </remarks>
     public string? ExtendedTrackGenre
     {
-        get
-        {
-            return (field != null) ? GetTruncatedEncodedString(field, 30) : field;
-        }
-
+        get => field != null ? GetTruncatedEncodedString(field, 30) : field;
         set;
     }
 

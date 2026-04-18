@@ -16,7 +16,7 @@ using System.Collections.Generic;
 /// <param name="reserved">The reserved.</param>
 /// <param name="trackIndexCount">The track index count.</param>
 /// <param name="indexPoints">The index points.</param>
-public class FlacCueSheetTrack(long trackOffset, int trackNumber, string trackIsrc, FlacCueSheetTrackType trackType, FlacCueSheetPreEmphasis preEmphasis, byte[] reserved, int trackIndexCount, IEnumerable<FlacCueSheetTrackIndexPoint> indexPoints)
+public sealed class FlacCueSheetTrack(long trackOffset, int trackNumber, string trackIsrc, FlacCueSheetTrackType trackType, FlacCueSheetPreEmphasis preEmphasis, byte[] reserved, int trackIndexCount, IEnumerable<FlacCueSheetTrackIndexPoint> indexPoints)
 {
     private readonly List<FlacCueSheetTrackIndexPoint> _trackIndexPoints = [.. indexPoints];
 
@@ -109,11 +109,5 @@ public class FlacCueSheetTrack(long trackOffset, int trackNumber, string trackIs
     /// <remarks>
     /// For all tracks except the lead-out track, one or more track index points.
     /// </remarks>
-    public IEnumerable<FlacCueSheetTrackIndexPoint> TrackIndexPoints
-    {
-        get
-        {
-            return _trackIndexPoints.AsReadOnly();
-        }
-    }
+    public IEnumerable<FlacCueSheetTrackIndexPoint> TrackIndexPoints => _trackIndexPoints.AsReadOnly();
 }

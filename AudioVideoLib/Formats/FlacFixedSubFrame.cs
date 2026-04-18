@@ -1,21 +1,10 @@
 namespace AudioVideoLib.Formats;
 
-using System;
-
 /// <summary>
 /// Represents a fixed-predictor subframe.
 /// </summary>
-public sealed class FlacFixedSubFrame : FlacSubFrame
+public sealed class FlacFixedSubFrame(FlacFrame flacFrame) : FlacSubFrame(flacFrame)
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="FlacFixedSubFrame"/> class.
-    /// </summary>
-    /// <param name="flacFrame">The flac frame.</param>
-    public FlacFixedSubFrame(FlacFrame flacFrame) : base(flacFrame)
-    {
-        ArgumentNullException.ThrowIfNull(flacFrame);
-    }
-
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>

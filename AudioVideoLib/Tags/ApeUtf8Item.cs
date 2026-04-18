@@ -40,10 +40,7 @@ public class ApeUtf8Item : ApeItem
     /// <summary>
     /// Gets the character used to separate values from each other.
     /// </summary>
-    public static char ValueSeparator
-    {
-        get { return '\0'; }
-    }
+    public static char ValueSeparator => '\0';
 
     /// <summary>
     /// Gets the type of the item.
@@ -54,13 +51,7 @@ public class ApeUtf8Item : ApeItem
     /// <remarks>
     /// See <see cref="ApeItemType" /> for possible item types.
     /// </remarks>
-    public override ApeItemType ItemType
-    {
-        get
-        {
-            return ApeItemType.CodedUTF8;
-        }
-    }
+    public override ApeItemType ItemType => ApeItemType.CodedUTF8;
 
     /// <inheritdoc/>
     public override byte[] Data
@@ -108,13 +99,7 @@ public class ApeUtf8Item : ApeItem
     /// <value>
     /// A list of one ore more UTF-8 string(s).
     /// </value>
-    public virtual IList<string> Values
-    {
-        get
-        {
-            return _values;
-        }
-    }
+    public virtual IList<string> Values => _values;
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

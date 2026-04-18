@@ -37,7 +37,7 @@ public sealed class Id3v2TermsOfUseFrame : Id3v2Frame
     {
         if (!IsVersionSupported(version))
         {
-            throw new InvalidVersionException(string.Format("Version {0} not supported by this frame.", version));
+            throw new InvalidVersionException($"Version {version} not supported by this frame.");
         }
     }
 
@@ -51,10 +51,7 @@ public sealed class Id3v2TermsOfUseFrame : Id3v2Frame
     /// </value>
     public Id3v2FrameEncodingType TextEncoding
     {
-        get
-        {
-            return _frameEncodingType;
-        }
+        get => _frameEncodingType;
 
         set
         {
@@ -78,10 +75,7 @@ public sealed class Id3v2TermsOfUseFrame : Id3v2Frame
     /// </remarks>
     public string Language
     {
-        get
-        {
-            return _language;
-        }
+        get => _language;
 
         set
         {
@@ -94,7 +88,7 @@ public sealed class Id3v2TermsOfUseFrame : Id3v2Frame
             // Id3v2.4.0 and later: If the language is not known the string "XXX" should be used.
             if (!IsValidLanguageCode(value) && ((Version != Id3v2Version.Id3v240) || !string.Equals(value, "XXX", StringComparison.OrdinalIgnoreCase)))
             {
-                throw new InvalidDataException(string.Format("Language code '{0}' is not a valid ISO-639-2 language code.", value));
+                throw new InvalidDataException($"Language code '{value}' is not a valid ISO-639-2 language code.");
             }
 
             // Id3v2.4.0 and later: The language should be represented in lower case.
@@ -110,10 +104,7 @@ public sealed class Id3v2TermsOfUseFrame : Id3v2Frame
     /// </value>
     public string Text
     {
-        get
-        {
-            return _text;
-        }
+        get => _text;
 
         set
         {
@@ -166,10 +157,7 @@ public sealed class Id3v2TermsOfUseFrame : Id3v2Frame
     }
 
     /// <inheritdoc />
-    public override string Identifier
-    {
-        get { return "USER"; }
-    }
+    public override string Identifier => "USER";
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

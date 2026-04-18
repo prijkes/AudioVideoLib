@@ -9,24 +9,15 @@ using AudioVideoLib.Tags;
 /// <summary>
 /// Class for FLAC audio frames.
 /// </summary>
-public class FlacVorbisCommentsMetadataBlock : FlacMetadataBlock
+public sealed class FlacVorbisCommentsMetadataBlock : FlacMetadataBlock
 {
     /// <inheritdoc/>
-    public override FlacMetadataBlockType BlockType
-    {
-        get
-        {
-            return FlacMetadataBlockType.VorbisComment;
-        }
-    }
+    public override FlacMetadataBlockType BlockType => FlacMetadataBlockType.VorbisComment;
 
     /// <inheritdoc/>
     public override byte[] Data
     {
-        get
-        {
-            return VorbisComments.ToByteArray();
-        }
+        get => VorbisComments.ToByteArray();
 
         protected set
         {

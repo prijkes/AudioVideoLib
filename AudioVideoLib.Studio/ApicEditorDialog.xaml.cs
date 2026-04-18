@@ -87,6 +87,47 @@ public partial class ApicEditorDialog : Window
         }
     }
 
+    private void ExportToFile_Click(object sender, RoutedEventArgs e)
+    {
+        if (_pictureData.Length == 0)
+        {
+            MessageBox.Show(this, "No image to export.", "Export picture", MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+
+        var mime = (MimeBox.Text ?? _imageFormat ?? string.Empty).Trim().ToLowerInvariant();
+        var extension = mime switch
+        {
+            "image/jpeg" or "image/jpg" => ".jpg",
+            "image/png" => ".png",
+            "image/gif" => ".gif",
+            "image/bmp" => ".bmp",
+            "image/webp" => ".webp",
+            _ => ".bin",
+        };
+
+        var dlg = new SaveFileDialog
+        {
+            Title = "Export picture",
+            FileName = $"picture{extension}",
+            Filter = $"{extension.TrimStart('.').ToUpperInvariant()} file|*{extension}|All files|*.*",
+        };
+        if (dlg.ShowDialog(this) != true)
+        {
+            return;
+        }
+
+        try
+        {
+            File.WriteAllBytes(dlg.FileName, _pictureData);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(this, $"Could not write file:\n\n{ex.Message}", "Export picture",
+                MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+    }
+
     private void ClearImage_Click(object sender, RoutedEventArgs e)
     {
         _pictureData = [];

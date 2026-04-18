@@ -21,6 +21,7 @@ using AudioVideoLib.IO;
 public sealed class Id3v2AudioEncryptionFrame : Id3v2Frame
 {
     private string _ownerIdentifier = null!;
+
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -39,7 +40,7 @@ public sealed class Id3v2AudioEncryptionFrame : Id3v2Frame
     {
         if (!IsVersionSupported(version))
         {
-            throw new InvalidVersionException(string.Format("Version {0} not supported by this frame.", version));
+            throw new InvalidVersionException($"Version {version} not supported by this frame.");
         }
     }
 
@@ -52,8 +53,8 @@ public sealed class Id3v2AudioEncryptionFrame : Id3v2Frame
     /// The owner identifier.
     /// </value>
     /// <remarks>
-    /// The owner identifier is a terminated string with a URL containing an email address, 
-    /// or a link to a location where an email address can be found, 
+    /// The owner identifier is a terminated string with a URL containing an email address,
+    /// or a link to a location where an email address can be found,
     /// that belongs to the organization responsible for this specific encrypted audio file.
     /// Questions regarding the encrypted audio should be sent to the email address specified.
     /// <para />
@@ -63,10 +64,7 @@ public sealed class Id3v2AudioEncryptionFrame : Id3v2Frame
     /// </remarks>
     public string OwnerIdentifier
     {
-        get
-        {
-            return _ownerIdentifier;
-        }
+        get => _ownerIdentifier;
 
         set
         {
@@ -170,10 +168,7 @@ public sealed class Id3v2AudioEncryptionFrame : Id3v2Frame
     }
 
     /// <inheritdoc />
-    public override string Identifier
-    {
-        get { return (Version < Id3v2Version.Id3v230) ? "CRA" : "AENC"; }
-    }
+    public override string Identifier => (Version < Id3v2Version.Id3v230) ? "CRA" : "AENC";
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

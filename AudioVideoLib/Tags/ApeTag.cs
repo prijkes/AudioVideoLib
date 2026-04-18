@@ -46,7 +46,7 @@ public sealed partial class ApeTag : IAudioTag
     {
         if (!IsValidVersion(version))
         {
-            throw new ArgumentOutOfRangeException("version");
+            throw new ArgumentOutOfRangeException(nameof(version));
         }
 
         Version = version;
@@ -62,14 +62,12 @@ public sealed partial class ApeTag : IAudioTag
     {
         if (!IsValidVersion(version))
         {
-            throw new ArgumentOutOfRangeException("version");
+            throw new ArgumentOutOfRangeException(nameof(version));
         }
 
         Version = version;
-
         Flags = flags;
     }
-
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
@@ -79,27 +77,15 @@ public sealed partial class ApeTag : IAudioTag
     /// <value>
     /// A list of <see cref="ApeItem"/>s in the tag.
     /// </value>
-    public IEnumerable<ApeItem> Items
-    {
-        get
-        {
-            return _items.AsReadOnly();
-        }
-    }
+    public IEnumerable<ApeItem> Items => _items.AsReadOnly();
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <inheritdoc/>
-    public override bool Equals(object? obj)
-    {
-        return Equals(obj as ApeTag);
-    }
+    public override bool Equals(object? obj) => Equals(obj as ApeTag);
 
     /// <inheritdoc/>
-    public bool Equals(IAudioTag? other)
-    {
-        return Equals(other as ApeTag);
-    }
+    public bool Equals(IAudioTag? other) => Equals(other as ApeTag);
 
     /// <summary>
     /// Equals the specified <see cref="ApeTag"/>.
@@ -135,10 +121,7 @@ public sealed partial class ApeTag : IAudioTag
     /// <returns>
     /// The first item of type T if found; otherwise, null.
     /// </returns>
-    public T? GetItem<T>() where T : ApeItem
-    {
-        return _items.OfType<T>().FirstOrDefault();
-    }
+    public T? GetItem<T>() where T : ApeItem => _items.OfType<T>().FirstOrDefault();
 
     /// <summary>
     /// Gets the <see cref="ApeItem"/> with the specified <paramref name="key"/> cast to the
@@ -150,8 +133,7 @@ public sealed partial class ApeTag : IAudioTag
     /// The matching item of type <typeparamref name="T"/>; <c>null</c> if no item with that
     /// key is present, or the stored item is not of the expected type.
     /// </returns>
-    public T? GetItem<T>(ApeItemKey key) where T : ApeItem
-        => GetItem(key) as T;
+    public T? GetItem<T>(ApeItemKey key) where T : ApeItem => GetItem(key) as T;
 
     /// <summary>
     /// Gets the <see cref="ApeItem"/>.
@@ -175,9 +157,9 @@ public sealed partial class ApeTag : IAudioTag
     /// </returns>
     public ApeItem? GetItem(string key)
     {
-        return key == null
-            ? throw new ArgumentNullException("key")
-            : _items.FirstOrDefault(f => string.Equals(f.Key, key, StringComparison.OrdinalIgnoreCase));
+        ArgumentNullException.ThrowIfNull(key);
+
+        return _items.FirstOrDefault(f => string.Equals(f.Key, key, StringComparison.OrdinalIgnoreCase));
     }
 
     /// <summary>
@@ -187,10 +169,7 @@ public sealed partial class ApeTag : IAudioTag
     /// <returns>
     /// A list of items of type T.
     /// </returns>
-    public IEnumerable<T> GetItems<T>() where T : ApeItem
-    {
-        return _items.OfType<T>();
-    }
+    public IEnumerable<T> GetItems<T>() where T : ApeItem => _items.OfType<T>();
 
     /// <summary>
     /// Updates the first item with a matching key if found; else, adds a new item.
@@ -355,7 +334,7 @@ public sealed partial class ApeTag : IAudioTag
             fullBuffer.WriteInt(_items.Count);
             SetUseFooterFlag(false, false);
             IsHeader = false;                               // Footer flags shouldn't have this flag set
-            SetUseHeaderFlag(useHeader, false);       // If useHeader, write header flag, 
+            SetUseHeaderFlag(useHeader, false);       // If useHeader, write header flag,
             fullBuffer.WriteInt(Flags);
             fullBuffer.Write(Reserved, Reserved.Length);
         }
@@ -370,15 +349,9 @@ public sealed partial class ApeTag : IAudioTag
     }
 
     /// <inheritdoc/>
-    public override string ToString()
-    {
-        return "APEv" + Version.ToString().Last();
-    }
+    public override string ToString() => "APEv" + Version.ToString()[^1];
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
-    private static bool IsValidVersion(ApeVersion version)
-    {
-        return Enum.TryParse(version.ToString(), true, out ApeVersion _);
-    }
+    private static bool IsValidVersion(ApeVersion version) => Enum.TryParse(version.ToString(), out ApeVersion _);
 }

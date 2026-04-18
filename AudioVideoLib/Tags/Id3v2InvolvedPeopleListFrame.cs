@@ -98,13 +98,7 @@ public sealed class Id3v2InvolvedPeopleListFrame : Id3v2Frame
     /// An <see cref="InvalidDataException"/> will be thrown when adding any <see cref="Id3v2InvolvedPeople.Involvee"/> or 
     /// <see cref="Id3v2InvolvedPeople.Involvement"/> entry not valid in the <see cref="Id3v2FrameEncodingType"/>.
     /// </remarks>
-    public IList<Id3v2InvolvedPeople> InvolvedPeople
-    {
-        get
-        {
-            return _involvedPeople;
-        }
-    }
+    public IList<Id3v2InvolvedPeople> InvolvedPeople => _involvedPeople;
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
@@ -169,10 +163,7 @@ public sealed class Id3v2InvolvedPeopleListFrame : Id3v2Frame
     }
 
     /// <inheritdoc />
-    public override string Identifier
-    {
-        get { return (Version < Id3v2Version.Id3v230) ? "IPL" : "IPLS"; }
-    }
+    public override string Identifier => (Version < Id3v2Version.Id3v230) ? "IPL" : "IPLS";
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

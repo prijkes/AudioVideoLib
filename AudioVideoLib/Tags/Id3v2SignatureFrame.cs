@@ -32,7 +32,7 @@ public sealed class Id3v2SignatureFrame : Id3v2Frame
     {
         if (!IsVersionSupported(version))
         {
-            throw new InvalidVersionException(string.Format("Version {0} not supported by this frame.", version));
+            throw new InvalidVersionException($"Version {version} not supported by this frame.");
         }
     }
 
@@ -86,10 +86,7 @@ public sealed class Id3v2SignatureFrame : Id3v2Frame
     }
 
     /// <inheritdoc />
-    public override string Identifier
-    {
-        get { return "SIGN"; }
-    }
+    public override string Identifier => "SIGN";
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

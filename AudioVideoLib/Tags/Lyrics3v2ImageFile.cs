@@ -66,11 +66,5 @@ public sealed class Lyrics3v2ImageFile
     /// If an image has a timestamp, then the visible image should automatically switch to that image on the timestamp play time, 
     /// just the same as the selected lyrics line is switched based on timestamps.
     /// </remarks>
-    public IList<TimeSpan> TimeStamps
-    {
-        get
-        {
-            return _timeStamps;
-        }
-    }
+    public IList<TimeSpan> TimeStamps => _timeStamps;
 }

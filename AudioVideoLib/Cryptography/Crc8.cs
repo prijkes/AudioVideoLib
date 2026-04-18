@@ -1,7 +1,6 @@
 namespace AudioVideoLib.Cryptography;
 
 using System;
-using System.Linq;
 
 /// <summary>
 /// Calculates a 8-bit Cyclic Redundancy Checksum (CRC).
@@ -21,14 +20,7 @@ public static class Crc8
                 var crc = i;
                 for (var j = 0; j < 8; ++j)
                 {
-                    if ((crc & 0x80) != 0)
-                    {
-                        crc = (crc << 1) ^ Polynomial;
-                    }
-                    else
-                    {
-                        crc <<= 1;
-                    }
+                    crc = ((crc & 0x80) != 0) ? (crc << 1) ^ Polynomial : crc << 1;
                 }
                 Crc8Table[i] = (byte)crc;
             }
@@ -36,17 +28,20 @@ public static class Crc8
     }
 
     /// <summary>
-    /// Returns the CRC8 Checksum of a byte array.
+    /// Returns the CRC8 Checksum of a byte span.
     /// </summary>
-    /// <param name="data">The byte array.</param>
+    /// <param name="data">The byte span.</param>
     /// <returns>CRC8 Checksum.</returns>
-    public static byte Calculate(byte[] data)
+    public static byte Calculate(ReadOnlySpan<byte> data)
     {
-        ArgumentNullException.ThrowIfNull(data);
-
         unchecked
         {
-            return data.Aggregate<byte, byte>(0, (current, b) => Crc8Table[current ^ b]);
+            byte crc = 0;
+            foreach (var b in data)
+            {
+                crc = Crc8Table[crc ^ b];
+            }
+            return crc;
         }
     }
 }

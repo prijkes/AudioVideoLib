@@ -5,7 +5,7 @@ using System;
 using AudioVideoLib.IO;
 
 /// <summary>
-/// 
+///
 /// </summary>
 public partial class FlacSubFrame
 {
@@ -26,7 +26,7 @@ public partial class FlacSubFrame
     /// The true sample size.
     /// </value>
     /// <remarks>
-    /// This is the sub frame's sample size (as determined from the <see cref="FlacFrame"/>'s sample size, 
+    /// This is the sub frame's sample size (as determined from the <see cref="FlacFrame"/>'s sample size,
     /// amended by the <see cref="FlacFrame.ChannelAssignment"/>)
     /// and minus the <see cref="WastedBits">number of wasted bits</see>.
     /// </remarks>

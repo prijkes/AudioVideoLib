@@ -39,6 +39,7 @@
 
         <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" Margin="0,14,0,0">
             <Button Content="Load from file…" Padding="10,3" Click="LoadFromFile_Click" />
+            <Button Content="Export to file…" Padding="10,3" Margin="8,0,0,0" Click="ExportToFile_Click" />
             <Button Content="Clear image"     Padding="10,3" Margin="8,0,0,0" Click="ClearImage_Click" />
         </StackPanel>
 

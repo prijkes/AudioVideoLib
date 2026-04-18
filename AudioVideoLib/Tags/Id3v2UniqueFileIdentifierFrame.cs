@@ -21,8 +21,6 @@ using AudioVideoLib.IO;
 /// </remarks>
 public sealed class Id3v2UniqueFileIdentifierFrame : Id3v2Frame
 {
-    private string _ownerIdentifier = null!;
-    private byte[] _identifierData = null!;
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -41,7 +39,7 @@ public sealed class Id3v2UniqueFileIdentifierFrame : Id3v2Frame
     {
         if (!IsVersionSupported(version))
         {
-            throw new InvalidVersionException(string.Format("Version {0} not supported by this frame.", version));
+            throw new InvalidVersionException($"Version {version} not supported by this frame.");
         }
     }
 
@@ -61,10 +59,7 @@ public sealed class Id3v2UniqueFileIdentifierFrame : Id3v2Frame
     /// </remarks>
     public string OwnerIdentifier
     {
-        get
-        {
-            return _ownerIdentifier;
-        }
+        get => field;
 
         set
         {
@@ -86,9 +81,9 @@ public sealed class Id3v2UniqueFileIdentifierFrame : Id3v2Frame
                     throw new InvalidDataException("value is not a valid RFC 1738 URL.");
                 }
             }
-            _ownerIdentifier = value;
+            field = value;
         }
-    }
+    } = null!;
 
     /// <summary>
     /// Gets or sets the identifier, which may be up to 64 bytes.
@@ -98,16 +93,13 @@ public sealed class Id3v2UniqueFileIdentifierFrame : Id3v2Frame
     /// </remarks>
     public byte[] IdentifierData
     {
-        get
-        {
-            return _identifierData;
-        }
+        get => field;
 
         set
         {
-            _identifierData = (value != null) ? [.. value.Take(64)] : null!;
+            field = (value != null) ? [.. value.Take(64)] : null!;
         }
-    }
+    } = null!;
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
@@ -143,25 +135,19 @@ public sealed class Id3v2UniqueFileIdentifierFrame : Id3v2Frame
 
             var defaultEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
             var stream = new StreamBuffer(value);
-            _ownerIdentifier = stream.ReadString(defaultEncoding, true);
-            _identifierData = new byte[stream.Length - stream.Position];
-            stream.Read(_identifierData, _identifierData.Length);
+            OwnerIdentifier = stream.ReadString(defaultEncoding, true);
+            IdentifierData = new byte[stream.Length - stream.Position];
+            stream.Read(IdentifierData, IdentifierData.Length);
         }
     }
 
     /// <inheritdoc />
-    public override string Identifier
-    {
-        get { return (Version < Id3v2Version.Id3v230) ? "UFI" : "UFID"; }
-    }
+    public override string Identifier => (Version < Id3v2Version.Id3v230) ? "UFI" : "UFID";
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <inheritdoc/>
-    public override bool Equals(Id3v2Frame? frame)
-    {
-        return Equals(frame as Id3v2UniqueFileIdentifierFrame);
-    }
+    public override bool Equals(Id3v2Frame? frame) => Equals(frame as Id3v2UniqueFileIdentifierFrame);
 
     /// <summary>
     /// Equals the specified <see cref="Id3v2UniqueFileIdentifierFrame"/>.
@@ -183,8 +169,5 @@ public sealed class Id3v2UniqueFileIdentifierFrame : Id3v2Frame
     /// <returns>
     ///   <c>true</c> if the specified version is supported; otherwise, <c>false</c>.
     /// </returns>
-    public override bool IsVersionSupported(Id3v2Version version)
-    {
-        return true;
-    }
+    public override bool IsVersionSupported(Id3v2Version version) => true;
 }

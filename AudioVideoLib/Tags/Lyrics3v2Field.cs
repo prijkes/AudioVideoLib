@@ -17,7 +17,6 @@ public partial class Lyrics3v2Field : IAudioTagFrame
 
     private const int FieldSizeLengthBytes = 5;
 
-    private byte[] _data = null!;
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -26,7 +25,7 @@ public partial class Lyrics3v2Field : IAudioTagFrame
     /// <param name="identifier">The identifier of the field.</param>
     public Lyrics3v2Field(string identifier)
     {
-        Identifier = identifier ?? throw new ArgumentNullException("identifier");
+        Identifier = identifier ?? throw new ArgumentNullException(nameof(identifier));
     }
 
     /// <summary>
@@ -44,13 +43,7 @@ public partial class Lyrics3v2Field : IAudioTagFrame
     /// <value>
     /// The length of the field identifier.
     /// </value>
-    public static int FieldIdentifierLength
-    {
-        get
-        {
-            return FieldIdentifierLengthBytes;
-        }
-    }
+    public static int FieldIdentifierLength => FieldIdentifierLengthBytes;
 
     /// <summary>
     /// Gets the length of the field size.
@@ -58,13 +51,7 @@ public partial class Lyrics3v2Field : IAudioTagFrame
     /// <value>
     /// The length of the field size.
     /// </value>
-    public static int FieldSizeLength
-    {
-        get
-        {
-            return FieldSizeLengthBytes;
-        }
-    }
+    public static int FieldSizeLength => FieldSizeLengthBytes;
 
     /// <summary>
     /// Gets the name of the field.
@@ -82,10 +69,7 @@ public partial class Lyrics3v2Field : IAudioTagFrame
     /// </value>
     public virtual byte[]? Data
     {
-        get
-        {
-            return _data;
-        }
+        get;
 
         protected set
         {
@@ -94,7 +78,7 @@ public partial class Lyrics3v2Field : IAudioTagFrame
                 throw new InvalidDataException("Data contains one or more invalid values.");
             }
 
-            _data = value!;
+            field = value!;
         }
     }
 
@@ -139,16 +123,10 @@ public partial class Lyrics3v2Field : IAudioTagFrame
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <inheritdoc/>
-    public override bool Equals(object? obj)
-    {
-        return Equals(obj as Lyrics3v2Field);
-    }
+    public override bool Equals(object? obj) => Equals(obj as Lyrics3v2Field);
 
     /// <inheritdoc/>
-    public bool Equals(IAudioTagFrame? audioFrame)
-    {
-        return Equals(audioFrame as Lyrics3v2Field);
-    }
+    public bool Equals(IAudioTagFrame? audioFrame) => Equals(audioFrame as Lyrics3v2Field);
 
     /// <summary>
     /// Equals the specified <see cref="Lyrics3v2Field"/>.
@@ -169,7 +147,6 @@ public partial class Lyrics3v2Field : IAudioTagFrame
     /// <returns>
     /// A hash code for the current <see cref="T:System.Object"/>.
     /// </returns>
-    /// <filterpriority>2</filterpriority>
     /// The value should be calculated on immutable fields only.
     public override int GetHashCode()
     {

@@ -47,7 +47,7 @@ public sealed class Id3v2SynchronizedLyricsFrame : Id3v2Frame
     {
         if (!IsVersionSupported(version))
         {
-            throw new InvalidVersionException(string.Format("Version {0} not supported by this frame.", version));
+            throw new InvalidVersionException($"Version {version} not supported by this frame.");
         }
 
         BindLyricSyncListEvents();
@@ -68,10 +68,7 @@ public sealed class Id3v2SynchronizedLyricsFrame : Id3v2Frame
     /// </remarks>
     public Id3v2FrameEncodingType TextEncoding
     {
-        get
-        {
-            return _frameEncodingType;
-        }
+        get => _frameEncodingType;
 
         set
         {
@@ -102,10 +99,7 @@ public sealed class Id3v2SynchronizedLyricsFrame : Id3v2Frame
     /// </remarks>
     public string Language
     {
-        get
-        {
-            return _language;
-        }
+        get => _language;
 
         set
         {
@@ -118,7 +112,7 @@ public sealed class Id3v2SynchronizedLyricsFrame : Id3v2Frame
             // Id3v2.4.0 and later: If the language is not known the string "XXX" should be used.
             if (!IsValidLanguageCode(value) && ((Version != Id3v2Version.Id3v240) || !string.Equals(value, "XXX", StringComparison.OrdinalIgnoreCase)))
             {
-                throw new InvalidDataException(string.Format("Language code '{0}' is not a valid ISO-639-2 language code.", value));
+                throw new InvalidDataException($"Language code '{value}' is not a valid ISO-639-2 language code.");
             }
 
             // Id3v2.4.0 and later: The language should be represented in lower case.
@@ -134,16 +128,13 @@ public sealed class Id3v2SynchronizedLyricsFrame : Id3v2Frame
     /// </value>
     public Id3v2TimeStampFormat TimeStampFormat
     {
-        get
-        {
-            return _timeStampFormat;
-        }
+        get => _timeStampFormat;
 
         set
         {
             if (!IsValidTimeStampFormat(value))
             {
-                throw new ArgumentOutOfRangeException("value");
+                throw new ArgumentOutOfRangeException(nameof(value));
             }
 
             _timeStampFormat = value;
@@ -158,16 +149,13 @@ public sealed class Id3v2SynchronizedLyricsFrame : Id3v2Frame
     /// </value>
     public Id3v2ContentType ContentType
     {
-        get
-        {
-            return _contentType;
-        }
+        get => _contentType;
 
         set
         {
             if (!IsValidContentType(value))
             {
-                throw new ArgumentOutOfRangeException("value", string.Format("value '{0}' is not supported in version {1}.", value, Version));
+                throw new ArgumentOutOfRangeException(nameof(value), $"value '{value}' is not supported in version {Version}.");
             }
 
             _contentType = value;
@@ -185,10 +173,7 @@ public sealed class Id3v2SynchronizedLyricsFrame : Id3v2Frame
     /// </remarks>
     public string ContentDescriptor
     {
-        get
-        {
-            return _contentDescriptor;
-        }
+        get => _contentDescriptor;
 
         set
         {
@@ -210,13 +195,7 @@ public sealed class Id3v2SynchronizedLyricsFrame : Id3v2Frame
     /// <remarks>
     /// The lyric syncs will be sorted and saved in chronological order.
     /// </remarks>
-    public ICollection<Id3v2LyricSync> LyricSyncs
-    {
-        get
-        {
-            return _lyricSyncs;
-        }
-    }
+    public ICollection<Id3v2LyricSync> LyricSyncs => _lyricSyncs;
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
@@ -304,10 +283,7 @@ public sealed class Id3v2SynchronizedLyricsFrame : Id3v2Frame
     }
 
     /// <inheritdoc />
-    public override string Identifier
-    {
-        get { return (Version < Id3v2Version.Id3v230) ? "SLT" : "SYLT"; }
-    }
+    public override string Identifier => (Version < Id3v2Version.Id3v230) ? "SLT" : "SYLT";
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

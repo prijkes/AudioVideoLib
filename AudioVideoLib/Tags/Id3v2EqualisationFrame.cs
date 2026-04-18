@@ -42,7 +42,7 @@ public sealed class Id3v2EqualisationFrame : Id3v2Frame
     {
         if (!IsVersionSupported(version))
         {
-            throw new InvalidVersionException(string.Format("Version {0} not supported by this frame.", version));
+            throw new InvalidVersionException($"Version {version} not supported by this frame.");
         }
 
         BindEqualisationBandsListEvents();
@@ -63,10 +63,7 @@ public sealed class Id3v2EqualisationFrame : Id3v2Frame
     /// </remarks>
     public byte AdjustmentBits
     {
-        get
-        {
-            return _adjustmentBits;
-        }
+        get => _adjustmentBits;
 
         set
         {
@@ -88,13 +85,7 @@ public sealed class Id3v2EqualisationFrame : Id3v2Frame
     /// <remarks>
     /// When adding items, the equalization bands will be ordered increasingly with reference to frequency.
     /// </remarks>
-    public ICollection<Id3v2EqualisationBand> EqualisationBands
-    {
-        get
-        {
-            return _equalisationBands;
-        }
-    }
+    public ICollection<Id3v2EqualisationBand> EqualisationBands => _equalisationBands;
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
@@ -137,10 +128,7 @@ public sealed class Id3v2EqualisationFrame : Id3v2Frame
     }
 
     /// <inheritdoc />
-    public override string Identifier
-    {
-        get { return (Version < Id3v2Version.Id3v230) ? "EQU" : "EQUA"; }
-    }
+    public override string Identifier => (Version < Id3v2Version.Id3v230) ? "EQU" : "EQUA";
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

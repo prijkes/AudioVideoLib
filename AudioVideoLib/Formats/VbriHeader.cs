@@ -95,7 +95,7 @@ public sealed class VbriHeader : VbrHeader
     /// <returns>The VBRI header if found; otherwise, null.</returns>
     /// <remarks>
     /// The VBRI header is located exactly 32 bytes after the end of the first MPEG audio header in the file.
-    /// It will compare the first 4 bytes against the <see cref="HeaderIndicator"/> 
+    /// It will compare the first 4 bytes against the <see cref="HeaderIndicator"/>
     /// to see if the header contains a <see cref="VbriHeader"/> or not.
     /// </remarks>
     public static new VbriHeader? FindHeader(MpaFrame firstFrame)
@@ -110,7 +110,7 @@ public sealed class VbriHeader : VbrHeader
         const long Offset = MpaFrame.FrameHeaderSize + SilenceDataSize;
         buffer.Seek(Offset, SeekOrigin.Begin);
         var tagName = buffer.PeekString(4);
-        return string.Compare(tagName, HeaderIndicator, StringComparison.OrdinalIgnoreCase) == 0
+        return string.Equals(tagName, HeaderIndicator, StringComparison.OrdinalIgnoreCase)
                    ? new VbriHeader(firstFrame, buffer, Offset)
                    : null;
     }
@@ -118,7 +118,7 @@ public sealed class VbriHeader : VbrHeader
     /// <inheritdoc/>
     public override int SeekPositionByTime(float entryTimeMilliseconds)
     {
-        if (Toc == null || Toc.Length == 0 || FrameCount <= 0)
+        if (Toc is null or { Length: 0 } || FrameCount <= 0)
         {
             return 0;
         }
@@ -156,7 +156,7 @@ public sealed class VbriHeader : VbrHeader
     /// <inheritdoc/>
     public override float SeekTimeByPosition(int entryPointInBytes)
     {
-        if (Toc == null || Toc.Length == 0 || FrameCount <= 0)
+        if (Toc is null or { Length: 0 } || FrameCount <= 0)
         {
             return 0f;
         }
@@ -187,16 +187,7 @@ public sealed class VbriHeader : VbrHeader
     /// <inheritdoc/>
     public override long SeekPositionByPercent(float percentage)
     {
-        if (percentage >= 100.0f)
-        {
-            percentage = 100.0f;
-        }
-
-        if (percentage <= 0.0f)
-        {
-            percentage = 0.0f;
-        }
-
+        percentage = Math.Clamp(percentage, 0.0f, 100.0f);
         return SeekPositionByTime(percentage / 100.0f * _totalLengthMilliseconds);
     }
 

@@ -7,9 +7,8 @@ namespace AudioVideoLib.Formats;
 public sealed partial class MpaFrame
 {
     // possible quantization per sub band table
-    private class SubbandQuantization
+    private sealed class SubbandQuantization
     {
-
         /// <summary>
         /// Gets or sets the sub band limit.
         /// </summary>

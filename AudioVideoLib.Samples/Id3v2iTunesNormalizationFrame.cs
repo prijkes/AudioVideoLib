@@ -371,10 +371,7 @@ namespace AudioVideoLibExamples
         }
 
         /// <inheritdoc />
-        public override string Identifier
-        {
-            get { return (Version < Id3v2Version.Id3v230) ? "COM" : "COMM"; }
-        }
+        public override string Identifier => (Version < Id3v2Version.Id3v230) ? "COM" : "COMM";
 
         ////------------------------------------------------------------------------------------------------------------------------------
 

@@ -34,10 +34,7 @@ public partial class FlacMetadataBlock
     /// </value>
     public bool IsLastBlock
     {
-        get
-        {
-            return (Flags & HeaderFlags.IsLastBlock) == HeaderFlags.IsLastBlock;
-        }
+        get => (Flags & HeaderFlags.IsLastBlock) == HeaderFlags.IsLastBlock;
 
         set
         {
@@ -58,13 +55,7 @@ public partial class FlacMetadataBlock
     /// <value>
     /// The type of the block.
     /// </value>
-    public virtual FlacMetadataBlockType BlockType
-    {
-        get
-        {
-            return (FlacMetadataBlockType)(Flags & HeaderFlags.BlockType);
-        }
-    }
+    public virtual FlacMetadataBlockType BlockType => (FlacMetadataBlockType)(Flags & HeaderFlags.BlockType);
 
     /// <summary>
     /// Gets or sets the data.
@@ -81,10 +72,7 @@ public partial class FlacMetadataBlock
     /// The flags value is stored as short (2 bytes) for all versions.
     private int Flags
     {
-        get
-        {
-            return field | ((int)BlockType & HeaderFlags.BlockType);
-        }
+        get => field | ((int)BlockType & HeaderFlags.BlockType);
 
         set;
     }
@@ -99,7 +87,8 @@ public partial class FlacMetadataBlock
     /// <exception cref="System.ArgumentNullException">stream</exception>
     public static FlacMetadataBlock? ReadBlock(Stream stream)
     {
-        return stream == null ? throw new ArgumentNullException("stream") : ReadBlock(stream as StreamBuffer ?? new StreamBuffer(stream));
+        ArgumentNullException.ThrowIfNull(stream);
+        return ReadBlock(stream as StreamBuffer ?? new StreamBuffer(stream));
     }
 
     /// <summary>
@@ -110,7 +99,8 @@ public partial class FlacMetadataBlock
     /// <exception cref="System.ArgumentNullException">data</exception>
     public static FlacMetadataBlock? ReadBlock(byte[] data)
     {
-        return data == null ? throw new ArgumentNullException("data") : ReadBlock(new StreamBuffer(data));
+        ArgumentNullException.ThrowIfNull(data);
+        return ReadBlock(new StreamBuffer(data));
     }
 
     /// <summary>

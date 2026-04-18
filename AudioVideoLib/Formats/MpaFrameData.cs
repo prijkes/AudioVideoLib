@@ -16,10 +16,7 @@ public sealed partial class MpaFrame
     /// Gets the length of the audio data, in bytes.
     /// </summary>
     /// <returns>The length of the audio data, in bytes.</returns>
-    public int AudioDataLength
-    {
-        get { return AudioData.Length; }
-    }
+    public int AudioDataLength => AudioData.Length;
 
     ///// <summary>
     ///// Gets a value indicating whether the frame data is valid.

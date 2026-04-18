@@ -118,13 +118,7 @@ public sealed partial class Id3v2Tag : IAudioTag
     /// Gets a read-only list of frames in the tag.
     /// </summary>
     /// <value>A read-only list of <see cref="Id3v2Frame"/>s in the tag.</value>
-    public IEnumerable<Id3v2Frame> Frames
-    {
-        get
-        {
-            return _frames.AsReadOnly();
-        }
-    }
+    public IEnumerable<Id3v2Frame> Frames => _frames.AsReadOnly();
 
     /// <summary>
     /// Gets or sets the amount of bytes to use as padding.

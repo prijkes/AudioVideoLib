@@ -16,13 +16,7 @@ public sealed partial class FlacStream
     /// <value>
     /// The metadata blocks in the stream.
     /// </value>
-    public IEnumerable<FlacMetadataBlock> MetadataBlocks
-    {
-        get
-        {
-            return _metadataBlocks;
-        }
-    }
+    public IEnumerable<FlacMetadataBlock> MetadataBlocks => _metadataBlocks;
 
     /// <summary>
     /// Gets the stream info metadata blocks.
@@ -30,13 +24,7 @@ public sealed partial class FlacStream
     /// <value>
     /// The stream info metadata blocks.
     /// </value>
-    public IEnumerable<FlacStreamInfoMetadataBlock> StreamInfoMetadataBlocks
-    {
-        get
-        {
-            return _metadataBlocks.OfType<FlacStreamInfoMetadataBlock>();
-        }
-    }
+    public IEnumerable<FlacStreamInfoMetadataBlock> StreamInfoMetadataBlocks => _metadataBlocks.OfType<FlacStreamInfoMetadataBlock>();
 
     /// <summary>
     /// Gets the application metadata blocks.
@@ -44,13 +32,7 @@ public sealed partial class FlacStream
     /// <value>
     /// The application metadata blocks.
     /// </value>
-    public IEnumerable<FlacApplicationMetadataBlock> ApplicationMetadataBlocks
-    {
-        get
-        {
-            return _metadataBlocks.OfType<FlacApplicationMetadataBlock>();
-        }
-    }
+    public IEnumerable<FlacApplicationMetadataBlock> ApplicationMetadataBlocks => _metadataBlocks.OfType<FlacApplicationMetadataBlock>();
 
     /// <summary>
     /// Gets the padding metadata blocks.
@@ -58,13 +40,7 @@ public sealed partial class FlacStream
     /// <value>
     /// The padding metadata blocks.
     /// </value>
-    public IEnumerable<FlacPaddingMetadataBlock> PaddingMetadataBlocks
-    {
-        get
-        {
-            return _metadataBlocks.OfType<FlacPaddingMetadataBlock>();
-        }
-    }
+    public IEnumerable<FlacPaddingMetadataBlock> PaddingMetadataBlocks => _metadataBlocks.OfType<FlacPaddingMetadataBlock>();
 
     /// <summary>
     /// Gets the seek table metadata block.
@@ -72,13 +48,7 @@ public sealed partial class FlacStream
     /// <value>
     /// The seek table metadata block.
     /// </value>
-    public FlacSeekTableMetadataBlock? SeekTableMetadataBlock
-    {
-        get
-        {
-            return _metadataBlocks.OfType<FlacSeekTableMetadataBlock>().FirstOrDefault();
-        }
-    }
+    public FlacSeekTableMetadataBlock? SeekTableMetadataBlock => _metadataBlocks.OfType<FlacSeekTableMetadataBlock>().FirstOrDefault();
 
     /// <summary>
     /// Gets the vorbis comments metadata block.
@@ -86,13 +56,7 @@ public sealed partial class FlacStream
     /// <value>
     /// The vorbis comments metadata block.
     /// </value>
-    public FlacVorbisCommentsMetadataBlock? VorbisCommentsMetadataBlock
-    {
-        get
-        {
-            return _metadataBlocks.OfType<FlacVorbisCommentsMetadataBlock>().FirstOrDefault();
-        }
-    }
+    public FlacVorbisCommentsMetadataBlock? VorbisCommentsMetadataBlock => _metadataBlocks.OfType<FlacVorbisCommentsMetadataBlock>().FirstOrDefault();
 
     /// <summary>
     /// Gets the flac cue sheet metadata blocks.
@@ -100,13 +64,7 @@ public sealed partial class FlacStream
     /// <value>
     /// The flac cue sheet metadata blocks.
     /// </value>
-    public IEnumerable<FlacCueSheetMetadataBlock> FlacCueSheetMetadataBlocks
-    {
-        get
-        {
-            return _metadataBlocks.OfType<FlacCueSheetMetadataBlock>();
-        }
-    }
+    public IEnumerable<FlacCueSheetMetadataBlock> FlacCueSheetMetadataBlocks => _metadataBlocks.OfType<FlacCueSheetMetadataBlock>();
 
     /// <summary>
     /// Gets the picture metadata blocks.
@@ -114,11 +72,5 @@ public sealed partial class FlacStream
     /// <value>
     /// The picture metadata blocks.
     /// </value>
-    public IEnumerable<FlacPictureMetadataBlock> PictureMetadataBlocks
-    {
-        get
-        {
-            return _metadataBlocks.OfType<FlacPictureMetadataBlock>();
-        }
-    }
+    public IEnumerable<FlacPictureMetadataBlock> PictureMetadataBlocks => _metadataBlocks.OfType<FlacPictureMetadataBlock>();
 }

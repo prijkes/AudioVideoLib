@@ -27,7 +27,12 @@ public sealed class FileDossier : INotifyPropertyChanged
     private readonly HashSet<IAudioTag> _newTags = new(ReferenceEqualityComparer.Instance);
     private readonly HashSet<IAudioTag> _removedTags = new(ReferenceEqualityComparer.Instance);
     private FlacStream? _flacStream;
-    private bool _isFlac;
+
+    public bool IsFlac { get; private set; }
+
+    public IAudioStream? AudioStream { get; private set; }
+
+    public IReadOnlyList<IAudioTagOffset> TagOffsets => _offsets;
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -209,7 +214,7 @@ public sealed class FileDossier : INotifyPropertyChanged
 
     private void SaveTo(string targetPath)
     {
-        if (_isFlac)
+        if (IsFlac)
         {
             SaveFlac(targetPath);
         }
@@ -508,10 +513,20 @@ public sealed class FileDossier : INotifyPropertyChanged
             TagTabs.Add(new Id3v1TabViewModel(id3v1));
         }
 
-        fs.Position = 0;
+        // Skip past any start-origin tags (e.g. large ID3v2) so the scanner
+        // doesn't give up before reaching the audio frames. AudioStreams only
+        // tolerates MaxStreamSpacingLength (128) bytes of non-audio before
+        // bailing out.
+        var startTagEnd = tagOffsets
+            .Where(o => o.TagOrigin == TagOrigin.Start)
+            .Select(o => o.EndOffset)
+            .DefaultIfEmpty(0L)
+            .Max();
+        fs.Position = startTagEnd;
         var audio = AudioStreams.ReadStream(fs).FirstOrDefault();
+        AudioStream = audio;
         _flacStream = audio as FlacStream;
-        _isFlac = _flacStream != null;
+        IsFlac = _flacStream != null;
         BuildTechCards(audio);
         BuildEncoder(audio);
         InspectorRoot = InspectorTreeBuilder.Build(FilePath, FileBytes, _offsets, audio);
@@ -572,6 +587,39 @@ public sealed class FileDossier : INotifyPropertyChanged
                     }
                     break;
                 }
+
+            case RiffStream riff:
+                TechCards.Add(new TechCard("Format", $"WAV ({riff.FormatType})"));
+                if (riff.SampleRate > 0)
+                {
+                    TechCards.Add(new TechCard("Sample Rate", $"{riff.SampleRate / 1000.0:0.#} kHz"));
+                    TechCards.Add(new TechCard("Channels", riff.Channels.ToString()));
+                    TechCards.Add(new TechCard("Bits", $"{riff.BitsPerSample}-bit"));
+                    if (riff.TotalAudioLength > 0)
+                    {
+                        TechCards.Add(new TechCard("Duration", FormatDuration(riff.TotalAudioLength)));
+                    }
+                }
+                break;
+
+            case AiffStream aiff:
+                TechCards.Add(new TechCard("Format", aiff.FormatType));
+                if (aiff.SampleRate > 0)
+                {
+                    TechCards.Add(new TechCard("Sample Rate", $"{aiff.SampleRate / 1000.0:0.#} kHz"));
+                    TechCards.Add(new TechCard("Channels", aiff.Channels.ToString()));
+                    TechCards.Add(new TechCard("Bits", $"{aiff.SampleSize}-bit"));
+                    if (aiff.TotalAudioLength > 0)
+                    {
+                        TechCards.Add(new TechCard("Duration", FormatDuration(aiff.TotalAudioLength)));
+                    }
+                }
+                break;
+
+            case OggStream ogg:
+                TechCards.Add(new TechCard("Format", "OGG container"));
+                TechCards.Add(new TechCard("Pages", ogg.PageCount.ToString("N0")));
+                break;
 
             default:
                 TechCards.Add(new TechCard("Format", "Unknown"));

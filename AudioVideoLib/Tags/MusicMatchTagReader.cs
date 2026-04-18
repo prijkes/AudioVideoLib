@@ -1,7 +1,6 @@
 namespace AudioVideoLib.Tags;
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -50,7 +49,7 @@ public sealed partial class MusicMatchTagReader : IAudioTagReader
         }
 
         var sb = stream as StreamBuffer ?? new StreamBuffer(stream);
-        var tag = new MusicMatchTag();
+        var tag = new MusicMatchTag(0, 0);
 
         // Should we read the header or footer?
         var headerOrFooter = (tagOrigin == TagOrigin.Start) ? ReadHeader(sb, tagOrigin) : ReadFooter(sb, tagOrigin);
@@ -287,7 +286,7 @@ public sealed partial class MusicMatchTagReader : IAudioTagReader
         return null;
     }
 
-    private static MusicMatchHeader? ReadHeaderFooter(StreamBuffer stream, long startHeaderPosition, long endHeaderPosition, IList<byte> identifierBytes, TagOrigin tagOrigin)
+    private static MusicMatchHeader? ReadHeaderFooter(StreamBuffer stream, long startHeaderPosition, long endHeaderPosition, byte[] identifierBytes, TagOrigin tagOrigin)
     {
         ArgumentNullException.ThrowIfNull(stream);
 
@@ -298,7 +297,7 @@ public sealed partial class MusicMatchTagReader : IAudioTagReader
             while (stream.ReadByte() == identifierBytes[y++])
             {
                 startHeaderPosition++;
-                if (y != identifierBytes.Count)
+                if (y != identifierBytes.Length)
                 {
                     continue;
                 }
@@ -307,7 +306,7 @@ public sealed partial class MusicMatchTagReader : IAudioTagReader
                 {
                     var header = new MusicMatchHeader
                     {
-                        Position = stream.Position - identifierBytes.Count,
+                        Position = stream.Position - identifierBytes.Length,
                         Padding1 = new byte[2],
                         Padding2 = new byte[2],
                         Padding3 = new byte[2],
@@ -339,7 +338,7 @@ public sealed partial class MusicMatchTagReader : IAudioTagReader
                 {
                     var footer = new MusicMatchHeader
                     {
-                        Position = stream.Position - identifierBytes.Count,
+                        Position = stream.Position - identifierBytes.Length,
                         SpacePadding1 = new byte[13],
                         SpacePadding2 = new byte[12]
                     };
@@ -404,15 +403,15 @@ public sealed partial class MusicMatchTagReader : IAudioTagReader
 
     private static MusicMatchDataOffsets ReadDataOffsets(StreamBuffer sb)
     {
-        return sb == null
-            ? throw new ArgumentNullException("sb")
-            : new MusicMatchDataOffsets
-            {
-                ImageExtensionOffset = sb.ReadInt32(),
-                ImageBinaryOffset = sb.ReadInt32(),
-                UnusedOffset = sb.ReadInt32(),
-                VersionInfoOffset = sb.ReadInt32(),
-                AudioMetaDataOffset = sb.ReadInt32()
-            };
+        ArgumentNullException.ThrowIfNull(sb);
+
+        return new MusicMatchDataOffsets
+        {
+            ImageExtensionOffset = sb.ReadInt32(),
+            ImageBinaryOffset = sb.ReadInt32(),
+            UnusedOffset = sb.ReadInt32(),
+            VersionInfoOffset = sb.ReadInt32(),
+            AudioMetaDataOffset = sb.ReadInt32()
+        };
     }
 }

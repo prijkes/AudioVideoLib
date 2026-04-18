@@ -4,7 +4,7 @@ namespace AudioVideoLib.Formats;
 /// XING VBR Header flags.
 /// Flags which indicate what fields are present, flags are combined with a logical OR. Field is mandatory.
 /// </summary>
-public struct XingHeaderFlags
+public readonly struct XingHeaderFlags
 {
     /// <summary>
     /// Number of frames in the file stored as Big-Endian unsigned int (optional), excluding the XING Frame (total - 1).

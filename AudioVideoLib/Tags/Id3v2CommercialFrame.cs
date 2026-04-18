@@ -42,7 +42,7 @@ public sealed class Id3v2CommercialFrame : Id3v2Frame
     {
         if (!IsVersionSupported(version))
         {
-            throw new InvalidVersionException(string.Format("Version {0} not supported by this frame.", version));
+            throw new InvalidVersionException($"Version {version} not supported by this frame.");
         }
     }
 
@@ -60,10 +60,7 @@ public sealed class Id3v2CommercialFrame : Id3v2Frame
     /// </remarks>
     public Id3v2FrameEncodingType TextEncoding
     {
-        get
-        {
-            return _frameEncodingType;
-        }
+        get => _frameEncodingType;
 
         set
         {
@@ -94,10 +91,7 @@ public sealed class Id3v2CommercialFrame : Id3v2Frame
     /// </remarks>
     public string PriceString
     {
-        get
-        {
-            return _priceString;
-        }
+        get => _priceString;
 
         set
         {
@@ -146,10 +140,7 @@ public sealed class Id3v2CommercialFrame : Id3v2Frame
     /// </remarks>
     public string ValidUntil
     {
-        get
-        {
-            return (_validUntil.Length > 8) ? _validUntil[..8] : _validUntil;
-        }
+        get => (_validUntil.Length > 8) ? _validUntil[..8] : _validUntil;
 
         set
         {
@@ -191,10 +182,7 @@ public sealed class Id3v2CommercialFrame : Id3v2Frame
     /// </remarks>
     public string ContactUrl
     {
-        get
-        {
-            return _contactUrl;
-        }
+        get => _contactUrl;
 
         set
         {
@@ -225,16 +213,13 @@ public sealed class Id3v2CommercialFrame : Id3v2Frame
     /// </remarks>
     public Id3v2AudioDeliveryType ReceivedAs
     {
-        get
-        {
-            return _audioDeliveryType;
-        }
+        get => _audioDeliveryType;
 
         set
         {
             if (!IsValidAudioDeliveryType(value))
             {
-                throw new ArgumentOutOfRangeException("value");
+                throw new ArgumentOutOfRangeException(nameof(value));
             }
 
             _audioDeliveryType = value;
@@ -252,10 +237,7 @@ public sealed class Id3v2CommercialFrame : Id3v2Frame
     /// </remarks>
     public string NameOfSeller
     {
-        get
-        {
-            return _nameOfSeller;
-        }
+        get => _nameOfSeller;
 
         set
         {
@@ -279,10 +261,7 @@ public sealed class Id3v2CommercialFrame : Id3v2Frame
     /// </remarks>
     public string ShortDescription
     {
-        get
-        {
-            return _shortDescription;
-        }
+        get => _shortDescription;
 
         set
         {
@@ -309,10 +288,7 @@ public sealed class Id3v2CommercialFrame : Id3v2Frame
     /// </remarks>
     public string PictureMimeType
     {
-        get
-        {
-            return _pictureMimeType;
-        }
+        get => _pictureMimeType;
 
         set
         {
@@ -321,7 +297,7 @@ public sealed class Id3v2CommercialFrame : Id3v2Frame
                     && !string.Equals(value, "image/png", StringComparison.OrdinalIgnoreCase)
                     && !string.Equals(value, "image/jpeg", StringComparison.OrdinalIgnoreCase))
             {
-                throw new ArgumentOutOfRangeException("value", "value not allowed, currently only 'image/png' and 'image/jpeg' are allowed.");
+                throw new ArgumentOutOfRangeException(nameof(value), "value not allowed, currently only 'image/png' and 'image/jpeg' are allowed.");
             }
 
             _pictureMimeType = value;
@@ -444,10 +420,7 @@ public sealed class Id3v2CommercialFrame : Id3v2Frame
     }
 
     /// <inheritdoc />
-    public override string Identifier
-    {
-        get { return "COMR"; }
-    }
+    public override string Identifier => "COMR";
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

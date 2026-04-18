@@ -2,10 +2,15 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:AudioVideoLib.Studio"
+        xmlns:analysis="clr-namespace:AudioVideoLib.Studio.Analysis"
+        xmlns:playback="clr-namespace:AudioVideoLib.Studio.Playback"
         Title="AudioVideoLib Studio"
         Height="800"
         Width="1320"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        AllowDrop="True"
+        DragOver="Window_DragOver"
+        Drop="Window_Drop">
     <Window.Resources>
 
         <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
@@ -291,21 +296,101 @@
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
                 <MenuItem Header="_Open..."      Click="OpenFile_Click"  InputGestureText="Ctrl+O" />
+                <MenuItem x:Name="RecentMenu" Header="Open _Recent" SubmenuOpened="RecentMenu_SubmenuOpened" />
                 <Separator />
                 <MenuItem Header="_Save"         Click="Save_Click"      InputGestureText="Ctrl+S" />
                 <MenuItem Header="Save _As..."   Click="SaveAs_Click"    InputGestureText="Ctrl+Shift+S" />
+                <Separator />
+                <MenuItem x:Name="ExportJsonMenuItem"
+                          Header="_Export tags as JSON..."
+                          Click="ExportJson_Click"
+                          Visibility="Collapsed" />
+                <MenuItem x:Name="ExportLintMenuItem"
+                          Header="Export _lint report..."
+                          Click="ExportLint_Click"
+                          Visibility="Collapsed" />
+                <Separator />
+                <MenuItem Header="_Batch scan folder..." Click="Batch_Click" />
+                <Separator />
+                <MenuItem x:Name="CompareMenuItem" Header="Co_mpare with..." Click="Compare_Click" Visibility="Collapsed" />
+                <Separator />
+                <MenuItem Header="Copy file _path" Click="CopyFilePath_Click" />
+                <MenuItem Header="Open in E_xplorer" Click="OpenInExplorer_Click" />
                 <Separator />
                 <MenuItem Header="_Close file"   Click="CloseFile_Click" InputGestureText="Ctrl+W" />
                 <Separator />
                 <MenuItem Header="E_xit"         Click="Exit_Click" />
             </MenuItem>
-            <MenuItem Header="_View">
+            <MenuItem x:Name="ViewMenu" Header="_View" Visibility="Collapsed">
                 <MenuItem Header="_Refresh" Click="Refresh_Click" InputGestureText="F5" />
+                <Separator />
+                <MenuItem Header="_Go to offset..." Click="GoToOffset_Click" InputGestureText="Ctrl+G" />
+                <MenuItem Header="_Find..."         Click="Find_Click"        InputGestureText="Ctrl+F" />
+                <MenuItem Header="Find _next"       Click="FindNext_Click"    InputGestureText="F3" />
+                <MenuItem Header="Find _previous"   Click="FindPrevious_Click" InputGestureText="Shift+F3" />
+                <Separator />
+                <MenuItem Header="_Validate all..." Click="ValidateAll_Click" />
+                <MenuItem x:Name="FlacIntegrityMenuItem"
+                          Header="_FLAC integrity check..."
+                          Click="FlacIntegrity_Click"
+                          Visibility="Collapsed" />
+            </MenuItem>
+            <MenuItem Header="_Tools">
+                <MenuItem Header="_Settings..." Click="Settings_Click" />
             </MenuItem>
             <MenuItem Header="_Help">
+                <MenuItem Header="_Keyboard shortcuts..." Click="Shortcuts_Click" InputGestureText="F1" />
+                <Separator />
                 <MenuItem Header="_About" Click="About_Click" />
             </MenuItem>
         </Menu>
+
+        <!-- ==================== file tabs ==================== -->
+
+        <Border x:Name="FileTabsStrip"
+                DockPanel.Dock="Top"
+                Background="{DynamicResource Surface2Brush}"
+                BorderBrush="{DynamicResource BorderBrush}"
+                BorderThickness="0,0,0,1"
+                Padding="4,3"
+                Visibility="Collapsed">
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                <ItemsControl x:Name="FileTabsList">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Margin="2,0" Padding="0" CornerRadius="3"
+                                    Background="{Binding TabBackground}"
+                                    BorderBrush="{DynamicResource BorderBrush}"
+                                    BorderThickness="1">
+                                <DockPanel>
+                                    <Button DockPanel.Dock="Right"
+                                            Content="×"
+                                            Width="20" Height="20"
+                                            Padding="0"
+                                            Margin="2,0,2,0"
+                                            FontSize="12"
+                                            Click="CloseTab_Click"
+                                            Tag="{Binding Dossier}"
+                                            ToolTip="Close" />
+                                    <Button Click="SelectTab_Click"
+                                            Tag="{Binding Dossier}"
+                                            Padding="8,3"
+                                            BorderThickness="0"
+                                            Background="Transparent"
+                                            Content="{Binding DisplayName}"
+                                            ToolTip="{Binding FilePath}" />
+                                </DockPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Border>
 
         <!-- ==================== file info strip ==================== -->
 
@@ -322,11 +407,22 @@
                        TextTrimming="CharacterEllipsis" />
         </Border>
 
+        <!-- ==================== playback bar ==================== -->
+
+        <playback:PlaybackBar x:Name="PlayBar" DockPanel.Dock="Bottom" Visibility="Collapsed" />
+
         <!-- ==================== status bar ==================== -->
 
         <StatusBar DockPanel.Dock="Bottom" Height="26">
             <StatusBarItem>
                 <TextBlock x:Name="StatusLeft" Text="Ready" />
+            </StatusBarItem>
+            <Separator />
+            <StatusBarItem>
+                <TextBlock x:Name="StatusSelection"
+                           FontFamily="Consolas"
+                           FontSize="12"
+                           Text="" />
             </StatusBarItem>
             <Separator />
             <StatusBarItem>
@@ -362,7 +458,8 @@
                                       BorderThickness="0"
                                       FontFamily="Consolas"
                                       FontSize="12"
-                                      SelectedItemChanged="InspectorTreeView_SelectedItemChanged">
+                                      SelectedItemChanged="InspectorTreeView_SelectedItemChanged"
+                                      ContextMenuOpening="InspectorTree_ContextMenuOpening">
                                 <TreeView.ItemTemplate>
                                     <HierarchicalDataTemplate ItemsSource="{Binding Children}">
                                         <StackPanel Orientation="Horizontal" ToolTip="{Binding OffsetTooltip}">
@@ -392,6 +489,8 @@
                                       AutoGenerateColumns="False"
                                       CanUserAddRows="False"
                                       CanUserDeleteRows="False"
+                                      CanUserSortColumns="False"
+                                      CanUserReorderColumns="False"
                                       IsReadOnly="True"
                                       HeadersVisibility="Column"
                                       GridLinesVisibility="Horizontal"
@@ -399,7 +498,7 @@
                                       RowHeight="24"
                                       SelectionChanged="PropertiesGrid_SelectionChanged">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="Property" Binding="{Binding Name}" Width="140">
+                                    <DataGridTextColumn Header="Property" Binding="{Binding Name}" Width="140" CanUserSort="False">
                                         <DataGridTextColumn.ElementStyle>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
@@ -407,7 +506,7 @@
                                             </Style>
                                         </DataGridTextColumn.ElementStyle>
                                     </DataGridTextColumn>
-                                    <DataGridTextColumn Header="Value" Binding="{Binding Value}" Width="*">
+                                    <DataGridTextColumn Header="Value" Binding="{Binding Value}" Width="*" CanUserSort="False">
                                         <DataGridTextColumn.ElementStyle>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="FontFamily" Value="Consolas" />
@@ -425,15 +524,15 @@
 
                     <!-- hex view -->
                     <GroupBox Grid.Row="2" Header="Hex View" Margin="4">
-                        <RichTextBox x:Name="HexViewBox"
-                                     IsReadOnly="True"
-                                     IsReadOnlyCaretVisible="True"
-                                     BorderThickness="0"
-                                     VerticalScrollBarVisibility="Auto"
-                                     HorizontalScrollBarVisibility="Auto"
-                                     Background="#1A1A1A" />
+                        <local:HexView x:Name="HexViewControl" />
                     </GroupBox>
                 </Grid>
+            </TabItem>
+
+            <!-- ==================== Analysis tab ==================== -->
+
+            <TabItem Header="Analysis">
+                <analysis:AnalysisPanel x:Name="AnalysisPanel" />
             </TabItem>
 
             <!-- ==================== Tags tab ==================== -->
@@ -472,6 +571,12 @@
                                     <ContextMenu x:Name="AddTagMenu" />
                                 </Button.ContextMenu>
                             </Button>
+                            <Button DockPanel.Dock="Right"
+                                    Content="Validate"
+                                    Click="ValidateTag_Click"
+                                    Padding="10,2"
+                                    FontSize="11"
+                                    Margin="0,0,8,0" />
                             <TextBlock Text="Select a tag format to edit, or add a new one."
                                        Foreground="{DynamicResource TextSecondaryBrush}"
                                        FontSize="11"

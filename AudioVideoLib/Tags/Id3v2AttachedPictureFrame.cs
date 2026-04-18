@@ -16,11 +16,6 @@ using AudioVideoLib.IO;
 /// </remarks>
 public sealed class Id3v2AttachedPictureFrame : Id3v2Frame
 {
-    private Id3v2FrameEncodingType _frameEncodingType;
-
-    private string _imageFormat = null!, _description = null!;
-    private Id3v2AttachedPictureType _attachedPictureType;
-
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -39,7 +34,7 @@ public sealed class Id3v2AttachedPictureFrame : Id3v2Frame
     {
         if (!IsVersionSupported(version))
         {
-            throw new InvalidVersionException(string.Format("Version {0} not supported by this frame.", version));
+            throw new InvalidVersionException($"Version {version} not supported by this frame.");
         }
     }
 
@@ -56,10 +51,7 @@ public sealed class Id3v2AttachedPictureFrame : Id3v2Frame
     /// </remarks>
     public Id3v2FrameEncodingType TextEncoding
     {
-        get
-        {
-            return _frameEncodingType;
-        }
+        get => field;
 
         set
         {
@@ -68,7 +60,7 @@ public sealed class Id3v2AttachedPictureFrame : Id3v2Frame
                 throw new InvalidDataException("Description contains one or more invalid characters for the specified frame encoding type.");
             }
 
-            _frameEncodingType = value;
+            field = value;
         }
     }
 
@@ -81,21 +73,18 @@ public sealed class Id3v2AttachedPictureFrame : Id3v2Frame
     /// <remarks>
     /// Image format is preferably "PNG" [PNG] or "JPG" [JFIF].
     /// <para />
-    /// In versions before <see cref="Id3v2Version.Id3v230"/>, the image format has a maximum length of 3 characters. 
+    /// In versions before <see cref="Id3v2Version.Id3v230"/>, the image format has a maximum length of 3 characters.
     /// If the value is longer than 3 characters, the value will be trimmed.
     /// </remarks>
     public string ImageFormat
     {
-        get
-        {
-            return _imageFormat;
-        }
+        get => field;
 
         set
         {
             if (string.IsNullOrEmpty(value))
             {
-                _imageFormat = value;
+                field = value;
                 return;
             }
 
@@ -104,9 +93,9 @@ public sealed class Id3v2AttachedPictureFrame : Id3v2Frame
                 throw new InvalidDataException("value contains one or more invalid characters.");
             }
 
-            _imageFormat = ((Version < Id3v2Version.Id3v230) && (value.Length > 3)) ? value[..3] : value;
+            field = ((Version < Id3v2Version.Id3v230) && (value.Length > 3)) ? value[..3] : value;
         }
-    }
+    } = null!;
 
     /// <summary>
     /// Gets or sets the type of the picture.
@@ -116,19 +105,16 @@ public sealed class Id3v2AttachedPictureFrame : Id3v2Frame
     /// </value>
     public Id3v2AttachedPictureType PictureType
     {
-        get
-        {
-            return _attachedPictureType;
-        }
+        get => field;
 
         set
         {
-            if (!IsValidAttachedPictureType(value))
+            if (!Enum.IsDefined(value))
             {
-                throw new ArgumentOutOfRangeException("value");
+                throw new ArgumentOutOfRangeException(nameof(value));
             }
 
-            _attachedPictureType = value;
+            field = value;
         }
     }
 
@@ -148,16 +134,13 @@ public sealed class Id3v2AttachedPictureFrame : Id3v2Frame
     /// </remarks>
     public string Description
     {
-        get
-        {
-            return _description;
-        }
+        get => field;
 
         set
         {
             if (string.IsNullOrEmpty(value))
             {
-                _description = value;
+                field = value;
                 return;
             }
 
@@ -166,9 +149,9 @@ public sealed class Id3v2AttachedPictureFrame : Id3v2Frame
                 throw new InvalidDataException("value contains one or more invalid characters for the current frame encoding type.");
             }
 
-            _description = ((Version < Id3v2Version.Id3v240) && (value.Length > 64)) ? value[..64] : value;
+            field = ((Version < Id3v2Version.Id3v240) && (value.Length > 64)) ? value[..64] : value;
         }
-    }
+    } = null!;
 
     /// <summary>
     /// Gets or sets the picture data.
@@ -177,7 +160,7 @@ public sealed class Id3v2AttachedPictureFrame : Id3v2Frame
     /// The picture data.
     /// </value>
     /// <remarks>
-    /// There is a possibility to put only a link to the image file by using the 'image format' "-->" 
+    /// There is a possibility to put only a link to the image file by using the 'image format' "-->"
     /// and having a complete URL [URL] instead of picture data.
     /// The use of linked files should however be used restrictively since there is the risk of separation of files.
     /// </remarks>
@@ -247,26 +230,26 @@ public sealed class Id3v2AttachedPictureFrame : Id3v2Frame
 
             var imageFormatEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
             var stream = new StreamBuffer(value);
-            _frameEncodingType = Id3v2FrameEncoding.ReadEncodingTypeFromStream(stream);
-            var encoding = Id3v2FrameEncoding.GetEncoding(_frameEncodingType);
-            _imageFormat = (Version < Id3v2Version.Id3v230) ? stream.ReadString(3, true) : stream.ReadString(imageFormatEncoding, true);
-            _attachedPictureType = (Id3v2AttachedPictureType)stream.ReadByte();
+            TextEncoding = Id3v2FrameEncoding.ReadEncodingTypeFromStream(stream);
+            var encoding = Id3v2FrameEncoding.GetEncoding(TextEncoding);
+            ImageFormat = (Version < Id3v2Version.Id3v230) ? stream.ReadString(3, true) : stream.ReadString(imageFormatEncoding, true);
+            PictureType = (Id3v2AttachedPictureType)stream.ReadByte();
 
             // Some badly written ID3v2 programs write ID3v2.2.0 PIC frames instead of APIC frames; find out here...
-            if (_imageFormat.Length == 3)
+            if (ImageFormat.Length == 3)
             {
                 int bytesRead;
-                _description = stream.ReadString(encoding, out bytesRead);
-                if (_description.Any(c => c == (char)0xFF))
+                Description = stream.ReadString(encoding, out bytesRead);
+                if (Description.Any(c => c == (char)0xFF))
                 {
                     stream.Position -= bytesRead;
-                    _description = string.Empty;
+                    Description = string.Empty;
                 }
             }
             else
             {
                 // Don't bother here...
-                _description = stream.ReadString(encoding);
+                Description = stream.ReadString(encoding);
             }
             PictureData = new byte[stream.Length - stream.Position];
             stream.Read(PictureData, PictureData.Length);
@@ -274,18 +257,12 @@ public sealed class Id3v2AttachedPictureFrame : Id3v2Frame
     }
 
     /// <inheritdoc />
-    public override string Identifier
-    {
-        get { return (Version < Id3v2Version.Id3v230) ? "PIC" : "APIC"; }
-    }
+    public override string Identifier => (Version < Id3v2Version.Id3v230) ? "PIC" : "APIC";
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <inheritdoc/>
-    public override bool Equals(Id3v2Frame? frame)
-    {
-        return Equals(frame as Id3v2AttachedPictureFrame);
-    }
+    public override bool Equals(Id3v2Frame? frame) => Equals(frame as Id3v2AttachedPictureFrame);
 
     /// <summary>
     /// Equals the specified <see cref="Id3v2AttachedPictureFrame"/>.
@@ -294,7 +271,7 @@ public sealed class Id3v2AttachedPictureFrame : Id3v2Frame
     /// <returns>true if equal; false otherwise.</returns>
     /// <remarks>
     /// Both instances are equal when their <see cref="Version"/> and <see cref="Description"/> properties are equal (case-insensitive), or,
-    /// when their <see cref="Version"/> property is equal and both use <see cref="Id3v2AttachedPictureType.FileIcon"/> 
+    /// when their <see cref="Version"/> property is equal and both use <see cref="Id3v2AttachedPictureType.FileIcon"/>
     /// or <see cref="Id3v2AttachedPictureType.OtherFileIcon"/> as <see cref="PictureType"/>.
     /// </remarks>
     public bool Equals(Id3v2AttachedPictureFrame? ap)
@@ -312,15 +289,5 @@ public sealed class Id3v2AttachedPictureFrame : Id3v2Frame
     /// <returns>
     ///   <c>true</c> if the specified version is supported; otherwise, <c>false</c>.
     /// </returns>
-    public override bool IsVersionSupported(Id3v2Version version)
-    {
-        return true;
-    }
-
-    ////------------------------------------------------------------------------------------------------------------------------------
-
-    private static bool IsValidAttachedPictureType(Id3v2AttachedPictureType attachedPictureType)
-    {
-        return Enum.TryParse(attachedPictureType.ToString(), true, out Id3v2AttachedPictureType _);
-    }
+    public override bool IsVersionSupported(Id3v2Version version) => true;
 }

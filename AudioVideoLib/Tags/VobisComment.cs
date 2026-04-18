@@ -12,7 +12,7 @@ using AudioVideoLib.IO;
 /// It is meant for short, text comments, not arbitrary metadata; arbitrary metadata belongs in a separate logical bit stream (usually an XML stream type)
 /// that provides greater structure and machine parse ability.
 /// </summary>
-public class VorbisComment
+public sealed class VorbisComment
 {
     private const char Delimiter = '=';
 
@@ -101,8 +101,8 @@ public class VorbisComment
 
     private static bool IsValidName(string name)
     {
-        return name == null
-            ? throw new ArgumentNullException("name")
-            : name.All(c => c is >= (char)0x20 and <= (char)0x7D and not (char)0x3D);
+        ArgumentNullException.ThrowIfNull(name);
+
+        return name.All(c => c is >= (char)0x20 and <= (char)0x7D and not (char)0x3D);
     }
 }

@@ -3,7 +3,7 @@ namespace AudioVideoLib.Formats;
 /// <summary>
 /// Possible Info Tag revision values.
 /// </summary>
-public struct InfoTagRevision
+public readonly struct InfoTagRevision
 {
     /// <summary>
     /// Indicates an info tag revision 0.

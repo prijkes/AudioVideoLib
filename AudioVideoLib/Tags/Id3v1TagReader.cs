@@ -26,7 +26,7 @@ public sealed class Id3v1TagReader : IAudioTagReader
 
         set
         {
-            field = value ?? throw new ArgumentNullException("value");
+            field = value ?? throw new ArgumentNullException(nameof(value));
         }
     } = Encoding.Default;
 
@@ -194,10 +194,10 @@ public sealed class Id3v1TagReader : IAudioTagReader
     {
         ArgumentNullException.ThrowIfNull(time);
 
-        var timeValues = time.Split([':']);
-        int minutes, seconds = 0;
-        int.TryParse(timeValues[0], out minutes);
+        var timeValues = time.Split(':');
+        int.TryParse(timeValues[0], out var minutes);
 
+        var seconds = 0;
         if (timeValues.Length > 1)
         {
             int.TryParse(timeValues[1], out seconds);

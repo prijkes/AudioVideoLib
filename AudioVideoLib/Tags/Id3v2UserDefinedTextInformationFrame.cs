@@ -15,9 +15,6 @@ using AudioVideoLib.IO;
 /// </remarks>
 public sealed class Id3v2UserDefinedTextInformationFrame : Id3v2Frame
 {
-    private Id3v2FrameEncodingType _frameEncodingType;
-
-    private string _description = null!, _value = null!;
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -36,7 +33,7 @@ public sealed class Id3v2UserDefinedTextInformationFrame : Id3v2Frame
     {
         if (!IsVersionSupported(version))
         {
-            throw new InvalidVersionException(string.Format("Version {0} not supported by this frame.", version));
+            throw new InvalidVersionException($"Version {version} not supported by this frame.");
         }
     }
 
@@ -49,15 +46,12 @@ public sealed class Id3v2UserDefinedTextInformationFrame : Id3v2Frame
     /// The text encoding.
     /// </value>
     /// <remarks>
-    /// An <see cref="InvalidDataException"/> will be thrown when the <see cref="Description"/> or the <see cref="Value"/> 
+    /// An <see cref="InvalidDataException"/> will be thrown when the <see cref="Description"/> or the <see cref="Value"/>
     /// is not valid in the new <see cref="Id3v2FrameEncodingType"/>.
     /// </remarks>
     public Id3v2FrameEncodingType TextEncoding
     {
-        get
-        {
-            return _frameEncodingType;
-        }
+        get => field;
 
         set
         {
@@ -71,7 +65,7 @@ public sealed class Id3v2UserDefinedTextInformationFrame : Id3v2Frame
                 throw new InvalidDataException("Value contains one or more invalid characters for the specified frame encoding type.");
             }
 
-            _frameEncodingType = value;
+            field = value;
         }
     }
 
@@ -86,10 +80,7 @@ public sealed class Id3v2UserDefinedTextInformationFrame : Id3v2Frame
     /// </remarks>
     public string Description
     {
-        get
-        {
-            return _description;
-        }
+        get => field;
 
         set
         {
@@ -98,9 +89,9 @@ public sealed class Id3v2UserDefinedTextInformationFrame : Id3v2Frame
                 throw new InvalidDataException("value contains one or more invalid characters for the current frame encoding type.");
             }
 
-            _description = value;
+            field = value;
         }
-    }
+    } = null!;
 
     /// <summary>
     /// Gets or sets the actual value.
@@ -113,10 +104,7 @@ public sealed class Id3v2UserDefinedTextInformationFrame : Id3v2Frame
     /// </remarks>
     public string Value
     {
-        get
-        {
-            return _value;
-        }
+        get => field;
 
         set
         {
@@ -125,9 +113,9 @@ public sealed class Id3v2UserDefinedTextInformationFrame : Id3v2Frame
                 throw new InvalidDataException("value contains one or more invalid characters for the current frame encoding type.");
             }
 
-            _value = value;
+            field = value;
         }
-    }
+    } = null!;
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
@@ -172,26 +160,20 @@ public sealed class Id3v2UserDefinedTextInformationFrame : Id3v2Frame
             ArgumentNullException.ThrowIfNull(value);
 
             var stream = new StreamBuffer(value);
-            _frameEncodingType = Id3v2FrameEncoding.ReadEncodingTypeFromStream(stream);
-            var encoding = Id3v2FrameEncoding.GetEncoding(_frameEncodingType);
-            _description = stream.ReadString(encoding);
-            _value = stream.ReadString(encoding);
+            TextEncoding = Id3v2FrameEncoding.ReadEncodingTypeFromStream(stream);
+            var encoding = Id3v2FrameEncoding.GetEncoding(TextEncoding);
+            Description = stream.ReadString(encoding);
+            Value = stream.ReadString(encoding);
         }
     }
 
     /// <inheritdoc />
-    public override string Identifier
-    {
-        get { return (Version < Id3v2Version.Id3v230) ? "TXX" : "TXXX"; }
-    }
+    public override string Identifier => (Version < Id3v2Version.Id3v230) ? "TXX" : "TXXX";
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <inheritdoc/>
-    public override bool Equals(Id3v2Frame? frame)
-    {
-        return Equals(frame as Id3v2UserDefinedTextInformationFrame);
-    }
+    public override bool Equals(Id3v2Frame? frame) => Equals(frame as Id3v2UserDefinedTextInformationFrame);
 
     /// <summary>
     /// Equals the specified <see cref="Id3v2UserDefinedTextInformationFrame"/>.
@@ -213,8 +195,5 @@ public sealed class Id3v2UserDefinedTextInformationFrame : Id3v2Frame
     /// <returns>
     ///   <c>true</c> if the specified version is supported; otherwise, <c>false</c>.
     /// </returns>
-    public override bool IsVersionSupported(Id3v2Version version)
-    {
-        return true;
-    }
+    public override bool IsVersionSupported(Id3v2Version version) => true;
 }

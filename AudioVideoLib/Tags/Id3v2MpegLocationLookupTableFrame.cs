@@ -87,13 +87,7 @@ public sealed class Id3v2MpegLocationLookupTableFrame : Id3v2Frame
     /// <value>
     /// The <see cref="Id3v2MpegLookupTableItem"/> references.
     /// </value>
-    public IList<Id3v2MpegLookupTableItem> References
-    {
-        get
-        {
-            return _references;
-        }
-    }
+    public IList<Id3v2MpegLookupTableItem> References => _references;
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
@@ -140,10 +134,7 @@ public sealed class Id3v2MpegLocationLookupTableFrame : Id3v2Frame
     }
 
     /// <inheritdoc />
-    public override string Identifier
-    {
-        get { return (Version < Id3v2Version.Id3v230) ? "MLL" : "MLLT"; }
-    }
+    public override string Identifier => (Version < Id3v2Version.Id3v230) ? "MLL" : "MLLT";
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

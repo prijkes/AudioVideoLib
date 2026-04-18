@@ -9,7 +9,6 @@ using System.Text;
 /// </summary>
 public sealed partial class Lyrics3v2TextField : Lyrics3v2Field
 {
-    private string _value = null!;
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -33,16 +32,13 @@ public sealed partial class Lyrics3v2TextField : Lyrics3v2Field
     /// <inheritdoc />
     public override byte[]? Data
     {
-        get
-        {
-            return (_value != null) ? Encoding.ASCII.GetBytes(_value) : null;
-        }
+        get => Value is not null ? Encoding.ASCII.GetBytes(Value) : null;
 
         protected set
         {
             ArgumentNullException.ThrowIfNull(value);
 
-            _value = Encoding.ASCII.GetString(value);
+            Value = Encoding.ASCII.GetString(value);
         }
     }
 
@@ -54,10 +50,7 @@ public sealed partial class Lyrics3v2TextField : Lyrics3v2Field
     /// </value>
     public string Value
     {
-        get
-        {
-            return _value;
-        }
+        get;
 
         set
         {
@@ -66,9 +59,9 @@ public sealed partial class Lyrics3v2TextField : Lyrics3v2Field
                 throw new InvalidDataException("Value contains one or more invalid characters.");
             }
 
-            _value = value;
+            field = value;
         }
-    }
+    } = null!;
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
@@ -79,19 +72,13 @@ public sealed partial class Lyrics3v2TextField : Lyrics3v2Field
     /// <returns>
     /// The identifier as string for the specified <see cref="Lyrics3v2TextFieldIdentifier"/>, or null if not found.
     /// </returns>
-    public static string? GetIdentifier(Lyrics3v2TextFieldIdentifier identifier)
-    {
-        string? id;
-        return Identifiers.TryGetValue(identifier, out id) ? id : null;
-    }
+    public static string? GetIdentifier(Lyrics3v2TextFieldIdentifier identifier) =>
+        Identifiers.TryGetValue(identifier, out var id) ? id : null;
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <inheritdoc/>
-    public override bool Equals(Lyrics3v2Field? audioFrame)
-    {
-        return Equals(audioFrame as Lyrics3v2TextField);
-    }
+    public override bool Equals(Lyrics3v2Field? audioFrame) => Equals(audioFrame as Lyrics3v2TextField);
 
     /// <summary>
     /// Equals the specified <see cref="Lyrics3v2TextField"/>.
@@ -112,7 +99,6 @@ public sealed partial class Lyrics3v2TextField : Lyrics3v2Field
     /// <returns>
     /// A hash code for the current <see cref="T:System.Object"/>.
     /// </returns>
-    /// <filterpriority>2</filterpriority>
     /// The value should be calculated on immutable fields only.
     public override int GetHashCode()
     {

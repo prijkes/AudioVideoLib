@@ -40,7 +40,7 @@ public sealed class Id3v2EventTimingCodesFrame : Id3v2Frame
     {
         if (!IsVersionSupported(version))
         {
-            throw new InvalidVersionException(string.Format("Version {0} not supported by this frame.", version));
+            throw new InvalidVersionException($"Version {version} not supported by this frame.");
         }
 
         BindKeyEventListEvents();
@@ -56,16 +56,13 @@ public sealed class Id3v2EventTimingCodesFrame : Id3v2Frame
     /// </value>
     public Id3v2TimeStampFormat TimeStampFormat
     {
-        get
-        {
-            return _timeStampFormat;
-        }
+        get => _timeStampFormat;
 
         set
         {
             if (!IsValidTimeStampFormat(value))
             {
-                throw new ArgumentOutOfRangeException("value");
+                throw new ArgumentOutOfRangeException(nameof(value));
             }
 
             _timeStampFormat = value;
@@ -81,13 +78,7 @@ public sealed class Id3v2EventTimingCodesFrame : Id3v2Frame
     /// <remarks>
     /// When adding items, the key events will be sorted in chronological order.
     /// </remarks>
-    public ICollection<Id3v2KeyEvent> KeyEvents
-    {
-        get
-        {
-            return _keyEvents;
-        }
-    }
+    public ICollection<Id3v2KeyEvent> KeyEvents => _keyEvents;
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
@@ -140,10 +131,7 @@ public sealed class Id3v2EventTimingCodesFrame : Id3v2Frame
     }
 
     /// <inheritdoc />
-    public override string Identifier
-    {
-        get { return (Version < Id3v2Version.Id3v230) ? "ETC" : "ETCO"; }
-    }
+    public override string Identifier => (Version < Id3v2Version.Id3v230) ? "ETC" : "ETCO";
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
@@ -225,7 +213,7 @@ public sealed class Id3v2EventTimingCodesFrame : Id3v2Frame
 
         if (!IsValidKeyEventType(e.Item.EventType))
         {
-            throw new InvalidDataException(string.Format("value contains one or more key event types not supported in version {0}.", Version));
+            throw new InvalidDataException($"value contains one or more key event types not supported in version {Version}.");
         }
 
         for (var i = 0; i < _keyEvents.Count; i++)
@@ -241,10 +229,7 @@ public sealed class Id3v2EventTimingCodesFrame : Id3v2Frame
 
     private void KeyEventReplace(object? sender, ListItemReplaceEventArgs<Id3v2KeyEvent> e)
     {
-        if (e == null)
-        {
-            throw new ArgumentException("e");
-        }
+        ArgumentNullException.ThrowIfNull(e);
 
         if (e.NewItem == null)
         {

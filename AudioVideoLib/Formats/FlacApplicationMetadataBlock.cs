@@ -7,16 +7,10 @@ using AudioVideoLib.IO;
 /// <summary>
 /// Class for FLAC audio frames.
 /// </summary>
-public class FlacApplicationMetadataBlock : FlacMetadataBlock
+public sealed class FlacApplicationMetadataBlock : FlacMetadataBlock
 {
     /// <inheritdoc/>
-    public override FlacMetadataBlockType BlockType
-    {
-        get
-        {
-            return FlacMetadataBlockType.Application;
-        }
-    }
+    public override FlacMetadataBlockType BlockType => FlacMetadataBlockType.Application;
 
     /// <inheritdoc/>
     public override byte[] Data
@@ -25,7 +19,7 @@ public class FlacApplicationMetadataBlock : FlacMetadataBlock
         {
             var stream = new StreamBuffer();
             stream.WriteString(ApplicationIdentifier);
-            if (ApplicationData != null)
+            if (ApplicationData is not null)
             {
                 stream.Write(ApplicationData);
             }

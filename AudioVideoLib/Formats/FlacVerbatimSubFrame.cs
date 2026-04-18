@@ -1,23 +1,12 @@
 namespace AudioVideoLib.Formats;
 
-using System;
-
 using AudioVideoLib.IO;
 
 /// <summary>
 /// Class for FLAC audio frames.
 /// </summary>
-public sealed class FlacVerbatimSubFrame : FlacSubFrame
+public sealed class FlacVerbatimSubFrame(FlacFrame flacFrame) : FlacSubFrame(flacFrame)
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="FlacVerbatimSubFrame"/> class.
-    /// </summary>
-    /// <param name="flacFrame">The <see cref="FlacFrame"/>.</param>
-    public FlacVerbatimSubFrame(FlacFrame flacFrame) : base(flacFrame)
-    {
-        ArgumentNullException.ThrowIfNull(flacFrame);
-    }
-
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>

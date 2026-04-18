@@ -275,7 +275,7 @@ public partial class Id3v2Tag
 
             if (value.Values.Sum(v => v.Length) > 4)
             {
-                throw new InvalidDataException(string.Format("Length of the text value may not exceed {0} characters for this frame", 4));
+                throw new InvalidDataException($"Length of the text value may not exceed {4} characters for this frame");
             }
 
             SetFrame(value);
@@ -392,7 +392,7 @@ public partial class Id3v2Tag
             var countryCode = s[..2];
             if (!Id3v2Frame.IsValidCountryCode(countryCode))
             {
-                throw new InvalidDataException(string.Format("Language code '{0}' is not a valid ISO-3166-1 alpha-2 language code.", countryCode));
+                throw new InvalidDataException($"Language code '{countryCode}' is not a valid ISO-3166-1 alpha-2 language code.");
             }
 
             //// string registrantCode = s.Substring(2, 3);

@@ -36,7 +36,7 @@ public sealed class Id3v2PopularimeterFrame : Id3v2Frame
     {
         if (!IsVersionSupported(version))
         {
-            throw new InvalidVersionException(string.Format("Version {0} not supported by this frame.", version));
+            throw new InvalidVersionException($"Version {version} not supported by this frame.");
         }
     }
 
@@ -50,10 +50,7 @@ public sealed class Id3v2PopularimeterFrame : Id3v2Frame
     /// </value>
     public string EmailToUser
     {
-        get
-        {
-            return _emailToUser;
-        }
+        get => _emailToUser;
 
         set
         {
@@ -135,10 +132,7 @@ public sealed class Id3v2PopularimeterFrame : Id3v2Frame
     }
 
     /// <inheritdoc />
-    public override string Identifier
-    {
-        get { return (Version < Id3v2Version.Id3v230) ? "POP" : "POPM"; }
-    }
+    public override string Identifier => (Version < Id3v2Version.Id3v230) ? "POP" : "POPM";
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

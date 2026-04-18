@@ -43,7 +43,7 @@ public sealed class Id3v2RelativeVolumeAdjustment2Frame : Id3v2Frame
     {
         if (!IsVersionSupported(version))
         {
-            throw new InvalidVersionException(string.Format("Version {0} not supported by this frame.", version));
+            throw new InvalidVersionException($"Version {version} not supported by this frame.");
         }
 
         BindChannelInformationListEvents();
@@ -62,10 +62,7 @@ public sealed class Id3v2RelativeVolumeAdjustment2Frame : Id3v2Frame
     /// </remarks>
     public string Identification
     {
-        get
-        {
-            return _identification;
-        }
+        get => _identification;
 
         set
         {
@@ -84,13 +81,7 @@ public sealed class Id3v2RelativeVolumeAdjustment2Frame : Id3v2Frame
     /// <value>
     /// The channel information.
     /// </value>
-    public IList<Id3v2ChannelInformation> ChannelInformation
-    {
-        get
-        {
-            return _channelInformation;
-        }
-    }
+    public IList<Id3v2ChannelInformation> ChannelInformation => _channelInformation;
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
@@ -152,10 +143,7 @@ public sealed class Id3v2RelativeVolumeAdjustment2Frame : Id3v2Frame
     }
 
     /// <inheritdoc />
-    public override string Identifier
-    {
-        get { return "RVA2"; }
-    }
+    public override string Identifier => "RVA2";
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

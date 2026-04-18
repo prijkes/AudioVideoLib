@@ -1,7 +1,6 @@
 namespace AudioVideoLib.IO;
 
 using System;
-using System.Linq;
 using System.Text;
 
 /// <summary>
@@ -18,7 +17,6 @@ public sealed partial class StreamBuffer
     public void Write(byte[] buffer)
     {
         ArgumentNullException.ThrowIfNull(buffer);
-
         _stream.Write(buffer, 0, buffer.Length);
     }
 
@@ -35,30 +33,24 @@ public sealed partial class StreamBuffer
 
         if (count > buffer.Length)
         {
-            throw new ArgumentOutOfRangeException("count", "count is > buffer.Length");
+            throw new ArgumentOutOfRangeException(nameof(count), "count is > buffer.Length");
         }
 
         _stream.Write(buffer, 0, count);
     }
 
     /// <inheritdoc/>
-    public override void Write(byte[] buffer, int offset, int count)
-    {
-        _stream.Write(buffer, offset, count);
-    }
+    public override void Write(byte[] buffer, int offset, int count) => _stream.Write(buffer, offset, count);
 
     /// <summary>
-    /// Writes a byte to the current position in the stream 
+    /// Writes a byte to the current position in the stream
     /// and advances the position within the stream by one byte.
     /// </summary>
     /// <param name="value">The byte to write to the stream.</param>
     /// <exception cref="T:System.IO.IOException">An I/O error occurs.</exception>
     /// <exception cref="T:System.NotSupportedException">The stream does not support writing, or the stream is already closed.</exception>
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    public override void WriteByte(byte value)
-    {
-        _stream.WriteByte(value);
-    }
+    public override void WriteByte(byte value) => _stream.WriteByte(value);
 
     /// <summary>
     /// Writes a short to the current position in the stream and advances the position within the stream by two bytes.
@@ -66,10 +58,7 @@ public sealed partial class StreamBuffer
     /// <param name="value">The short value to write to the stream.</param>
     /// <exception cref="T:System.NotSupportedException">The stream does not support writing, or the stream is already closed.</exception>
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    public void WriteShort(short value)
-    {
-        WriteBytes(value, Int16Size);
-    }
+    public void WriteShort(short value) => WriteBytes(value, Int16Size);
 
     /// <summary>
     /// Writes bytes to the current position in the stream and advances the position within the stream by <paramref name="size"/> bytes.
@@ -94,8 +83,9 @@ public sealed partial class StreamBuffer
             size = Int64Size;
         }
 
-        var buffer = BitConverter.GetBytes(value);
-        Write(buffer, size);
+        Span<byte> buffer = stackalloc byte[Int64Size];
+        BitConverter.TryWriteBytes(buffer, value);
+        _stream.Write(buffer[..size]);
     }
 
     /// <summary>
@@ -104,10 +94,7 @@ public sealed partial class StreamBuffer
     /// <param name="value">The 32-bit signed integer to write to the stream.</param>
     /// <exception cref="T:System.NotSupportedException">The stream does not support writing, or the stream is already closed.</exception>
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    public void WriteInt(int value)
-    {
-        WriteBytes(value, Int32Size);
-    }
+    public void WriteInt(int value) => WriteBytes(value, Int32Size);
 
     /// <summary>
     /// Writes a float to the current position in the stream and advances the position within the stream by four bytes.
@@ -117,8 +104,9 @@ public sealed partial class StreamBuffer
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
     public void WriteFloat(float value)
     {
-        var buffer = BitConverter.GetBytes(value);
-        Write(buffer);
+        Span<byte> buffer = stackalloc byte[Int32Size];
+        BitConverter.TryWriteBytes(buffer, value);
+        _stream.Write(buffer);
     }
 
     /// <summary>
@@ -129,8 +117,9 @@ public sealed partial class StreamBuffer
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
     public void WriteDouble(double value)
     {
-        var buffer = BitConverter.GetBytes(value);
-        Write(buffer);
+        Span<byte> buffer = stackalloc byte[Int64Size];
+        BitConverter.TryWriteBytes(buffer, value);
+        _stream.Write(buffer);
     }
 
     /// <summary>
@@ -142,10 +131,7 @@ public sealed partial class StreamBuffer
     /// </remarks>
     /// <exception cref="T:System.NotSupportedException">The stream does not support writing, or the stream is already closed.</exception>
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    public void WriteString(string? value)
-    {
-        WriteString(value ?? string.Empty, Encoding.ASCII);
-    }
+    public void WriteString(string? value) => WriteString(value ?? string.Empty, Encoding.ASCII);
 
     /// <summary>
     /// Writes the string to the buffer using the encoding supplied.
@@ -189,7 +175,7 @@ public sealed partial class StreamBuffer
 
         var subLength = value.Length;
         var buffer = encoding.GetBytes(value);
-        while ((buffer.Length > maxBytesToWrite) && (subLength > 0))
+        while (buffer.Length > maxBytesToWrite && subLength > 0)
         {
             buffer = encoding.GetBytes(value[..--subLength]);
         }
@@ -203,10 +189,7 @@ public sealed partial class StreamBuffer
     /// <param name="value">The value to write as big endian to the stream.</param>
     /// <exception cref="T:System.NotSupportedException">The stream does not support writing, or the stream is already closed.</exception>
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    public void WriteBigEndianBytes(short value)
-    {
-        WriteBigEndianBytes(value, Int16Size);
-    }
+    public void WriteBigEndianBytes(short value) => WriteBigEndianBytes(value, Int16Size);
 
     /// <summary>
     /// Writes a 32-bit signed integer as big endian to the current position in the stream and advances the position within the stream by 4 bytes.
@@ -214,10 +197,7 @@ public sealed partial class StreamBuffer
     /// <param name="value">The value to write as big endian to the stream.</param>
     /// <exception cref="T:System.NotSupportedException">The stream does not support writing, or the stream is already closed.</exception>
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    public void WriteBigEndianBytes(int value)
-    {
-        WriteBigEndianBytes(value, Int32Size);
-    }
+    public void WriteBigEndianBytes(int value) => WriteBigEndianBytes(value, Int32Size);
 
     /// <summary>
     /// Writes a 64-bit signed integer as big endian to the current position in the stream and advances the position within the stream by 8 bytes.
@@ -225,13 +205,10 @@ public sealed partial class StreamBuffer
     /// <param name="value">The value to write as big endian to the stream.</param>
     /// <exception cref="T:System.NotSupportedException">The stream does not support writing, or the stream is already closed.</exception>
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
-    public void WriteBigEndianBytes(long value)
-    {
-        WriteBigEndianBytes(value, Int64Size);
-    }
+    public void WriteBigEndianBytes(long value) => WriteBigEndianBytes(value, Int64Size);
 
     /// <summary>
-    /// Writes a 64-bit signed integer as big endian to the current position in the stream 
+    /// Writes a 64-bit signed integer as big endian to the current position in the stream
     /// and advances the position within the stream by <paramref name="size"/> bytes.
     /// </summary>
     /// <param name="value">The value to write as big endian to the stream.</param>
@@ -259,8 +236,9 @@ public sealed partial class StreamBuffer
             value = SwitchEndianness(value, size);
         }
 
-        var buffer = BitConverter.GetBytes(value).Take(size).ToArray();
-        Write(buffer, size);
+        Span<byte> buffer = stackalloc byte[Int64Size];
+        BitConverter.TryWriteBytes(buffer, value);
+        _stream.Write(buffer[..size]);
     }
 
     /// <summary>
@@ -276,8 +254,9 @@ public sealed partial class StreamBuffer
             value = SwitchEndianness(value);
         }
 
-        var buff = BitConverter.GetBytes(value);
-        Write(buff);
+        Span<byte> buffer = stackalloc byte[Int16Size];
+        BitConverter.TryWriteBytes(buffer, value);
+        _stream.Write(buffer);
     }
 
     /// <summary>
@@ -293,8 +272,9 @@ public sealed partial class StreamBuffer
             value = SwitchEndianness(value);
         }
 
-        var buffer = BitConverter.GetBytes(value);
-        Write(buffer);
+        Span<byte> buffer = stackalloc byte[Int32Size];
+        BitConverter.TryWriteBytes(buffer, value);
+        _stream.Write(buffer);
     }
 
     /// <summary>
@@ -310,8 +290,9 @@ public sealed partial class StreamBuffer
             value = SwitchEndianness(value);
         }
 
-        var buffer = BitConverter.GetBytes(value);
-        Write(buffer);
+        Span<byte> buffer = stackalloc byte[Int64Size];
+        BitConverter.TryWriteBytes(buffer, value);
+        _stream.Write(buffer);
     }
 
     /// <summary>

@@ -24,9 +24,9 @@ public partial class ApeItem
     /// <exception cref="System.ArgumentNullException">stream</exception>
     public static ApeItem? ReadFromStream(ApeVersion version, Stream stream, long maximumItemSize)
     {
-        return stream == null
-            ? throw new ArgumentNullException("stream")
-            : ReadItem(version, stream as StreamBuffer ?? new StreamBuffer(stream), maximumItemSize);
+        ArgumentNullException.ThrowIfNull(stream);
+
+        return ReadItem(version, stream as StreamBuffer ?? new StreamBuffer(stream), maximumItemSize);
     }
 
     ////------------------------------------------------------------------------------------------------------------------------------

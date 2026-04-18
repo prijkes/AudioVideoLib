@@ -18,7 +18,6 @@ using AudioVideoLib.IO;
 /// </remarks>
 public sealed class Id3v2ReplayGainAdjustmentFrame : Id3v2Frame
 {
-
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -40,7 +39,7 @@ public sealed class Id3v2ReplayGainAdjustmentFrame : Id3v2Frame
     {
         if (!IsVersionSupported(version))
         {
-            throw new InvalidVersionException(string.Format("Version {0} not supported by this frame.", version));
+            throw new InvalidVersionException($"Version {version} not supported by this frame.");
         }
     }
 
@@ -72,9 +71,10 @@ public sealed class Id3v2ReplayGainAdjustmentFrame : Id3v2Frame
 
         set
         {
-            field = value ?? throw new ArgumentNullException("value");
+            ArgumentNullException.ThrowIfNull(value);
+            field = value;
         }
-    } = new Id3v2ReplayGain();
+    } = new();
 
     /// <summary>
     /// Gets or sets the audiophile replay gain adjustment.
@@ -91,9 +91,10 @@ public sealed class Id3v2ReplayGainAdjustmentFrame : Id3v2Frame
 
         set
         {
-            field = value ?? throw new ArgumentNullException("value");
+            ArgumentNullException.ThrowIfNull(value);
+            field = value;
         }
-    } = new Id3v2ReplayGain();
+    } = new();
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
@@ -137,10 +138,7 @@ public sealed class Id3v2ReplayGainAdjustmentFrame : Id3v2Frame
     }
 
     /// <inheritdoc />
-    public override string Identifier
-    {
-        get { return "RGAD"; }
-    }
+    public override string Identifier => "RGAD";
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

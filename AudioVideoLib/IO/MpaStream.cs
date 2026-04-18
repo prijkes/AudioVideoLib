@@ -14,27 +14,13 @@ public sealed class MpaStream : IAudioStream
 {
     private readonly List<MpaFrame> _frames = [];
 
-    // Max length of spacing, in bytes, between 2 frames. If there is spacing between frames, this means that a frame is corrupted.
-
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <inheritdoc/>
-    public long StartOffset
-    {
-        get
-        {
-            return _frames.Any() ? _frames.First().StartOffset : 0;
-        }
-    }
+    public long StartOffset => _frames.Count > 0 ? _frames[0].StartOffset : 0;
 
     /// <inheritdoc/>
-    public long EndOffset
-    {
-        get
-        {
-            return _frames.Any() ? _frames.Last().EndOffset : 0;
-        }
-    }
+    public long EndOffset => _frames.Count > 0 ? _frames[^1].EndOffset : 0;
 
     /// <summary>
     /// Gets the <see cref="VbrHeader"/> found in the first frame.
@@ -46,8 +32,8 @@ public sealed class MpaStream : IAudioStream
     {
         get
         {
-            var firstFrame = _frames.FirstOrDefault();
-            return ((firstFrame != null) && (firstFrame.AudioData != null)) ? VbrHeader.FindHeader(firstFrame) : null;
+            var firstFrame = _frames.Count > 0 ? _frames[0] : null;
+            return firstFrame?.AudioData is not null ? VbrHeader.FindHeader(firstFrame) : null;
         }
     }
 
@@ -57,10 +43,7 @@ public sealed class MpaStream : IAudioStream
     /// <value>
     /// A list of <see cref="MpaFrame"/>s in the stream.
     /// </value>
-    public IEnumerable<MpaFrame> Frames
-    {
-        get { return _frames.AsReadOnly(); }
-    }
+    public IEnumerable<MpaFrame> Frames => _frames.AsReadOnly();
 
     /// <summary>
     /// Gets the total length of audio in milliseconds.
@@ -129,22 +112,10 @@ public sealed class MpaStream : IAudioStream
     ///     }
     /// }
     /// </example>
-    public long TotalAudioLength
-    {
-        get
-        {
-            return Frames.Sum(f => f.AudioLength);
-        }
-    }
+    public long TotalAudioLength => Frames.Sum(f => f.AudioLength);
 
     /// <inheritdoc/>
-    public long TotalAudioSize
-    {
-        get
-        {
-            return Frames.Sum(f => f.FrameLength);
-        }
-    }
+    public long TotalAudioSize => Frames.Sum(f => f.FrameLength);
 
     /// <inheritdoc/>
     public int MaxFrameSpacingLength { get; set; } = 2048;
@@ -160,29 +131,19 @@ public sealed class MpaStream : IAudioStream
         get
         {
             var firstFrame = Frames.FirstOrDefault();
-            if (firstFrame == null)
+            if (firstFrame is null)
             {
                 return 0;
             }
 
             // Try to guess the bitrate of the whole file as good as possible.
             // In case of a VBR header, we know the bitrate, if at least the number of frames is known.
-            if ((VbrHeader != null) && (VbrHeader.FrameCount != 0))
+            if (VbrHeader is { FrameCount: not 0 })
             {
-                long fileSize = VbrHeader.FileSize;
-                ////if (fileSize == 0)
-                ////vbrHeader.fileSize = Length;
-
-                long totalFrameSize = VbrHeader.FrameCount * firstFrame.FrameSize;
+                var fileSize = (long)VbrHeader.FileSize;
+                var totalFrameSize = (long)VbrHeader.FrameCount * firstFrame.FrameSize;
                 var averageSamplingRate = totalFrameSize / firstFrame.SamplingRate;
-                if (averageSamplingRate == 0)
-                {
-                    return 0;
-                }
-
-                var bytesPerSec = fileSize / averageSamplingRate;
-                return (int)bytesPerSec;
-                //// (fileSize / ((firstFrame.GetAudioLength() / 1000) * vbrHeader.GetFrameCount()));
+                return averageSamplingRate == 0 ? 0 : (int)(fileSize / averageSamplingRate);
             }
 
             // Otherwise, we have to guess it.
@@ -211,16 +172,16 @@ public sealed class MpaStream : IAudioStream
         long spacing = 0;
         var foundFirstFrame = false;
         MpaFrame? prevFrame = null;
-        while ((stream.Position + MpaFrame.FrameHeaderSize <= streamLength) && (spacing < MaxFrameSpacingLength))
+        while (stream.Position + MpaFrame.FrameHeaderSize <= streamLength && spacing < MaxFrameSpacingLength)
         {
             var frame = MpaFrame.ReadFrame(stream);
-            if (frame != null)
+            if (frame is not null)
             {
                 spacing = 0;
                 startPosition = stream.Position;
                 if (!foundFirstFrame)
                 {
-                    if (prevFrame == null)
+                    if (prevFrame is null)
                     {
                         prevFrame = frame;
                         continue;
@@ -240,17 +201,16 @@ public sealed class MpaStream : IAudioStream
             stream.Position = ++startPosition;
             spacing++;
         }
-        return _frames.Any();
+        return _frames.Count > 0;
     }
 
     /// <inheritdoc />
     public byte[] ToByteArray()
     {
         var sb = new StreamBuffer();
-        for (int i = 0, l = Frames.Count(); i < l; i++)
+        foreach (var frame in Frames)
         {
-            var frame = Frames.ElementAt(i);
-            if (frame.AudioData != null)
+            if (frame.AudioData is not null)
             {
                 sb.Write(frame.ToByteArray());
             }
@@ -270,24 +230,16 @@ public sealed class MpaStream : IAudioStream
             return firstFrame.Bitrate == secondFrame.Bitrate;
         }
 
-        // See if the next frame is directly after the current frame
-        // FrameLength is calculated using the bitrate as a calculation factor
-        // This will fail if free bitrate is used as its not implemented yet
-        ////if ((curFrame.GetOffset() + curFrame.GetFrameLength() != nextFrame.GetOffset()) && (curFrameHeader.BitrateIndex != 0))
-        ////{
-        ////curFrame = nextFrame;
-        ////nextFrame = GetNextFrame(curFrame);
-        ////continue;
-        ////}
-
         // Check the values of the next header, some have to be the same as the previous:
         // ** version
         // ** layer
         // ** samples (per sec)
         // ** channel type (can only be mono or stereo)
         // ** emphasis
-        return (secondFrame.AudioVersion == firstFrame.AudioVersion) && (secondFrame.LayerVersion == firstFrame.LayerVersion)
-                && (secondFrame.SamplingRate == firstFrame.SamplingRate) && (secondFrame.IsMono == firstFrame.IsMono)
-                && (secondFrame.Emphasis == firstFrame.Emphasis);
+        return secondFrame.AudioVersion == firstFrame.AudioVersion
+            && secondFrame.LayerVersion == firstFrame.LayerVersion
+            && secondFrame.SamplingRate == firstFrame.SamplingRate
+            && secondFrame.IsMono == firstFrame.IsMono
+            && secondFrame.Emphasis == firstFrame.Emphasis;
     }
 }

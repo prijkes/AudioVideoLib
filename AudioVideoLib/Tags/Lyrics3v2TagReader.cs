@@ -192,7 +192,7 @@ public sealed partial class Lyrics3v2TagReader : IAudioTagReader
         return -1;
     }
 
-    private static long ReadIdentifier(Stream sb, long startPosition, long endPosition, IList<byte> identifierBytes)
+    private static long ReadIdentifier(Stream sb, long startPosition, long endPosition, byte[] identifierBytes)
     {
         ArgumentNullException.ThrowIfNull(sb);
 
@@ -203,9 +203,9 @@ public sealed partial class Lyrics3v2TagReader : IAudioTagReader
             for (var b = sb.ReadByte(); b == identifierBytes[y++]; b = sb.ReadByte())
             {
                 startPosition++;
-                if (y == identifierBytes.Count)
+                if (y == identifierBytes.Length)
                 {
-                    return sb.Position - identifierBytes.Count;
+                    return sb.Position - identifierBytes.Length;
                 }
             }
             startPosition++;

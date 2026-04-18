@@ -16,7 +16,8 @@ public partial class FlacSubFrame
     /// <param name="flacFrame">The FLAC frame.</param>
     protected FlacSubFrame(FlacFrame flacFrame)
     {
-        FlacFrame = flacFrame ?? throw new ArgumentNullException("flacFrame");
+        ArgumentNullException.ThrowIfNull(flacFrame);
+        FlacFrame = flacFrame;
     }
 
     ////------------------------------------------------------------------------------------------------------------------------------
@@ -43,11 +44,9 @@ public partial class FlacSubFrame
     /// <exception cref="System.ArgumentNullException">Thrown if stream is null.</exception>
     public static FlacSubFrame ReadFrame(Stream stream, int channel, FlacFrame flacFrame)
     {
-        return stream == null
-            ? throw new ArgumentNullException("stream")
-            : flacFrame == null
-            ? throw new ArgumentNullException("flacFrame")
-            : ReadSubFrame(stream as StreamBuffer ?? new StreamBuffer(stream), channel, flacFrame);
+        ArgumentNullException.ThrowIfNull(stream);
+        ArgumentNullException.ThrowIfNull(flacFrame);
+        return ReadSubFrame(stream as StreamBuffer ?? new StreamBuffer(stream), channel, flacFrame);
     }
 
     /// <summary>
@@ -77,7 +76,6 @@ public partial class FlacSubFrame
     private static FlacSubFrame ReadSubFrame(StreamBuffer sb, int channel, FlacFrame flacFrame)
     {
         ArgumentNullException.ThrowIfNull(sb);
-
         ArgumentNullException.ThrowIfNull(flacFrame);
 
         var header = sb.PeekBigEndianInt32();
@@ -100,7 +98,7 @@ public partial class FlacSubFrame
         ArgumentNullException.ThrowIfNull(sb);
 
         var sampleSize = FlacFrame.SampleSize;
-        if ((((FlacFrame.ChannelAssignment == FlacChannelAssignment.LeftSide) || (FlacFrame.ChannelAssignment == FlacChannelAssignment.MidSide)) && (channel == 1)) || ((FlacFrame.ChannelAssignment == FlacChannelAssignment.RightSide) && (channel == 0)))
+        if (((FlacFrame.ChannelAssignment is FlacChannelAssignment.LeftSide or FlacChannelAssignment.MidSide) && channel == 1) || (FlacFrame.ChannelAssignment == FlacChannelAssignment.RightSide && channel == 0))
         {
             sampleSize++;
         }

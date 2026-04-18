@@ -14,13 +14,7 @@ using AudioVideoLib.IO;
 public sealed class FlacPictureMetadataBlock : FlacMetadataBlock
 {
     /// <inheritdoc/>
-    public override FlacMetadataBlockType BlockType
-    {
-        get
-        {
-            return FlacMetadataBlockType.Picture;
-        }
-    }
+    public override FlacMetadataBlockType BlockType => FlacMetadataBlockType.Picture;
 
     /// <inheritdoc/>
     public override byte[] Data

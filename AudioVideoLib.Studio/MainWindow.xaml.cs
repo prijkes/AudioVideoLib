@@ -1,7 +1,9 @@
 namespace AudioVideoLib.Studio;
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -24,38 +26,375 @@ public partial class MainWindow : Window
         InputBindings.Add(new KeyBinding(new RelayCommand(_ => SaveAsFile()),      Key.S,      ModifierKeys.Control | ModifierKeys.Shift));
         InputBindings.Add(new KeyBinding(new RelayCommand(_ => CloseCurrentFile()), Key.W,     ModifierKeys.Control));
         InputBindings.Add(new KeyBinding(new RelayCommand(_ => RefreshCurrent()),   Key.F5,    ModifierKeys.None));
+        InputBindings.Add(new KeyBinding(new RelayCommand(_ => GoToOffset()),       Key.G,     ModifierKeys.Control));
+        InputBindings.Add(new KeyBinding(new RelayCommand(_ => Find()),             Key.F,     ModifierKeys.Control));
+        InputBindings.Add(new KeyBinding(new RelayCommand(_ => FindNext()),         Key.F3,    ModifierKeys.None));
+        InputBindings.Add(new KeyBinding(new RelayCommand(_ => FindPrevious()),     Key.F3,    ModifierKeys.Shift));
+        InputBindings.Add(new KeyBinding(new RelayCommand(_ => ShowShortcuts()),    Key.F1,    ModifierKeys.None));
+
+        Closing += (_, _) => WindowLayout.Save(this);
+        HexViewControl.ByteClicked += HexView_ByteClicked;
     }
 
+    protected override void OnSourceInitialized(EventArgs e)
+    {
+        base.OnSourceInitialized(e);
+        var layout = WindowLayout.Load();
+        if (layout == null)
+        {
+            return;
+        }
+
+        var screenW = SystemParameters.VirtualScreenWidth;
+        var screenH = SystemParameters.VirtualScreenHeight;
+        if (layout.Left + layout.Width > 0 && layout.Left < screenW &&
+            layout.Top + layout.Height > 0 && layout.Top < screenH)
+        {
+            Left = layout.Left;
+            Top = layout.Top;
+            Width = layout.Width;
+            Height = layout.Height;
+            WindowState = layout.State;
+        }
+    }
+
+    private byte[]? _lastFindPattern;
+    private string _lastFindDisplay = string.Empty;
+    private long _lastFindOffset = -1;
+
     public FileDossier? CurrentDossier { get; private set; }
+
+    private readonly List<FileDossier> _openFiles = [];
+    private readonly Dictionary<FileDossier, InspectorNode?> _lastSelectedPerFile = [];
+
+    public sealed class FileTabItem(FileDossier dossier, bool isActive)
+    {
+        public FileDossier Dossier { get; } = dossier;
+
+        public string DisplayName { get; } = Path.GetFileName(dossier.FilePath);
+
+        public string FilePath { get; } = dossier.FilePath;
+
+        public System.Windows.Media.Brush TabBackground { get; } = isActive
+            ? new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(0x26, 0x4F, 0x78))
+            : System.Windows.Media.Brushes.Transparent;
+    }
+
+    private void RebuildFileTabsList()
+    {
+        var items = new List<FileTabItem>();
+        foreach (var f in _openFiles)
+        {
+            items.Add(new FileTabItem(f, ReferenceEquals(f, CurrentDossier)));
+        }
+
+        FileTabsList.ItemsSource = items;
+        FileTabsStrip.Visibility = _openFiles.Count > 1 ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private void SelectTab_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button { Tag: FileDossier d })
+        {
+            ActivateFile(d);
+        }
+    }
+
+    private void CloseTab_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button { Tag: FileDossier d })
+        {
+            CloseFile(d);
+        }
+    }
+
+    private void ActivateFile(FileDossier dossier)
+    {
+        if (ReferenceEquals(dossier, CurrentDossier))
+        {
+            return;
+        }
+
+        // Snapshot the current tab's state so we can restore it later.
+        if (CurrentDossier != null)
+        {
+            _lastSelectedPerFile[CurrentDossier] = _selectedNode;
+        }
+
+        CurrentDossier = dossier;
+        BindUiToCurrent();
+        RebuildFileTabsList();
+    }
+
+    private void BindUiToCurrent()
+    {
+        if (CurrentDossier == null)
+        {
+            FilePathText.Text = "No file loaded. Use File > Open (Ctrl+O).";
+            InspectorTreeView.ItemsSource = null;
+            PropertiesGrid.ItemsSource = null;
+            TagTabControl.DataContext = null;
+            TagTabControl.ItemsSource = null;
+            HexViewControl.Clear();
+            AnalysisPanel.Load(null);
+            PlayBar.Open(null);
+            PlayBar.Visibility = Visibility.Collapsed;
+            UpdateFormatSpecificMenus();
+            UpdateDirtyState();
+            Title = "AudioVideoLib Studio";
+            return;
+        }
+
+        FilePathText.Text = $"{CurrentDossier.FilePath}   ({CurrentDossier.FileSizeText})";
+        FilePathText.ToolTip = CurrentDossier.FilePath;
+
+        if (CurrentDossier.InspectorRoot != null)
+        {
+            InspectorTreeView.ItemsSource = new[] { CurrentDossier.InspectorRoot };
+        }
+
+        TagTabControl.DataContext = CurrentDossier;
+        TagTabControl.ItemsSource = CurrentDossier.TagTabs;
+
+        AnalysisPanel.Load(CurrentDossier);
+        PlayBar.Open(CurrentDossier.FilePath);
+        PlayBar.Visibility = Visibility.Visible;
+
+        // Restore last selected node, or render the root.
+        _selectedNode = null;
+        PropertiesGrid.ItemsSource = null;
+        HexViewControl.Clear();
+        if (_lastSelectedPerFile.TryGetValue(CurrentDossier, out var lastNode) && lastNode != null)
+        {
+            _suppressTreeSync = false;
+            SelectTreeNode(lastNode);
+        }
+
+        UpdateFormatSpecificMenus();
+        UpdateDirtyState();
+    }
+
+    private void CloseFile(FileDossier dossier)
+    {
+        var idx = _openFiles.IndexOf(dossier);
+        if (idx < 0)
+        {
+            return;
+        }
+
+        _openFiles.RemoveAt(idx);
+        _lastSelectedPerFile.Remove(dossier);
+
+        if (ReferenceEquals(dossier, CurrentDossier))
+        {
+            CurrentDossier = _openFiles.Count > 0
+                ? _openFiles[Math.Min(idx, _openFiles.Count - 1)]
+                : null;
+            BindUiToCurrent();
+        }
+
+        RebuildFileTabsList();
+        UpdateStatus(CurrentDossier != null
+            ? $"Closed {Path.GetFileName(dossier.FilePath)}"
+            : $"Closed {Path.GetFileName(dossier.FilePath)} — no files open");
+    }
 
     private InspectorNode? _selectedNode;
 
     private void OpenDossierFromPath(string path)
     {
+        // If already open, just activate its tab.
+        var existing = _openFiles.FirstOrDefault(f =>
+            string.Equals(f.FilePath, path, StringComparison.OrdinalIgnoreCase));
+        if (existing != null)
+        {
+            ActivateFile(existing);
+            UpdateStatus($"Already open: {Path.GetFileName(path)}");
+            return;
+        }
+
         try
         {
-            CurrentDossier = new FileDossier(path);
-            FilePathText.Text = $"{path}   ({CurrentDossier.FileSizeText})";
-            FilePathText.ToolTip = path;
+            var dossier = new FileDossier(path);
+            RecentFiles.Add(path);
 
-            if (CurrentDossier.InspectorRoot != null)
+            // Snapshot previous tab so switching back restores it.
+            if (CurrentDossier != null)
             {
-                InspectorTreeView.ItemsSource = new[] { CurrentDossier.InspectorRoot };
+                _lastSelectedPerFile[CurrentDossier] = _selectedNode;
             }
 
-            TagTabControl.DataContext = CurrentDossier;
-            TagTabControl.ItemsSource = CurrentDossier.TagTabs;
+            _openFiles.Add(dossier);
+            CurrentDossier = dossier;
 
+            BindUiToCurrent();
+            RebuildFileTabsList();
             UpdateStatus($"Loaded {Path.GetFileName(path)}");
         }
         catch (Exception ex)
         {
             MessageBox.Show(this, $"Failed to open {Path.GetFileName(path)}:\n\n{ex.Message}", "Load error",
                 MessageBoxButton.OK, MessageBoxImage.Warning);
-            CurrentDossier = null;
-            FilePathText.Text = "No file loaded.";
-            InspectorTreeView.ItemsSource = null;
         }
+    }
+
+    private void UpdateFormatSpecificMenus()
+    {
+        var hasFile = CurrentDossier != null;
+        ViewMenu.Visibility = hasFile ? Visibility.Visible : Visibility.Collapsed;
+        ExportJsonMenuItem.Visibility = hasFile ? Visibility.Visible : Visibility.Collapsed;
+        ExportLintMenuItem.Visibility = hasFile ? Visibility.Visible : Visibility.Collapsed;
+        CompareMenuItem.Visibility = hasFile ? Visibility.Visible : Visibility.Collapsed;
+        FlacIntegrityMenuItem.Visibility = CurrentDossier?.IsFlac == true ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private void InspectorTree_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+    {
+        if (InspectorTreeView.SelectedItem is not InspectorNode node || CurrentDossier == null)
+        {
+            e.Handled = true;
+            return;
+        }
+
+        var menu = new ContextMenu();
+
+        var copyOffset = new MenuItem { Header = $"Copy offset (0x{node.StartOffset:X8})" };
+        copyOffset.Click += (_, _) => CopyToClipboard($"0x{node.StartOffset:X8} ({node.StartOffset:N0})");
+        menu.Items.Add(copyOffset);
+
+        var length = node.EndOffset - node.StartOffset;
+        var copyRange = new MenuItem { Header = $"Copy range (0x{node.StartOffset:X8} .. 0x{node.EndOffset:X8}, {length:N0} B)" };
+        copyRange.Click += (_, _) => CopyToClipboard($"0x{node.StartOffset:X8}..0x{node.EndOffset:X8} ({length:N0} bytes)");
+        menu.Items.Add(copyRange);
+
+        menu.Items.Add(new Separator());
+
+        var bytes = ExtractBytes(node);
+        var copyHex = new MenuItem { Header = $"Copy as hex ({bytes.Length:N0} B)", IsEnabled = bytes.Length > 0 };
+        copyHex.Click += (_, _) => CopyToClipboard(Convert.ToHexString(bytes));
+        menu.Items.Add(copyHex);
+
+        var copyBase64 = new MenuItem { Header = $"Copy as base64 ({bytes.Length:N0} B)", IsEnabled = bytes.Length > 0 };
+        copyBase64.Click += (_, _) => CopyToClipboard(Convert.ToBase64String(bytes));
+        menu.Items.Add(copyBase64);
+
+        menu.Items.Add(new Separator());
+
+        var saveBytes = new MenuItem { Header = $"Save bytes to file…", IsEnabled = bytes.Length > 0 };
+        saveBytes.Click += (_, _) => SaveBytesToFile(node, bytes);
+        menu.Items.Add(saveBytes);
+
+        if (node.Payload is AudioVideoLib.Formats.FlacPictureMetadataBlock flacPic
+            && flacPic.PictureData is { Length: > 0 })
+        {
+            var export = new MenuItem { Header = "Export picture…" };
+            export.Click += (_, _) => ExportFlacPicture(flacPic);
+            menu.Items.Add(new Separator());
+            menu.Items.Add(export);
+        }
+
+        InspectorTreeView.ContextMenu = menu;
+    }
+
+    private byte[] ExtractBytes(InspectorNode node)
+    {
+        if (CurrentDossier?.FileBytes == null)
+        {
+            return [];
+        }
+
+        var length = node.EndOffset - node.StartOffset;
+        if (length <= 0 || node.StartOffset < 0 || node.EndOffset > CurrentDossier.FileBytes.Length)
+        {
+            return [];
+        }
+
+        // Cap absurdly large copies at 16 MB to avoid hanging the clipboard.
+        const int cap = 16 * 1024 * 1024;
+        var take = (int)Math.Min(length, cap);
+        var result = new byte[take];
+        Buffer.BlockCopy(CurrentDossier.FileBytes, (int)node.StartOffset, result, 0, take);
+        return result;
+    }
+
+    private void CopyToClipboard(string text)
+    {
+        try
+        {
+            Clipboard.SetText(text);
+            UpdateStatus("Copied to clipboard");
+        }
+        catch (Exception ex)
+        {
+            UpdateStatus($"Clipboard error: {ex.Message}");
+        }
+    }
+
+    private void SaveBytesToFile(InspectorNode node, byte[] bytes)
+    {
+        var dlg = new SaveFileDialog
+        {
+            Title = "Save bytes",
+            FileName = SanitizeFileName($"{node.Label}_0x{node.StartOffset:X8}.bin"),
+            Filter = "Binary|*.bin|All files|*.*",
+        };
+        if (dlg.ShowDialog(this) == true)
+        {
+            try
+            {
+                File.WriteAllBytes(dlg.FileName, bytes);
+                UpdateStatus($"Saved {bytes.Length:N0} bytes to {Path.GetFileName(dlg.FileName)}");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(this, $"Could not write file:\n\n{ex.Message}", "Save", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+    }
+
+    private void ExportFlacPicture(AudioVideoLib.Formats.FlacPictureMetadataBlock pic)
+    {
+        var ext = (pic.MimeType ?? string.Empty).ToLowerInvariant() switch
+        {
+            "image/jpeg" or "image/jpg" => ".jpg",
+            "image/png" => ".png",
+            "image/gif" => ".gif",
+            "image/bmp" => ".bmp",
+            "image/webp" => ".webp",
+            _ => ".bin",
+        };
+
+        var dlg = new SaveFileDialog
+        {
+            Title = "Export picture",
+            FileName = SanitizeFileName($"{pic.PictureType}{ext}"),
+            Filter = $"{ext.TrimStart('.').ToUpperInvariant()} file|*{ext}|All files|*.*",
+        };
+        if (dlg.ShowDialog(this) != true)
+        {
+            return;
+        }
+
+        try
+        {
+            File.WriteAllBytes(dlg.FileName, pic.PictureData ?? []);
+            UpdateStatus($"Exported picture to {Path.GetFileName(dlg.FileName)}");
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(this, $"Could not write file:\n\n{ex.Message}", "Export picture",
+                MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+    }
+
+    private static string SanitizeFileName(string name)
+    {
+        foreach (var c in Path.GetInvalidFileNameChars())
+        {
+            name = name.Replace(c, '_');
+        }
+
+        return name;
     }
 
     private void InspectorTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -67,7 +406,16 @@ public partial class MainWindow : Window
 
         _selectedNode = node;
         PropertiesGrid.ItemsSource = node.Properties;
-        RenderHex(node.StartOffset, node.EndOffset);
+
+        if (_suppressTreeSync)
+        {
+            // User clicked a byte in hex view; keep hex view untouched so their click target stays visible.
+            UpdateSelectionStatus(node.StartOffset, node.EndOffset - node.StartOffset, selection: null);
+            return;
+        }
+
+        RenderHex(node.StartOffset, node.EndOffset, subRanges: SubRangesFromChildren(node));
+        UpdateSelectionStatus(node.StartOffset, node.EndOffset - node.StartOffset, selection: null);
     }
 
     private void PropertiesGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -80,26 +428,105 @@ public partial class MainWindow : Window
         if (PropertiesGrid.SelectedItem is InspectorProperty prop && prop.HighlightStart.HasValue && prop.HighlightLength.HasValue)
         {
             RenderHex(_selectedNode.StartOffset, _selectedNode.EndOffset, prop.HighlightStart.Value, prop.HighlightLength.Value);
+            UpdateSelectionStatus(_selectedNode.StartOffset, _selectedNode.EndOffset - _selectedNode.StartOffset,
+                selection: (prop.HighlightStart.Value, prop.HighlightLength.Value));
         }
         else
         {
             RenderHex(_selectedNode.StartOffset, _selectedNode.EndOffset);
+            UpdateSelectionStatus(_selectedNode.StartOffset, _selectedNode.EndOffset - _selectedNode.StartOffset, selection: null);
         }
     }
 
-    private void RenderHex(long regionStart, long regionEnd, long? highlightStart = null, int? highlightLength = null)
+    private void UpdateSelectionStatus(long nodeStart, long nodeLength, (long Start, int Length)? selection)
     {
-        if (CurrentDossier?.FileBytes == null || CurrentDossier.FileBytes.Length == 0)
+        if (selection.HasValue)
+        {
+            var (s, l) = selection.Value;
+            StatusSelection.Text = $"Sel 0x{s:X8}..0x{s + l:X8}  ({l:N0} B)   Node 0x{nodeStart:X8} ({nodeLength:N0} B)";
+        }
+        else
+        {
+            StatusSelection.Text = $"0x{nodeStart:X8}..0x{nodeStart + nodeLength:X8}  ({nodeLength:N0} B)";
+        }
+    }
+
+    private bool _suppressTreeSync;
+
+    private void HexView_ByteClicked(object? sender, long offset)
+    {
+        if (CurrentDossier?.InspectorRoot == null)
         {
             return;
         }
 
-        HexViewBox.Document = HexRenderer.Render(
-            CurrentDossier.FileBytes,
-            regionStart,
-            regionEnd,
-            highlightStart,
-            highlightLength);
+        var node = FindDeepestNodeContaining(CurrentDossier.InspectorRoot, offset);
+        if (node == null || ReferenceEquals(node, _selectedNode))
+        {
+            return;
+        }
+
+        _suppressTreeSync = true;
+        try
+        {
+            SelectTreeNode(node);
+        }
+        finally
+        {
+            _suppressTreeSync = false;
+        }
+
+        UpdateStatus($"Jumped to 0x{offset:X8} ({node.Label})");
+    }
+
+    private void RenderHex(long regionStart, long regionEnd, long? highlightStart = null, int? highlightLength = null,
+        IReadOnlyList<HexSubRange>? subRanges = null)
+    {
+        if (CurrentDossier?.FileBytes == null || CurrentDossier.FileBytes.Length == 0)
+        {
+            HexViewControl.Clear();
+            return;
+        }
+
+        HexViewControl.SetContent(CurrentDossier.FileBytes, regionStart, regionEnd, highlightStart, highlightLength, subRanges);
+    }
+
+    private static readonly SolidColorBrush[] SubRangeTints =
+    [
+        Frozen(new SolidColorBrush(Color.FromArgb(0x22, 0x55, 0xB0, 0xF0))),
+        Frozen(new SolidColorBrush(Color.FromArgb(0x22, 0xF0, 0x9D, 0x55))),
+        Frozen(new SolidColorBrush(Color.FromArgb(0x22, 0x6E, 0xCB, 0x7A))),
+        Frozen(new SolidColorBrush(Color.FromArgb(0x22, 0xD6, 0x80, 0xD0))),
+        Frozen(new SolidColorBrush(Color.FromArgb(0x22, 0xF0, 0xD6, 0x6A))),
+    ];
+
+    private static SolidColorBrush Frozen(SolidColorBrush b)
+    {
+        b.Freeze();
+        return b;
+    }
+
+    private static IReadOnlyList<HexSubRange> SubRangesFromChildren(InspectorNode node)
+    {
+        if (node.Children.Count == 0)
+        {
+            return [];
+        }
+
+        var list = new List<HexSubRange>(node.Children.Count);
+        for (var i = 0; i < node.Children.Count; i++)
+        {
+            var child = node.Children[i];
+            if (child.EndOffset <= child.StartOffset)
+            {
+                continue;
+            }
+
+            list.Add(new HexSubRange(child.StartOffset, child.EndOffset,
+                SubRangeTints[i % SubRangeTints.Length], child.Label));
+        }
+
+        return list;
     }
 
     private static readonly (string Id, string Label)[] CommonTextFrames =
@@ -621,6 +1048,40 @@ public partial class MainWindow : Window
         AddTagMenu.IsOpen = true;
     }
 
+    private void ValidateTag_Click(object sender, RoutedEventArgs e)
+    {
+        if (TagTabControl.SelectedItem is not TagTabViewModel tab)
+        {
+            UpdateStatus("Select a tag tab first");
+            return;
+        }
+
+        IAudioTag? tag = tab switch
+        {
+            Id3v2TabViewModel v2 => v2.Tag,
+            Id3v1TabViewModel v1 => v1.Tag,
+            ApeTabViewModel ape => ape.Tag,
+            Lyrics3v1TabViewModel l3v1 => l3v1.Tag,
+            Lyrics3v2TabViewModel l3 => l3.Tag,
+            MusicMatchTabViewModel mm => mm.Tag,
+            _ => null,
+        };
+
+        var issues = (IReadOnlyList<ValidationIssue>)(tab switch
+        {
+            VorbisTabViewModel vt => TagValidator.ValidateVorbisForStudio(vt),
+            _ when tag != null => TagValidator.Validate(tag),
+            _ => [new ValidationIssue(ValidationSeverity.Info, "No validator for this tab.")],
+        });
+
+        var title = $"Validate — {tab.Header}";
+        var body = TagValidator.Format(issues);
+        var icon = issues.Any(i => i.Severity == ValidationSeverity.Error)
+            ? MessageBoxImage.Warning
+            : issues.Count == 0 ? MessageBoxImage.Information : MessageBoxImage.Warning;
+        MessageBox.Show(this, body, title, MessageBoxButton.OK, icon);
+    }
+
     private void AddTagMenuItem_Click(object sender, RoutedEventArgs e)
     {
         if (sender is MenuItem { Tag: TagKind kind } && CurrentDossier != null)
@@ -632,11 +1093,263 @@ public partial class MainWindow : Window
     }
 
     private void OpenFile_Click(object sender, RoutedEventArgs e) => OpenFile();
+
+    private void RecentMenu_SubmenuOpened(object sender, RoutedEventArgs e)
+    {
+        RecentMenu.Items.Clear();
+
+        var recent = RecentFiles.Load();
+        if (recent.Count == 0)
+        {
+            RecentMenu.Items.Add(new MenuItem { Header = "(no recent files)", IsEnabled = false });
+            return;
+        }
+
+        for (var i = 0; i < recent.Count; i++)
+        {
+            var path = recent[i];
+            var item = new MenuItem
+            {
+                Header = $"_{(i + 1) % 10}  {Path.GetFileName(path)}",
+                ToolTip = path,
+                Tag = path,
+            };
+            item.Click += RecentItem_Click;
+            RecentMenu.Items.Add(item);
+        }
+
+        RecentMenu.Items.Add(new Separator());
+        var clear = new MenuItem { Header = "_Clear recent files" };
+        clear.Click += (_, _) => RecentFiles.Clear();
+        RecentMenu.Items.Add(clear);
+    }
+
+    private void RecentItem_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not MenuItem { Tag: string path })
+        {
+            return;
+        }
+
+        if (File.Exists(path))
+        {
+            OpenDossierFromPath(path);
+        }
+        else
+        {
+            MessageBox.Show(this, $"File not found:\n\n{path}", "Open recent", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+    }
     private void Save_Click(object sender, RoutedEventArgs e) => SaveCurrent();
     private void SaveAs_Click(object sender, RoutedEventArgs e) => SaveAsFile();
     private void CloseFile_Click(object sender, RoutedEventArgs e) => CloseCurrentFile();
     private void Refresh_Click(object sender, RoutedEventArgs e) => RefreshCurrent();
+    private void GoToOffset_Click(object sender, RoutedEventArgs e) => GoToOffset();
+    private void FlacIntegrity_Click(object sender, RoutedEventArgs e) => FlacIntegrityCheck();
+    private void Find_Click(object sender, RoutedEventArgs e) => Find();
+    private void FindNext_Click(object sender, RoutedEventArgs e) => FindNext();
+    private void FindPrevious_Click(object sender, RoutedEventArgs e) => FindPrevious();
     private void Exit_Click(object sender, RoutedEventArgs e) => Close();
+
+    private void ExportJson_Click(object sender, RoutedEventArgs e)
+    {
+        if (CurrentDossier == null)
+        {
+            UpdateStatus("Open a file first");
+            return;
+        }
+
+        var dlg = new SaveFileDialog
+        {
+            Title = "Export tags as JSON",
+            FileName = Path.GetFileNameWithoutExtension(CurrentDossier.FilePath) + ".tags.json",
+            InitialDirectory = Path.GetDirectoryName(CurrentDossier.FilePath) ?? string.Empty,
+            Filter = "JSON file|*.json|All files|*.*",
+        };
+        if (dlg.ShowDialog(this) != true)
+        {
+            return;
+        }
+
+        try
+        {
+            var tags = new List<IAudioTag>();
+            VorbisComments? vorbis = null;
+            foreach (var tab in CurrentDossier.TagTabs)
+            {
+                IAudioTag? underlying = tab switch
+                {
+                    Id3v2TabViewModel v2 => v2.Tag,
+                    Id3v1TabViewModel v1 => v1.Tag,
+                    ApeTabViewModel ape => ape.Tag,
+                    Lyrics3v1TabViewModel l3v1 => l3v1.Tag,
+                    Lyrics3v2TabViewModel l3 => l3.Tag,
+                    MusicMatchTabViewModel mm => mm.Tag,
+                    _ => null,
+                };
+
+                if (underlying != null)
+                {
+                    tags.Add(underlying);
+                }
+
+                if (tab is VorbisTabViewModel vt)
+                {
+                    vorbis = vt.Comments;
+                }
+            }
+
+            var json = TagJsonExporter.Export(CurrentDossier.FilePath, tags, vorbis);
+            File.WriteAllText(dlg.FileName, json);
+            UpdateStatus($"Exported to {Path.GetFileName(dlg.FileName)}");
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(this, $"Failed to export:\n\n{ex.Message}", "Export JSON",
+                MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+    }
+
+    private void CopyFilePath_Click(object sender, RoutedEventArgs e)
+    {
+        if (CurrentDossier == null)
+        {
+            UpdateStatus("Open a file first");
+            return;
+        }
+
+        CopyToClipboard(CurrentDossier.FilePath);
+    }
+
+    private void OpenInExplorer_Click(object sender, RoutedEventArgs e)
+    {
+        if (CurrentDossier == null)
+        {
+            UpdateStatus("Open a file first");
+            return;
+        }
+
+        try
+        {
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = "explorer.exe",
+                Arguments = $"/select,\"{CurrentDossier.FilePath}\"",
+                UseShellExecute = true,
+            });
+        }
+        catch (Exception ex)
+        {
+            UpdateStatus($"Could not open Explorer: {ex.Message}");
+        }
+    }
+
+    private void ShowShortcuts()
+    {
+        var dlg = new ShortcutsDialog { Owner = this };
+        dlg.ShowDialog();
+    }
+
+    private void Shortcuts_Click(object sender, RoutedEventArgs e) => ShowShortcuts();
+
+    private void Batch_Click(object sender, RoutedEventArgs e)
+    {
+        var dlg = new Batch.BatchDialog { Owner = this };
+        dlg.Show();
+    }
+
+    private void Compare_Click(object sender, RoutedEventArgs e)
+    {
+        if (CurrentDossier == null)
+        {
+            UpdateStatus("Open a file first");
+            return;
+        }
+
+        var dlg = new OpenFileDialog
+        {
+            Title = "Compare with another file",
+            Filter = "Audio files|*.mp3;*.flac;*.m4a;*.ogg;*.wav|All files|*.*",
+            InitialDirectory = Path.GetDirectoryName(CurrentDossier.FilePath) ?? string.Empty,
+            Multiselect = false,
+        };
+
+        if (dlg.ShowDialog(this) != true)
+        {
+            return;
+        }
+
+        try
+        {
+            var other = new FileDossier(dlg.FileName);
+            var diff = new DiffWindow(CurrentDossier, other) { Owner = this };
+            diff.Show();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(this, $"Could not load {Path.GetFileName(dlg.FileName)}:\n\n{ex.Message}", "Compare",
+                MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+    }
+
+    private void ValidateAll_Click(object sender, RoutedEventArgs e)
+    {
+        if (CurrentDossier == null)
+        {
+            UpdateStatus("Open a file first");
+            return;
+        }
+
+        var report = LintReport.Build(CurrentDossier, CurrentDossier.AudioStream, CurrentDossier.TagOffsets);
+        var body = LintReport.FormatPlainText(report);
+        var title = $"Validate — {Path.GetFileName(CurrentDossier.FilePath)}";
+        var icon = report.TotalErrors > 0 ? MessageBoxImage.Warning
+                 : report.TotalWarnings > 0 ? MessageBoxImage.Warning
+                 : MessageBoxImage.Information;
+        MessageBox.Show(this, body, title, MessageBoxButton.OK, icon);
+    }
+
+    private void ExportLint_Click(object sender, RoutedEventArgs e)
+    {
+        if (CurrentDossier == null)
+        {
+            UpdateStatus("Open a file first");
+            return;
+        }
+
+        var dlg = new SaveFileDialog
+        {
+            Title = "Export lint report",
+            FileName = Path.GetFileNameWithoutExtension(CurrentDossier.FilePath) + ".lint.md",
+            InitialDirectory = Path.GetDirectoryName(CurrentDossier.FilePath) ?? string.Empty,
+            Filter = "Markdown|*.md|Plain text|*.txt|All files|*.*",
+        };
+        if (dlg.ShowDialog(this) != true)
+        {
+            return;
+        }
+
+        try
+        {
+            var report = LintReport.Build(CurrentDossier, CurrentDossier.AudioStream, CurrentDossier.TagOffsets);
+            var content = dlg.FilterIndex == 2
+                ? LintReport.FormatPlainText(report)
+                : LintReport.FormatMarkdown(report);
+            File.WriteAllText(dlg.FileName, content);
+            UpdateStatus($"Lint report exported to {Path.GetFileName(dlg.FileName)}");
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(this, $"Failed to export:\n\n{ex.Message}", "Export lint report",
+                MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+    }
+
+    private void Settings_Click(object sender, RoutedEventArgs e)
+    {
+        var dlg = new SettingsDialog { Owner = this };
+        dlg.ShowDialog();
+    }
 
     private void About_Click(object sender, RoutedEventArgs e)
     {
@@ -650,11 +1363,38 @@ public partial class MainWindow : Window
             MessageBoxImage.Information);
     }
 
+    private void Window_DragOver(object sender, DragEventArgs e)
+    {
+        e.Effects = GetDroppedFile(e) != null ? DragDropEffects.Copy : DragDropEffects.None;
+        e.Handled = true;
+    }
+
+    private void Window_Drop(object sender, DragEventArgs e)
+    {
+        var file = GetDroppedFile(e);
+        if (file != null)
+        {
+            OpenDossierFromPath(file);
+        }
+
+        e.Handled = true;
+    }
+
+    private static string? GetDroppedFile(DragEventArgs e)
+    {
+        return e.Data.GetDataPresent(DataFormats.FileDrop)
+            && e.Data.GetData(DataFormats.FileDrop) is string[] files
+            && files.Length > 0
+            && File.Exists(files[0])
+                ? files[0]
+                : null;
+    }
+
     private void OpenFile()
     {
         var dlg = new OpenFileDialog
         {
-            Filter = "Audio files|*.mp3;*.flac;*.m4a;*.ogg;*.wav|All files|*.*",
+            Filter = "Audio files|*.mp3;*.flac;*.wav;*.aif;*.aiff;*.ogg;*.oga;*.m4a|All files|*.*",
             Multiselect = false,
             Title = "Open audio file",
         };
@@ -732,16 +1472,7 @@ public partial class MainWindow : Window
     {
         if (CurrentDossier != null)
         {
-            var name = Path.GetFileName(CurrentDossier.FilePath);
-            CurrentDossier = null;
-            _selectedNode = null;
-            InspectorTreeView.ItemsSource = null;
-            PropertiesGrid.ItemsSource = null;
-            TagTabControl.DataContext = null;
-            TagTabControl.ItemsSource = null;
-            HexViewBox.Document = new System.Windows.Documents.FlowDocument();
-            FilePathText.Text = "No file loaded. Use File > Open (Ctrl+O).";
-            UpdateStatus($"Closed {name}");
+            CloseFile(CurrentDossier);
         }
     }
 
@@ -751,6 +1482,417 @@ public partial class MainWindow : Window
         {
             OpenDossierFromPath(CurrentDossier.FilePath);
         }
+    }
+
+    private void GoToOffset()
+    {
+        if (CurrentDossier?.InspectorRoot == null)
+        {
+            UpdateStatus("Open a file first");
+            return;
+        }
+
+        var input = InputDialog.Ask(this, "Go to offset", "Offset (decimal or 0xHEX):", "0x");
+        if (string.IsNullOrWhiteSpace(input))
+        {
+            return;
+        }
+
+        if (!TryParseOffset(input.Trim(), out var offset))
+        {
+            MessageBox.Show(this, $"Could not parse '{input}'.\n\nUse decimal (e.g., 94000) or hex (e.g., 0x16F09).",
+                "Go to offset", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        if (offset < 0 || offset >= CurrentDossier.FileBytes.Length)
+        {
+            MessageBox.Show(this, $"Offset 0x{offset:X} is outside the file (size {CurrentDossier.FileBytes.Length:N0}).",
+                "Go to offset", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        var node = FindDeepestNodeContaining(CurrentDossier.InspectorRoot, offset);
+        if (node == null)
+        {
+            UpdateStatus($"No structure covers 0x{offset:X8}");
+            return;
+        }
+
+        SelectTreeNode(node);
+        UpdateStatus($"Jumped to 0x{offset:X8} ({node.Label})");
+    }
+
+    private static bool TryParseOffset(string input, out long offset)
+    {
+        offset = 0;
+        if (string.IsNullOrWhiteSpace(input))
+        {
+            return false;
+        }
+
+        input = input.Replace("_", string.Empty).Replace(" ", string.Empty);
+        if (input.StartsWith("0x", StringComparison.OrdinalIgnoreCase) || input.StartsWith('$'))
+        {
+            var hex = input.StartsWith('$') ? input[1..] : input[2..];
+            return long.TryParse(hex, System.Globalization.NumberStyles.HexNumber, System.Globalization.CultureInfo.InvariantCulture, out offset);
+        }
+
+        return long.TryParse(input, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out offset);
+    }
+
+    private static InspectorNode? FindDeepestNodeContaining(InspectorNode root, long offset)
+    {
+        if (offset < root.StartOffset || offset >= Math.Max(root.EndOffset, root.StartOffset + 1))
+        {
+            return null;
+        }
+
+        foreach (var child in root.Children)
+        {
+            var hit = FindDeepestNodeContaining(child, offset);
+            if (hit != null)
+            {
+                return hit;
+            }
+        }
+
+        return root;
+    }
+
+    private void SelectTreeNode(InspectorNode target)
+    {
+        if (CurrentDossier?.InspectorRoot == null)
+        {
+            return;
+        }
+
+        var path = new List<InspectorNode>();
+        if (!BuildPath(CurrentDossier.InspectorRoot, target, path))
+        {
+            return;
+        }
+
+        // Expand each ancestor so the container chain exists, then walk the visual tree.
+        ItemsControl container = InspectorTreeView;
+        foreach (var node in path)
+        {
+            var item = container.ItemContainerGenerator.ContainerFromItem(node) as TreeViewItem;
+            if (item == null)
+            {
+                // Containers are generated lazily. Force realization by updating layout.
+                container.UpdateLayout();
+                item = container.ItemContainerGenerator.ContainerFromItem(node) as TreeViewItem;
+                if (item == null)
+                {
+                    return;
+                }
+            }
+
+            if (node == target)
+            {
+                item.IsSelected = true;
+                item.BringIntoView();
+                item.Focus();
+                return;
+            }
+
+            item.IsExpanded = true;
+            item.UpdateLayout();
+            container = item;
+        }
+    }
+
+    private void FlacIntegrityCheck()
+    {
+        if (CurrentDossier?.FileBytes == null)
+        {
+            UpdateStatus("Open a file first");
+            return;
+        }
+
+        // Look for StreamInfo via the tree payloads (set when BuildFlacTree runs).
+        var streamInfo = FindFirstPayload<AudioVideoLib.Formats.FlacStreamInfoMetadataBlock>(CurrentDossier.InspectorRoot);
+        if (streamInfo == null)
+        {
+            MessageBox.Show(this, "No FLAC STREAMINFO block found — is this a FLAC file?",
+                "FLAC integrity check", MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+
+        // audio-frames region = from the first byte after the last metadata block to EOF.
+        // Approximate: find the "audio frames" node in the tree.
+        var audioNode = FindNodeByLabel(CurrentDossier.InspectorRoot, "audio frames");
+        var (regionStart, regionEnd) = audioNode != null
+            ? (audioNode.StartOffset, audioNode.EndOffset)
+            : (0L, 0L);
+
+        var storedHex = streamInfo.MD5 is { Length: 16 } ? Convert.ToHexString(streamInfo.MD5) : "(none)";
+        var computedHex = "(not computed)";
+        if (regionEnd > regionStart)
+        {
+            using var md5 = System.Security.Cryptography.MD5.Create();
+            var hash = md5.ComputeHash(CurrentDossier.FileBytes, (int)regionStart, (int)(regionEnd - regionStart));
+            computedHex = Convert.ToHexString(hash);
+        }
+
+        var body =
+            $"STREAMINFO MD5 (unencoded PCM):\n  {storedHex}\n\n" +
+            $"MD5 of audio frames region on disk:\n  {computedHex}\n\n" +
+            $"Region: 0x{regionStart:X8}..0x{regionEnd:X8}  ({regionEnd - regionStart:N0} bytes)\n\n" +
+            "Note: the STREAMINFO MD5 is the MD5 of the decoded PCM samples.\n" +
+            "Verifying it requires a FLAC decoder, which this library does not provide.\n" +
+            "The second value above is the MD5 of the *encoded* audio frames as stored in the file.\n" +
+            "It is useful for detecting bit-level corruption but will NOT equal the STREAMINFO value.";
+
+        MessageBox.Show(this, body, "FLAC integrity check", MessageBoxButton.OK, MessageBoxImage.Information);
+    }
+
+    private static T? FindFirstPayload<T>(InspectorNode? root) where T : class
+    {
+        if (root == null)
+        {
+            return null;
+        }
+
+        if (root.Payload is T t)
+        {
+            return t;
+        }
+
+        foreach (var child in root.Children)
+        {
+            var hit = FindFirstPayload<T>(child);
+            if (hit != null)
+            {
+                return hit;
+            }
+        }
+
+        return null;
+    }
+
+    private static InspectorNode? FindNodeByLabel(InspectorNode? root, string label)
+    {
+        if (root == null)
+        {
+            return null;
+        }
+
+        if (string.Equals(root.Label, label, StringComparison.OrdinalIgnoreCase))
+        {
+            return root;
+        }
+
+        foreach (var child in root.Children)
+        {
+            var hit = FindNodeByLabel(child, label);
+            if (hit != null)
+            {
+                return hit;
+            }
+        }
+
+        return null;
+    }
+
+    private void Find()
+    {
+        if (CurrentDossier?.FileBytes == null || CurrentDossier.FileBytes.Length == 0)
+        {
+            UpdateStatus("Open a file first");
+            return;
+        }
+
+        var result = FindDialog.Ask(this);
+        if (result is not (byte[] pattern, string display))
+        {
+            return;
+        }
+
+        _lastFindPattern = pattern;
+        _lastFindDisplay = display;
+        _lastFindOffset = -1;
+        FindAt(0);
+    }
+
+    private void FindNext()
+    {
+        if (_lastFindPattern == null)
+        {
+            Find();
+            return;
+        }
+
+        FindAt(_lastFindOffset + 1);
+    }
+
+    private void FindPrevious()
+    {
+        if (_lastFindPattern == null)
+        {
+            Find();
+            return;
+        }
+
+        var start = _lastFindOffset < 0
+            ? (CurrentDossier?.FileBytes.Length ?? 0) - 1
+            : _lastFindOffset - 1;
+        FindPreviousAt(start);
+    }
+
+    private void FindPreviousAt(long startOffset)
+    {
+        if (CurrentDossier?.FileBytes == null || _lastFindPattern == null)
+        {
+            return;
+        }
+
+        var haystack = CurrentDossier.FileBytes;
+        var needle = _lastFindPattern;
+
+        var hit = IndexOfReverse(haystack, needle, (int)Math.Max(0, startOffset));
+        if (hit < 0 && startOffset < haystack.Length - needle.Length)
+        {
+            hit = IndexOfReverse(haystack, needle, haystack.Length - needle.Length);
+            if (hit >= 0)
+            {
+                UpdateStatus($"Wrapped — found {_lastFindDisplay} at 0x{hit:X8}");
+            }
+        }
+
+        if (hit < 0)
+        {
+            MessageBox.Show(this, $"Pattern {_lastFindDisplay} not found.", "Find previous",
+                MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+
+        _lastFindOffset = hit;
+
+        var node = FindDeepestNodeContaining(CurrentDossier.InspectorRoot!, hit);
+        if (node != null)
+        {
+            SelectTreeNode(node);
+        }
+
+        UpdateStatus($"Found {_lastFindDisplay} at 0x{hit:X8} ({hit:N0}). Shift+F3 for previous.");
+    }
+
+    private void FindAt(long startOffset)
+    {
+        if (CurrentDossier?.FileBytes == null || _lastFindPattern == null)
+        {
+            return;
+        }
+
+        var haystack = CurrentDossier.FileBytes;
+        var needle = _lastFindPattern;
+
+        var hit = IndexOf(haystack, needle, (int)Math.Max(0, startOffset));
+        if (hit < 0 && startOffset > 0)
+        {
+            // Wrap around
+            hit = IndexOf(haystack, needle, 0);
+            if (hit >= 0)
+            {
+                UpdateStatus($"Wrapped — found {_lastFindDisplay} at 0x{hit:X8}");
+            }
+        }
+
+        if (hit < 0)
+        {
+            MessageBox.Show(this, $"Pattern {_lastFindDisplay} not found.", "Find", MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+
+        _lastFindOffset = hit;
+
+        var node = FindDeepestNodeContaining(CurrentDossier.InspectorRoot!, hit);
+        if (node != null)
+        {
+            SelectTreeNode(node);
+        }
+
+        UpdateStatus($"Found {_lastFindDisplay} at 0x{hit:X8} ({hit:N0}). F3 for next.");
+    }
+
+    private static int IndexOf(byte[] haystack, byte[] needle, int start)
+    {
+        if (needle.Length == 0 || start < 0 || start > haystack.Length - needle.Length)
+        {
+            return -1;
+        }
+
+        var limit = haystack.Length - needle.Length;
+        for (var i = start; i <= limit; i++)
+        {
+            var match = true;
+            for (var j = 0; j < needle.Length; j++)
+            {
+                if (haystack[i + j] != needle[j])
+                {
+                    match = false;
+                    break;
+                }
+            }
+
+            if (match)
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    private static int IndexOfReverse(byte[] haystack, byte[] needle, int start)
+    {
+        if (needle.Length == 0 || start < 0)
+        {
+            return -1;
+        }
+
+        var from = Math.Min(start, haystack.Length - needle.Length);
+        for (var i = from; i >= 0; i--)
+        {
+            var match = true;
+            for (var j = 0; j < needle.Length; j++)
+            {
+                if (haystack[i + j] != needle[j])
+                {
+                    match = false;
+                    break;
+                }
+            }
+
+            if (match)
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    private static bool BuildPath(InspectorNode current, InspectorNode target, List<InspectorNode> path)
+    {
+        path.Add(current);
+        if (current == target)
+        {
+            return true;
+        }
+
+        foreach (var child in current.Children)
+        {
+            if (BuildPath(child, target, path))
+            {
+                return true;
+            }
+        }
+
+        path.RemoveAt(path.Count - 1);
+        return false;
     }
 
     private void UpdateDirtyState()

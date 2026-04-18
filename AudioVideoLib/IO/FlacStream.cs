@@ -6,17 +6,12 @@ using System.IO;
 using System.Linq;
 
 using AudioVideoLib.Formats;
-using AudioVideoLib.Tags;
 
 /// <summary>
 /// The stream containing FLAC Audio <see cref="FlacFrame"/>s.
 /// </summary>
 public sealed partial class FlacStream : IAudioStream
 {
-    // Max length of spacing, in bytes, between 2 metadata blocks. If there is spacing between metadata blocks, this means that a metadata block is corrupted.
-
-    // Max length of spacing, in bytes, between 2 frames. If there is spacing between frames, this means that a frame is corrupted.
-
     private const string Identifier = "fLaC";
 
     private readonly List<FlacFrame> _frames = [];
@@ -31,13 +26,7 @@ public sealed partial class FlacStream : IAudioStream
     /// <value>
     /// The start offset of the <see cref="IAudioStream"/>, counting from the start of the stream.
     /// </value>
-    public long StartOffset
-    {
-        get
-        {
-            return _frames.Any() ? _frames.First().StartOffset : 0;
-        }
-    }
+    public long StartOffset => _frames.Count > 0 ? _frames[0].StartOffset : 0;
 
     /// <summary>
     /// Gets the end offset of the <see cref="IAudioStream"/>, where it ends in the stream.
@@ -45,27 +34,15 @@ public sealed partial class FlacStream : IAudioStream
     /// <value>
     /// The end offset of the <see cref="IAudioStream"/>, counting from the start of the stream.
     /// </value>
-    public long EndOffset
-    {
-        get
-        {
-            return _frames.Any() ? _frames.Last().EndOffset : 0;
-        }
-    }
+    public long EndOffset => _frames.Count > 0 ? _frames[^1].EndOffset : 0;
 
     /// <summary>
     /// Gets the frames in the stream.
     /// </summary>
     /// <value>
-    /// A list of <see cref="Id3v2Frame"/>s in the stream.
+    /// A list of <see cref="FlacFrame"/>s in the stream.
     /// </value>
-    public IEnumerable<FlacFrame> Frames
-    {
-        get
-        {
-            return _frames.AsReadOnly();
-        }
-    }
+    public IEnumerable<FlacFrame> Frames => _frames.AsReadOnly();
 
     /// <summary>
     /// Gets the total length of audio in milliseconds.
@@ -73,13 +50,7 @@ public sealed partial class FlacStream : IAudioStream
     /// <value>
     /// The total length of audio, in milliseconds.
     /// </value>
-    public long TotalAudioLength
-    {
-        get
-        {
-            return Frames.Sum(f => f.AudioLength);
-        }
-    }
+    public long TotalAudioLength => Frames.Sum(f => f.AudioLength);
 
     /// <summary>
     /// Gets the total size of audio data in bytes.
@@ -87,13 +58,7 @@ public sealed partial class FlacStream : IAudioStream
     /// <value>
     /// The total size of the audio data in the stream, in bytes.
     /// </value>
-    public long TotalAudioSize
-    {
-        get
-        {
-            return Frames.Sum(f => f.FrameLength);
-        }
-    }
+    public long TotalAudioSize => Frames.Sum(f => f.FrameLength);
 
     /// <summary>
     /// Gets or sets the max length of spacing, in bytes, between 2 frames when searching for frames.
@@ -135,7 +100,7 @@ public sealed partial class FlacStream : IAudioStream
 
         var sb = stream as StreamBuffer ?? new StreamBuffer(stream);
         var streamLength = sb.Length;
-        if ((sb.Position + Identifier.Length) > streamLength)
+        if (sb.Position + Identifier.Length > streamLength)
         {
             return false;
         }
@@ -150,10 +115,10 @@ public sealed partial class FlacStream : IAudioStream
         long spacing = 0;
 
         // Read all metadata blocks.
-        while (((sb.Position + FlacMetadataBlock.MinimumSize) <= streamLength) && (spacing < MaxMetadataBlockSpacingLength))
+        while (sb.Position + FlacMetadataBlock.MinimumSize <= streamLength && spacing < MaxMetadataBlockSpacingLength)
         {
             var metadataBlock = FlacMetadataBlock.ReadBlock(sb);
-            if (metadataBlock != null)
+            if (metadataBlock is not null)
             {
                 spacing = 0;
                 _metadataBlocks.Add(metadataBlock);
@@ -169,11 +134,11 @@ public sealed partial class FlacStream : IAudioStream
         sb.Position -= spacing;
 
         // Read all frames.
-        while ((stream.Position <= streamLength) && (spacing < MaxFrameSpacingLength))
+        while (stream.Position <= streamLength && spacing < MaxFrameSpacingLength)
         {
             spacing++;
             var frame = FlacFrame.ReadFrame(stream, this);
-            if (frame != null)
+            if (frame is not null)
             {
                 spacing = 0;
                 _frames.Add(frame);
@@ -181,7 +146,7 @@ public sealed partial class FlacStream : IAudioStream
             }
             stream.Position++;
         }
-        return _frames.Any();
+        return _frames.Count > 0;
     }
 
     /// <inheritdoc />
@@ -190,7 +155,7 @@ public sealed partial class FlacStream : IAudioStream
         var sb = new StreamBuffer();
         sb.WriteString(Identifier);
         var streamInfoMetadataBlock = StreamInfoMetadataBlocks.FirstOrDefault();
-        if (streamInfoMetadataBlock != null)
+        if (streamInfoMetadataBlock is not null)
         {
             sb.Write(streamInfoMetadataBlock.ToByteArray());
         }

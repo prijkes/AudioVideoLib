@@ -16,13 +16,6 @@ public sealed class VorbisComments
 {
     private readonly NotifyingList<VorbisComment> _comments = [];
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="VorbisComments"/> class.
-    /// </summary>
-    public VorbisComments()
-    {
-    }
-
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -40,13 +33,7 @@ public sealed class VorbisComments
     /// The comments.
     /// </value>
     /// <exception cref="System.ArgumentNullException">Thrown if value is null.</exception>
-    public IList<VorbisComment> Comments
-    {
-        get
-        {
-            return _comments;
-        }
-    }
+    public IList<VorbisComment> Comments => _comments;
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

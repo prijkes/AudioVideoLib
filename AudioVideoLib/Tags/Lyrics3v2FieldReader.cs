@@ -20,9 +20,9 @@ public partial class Lyrics3v2Field
     /// </returns>
     public static Lyrics3v2Field? ReadFromStream(Stream stream, long maximumFieldSize)
     {
-        return stream == null
-            ? throw new ArgumentNullException("stream")
-            : ReadField(stream as StreamBuffer ?? new StreamBuffer(stream), maximumFieldSize);
+        ArgumentNullException.ThrowIfNull(stream);
+
+        return ReadField(stream as StreamBuffer ?? new StreamBuffer(stream), maximumFieldSize);
     }
 
     ////------------------------------------------------------------------------------------------------------------------------------
@@ -48,15 +48,15 @@ public partial class Lyrics3v2Field
             return false;
         }
         Identifier = identifier;
-        _data = new byte[fieldSize];
-        sb.Read(_data, fieldSize);
+        var data = new byte[fieldSize];
+        sb.Read(data, fieldSize);
 
-        if (!IsValidData(_data))
+        if (!IsValidData(data))
         {
             return false;
         }
 
-        Data = _data;
+        Data = data;
         return true;
     }
 }

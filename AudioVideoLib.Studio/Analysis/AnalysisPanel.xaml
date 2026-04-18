@@ -1,0 +1,26 @@
+<UserControl x:Class="AudioVideoLib.Studio.Analysis.AnalysisPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:AudioVideoLib.Studio.Analysis">
+    <DockPanel Margin="10">
+        <GroupBox DockPanel.Dock="Top" Header="Sanity checks" Margin="0,0,0,8" Padding="8">
+            <ItemsControl x:Name="SanityList">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="0,1,0,1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="180" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="{Binding Label}" Foreground="{DynamicResource TextSecondaryBrush}" />
+                            <TextBlock Grid.Column="1" Text="{Binding Value}" FontFamily="Consolas" />
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </GroupBox>
+        <GroupBox Header="Bitrate over time" Padding="4">
+            <local:BitrateChart x:Name="Chart" MinHeight="180" />
+        </GroupBox>
+    </DockPanel>
+</UserControl>

@@ -1,7 +1,6 @@
 namespace AudioVideoLib.Tags;
 
 using System;
-using System.Linq;
 
 /// <summary>
 /// Class for storing CD identification information.
@@ -38,7 +37,7 @@ public sealed class Id3v2MusicCdIdentifierFrame : Id3v2Frame
     {
         if (!IsVersionSupported(version))
         {
-            throw new InvalidVersionException(string.Format("Version {0} not supported by this frame.", version));
+            throw new InvalidVersionException($"Version {version} not supported by this frame.");
         }
     }
 
@@ -62,7 +61,7 @@ public sealed class Id3v2MusicCdIdentifierFrame : Id3v2Frame
 
         set
         {
-            field = (value != null) ? [.. value.Take(MaxTableOfContentsSize)] : null!;
+            field = (value != null) ? value[..Math.Min(value.Length, MaxTableOfContentsSize)] : null!;
         }
     } = null!;
 
@@ -71,22 +70,17 @@ public sealed class Id3v2MusicCdIdentifierFrame : Id3v2Frame
     /// <inheritdoc />
     public override byte[] Data
     {
-        get
-        {
-            return TableOfContents;
-        }
+        get => TableOfContents;
 
         protected set
         {
-            TableOfContents = value ?? throw new ArgumentNullException("value");
+            ArgumentNullException.ThrowIfNull(value);
+            TableOfContents = value;
         }
     }
 
     /// <inheritdoc />
-    public override string Identifier
-    {
-        get { return (Version < Id3v2Version.Id3v230) ? "MCI" : "MCDI"; }
-    }
+    public override string Identifier => (Version < Id3v2Version.Id3v230) ? "MCI" : "MCDI";
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

@@ -6,40 +6,23 @@ using System;
 /// Class for storing event data passed as argument to subscribed event handlers.
 /// </summary>
 /// <typeparam name="T">Type of the item the list will contain.</typeparam>
-public sealed class ListItemAddedEventArgs<T> : EventArgs
+/// <remarks>
+/// Initializes a new instance of the <see cref="ListItemAddedEventArgs{T}"/> class.
+/// </remarks>
+/// <param name="index">The index the <paramref name="item"/> was added at.</param>
+/// <param name="item">The item which was added.</param>
+public sealed class ListItemAddedEventArgs<T>(int index, T item) : EventArgs
 {
-
-    ////------------------------------------------------------------------------------------------------------------------------------
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ListItemAddedEventArgs&lt;T&gt;"/> class.
-    /// </summary>
-    /// <param name="item">The item which was added.</param>
-    public ListItemAddedEventArgs(T item)
-    {
-        Item = item;
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ListItemAddedEventArgs&lt;T&gt;"/> class.
-    /// </summary>
-    /// <param name="index">The index the <paramref name="item"/> was added at.</param>
-    /// <param name="item">The item which was added.</param>
-    public ListItemAddedEventArgs(int index, T item)
-    {
-        Index = index;
-        Item = item;
-    }
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
     /// Gets the index in the list the <see cref="Item"/> was added at.
     /// </summary>
-    public int Index { get; private set; } = -1;
+    public int Index { get; } = index;
 
     /// <summary>
     /// Gets the item which was added.
     /// </summary>
-    public T Item { get; private set; }
+    public T Item { get; } = item;
 }

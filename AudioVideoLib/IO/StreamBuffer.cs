@@ -41,7 +41,7 @@ public sealed partial class StreamBuffer : Stream
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="StreamBuffer"/> class 
+    /// Initializes a new instance of the <see cref="StreamBuffer"/> class
     /// with an expandable capacity initialized to 1024 bytes, using <see cref="System.IO.MemoryStream"/> as backing data.
     /// </summary>
     public StreamBuffer()
@@ -58,12 +58,13 @@ public sealed partial class StreamBuffer : Stream
     /// </remarks>
     public StreamBuffer(Stream stream)
     {
-        _stream = stream ?? throw new ArgumentNullException("stream");
+        ArgumentNullException.ThrowIfNull(stream);
+        _stream = stream;
         _isExternalStream = true;
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="StreamBuffer"/> class 
+    /// Initializes a new instance of the <see cref="StreamBuffer"/> class
     /// based on the specified byte array with an expandable capacity, using <see cref="System.IO.MemoryStream"/> as backing data.
     /// </summary>
     /// <param name="buffer">The array of unsigned bytes from which to create the current stream.</param>
@@ -80,7 +81,7 @@ public sealed partial class StreamBuffer : Stream
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="StreamBuffer"/> class 
+    /// Initializes a new instance of the <see cref="StreamBuffer"/> class
     /// with an expandable capacity initialized as specified, using <see cref="System.IO.MemoryStream"/> as backing data.
     /// </summary>
     /// <param name="capacity">The initial size of the internal array in bytes.</param>
@@ -100,13 +101,7 @@ public sealed partial class StreamBuffer : Stream
     /// <remarks>
     /// The underlying stream will only be returned if this instance has been constructed with <see cref="StreamBuffer(Stream)"/>.
     /// </remarks>
-    public Stream? BaseStream
-    {
-        get
-        {
-            return _isExternalStream ? _stream : null;
-        }
-    }
+    public Stream? BaseStream => _isExternalStream ? _stream : null;
 
     /// <summary>
     /// Gets the number of bytes within the stream.
@@ -114,35 +109,23 @@ public sealed partial class StreamBuffer : Stream
     /// <returns>
     /// The number of bytes within the stream.
     /// </returns>
-    public override long Length
-    {
-        get { return _stream.Length; }
-    }
+    public override long Length => _stream.Length;
 
     /// <inheritdoc />
     public override long Position
     {
-        get { return _stream.Position; }
-        set { _stream.Position = value; }
+        get => _stream.Position;
+        set => _stream.Position = value;
     }
 
     /// <inheritdoc />
-    public override bool CanRead
-    {
-        get { return _stream.CanRead; }
-    }
+    public override bool CanRead => _stream.CanRead;
 
     /// <inheritdoc/>
-    public override bool CanWrite
-    {
-        get { return _stream.CanWrite; }
-    }
+    public override bool CanWrite => _stream.CanWrite;
 
     /// <inheritdoc/>
-    public override bool CanSeek
-    {
-        get { return _stream.CanSeek; }
-    }
+    public override bool CanSeek => _stream.CanSeek;
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
@@ -151,30 +134,21 @@ public sealed partial class StreamBuffer : Stream
     /// </summary>
     /// <param name="value">The value to switch its endianness.</param>
     /// <returns>The value, in switched endianness.</returns>
-    public static short SwitchEndianness(short value)
-    {
-        return (short)SwitchEndianness(value, Int16Size);
-    }
+    public static short SwitchEndianness(short value) => (short)SwitchEndianness(value, Int16Size);
 
     /// <summary>
     /// Switches the endianness of the value.
     /// </summary>
     /// <param name="value">The value to switch its endianness.</param>
     /// <returns>The value, in switched endianness.</returns>
-    public static int SwitchEndianness(int value)
-    {
-        return (int)SwitchEndianness(value, Int32Size);
-    }
+    public static int SwitchEndianness(int value) => (int)SwitchEndianness(value, Int32Size);
 
     /// <summary>
     /// Switches the endianness of the value.
     /// </summary>
     /// <param name="value">The value to switch its endianness.</param>
     /// <returns>The value, in switched endianness.</returns>
-    public static long SwitchEndianness(long value)
-    {
-        return SwitchEndianness(value, Int64Size);
-    }
+    public static long SwitchEndianness(long value) => SwitchEndianness(value, Int64Size);
 
     /// <summary>
     /// Switches the endianness of the value.
@@ -211,7 +185,6 @@ public sealed partial class StreamBuffer : Stream
     public static void SwitchEndianness(byte[] bytes)
     {
         ArgumentNullException.ThrowIfNull(bytes);
-
         Array.Reverse(bytes);
     }
 
@@ -223,67 +196,8 @@ public sealed partial class StreamBuffer : Stream
     /// <returns>
     /// true if the specified arrays are equal; otherwise, false.
     /// </returns>
-    /// This function is supposed to be FAST, according to the link below.
-    /// http://stackoverflow.com/questions/43289/comparing-two-byte-arrays-in-net
-    public static unsafe bool SequenceEqual(byte[] array1, byte[] array2)
-    {
-        if (ReferenceEquals(array2, array1))
-        {
-            return true;
-        }
-
-        if (array1 is null)
-        {
-            return false;
-        }
-
-        if ((array2 == null) || (array1.Length != array2.Length))
-        {
-            return false;
-        }
-
-        fixed (byte* pointer1 = array1, pointer2 = array2)
-        {
-            byte* bp1 = pointer1, bp2 = pointer2;
-            var array1Length = array1.Length;
-
-            // Check long
-            for (var i = 0; i < array1Length / 8; i++, bp1 += 8, bp2 += 8)
-            {
-                if (*(long*)bp1 != *(long*)bp2)
-                {
-                    return false;
-                }
-            }
-
-            // Check int
-            if ((array1Length & 4) != 0)
-            {
-                if (*(int*)bp1 != *(int*)bp2)
-                {
-                    return false;
-                }
-
-                bp1 += 4;
-                bp2 += 4;
-            }
-
-            // Check short
-            if ((array1Length & 2) != 0)
-            {
-                if (*(short*)bp1 != *(short*)bp2)
-                {
-                    return false;
-                }
-
-                bp1 += 2;
-                bp2 += 2;
-            }
-
-            // Check byte
-            return ((array1Length & 1) == 0) || (*bp1 == *bp2);
-        }
-    }
+    public static bool SequenceEqual(byte[] array1, byte[] array2) =>
+        array1.AsSpan().SequenceEqual(array2.AsSpan());
 
     /// <summary>
     /// Gets an encoded string using no more than the specified allowed bytes.
@@ -300,7 +214,6 @@ public sealed partial class StreamBuffer : Stream
     public static byte[] GetTruncatedEncodedBytes(string value, Encoding encoding, int maxBytesAllowed)
     {
         ArgumentNullException.ThrowIfNull(value);
-
         ArgumentNullException.ThrowIfNull(encoding);
 
         if (maxBytesAllowed <= 0)
@@ -310,7 +223,7 @@ public sealed partial class StreamBuffer : Stream
 
         value = value.Replace("\0", string.Empty);
         var subLength = value.Length;
-        while ((subLength > 0) && (encoding.GetByteCount(value[..subLength]) > maxBytesAllowed))
+        while (subLength > 0 && encoding.GetByteCount(value[..subLength]) > maxBytesAllowed)
         {
             subLength--;
         }
@@ -333,7 +246,6 @@ public sealed partial class StreamBuffer : Stream
     public static string GetTruncatedEncodedString(string value, Encoding encoding, int maxBytesAllowed)
     {
         ArgumentNullException.ThrowIfNull(value);
-
         ArgumentNullException.ThrowIfNull(encoding);
 
         if (maxBytesAllowed <= 0)
@@ -343,7 +255,7 @@ public sealed partial class StreamBuffer : Stream
 
         value = value.Replace("\0", string.Empty);
         var subLength = value.Length;
-        while ((subLength > 0) && (encoding.GetByteCount(value[..subLength]) > maxBytesAllowed))
+        while (subLength > 0 && encoding.GetByteCount(value[..subLength]) > maxBytesAllowed)
         {
             subLength--;
         }
@@ -351,82 +263,49 @@ public sealed partial class StreamBuffer : Stream
         return value[..subLength];
     }
 
-
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <inheritdoc />
-    public override long Seek(long offset, SeekOrigin origin)
-    {
-        return _stream.Seek(offset, origin);
-    }
+    public override long Seek(long offset, SeekOrigin origin) => _stream.Seek(offset, origin);
 
-    public override IAsyncResult BeginRead(byte[] buffer, int offset, int count, AsyncCallback? callback, object? state)
-    {
-        return _stream.BeginRead(buffer, offset, count, callback, state);
-    }
+    /// <inheritdoc />
+    public override IAsyncResult BeginRead(byte[] buffer, int offset, int count, AsyncCallback? callback, object? state) =>
+        _stream.BeginRead(buffer, offset, count, callback, state);
 
-    public override IAsyncResult BeginWrite(byte[] buffer, int offset, int count, AsyncCallback? callback, object? state)
-    {
-        return _stream.BeginWrite(buffer, offset, count, callback, state);
-    }
+    /// <inheritdoc />
+    public override IAsyncResult BeginWrite(byte[] buffer, int offset, int count, AsyncCallback? callback, object? state) =>
+        _stream.BeginWrite(buffer, offset, count, callback, state);
 
-    public override bool CanTimeout
-    {
-        get
-        {
-            return _stream.CanTimeout;
-        }
-    }
+    /// <inheritdoc />
+    public override bool CanTimeout => _stream.CanTimeout;
 
-    public override int EndRead(IAsyncResult asyncResult)
-    {
-        return _stream.EndRead(asyncResult);
-    }
+    /// <inheritdoc />
+    public override int EndRead(IAsyncResult asyncResult) => _stream.EndRead(asyncResult);
 
-    public override void EndWrite(IAsyncResult asyncResult)
-    {
-        _stream.EndWrite(asyncResult);
-    }
+    /// <inheritdoc />
+    public override void EndWrite(IAsyncResult asyncResult) => _stream.EndWrite(asyncResult);
 
-    public override bool Equals(object? obj)
-    {
-        return _stream.Equals(obj);
-    }
+    /// <inheritdoc />
+    public override bool Equals(object? obj) => _stream.Equals(obj);
 
-    public override int GetHashCode()
-    {
-        return _stream.GetHashCode();
-    }
+    /// <inheritdoc />
+    public override int GetHashCode() => _stream.GetHashCode();
 
+    /// <inheritdoc />
     public override int ReadTimeout
     {
-        get
-        {
-            return _stream.ReadTimeout;
-        }
-
-        set
-        {
-            _stream.ReadTimeout = value;
-        }
+        get => _stream.ReadTimeout;
+        set => _stream.ReadTimeout = value;
     }
 
-    public override string? ToString()
-    {
-        return _stream.ToString();
-    }
+    /// <inheritdoc />
+    public override string? ToString() => _stream.ToString();
 
+    /// <inheritdoc />
     public override int WriteTimeout
     {
-        get
-        {
-            return _stream.WriteTimeout;
-        }
-
-        set
-        {
-            _stream.WriteTimeout = value;
-        }
+        get => _stream.WriteTimeout;
+        set => _stream.WriteTimeout = value;
     }
 
     /// <summary>
@@ -444,16 +323,10 @@ public sealed partial class StreamBuffer : Stream
     }
 
     /// <inheritdoc />
-    public override void Flush()
-    {
-        _stream.Flush();
-    }
+    public override void Flush() => _stream.Flush();
 
     /// <inheritdoc/>
-    public override void SetLength(long value)
-    {
-        _stream.SetLength(value);
-    }
+    public override void SetLength(long value) => _stream.SetLength(value);
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

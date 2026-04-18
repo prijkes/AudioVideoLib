@@ -15,9 +15,6 @@ using AudioVideoLib.IO;
 /// </remarks>
 public sealed class Id3v2UnsynchronizedLyricsFrame : Id3v2Frame
 {
-    private Id3v2FrameEncodingType _frameEncodingType;
-
-    private string _language = null!, _contentDescriptor = null!, _lyrics = null!;
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -36,7 +33,7 @@ public sealed class Id3v2UnsynchronizedLyricsFrame : Id3v2Frame
     {
         if (!IsVersionSupported(version))
         {
-            throw new InvalidVersionException(string.Format("Version {0} not supported by this frame.", version));
+            throw new InvalidVersionException($"Version {version} not supported by this frame.");
         }
     }
 
@@ -49,15 +46,12 @@ public sealed class Id3v2UnsynchronizedLyricsFrame : Id3v2Frame
     /// The text encoding.
     /// </value>
     /// <remarks>
-    /// An <see cref="InvalidDataException"/> will be thrown when the <see cref="ContentDescriptor"/> or the <see cref="Lyrics"/> 
+    /// An <see cref="InvalidDataException"/> will be thrown when the <see cref="ContentDescriptor"/> or the <see cref="Lyrics"/>
     /// are not valid in the new <see cref="Id3v2FrameEncodingType"/>.
     /// </remarks>
     public Id3v2FrameEncodingType TextEncoding
     {
-        get
-        {
-            return _frameEncodingType;
-        }
+        get => field;
 
         set
         {
@@ -71,7 +65,7 @@ public sealed class Id3v2UnsynchronizedLyricsFrame : Id3v2Frame
                 throw new InvalidDataException("Lyrics contains one or more invalid characters for the specified frame encoding type.");
             }
 
-            _frameEncodingType = value;
+            field = value;
         }
     }
 
@@ -82,34 +76,31 @@ public sealed class Id3v2UnsynchronizedLyricsFrame : Id3v2Frame
     /// The language.
     /// </value>
     /// <remarks>
-    /// The language code should be a valid ISO-639-2 language code; 
+    /// The language code should be a valid ISO-639-2 language code;
     /// see <see cref="Id3v2Frame.IsValidLanguageCode"/> to check if a string is a valid ISO-639-2 language code.
     /// </remarks>
     public string Language
     {
-        get
-        {
-            return _language;
-        }
+        get => field;
 
         set
         {
             if (string.IsNullOrEmpty(value))
             {
-                _language = value;
+                field = value;
                 return;
             }
 
             // Id3v2.4.0 and later: If the language is not known the string "XXX" should be used.
             if (!IsValidLanguageCode(value) && ((Version != Id3v2Version.Id3v240) || !string.Equals(value, "XXX", StringComparison.OrdinalIgnoreCase)))
             {
-                throw new InvalidDataException(string.Format("Language code '{0}' is not a valid ISO-639-2 language code.", value));
+                throw new InvalidDataException($"Language code '{value}' is not a valid ISO-639-2 language code.");
             }
 
             // Id3v2.4.0 and later: The language should be represented in lower case.
-            _language = (Version >= Id3v2Version.Id3v240) && !string.IsNullOrEmpty(value) ? value.ToLower() : value;
+            field = (Version >= Id3v2Version.Id3v240) && !string.IsNullOrEmpty(value) ? value.ToLower() : value;
         }
-    }
+    } = null!;
 
     /// <summary>
     /// Gets or sets the content descriptor of the lyrics.
@@ -124,16 +115,13 @@ public sealed class Id3v2UnsynchronizedLyricsFrame : Id3v2Frame
     /// </remarks>
     public string ContentDescriptor
     {
-        get
-        {
-            return _contentDescriptor;
-        }
+        get => field;
 
         set
         {
             if (string.IsNullOrEmpty(value))
             {
-                _contentDescriptor = value;
+                field = value;
                 return;
             }
 
@@ -142,9 +130,9 @@ public sealed class Id3v2UnsynchronizedLyricsFrame : Id3v2Frame
                 throw new InvalidDataException("value contains one or more invalid characters for the current frame encoding type.");
             }
 
-            _contentDescriptor = (Version < Id3v2Version.Id3v230) ? GetTruncatedEncodedString(value, 64) : value;
+            field = (Version < Id3v2Version.Id3v230) ? GetTruncatedEncodedString(value, 64) : value;
         }
-    }
+    } = null!;
 
     /// <summary>
     /// Gets or sets the lyrics.
@@ -154,10 +142,7 @@ public sealed class Id3v2UnsynchronizedLyricsFrame : Id3v2Frame
     /// </value>
     public string Lyrics
     {
-        get
-        {
-            return _lyrics;
-        }
+        get => field;
 
         set
         {
@@ -166,9 +151,9 @@ public sealed class Id3v2UnsynchronizedLyricsFrame : Id3v2Frame
                 throw new InvalidDataException("value contains one or more invalid characters for the current frame encoding type.");
             }
 
-            _lyrics = value;
+            field = value;
         }
-    }
+    } = null!;
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
@@ -226,27 +211,21 @@ public sealed class Id3v2UnsynchronizedLyricsFrame : Id3v2Frame
 
             var defaultEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
             var stream = new StreamBuffer(value);
-            _frameEncodingType = Id3v2FrameEncoding.ReadEncodingTypeFromStream(stream);
-            var encoding = Id3v2FrameEncoding.GetEncoding(_frameEncodingType);
-            _language = stream.ReadString(3, defaultEncoding);
-            _contentDescriptor = stream.ReadString(encoding);
-            _lyrics = stream.ReadString(encoding);
+            TextEncoding = Id3v2FrameEncoding.ReadEncodingTypeFromStream(stream);
+            var encoding = Id3v2FrameEncoding.GetEncoding(TextEncoding);
+            Language = stream.ReadString(3, defaultEncoding);
+            ContentDescriptor = stream.ReadString(encoding);
+            Lyrics = stream.ReadString(encoding);
         }
     }
 
     /// <inheritdoc />
-    public override string Identifier
-    {
-        get { return (Version < Id3v2Version.Id3v230) ? "ULT" : "USLT"; }
-    }
+    public override string Identifier => (Version < Id3v2Version.Id3v230) ? "ULT" : "USLT";
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <inheritdoc/>
-    public override bool Equals(Id3v2Frame? frame)
-    {
-        return Equals(frame as Id3v2UnsynchronizedLyricsFrame);
-    }
+    public override bool Equals(Id3v2Frame? frame) => Equals(frame as Id3v2UnsynchronizedLyricsFrame);
 
     /// <summary>
     /// Equals the specified <see cref="Id3v2UnsynchronizedLyricsFrame"/>.
@@ -269,16 +248,13 @@ public sealed class Id3v2UnsynchronizedLyricsFrame : Id3v2Frame
     /// <returns>
     ///   <c>true</c> if the specified version is supported; otherwise, <c>false</c>.
     /// </returns>
-    public override bool IsVersionSupported(Id3v2Version version)
-    {
-        return true;
-    }
+    public override bool IsVersionSupported(Id3v2Version version) => true;
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
     private string GetTruncatedEncodedString(string value, int maxBytesAllowed)
     {
-        var encoding = Id3v2FrameEncoding.GetEncoding(_frameEncodingType);
+        var encoding = Id3v2FrameEncoding.GetEncoding(TextEncoding);
         return StreamBuffer.GetTruncatedEncodedString(value, encoding, maxBytesAllowed);
     }
 }

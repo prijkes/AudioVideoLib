@@ -5,28 +5,20 @@ using System;
 /// <summary>
 /// Class for FLAC audio frames.
 /// </summary>
-public class FlacPaddingMetadataBlock : FlacMetadataBlock
+public sealed class FlacPaddingMetadataBlock : FlacMetadataBlock
 {
     /// <inheritdoc/>
-    public override FlacMetadataBlockType BlockType
-    {
-        get
-        {
-            return FlacMetadataBlockType.Padding;
-        }
-    }
+    public override FlacMetadataBlockType BlockType => FlacMetadataBlockType.Padding;
 
     /// <inheritdoc/>
     public override byte[] Data
     {
-        get
-        {
-            return base.Data;
-        }
+        get => base.Data;
 
         protected set
         {
-            base.Data = value ?? throw new ArgumentNullException("value");
+            ArgumentNullException.ThrowIfNull(value);
+            base.Data = value;
         }
     }
 }

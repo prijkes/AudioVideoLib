@@ -22,7 +22,7 @@ public sealed partial class FlacFrame : IAudioFrame
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="FlacFrame"/> class. 
+    /// Initializes a new instance of the <see cref="FlacFrame"/> class.
     /// </summary>
     /// <param name="stream">
     /// The stream.
@@ -32,7 +32,8 @@ public sealed partial class FlacFrame : IAudioFrame
     /// </exception>
     private FlacFrame(IO.FlacStream stream)
     {
-        FlacStream = stream ?? throw new ArgumentNullException("stream");
+        ArgumentNullException.ThrowIfNull(stream);
+        FlacStream = stream;
     }
 
     ////------------------------------------------------------------------------------------------------------------------------------
@@ -57,10 +58,7 @@ public sealed partial class FlacFrame : IAudioFrame
     /// <value>
     /// A list of <see cref="FlacSubFrame"/>s in the frame.
     /// </value>
-    public IEnumerable<FlacSubFrame> SubFrames
-    {
-        get { return _subFrames.AsReadOnly(); }
-    }
+    public IEnumerable<FlacSubFrame> SubFrames => _subFrames.AsReadOnly();
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
@@ -76,7 +74,6 @@ public sealed partial class FlacFrame : IAudioFrame
     public static FlacFrame? ReadFrame(Stream stream, IO.FlacStream flacStream)
     {
         ArgumentNullException.ThrowIfNull(stream);
-
         ArgumentNullException.ThrowIfNull(flacStream);
 
         var frame = new FlacFrame(flacStream);

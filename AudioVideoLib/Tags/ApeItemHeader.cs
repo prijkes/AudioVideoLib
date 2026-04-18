@@ -58,16 +58,11 @@ public partial class ApeItem
     /// See <see cref="ApeItemType" /> for possible item types.
     /// </remarks>
     public virtual ApeItemType ItemType
-    {
         // Read directly from the raw backing field, not via the Flags property — the
         // Flags getter re-encodes the item-type bits from this very property, so going
         // through it would recurse forever for base-class instances that don't
         // override ItemType (e.g. ApeItemType.Reserved from ApeItemFactory).
-        get
-        {
-            return GetItemType(_flags);
-        }
-    }
+        => GetItemType(_flags);
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

@@ -2,25 +2,13 @@ namespace AudioVideoLib.Formats;
 
 using AudioVideoLib.IO;
 
-public class FlacResidual
+public sealed class FlacResidual
 {
     private int _values;
 
-    public FlacResidualCodingMethod CodingMethod
-    {
-        get
-        {
-            return (FlacResidualCodingMethod)(_values & 0x03);
-        }
-    }
+    public FlacResidualCodingMethod CodingMethod => (FlacResidualCodingMethod)(_values & 0x03);
 
-    public int PartitionOrder
-    {
-        get
-        {
-            return (_values >> 4) & 0x0F;
-        }
-    }
+    public int PartitionOrder => (_values >> 4) & 0x0F;
 
     public FlacRicePartition[] RicePartitions { get; private set; } = null!;
 

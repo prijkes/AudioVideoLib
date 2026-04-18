@@ -7,9 +7,9 @@ using AudioVideoLib.Collections;
 using AudioVideoLib.IO;
 
 /// <summary>
-/// 
+///
 /// </summary>
-public class FlacSeekTableMetadataBlock : FlacMetadataBlock
+public sealed class FlacSeekTableMetadataBlock : FlacMetadataBlock
 {
     private readonly NotifyingList<FlacSeekPoint> _seekPoints = [];
 
@@ -28,13 +28,7 @@ public class FlacSeekTableMetadataBlock : FlacMetadataBlock
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <inheritdoc/>
-    public override FlacMetadataBlockType BlockType
-    {
-        get
-        {
-            return FlacMetadataBlockType.SeekTable;
-        }
-    }
+    public override FlacMetadataBlockType BlockType => FlacMetadataBlockType.SeekTable;
 
     /// <inheritdoc/>
     public override byte[] Data
@@ -73,13 +67,7 @@ public class FlacSeekTableMetadataBlock : FlacMetadataBlock
     /// <value>
     /// The seek table.
     /// </value>
-    public IEnumerable<FlacSeekPoint> SeekTable
-    {
-        get
-        {
-            return _seekPoints.AsReadOnly();
-        }
-    }
+    public IEnumerable<FlacSeekPoint> SeekTable => _seekPoints.AsReadOnly();
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
@@ -87,7 +75,7 @@ public class FlacSeekTableMetadataBlock : FlacMetadataBlock
     {
         ArgumentNullException.ThrowIfNull(e);
 
-        if (e.Item == null)
+        if (e.Item is null)
         {
             throw new NullReferenceException("e.Item may not be null");
         }
@@ -110,7 +98,7 @@ public class FlacSeekTableMetadataBlock : FlacMetadataBlock
     {
         ArgumentNullException.ThrowIfNull(e);
 
-        if (e.NewItem == null)
+        if (e.NewItem is null)
         {
             throw new NullReferenceException("e.NewItem may not be null");
         }

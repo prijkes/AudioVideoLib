@@ -46,13 +46,7 @@ public sealed class ApeLocatorItem : ApeUtf8Item
     /// <remarks>
     /// See <see cref="ApeItemType" /> for possible item types.
     /// </remarks>
-    public override ApeItemType ItemType
-    {
-        get
-        {
-            return ApeItemType.IsLocator;
-        }
-    }
+    public override ApeItemType ItemType => ApeItemType.IsLocator;
 
     /// <summary>
     /// Gets or sets a list of one or more locator values.
@@ -64,13 +58,7 @@ public sealed class ApeLocatorItem : ApeUtf8Item
     /// Only locator values in accordance with RFC 2396 and RFC 2732 are allowed.
     /// </remarks>
     /// http://msdn.microsoft.com/en-us/library/system.uri.iswellformeduristring.aspx
-    public override IList<string> Values
-    {
-        get
-        {
-            return _values;
-        }
-    }
+    public override IList<string> Values => _values;
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

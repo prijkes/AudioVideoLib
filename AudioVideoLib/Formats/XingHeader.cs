@@ -44,7 +44,7 @@ public sealed class XingHeader : VbrHeader
         4       a VBR quality indicator: 0=best 100=worst (optional)
         --------- +
         120 bytes
-        * 
+        *
         * NOTE: the frames (frameCount) in the XING header does not include its own frame.
         * So the total frames is actually XING framecount + 1
         */
@@ -93,7 +93,7 @@ public sealed class XingHeader : VbrHeader
     /// <returns>The VBRI header if found; otherwise, null.</returns>
     /// <remarks>
     /// The XING header is located after the side information in Layer III in the first MPEG audio header in the file.
-    /// It will compare the first 4 bytes against the <see cref="VbrHeaderIndicator"/> 
+    /// It will compare the first 4 bytes against the <see cref="VbrHeaderIndicator"/>
     /// to see if the header contains a <see cref="XingHeader"/> or not.
     /// </remarks>
     public static new XingHeader? FindHeader(MpaFrame firstFrame)
@@ -107,8 +107,8 @@ public sealed class XingHeader : VbrHeader
 
         buffer.Seek(offset, SeekOrigin.Begin);
         var tagName = buffer.PeekString(4);
-        return (string.Compare(tagName, VbrHeaderIndicator, StringComparison.OrdinalIgnoreCase) == 0)
-            || (string.Compare(tagName, CbrHeaderIndicator, StringComparison.OrdinalIgnoreCase) == 0)
+        return string.Equals(tagName, VbrHeaderIndicator, StringComparison.OrdinalIgnoreCase)
+            || string.Equals(tagName, CbrHeaderIndicator, StringComparison.OrdinalIgnoreCase)
             ? new XingHeader(firstFrame, buffer, offset)
             : null;
     }
@@ -116,7 +116,7 @@ public sealed class XingHeader : VbrHeader
     /// <inheritdoc/>
     public override long SeekPositionByPercent(float percentage)
     {
-        if (Toc == null)
+        if (Toc is null)
         {
             return 0;
         }

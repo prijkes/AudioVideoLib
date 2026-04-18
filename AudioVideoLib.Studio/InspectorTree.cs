@@ -31,6 +31,8 @@ public sealed class InspectorNode
 
     public bool IsExpanded { get; set; }
 
+    public object? Payload { get; init; }
+
     private static string FormatSize(long bytes) => bytes < 1024
         ? $"{bytes:N0} B"
         : bytes < 1024 * 1024
@@ -51,7 +53,7 @@ public sealed class InspectorProperty
 
 public static class InspectorTreeBuilder
 {
-    private const int MaxAudioFramesInTree = 200;
+    private static int MaxAudioFramesInTree => AppSettings.Current.MaxAudioFramesInTree;
 
     public static InspectorNode Build(string filePath, byte[] fileBytes, IReadOnlyList<IAudioTagOffset> offsets, IAudioStream? audioStream)
     {
@@ -93,8 +95,175 @@ public static class InspectorTreeBuilder
             root.Children.Clear();
             BuildFlacTree(root, fileBytes, flac);
         }
+        else if (sorted.Count == 0 && audioStream is RiffStream riff)
+        {
+            root.Children.Clear();
+            BuildRiffTree(root, riff);
+        }
+        else if (sorted.Count == 0 && audioStream is AiffStream aiff)
+        {
+            root.Children.Clear();
+            BuildAiffTree(root, aiff);
+        }
+        else if (sorted.Count == 0 && audioStream is OggStream ogg)
+        {
+            root.Children.Clear();
+            BuildOggTree(root, ogg);
+        }
 
         return root;
+    }
+
+    ////------------------------------------------------------------------------------------------------------------------------------
+    //// RIFF / WAV
+    ////------------------------------------------------------------------------------------------------------------------------------
+
+    private static void BuildRiffTree(InspectorNode root, RiffStream riff)
+    {
+        root.Properties.Add(Prop("Format", $"RIFF / {riff.FormatType}", 0, 12));
+        if (riff.SampleRate > 0)
+        {
+            root.Properties.Add(Prop("Sample rate", $"{riff.SampleRate} Hz"));
+            root.Properties.Add(Prop("Channels", riff.Channels.ToString()));
+            root.Properties.Add(Prop("Bits/sample", riff.BitsPerSample.ToString()));
+            root.Properties.Add(Prop("Audio format", $"0x{riff.AudioFormat:X4}"));
+        }
+
+        root.Properties.Add(Prop("Chunk count", riff.Chunks.Count.ToString()));
+
+        foreach (var chunk in riff.Chunks)
+        {
+            var node = new InspectorNode
+            {
+                Label = chunk.Id,
+                StartOffset = chunk.StartOffset,
+                EndOffset = chunk.EndOffset,
+            };
+
+            node.Properties.Add(Prop("ID", chunk.Id, chunk.StartOffset, 4));
+            node.Properties.Add(Prop("Data size", $"{chunk.EndOffset - chunk.StartOffset - 8:N0} bytes", chunk.StartOffset + 4, 4));
+
+            if (chunk.Id == "fmt " && chunk.Data.Length >= 16)
+            {
+                node.Properties.Add(Prop("Audio format", $"0x{riff.AudioFormat:X4}", chunk.StartOffset + 8, 2));
+                node.Properties.Add(Prop("Channels", riff.Channels.ToString(), chunk.StartOffset + 10, 2));
+                node.Properties.Add(Prop("Sample rate", $"{riff.SampleRate} Hz", chunk.StartOffset + 12, 4));
+                node.Properties.Add(Prop("Byte rate", $"{riff.ByteRate:N0} B/s", chunk.StartOffset + 16, 4));
+                node.Properties.Add(Prop("Block align", riff.BlockAlign.ToString(), chunk.StartOffset + 20, 2));
+                node.Properties.Add(Prop("Bits/sample", riff.BitsPerSample.ToString(), chunk.StartOffset + 22, 2));
+            }
+            else if (chunk.Id == "data")
+            {
+                node.Properties.Add(Prop("Sample data", $"{riff.DataSize:N0} bytes", riff.DataOffset, (int)System.Math.Min(riff.DataSize, int.MaxValue)));
+            }
+
+            root.Children.Add(node);
+        }
+    }
+
+    ////------------------------------------------------------------------------------------------------------------------------------
+    //// AIFF
+    ////------------------------------------------------------------------------------------------------------------------------------
+
+    private static void BuildAiffTree(InspectorNode root, AiffStream aiff)
+    {
+        root.Properties.Add(Prop("Format", aiff.FormatType, 0, 12));
+        if (aiff.SampleRate > 0)
+        {
+            root.Properties.Add(Prop("Sample rate", $"{aiff.SampleRate:0} Hz"));
+            root.Properties.Add(Prop("Channels", aiff.Channels.ToString()));
+            root.Properties.Add(Prop("Sample size", $"{aiff.SampleSize}-bit"));
+            root.Properties.Add(Prop("Sample frames", aiff.SampleFrames.ToString("N0")));
+            if (aiff.Compression != null)
+            {
+                root.Properties.Add(Prop("Compression", aiff.Compression));
+            }
+        }
+
+        foreach (var chunk in aiff.Chunks)
+        {
+            var node = new InspectorNode
+            {
+                Label = chunk.Id,
+                StartOffset = chunk.StartOffset,
+                EndOffset = chunk.EndOffset,
+            };
+
+            node.Properties.Add(Prop("ID", chunk.Id, chunk.StartOffset, 4));
+            node.Properties.Add(Prop("Data size", $"{chunk.EndOffset - chunk.StartOffset - 8:N0} bytes", chunk.StartOffset + 4, 4));
+
+            if (chunk.Id == "COMM" && chunk.Data.Length >= 18)
+            {
+                node.Properties.Add(Prop("Channels", aiff.Channels.ToString(), chunk.StartOffset + 8, 2));
+                node.Properties.Add(Prop("Sample frames", aiff.SampleFrames.ToString("N0"), chunk.StartOffset + 10, 4));
+                node.Properties.Add(Prop("Sample size", $"{aiff.SampleSize}-bit", chunk.StartOffset + 14, 2));
+                node.Properties.Add(Prop("Sample rate", $"{aiff.SampleRate:0} Hz", chunk.StartOffset + 16, 10));
+            }
+            else if (chunk.Id == "SSND")
+            {
+                node.Properties.Add(Prop("Sound data", $"{aiff.SsndSize:N0} bytes", aiff.SsndOffset, (int)System.Math.Min(aiff.SsndSize, int.MaxValue)));
+            }
+
+            root.Children.Add(node);
+        }
+    }
+
+    ////------------------------------------------------------------------------------------------------------------------------------
+    //// OGG
+    ////------------------------------------------------------------------------------------------------------------------------------
+
+    private static int MaxOggPagesInTree => AppSettings.Current.MaxOggPagesInTree;
+
+    private static void BuildOggTree(InspectorNode root, OggStream ogg)
+    {
+        root.Properties.Add(Prop("Format", "OGG container"));
+        root.Properties.Add(Prop("Page count", ogg.PageCount.ToString("N0")));
+        root.Properties.Add(Prop("Total granule", ogg.TotalGranulePosition.ToString("N0")));
+
+        var shown = System.Math.Min(ogg.Pages.Count, MaxOggPagesInTree);
+        for (var i = 0; i < shown; i++)
+        {
+            var page = ogg.Pages[i];
+            var node = new InspectorNode
+            {
+                Label = $"Page {i + 1} (seq {page.SequenceNumber})",
+                StartOffset = page.StartOffset,
+                EndOffset = page.EndOffset,
+            };
+
+            var flags = new List<string>();
+            if (page.IsContinuation)
+            {
+                flags.Add("continuation");
+            }
+
+            if (page.IsBeginningOfStream)
+            {
+                flags.Add("BOS");
+            }
+
+            if (page.IsEndOfStream)
+            {
+                flags.Add("EOS");
+            }
+
+            node.Properties.Add(Prop("Serial", $"0x{page.SerialNumber:X8}", page.StartOffset + 14, 4));
+            node.Properties.Add(Prop("Sequence", page.SequenceNumber.ToString(), page.StartOffset + 18, 4));
+            node.Properties.Add(Prop("Granule", page.GranulePosition.ToString("N0"), page.StartOffset + 6, 8));
+            node.Properties.Add(Prop("Flags", flags.Count > 0 ? string.Join(", ", flags) : "none", page.StartOffset + 5, 1));
+            node.Properties.Add(Prop("Segments", page.SegmentCount.ToString(), page.StartOffset + 26, 1));
+            node.Properties.Add(Prop("Payload size", $"{page.PayloadSize:N0} bytes", page.StartOffset + 27, page.SegmentCount));
+            node.Properties.Add(Prop("Checksum", $"0x{page.Checksum:X8}", page.StartOffset + 22, 4));
+            root.Children.Add(node);
+        }
+
+        if (ogg.Pages.Count > shown)
+        {
+            root.Children.Add(SimpleNode(
+                $"... {ogg.Pages.Count - shown:N0} more pages",
+                ogg.Pages[shown].StartOffset,
+                ogg.Pages[^1].EndOffset));
+        }
     }
 
     private static InspectorNode BuildTagNode(byte[] fileBytes, IAudioTagOffset offset)
@@ -575,11 +744,61 @@ public static class InspectorTreeBuilder
                     var fh = frame.StartOffset;
                     frameNode.Properties.Add(Prop("Offset", $"0x{fh:X8}", fh, 4));
                     frameNode.Properties.Add(Prop("Length", $"{frame.FrameLength} bytes"));
-                    // MPEG frame header is 4 bytes: sync(11)+version(2)+layer(2)+protection(1)+bitrate(4)+samplerate(2)+padding(1)+private(1)+channelmode(2)+...
-                    frameNode.Properties.Add(Prop("Bitrate", $"{frame.Bitrate} kbps", fh + 2, 1));
-                    frameNode.Properties.Add(Prop("Sample rate", $"{frame.SamplingRate} Hz", fh + 2, 1));
-                    frameNode.Properties.Add(Prop("Padded", frame.IsPadded.ToString(), fh + 2, 1));
-                    frameNode.Properties.Add(Prop("Protected", frame.IsCrcProtected ? "CRC present" : "none", fh + 1, 1));
+
+                    // MPEG frame header (4 bytes): sync(11)+version(2)+layer(2)+protection(1)
+                    //   +bitrate(4)+samplerate(2)+padding(1)+private(1)+channelmode(2)+...
+                    var headerNode = new InspectorNode
+                    {
+                        Label = "Header",
+                        StartOffset = fh,
+                        EndOffset = fh + MpaFrame.FrameHeaderSize,
+                    };
+                    headerNode.Properties.Add(Prop("Size", "4 bytes", fh, 4));
+                    // Byte 0: sync
+                    headerNode.Properties.Add(Prop("Sync", "0xFFF", fh, 1));
+                    // Byte 1: sync-tail(3) + version(2) + layer(2) + protected(1)
+                    headerNode.Properties.Add(Prop("Version", frame.AudioVersion.ToString(), fh + 1, 1));
+                    headerNode.Properties.Add(Prop("Layer", frame.LayerVersion.ToString(), fh + 1, 1));
+                    headerNode.Properties.Add(Prop("Protected", frame.IsCrcProtected ? "CRC present" : "none", fh + 1, 1));
+                    // Byte 2: bitrate(4) + samplerate(2) + padded(1) + private(1)
+                    headerNode.Properties.Add(Prop("Bitrate", $"{frame.Bitrate} kbps", fh + 2, 1));
+                    headerNode.Properties.Add(Prop("Sample rate", $"{frame.SamplingRate} Hz", fh + 2, 1));
+                    headerNode.Properties.Add(Prop("Padded", frame.IsPadded.ToString(), fh + 2, 1));
+                    headerNode.Properties.Add(Prop("Private", frame.IsPrivateBitSet.ToString(), fh + 2, 1));
+                    // Byte 3: channels(2) + ext(2) + copyright(1) + original(1) + emphasis(2)
+                    headerNode.Properties.Add(Prop("Channels", frame.ChannelMode.ToString(), fh + 3, 1));
+                    headerNode.Properties.Add(Prop("Mode extension", frame.ModeExtension.ToString(), fh + 3, 1));
+                    headerNode.Properties.Add(Prop("Copyrighted", frame.IsCopyrighted.ToString(), fh + 3, 1));
+                    headerNode.Properties.Add(Prop("Original", frame.IsOriginalMedia.ToString(), fh + 3, 1));
+                    headerNode.Properties.Add(Prop("Emphasis", frame.Emphasis.ToString(), fh + 3, 1));
+                    frameNode.Children.Add(headerNode);
+
+                    // Audio payload = everything after the 4-byte header (and the 2-byte CRC if present).
+                    var payloadStart = fh + MpaFrame.FrameHeaderSize + (frame.IsCrcProtected ? 2 : 0);
+                    var payloadLen = frameEnd - payloadStart;
+                    if (payloadLen > 0)
+                    {
+                        if (frame.IsCrcProtected)
+                        {
+                            var crcNode = new InspectorNode
+                            {
+                                Label = "CRC",
+                                StartOffset = fh + MpaFrame.FrameHeaderSize,
+                                EndOffset = fh + MpaFrame.FrameHeaderSize + 2,
+                            };
+                            crcNode.Properties.Add(Prop("Size", "2 bytes", fh + MpaFrame.FrameHeaderSize, 2));
+                            frameNode.Children.Add(crcNode);
+                        }
+
+                        var dataNode = new InspectorNode
+                        {
+                            Label = "Data",
+                            StartOffset = payloadStart,
+                            EndOffset = frameEnd,
+                        };
+                        dataNode.Properties.Add(Prop("Data", $"{payloadLen:N0} bytes", payloadStart, (int)payloadLen));
+                        frameNode.Children.Add(dataNode);
+                    }
 
                     if (i == 0 && mpa.VbrHeader is { } vbrH)
                     {
@@ -707,6 +926,7 @@ public static class InspectorTreeBuilder
                 Label = block.BlockType.ToString(),
                 StartOffset = cursor,
                 EndOffset = cursor + blockSize,
+                Payload = block,
             };
 
             blockNode.Properties.Add(Prop("Block type", block.BlockType.ToString(), cursor, 1));
@@ -725,7 +945,8 @@ public static class InspectorTreeBuilder
                 blockNode.Properties.Add(Prop("Channels", info.Channels.ToString(), d + 12, 1));
                 blockNode.Properties.Add(Prop("Bits/sample", info.BitsPerSample.ToString(), d + 12, 2));
                 blockNode.Properties.Add(Prop("Total samples", info.TotalSamples.ToString(), d + 13, 5));
-                blockNode.Properties.Add(Prop("MD5", string.Empty, d + 18, 16));
+                var md5Hex = info.MD5 != null && info.MD5.Length == 16 ? Convert.ToHexString(info.MD5) : string.Empty;
+                blockNode.Properties.Add(Prop("MD5 (unencoded PCM)", md5Hex, d + 18, 16));
             }
             else if (block is FlacVorbisCommentsMetadataBlock vc && vc.VorbisComments != null)
             {

@@ -1,23 +1,12 @@
 namespace AudioVideoLib.Formats;
 
-using System;
-
 using AudioVideoLib.IO;
 
 /// <summary>
 /// Class for FLAC audio frames.
 /// </summary>
-public sealed class FlacLinearPredictorSubFrame : FlacSubFrame
+public sealed class FlacLinearPredictorSubFrame(FlacFrame flacFrame) : FlacSubFrame(flacFrame)
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="FlacLinearPredictorSubFrame"/> class.
-    /// </summary>
-    /// <param name="flacFrame">The <see cref="FlacFrame"/>.</param>
-    public FlacLinearPredictorSubFrame(FlacFrame flacFrame) : base(flacFrame)
-    {
-        ArgumentNullException.ThrowIfNull(flacFrame);
-    }
-
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -60,13 +49,7 @@ public sealed class FlacLinearPredictorSubFrame : FlacSubFrame
     /// </value>
     public FlacResidual Residual { get; private set; } = null!;
 
-    private int Order
-    {
-        get
-        {
-            return ((Header >> 1) & 0x1F) + 1;
-        }
-    }
+    private int Order => ((Header >> 1) & 0x1F) + 1;
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

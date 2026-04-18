@@ -19,12 +19,12 @@ using AudioVideoLib.IO;
 //// fields like Misc and PresetSurroundInfo are stored in raw form and can be split by the
 //// caller if needed.
 /*
-    In the Info Tag, the "Xing" identification string (mostly at 0x24) of the header is replaced by "Info" in case of a CBR file.  
+    In the Info Tag, the "Xing" identification string (mostly at 0x24) of the header is replaced by "Info" in case of a CBR file.
     This was done to avoid CBR files to be recognized as traditional Xing VBR files by some decoders.
     Although the two identification strings "Xing" and "Info" are both valid,
     it is suggested that you keep the identification string "Xing" in case of VBR bit stream in order to keep compatibility.
     now:
-        LAME VBR & ABR: "Xing" 
+        LAME VBR & ABR: "Xing"
         LAME CBR: "Info"
 */
 public sealed class LameTag
@@ -33,7 +33,7 @@ public sealed class LameTag
     LAME < 3.90 Header - LAME prior to 3.90 writes only a 20 byte encoder string
     size    description
     20      initial LAME info, 20 bytes for LAME tag. for example, "LAME3.12 (beta 6)"
-    
+
     LAME >= 3.90 Header
     size    description
     9       Encoder short version, for example, "LAME3.90a" or "GOGO3.02b"
@@ -57,7 +57,8 @@ public sealed class LameTag
     */
 
     // Indicates the VBR method used for encoding.
-    private readonly string[] _vbrMethods = [
+    private static readonly string[] VbrMethods =
+    [
         "Unknown",
         "CBR",
         "ABR",
@@ -128,7 +129,7 @@ public sealed class LameTag
 
     private void ParseLowpassAndReplayGain(StreamBuffer buffer)
     {
-        // Lowpass filter value is stored in multiples of 100 Hz — multiply out on read.
+        // Lowpass filter value is stored in multiples of 100 Hz - multiply out on read.
         LowpassFilterValue = buffer.ReadByte() * 100;
 
         // Radio replay-gain fields.
@@ -238,22 +239,22 @@ public sealed class LameTag
     /// <remarks>
     /// Indicate the VBR method used for encoding.
     /// Possible values:
-    /// 0d unknown 
-    /// 1d constant bitrate 
-    /// 2d restricted VBR targeting a given average bitrate (ABR) 
-    /// 3d full VBR method1 
-    /// 4d full VBR method2 
-    /// 5d full VBR method3 
-    /// 6d full VBR method4 
-    /// 7d  
-    /// 8d constant bitrate 2 pass 
-    /// 9d abr 2 pass 
-    /// 10d  
-    /// 11d  
-    /// 12d  
-    /// 13d  
-    /// 14d  
-    /// 15d reserved 
+    /// 0d unknown
+    /// 1d constant bitrate
+    /// 2d restricted VBR targeting a given average bitrate (ABR)
+    /// 3d full VBR method1
+    /// 4d full VBR method2
+    /// 5d full VBR method3
+    /// 6d full VBR method4
+    /// 7d
+    /// 8d constant bitrate 2 pass
+    /// 9d abr 2 pass
+    /// 10d
+    /// 11d
+    /// 12d
+    /// 13d
+    /// 14d
+    /// 15d reserved
     /// </remarks>
     public int VbrMethod { get; private set; }
 
@@ -541,7 +542,7 @@ public sealed class LameTag
     /// <para/>
     /// Should be file length at the time of LAME encoding, except when using ID3 tags.
     /// <para/>
-    /// practical example: 
+    /// practical example:
     /// {misc+Id3v2 tag info}[LAME Tag frame][complete mp3 music data]{misc+Id3v1/2 tag info}
     /// where contents between {} are not included in the Music Length.
     /// <para/>
@@ -568,7 +569,7 @@ public sealed class LameTag
     /// <remarks>
     /// If an application like mp3gain changes the main music frames of the mp3 (for instance
     /// via the <see cref="Mp3Gain"/> field), this CRC becomes invalid. The <see cref="InfoTagCrc"/>
-    /// can still be valid however — tools can update it.
+    /// can still be valid however - tools can update it.
     /// </remarks>
     public short MusicCrc { get; private set; }
 
@@ -586,28 +587,19 @@ public sealed class LameTag
     /// Gets a value indicating whether this instance is VBR.
     /// </summary>
     /// <value><c>true</c> if this instance is VBR; otherwise, <c>false</c>.</value>
-    public bool IsVbr
-    {
-        get { return VbrMethod is >= 3 and <= 6; }
-    }
+    public bool IsVbr => VbrMethod is >= 3 and <= 6;
 
     /// <summary>
     /// Gets a value indicating whether this instance is ABR.
     /// </summary>
     /// <value><c>true</c> if this instance is ABR; otherwise, <c>false</c>.</value>
-    public bool IsAbr
-    {
-        get { return VbrMethod is 2 or 9; }
-    }
+    public bool IsAbr => VbrMethod is 2 or 9;
 
     /// <summary>
     /// Gets a value indicating whether this instance is CBR.
     /// </summary>
     /// <value><c>true</c> if this instance is CBR; otherwise, <c>false</c>.</value>
-    public bool IsCbr
-    {
-        get { return VbrMethod is 1 or 8; }
-    }
+    public bool IsCbr => VbrMethod is 1 or 8;
 
     /// <summary>
     /// Gets the name of the VBR method.
@@ -615,10 +607,7 @@ public sealed class LameTag
     /// <value>
     /// The name of the VBR method.
     /// </value>
-    public string VbrMethodName
-    {
-        get { return VbrMethod > _vbrMethods.Length ? _vbrMethods[0] : _vbrMethods[VbrMethod]; }
-    }
+    public string VbrMethodName => VbrMethod > VbrMethods.Length ? VbrMethods[0] : VbrMethods[VbrMethod];
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
@@ -635,14 +624,14 @@ public sealed class LameTag
         // If limiting the LAME string to 9 bytes "LAME X.YZu", the extension revision 0 could take 27 bytes and it would still fit a 64 kbit 48kHz frame.
         firstFrameBuffer.Seek(offset, SeekOrigin.Begin);
         var tagName = firstFrameBuffer.PeekString(4);
-        return string.Compare(tagName, "LAME", StringComparison.OrdinalIgnoreCase) == 0 ? new LameTag(firstFrameBuffer) : null;
+        return string.Equals(tagName, "LAME", StringComparison.OrdinalIgnoreCase) ? new LameTag(firstFrameBuffer) : null;
     }
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
     /// Places the <see cref="LameTag"/> into a byte array.
-    /// </summary> 
+    /// </summary>
     /// <returns>A byte array that represents the <see cref="LameTag"/> instance.</returns>
     public byte[] ToByteArray()
     {

@@ -11,17 +11,24 @@
     <NoWarn>$(NoWarn);CS1591;CS1571;CS1574;CS1587;CS1723</NoWarn>
   </PropertyGroup>
 
-  <!-- Shared NuGet package metadata. TODO: fill these in before publishing. -->
+  <!-- Shared NuGet package metadata. -->
   <PropertyGroup>
-    <!-- <Authors>prijkes</Authors> -->
-    <!-- <Company>prijkes</Company> -->
-    <!-- <PackageLicenseExpression>MIT</PackageLicenseExpression> -->
-    <!-- <PackageProjectUrl>https://github.com/prijkes/AudioVideoLib</PackageProjectUrl> -->
-    <!-- <RepositoryUrl>https://github.com/prijkes/AudioVideoLib.git</RepositoryUrl> -->
+    <Authors>prijkes</Authors>
+    <Company>prijkes</Company>
+    <Copyright>Copyright © prijkes</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/prijkes/AudioVideoLib</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/prijkes/AudioVideoLib.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+  </PropertyGroup>
+
+  <!-- Deterministic builds in CI. -->
+  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
 
 </Project>

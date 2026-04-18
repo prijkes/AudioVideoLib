@@ -9,9 +9,8 @@ namespace AudioVideoLib.Formats;
 /// <param name="offset">The offset.</param>
 /// <param name="indexPointNumber">The index point number.</param>
 /// <param name="reserved">The reserved.</param>
-public class FlacCueSheetTrackIndexPoint(long offset, int indexPointNumber, byte[] reserved)
+public sealed class FlacCueSheetTrackIndexPoint(long offset, int indexPointNumber, byte[] reserved)
 {
-
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>

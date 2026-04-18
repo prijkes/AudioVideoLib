@@ -13,12 +13,10 @@ using AudioVideoLib.IO;
 /// <summary>
 /// Class to store a Lyrics3v2 lyrics field.
 /// </summary>
-public sealed class Lyrics3v2LyricsField : Lyrics3v2Field
+public sealed partial class Lyrics3v2LyricsField : Lyrics3v2Field
 {
     // TimeStamp ([mm:ss] is 7 chars at least)
     private const int MinTimeStampLength = 7;
-
-    private readonly Regex _regex = new(@"\[(\d+):(\d+)\]");
 
     private readonly NotifyingList<Lyrics3v2LyricLine> _lyricLines = [];
 
@@ -39,13 +37,7 @@ public sealed class Lyrics3v2LyricsField : Lyrics3v2Field
     /// <value>
     /// The lyric lines.
     /// </value>
-    public IList<Lyrics3v2LyricLine> LyricLines
-    {
-        get
-        {
-            return _lyricLines;
-        }
-    }
+    public IList<Lyrics3v2LyricLine> LyricLines => _lyricLines;
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
@@ -106,7 +98,7 @@ public sealed class Lyrics3v2LyricsField : Lyrics3v2Field
 
                 List<TimeSpan> lyricsTimeSpans = [];
                 var regexLength = 0;
-                var matches = _regex.Matches(entry);
+                var matches = TimeStampPattern().Matches(entry);
                 foreach (Match match in matches)
                 {
                     var minutes = int.Parse(match.Groups[1].Value);
@@ -131,10 +123,7 @@ public sealed class Lyrics3v2LyricsField : Lyrics3v2Field
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <inheritdoc/>
-    public override bool Equals(Lyrics3v2Field? audioFrame)
-    {
-        return Equals(audioFrame as Lyrics3v2LyricsField);
-    }
+    public override bool Equals(Lyrics3v2Field? audioFrame) => Equals(audioFrame as Lyrics3v2LyricsField);
 
     /// <summary>
     /// Equals the specified <see cref="Lyrics3v2LyricsField"/>.
@@ -154,7 +143,6 @@ public sealed class Lyrics3v2LyricsField : Lyrics3v2Field
     /// <returns>
     /// A hash code for the current <see cref="T:System.Object"/>.
     /// </returns>
-    /// <filterpriority>2</filterpriority>
     /// The value should be calculated on immutable fields only.
     public override int GetHashCode()
     {
@@ -163,4 +151,7 @@ public sealed class Lyrics3v2LyricsField : Lyrics3v2Field
             return Identifier.GetHashCode() * 397;
         }
     }
+
+    [GeneratedRegex(@"\[(\d+):(\d+)\]")]
+    private static partial Regex TimeStampPattern();
 }

@@ -1,7 +1,7 @@
 namespace AudioVideoLib.Formats;
 
 /// <summary>
-/// 
+///
 /// </summary>
 /// <remarks>
 /// Initializes a new instance of the <see cref="FlacSeekPoint" /> class.
@@ -9,9 +9,8 @@ namespace AudioVideoLib.Formats;
 /// <param name="sampleNumber">The sample number.</param>
 /// <param name="offset">The offset.</param>
 /// <param name="samples">The samples.</param>
-public class FlacSeekPoint(long sampleNumber, long offset, int samples)
+public sealed class FlacSeekPoint(long sampleNumber, long offset, int samples)
 {
-
     /// <summary>
     /// Gets or sets the sample number of first sample.
     /// </summary>

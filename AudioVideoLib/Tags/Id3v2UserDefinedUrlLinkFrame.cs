@@ -15,9 +15,6 @@ using AudioVideoLib.IO;
 /// </remarks>
 public sealed class Id3v2UserDefinedUrlLinkFrame : Id3v2Frame
 {
-    private Id3v2FrameEncodingType _frameEncodingType;
-
-    private string _description = null!, _url = null!;
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -36,7 +33,7 @@ public sealed class Id3v2UserDefinedUrlLinkFrame : Id3v2Frame
     {
         if (!IsVersionSupported(version))
         {
-            throw new InvalidVersionException(string.Format("Version {0} not supported by this frame.", version));
+            throw new InvalidVersionException($"Version {version} not supported by this frame.");
         }
     }
 
@@ -53,10 +50,7 @@ public sealed class Id3v2UserDefinedUrlLinkFrame : Id3v2Frame
     /// </remarks>
     public Id3v2FrameEncodingType TextEncoding
     {
-        get
-        {
-            return _frameEncodingType;
-        }
+        get => field;
 
         set
         {
@@ -65,7 +59,7 @@ public sealed class Id3v2UserDefinedUrlLinkFrame : Id3v2Frame
                 throw new InvalidDataException("Description contains one or more invalid characters for the specified frame encoding type.");
             }
 
-            _frameEncodingType = value;
+            field = value;
         }
     }
 
@@ -80,10 +74,7 @@ public sealed class Id3v2UserDefinedUrlLinkFrame : Id3v2Frame
     /// </remarks>
     public string Description
     {
-        get
-        {
-            return _description;
-        }
+        get => field;
 
         set
         {
@@ -92,9 +83,9 @@ public sealed class Id3v2UserDefinedUrlLinkFrame : Id3v2Frame
                 throw new InvalidDataException("value contains one or more invalid characters for the current frame encoding type.");
             }
 
-            _description = value;
+            field = value;
         }
-    }
+    } = null!;
 
     /// <summary>
     /// Gets or sets the actual URL.
@@ -107,10 +98,7 @@ public sealed class Id3v2UserDefinedUrlLinkFrame : Id3v2Frame
     /// </remarks>
     public string Url
     {
-        get
-        {
-            return _url;
-        }
+        get => field;
 
         set
         {
@@ -126,9 +114,9 @@ public sealed class Id3v2UserDefinedUrlLinkFrame : Id3v2Frame
                     throw new InvalidDataException("value is not a valid RFC 1738 URL.");
                 }
             }
-            _url = value;
+            field = value;
         }
-    }
+    } = null!;
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
@@ -170,28 +158,22 @@ public sealed class Id3v2UserDefinedUrlLinkFrame : Id3v2Frame
 
             var defaultEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
             var stream = new StreamBuffer(value);
-            _frameEncodingType = Id3v2FrameEncoding.ReadEncodingTypeFromStream(stream);
-            var encoding = Id3v2FrameEncoding.GetEncoding(_frameEncodingType);
-            _description = stream.ReadString(encoding);
+            TextEncoding = Id3v2FrameEncoding.ReadEncodingTypeFromStream(stream);
+            var encoding = Id3v2FrameEncoding.GetEncoding(TextEncoding);
+            Description = stream.ReadString(encoding);
 
             // Seems that some players like to add a BOM before the URL; even though the value is corrupt.
-            _url = stream.ReadString(defaultEncoding, true);
+            Url = stream.ReadString(defaultEncoding, true);
         }
     }
 
     /// <inheritdoc />
-    public override string Identifier
-    {
-        get { return (Version < Id3v2Version.Id3v230) ? "WXX" : "WXXX"; }
-    }
+    public override string Identifier => (Version < Id3v2Version.Id3v230) ? "WXX" : "WXXX";
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <inheritdoc/>
-    public override bool Equals(Id3v2Frame? frame)
-    {
-        return Equals(frame as Id3v2UserDefinedUrlLinkFrame);
-    }
+    public override bool Equals(Id3v2Frame? frame) => Equals(frame as Id3v2UserDefinedUrlLinkFrame);
 
     /// <summary>
     /// Equals the specified <see cref="Id3v2UserDefinedUrlLinkFrame"/>.
@@ -213,8 +195,5 @@ public sealed class Id3v2UserDefinedUrlLinkFrame : Id3v2Frame
     /// <returns>
     ///   <c>true</c> if the specified version is supported; otherwise, <c>false</c>.
     /// </returns>
-    public override bool IsVersionSupported(Id3v2Version version)
-    {
-        return true;
-    }
+    public override bool IsVersionSupported(Id3v2Version version) => true;
 }

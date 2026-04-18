@@ -59,7 +59,7 @@ public sealed partial class Id3v1Tag : IAudioTag
     {
         if (!IsValidVersion(version))
         {
-            throw new ArgumentOutOfRangeException("version");
+            throw new ArgumentOutOfRangeException(nameof(version));
         }
 
         Version = version;
@@ -75,16 +75,10 @@ public sealed partial class Id3v1Tag : IAudioTag
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <inheritdoc/>
-    public override bool Equals(object? obj)
-    {
-        return Equals(obj as Id3v1Tag);
-    }
+    public override bool Equals(object? obj) => Equals(obj as Id3v1Tag);
 
     /// <inheritdoc/>
-    public bool Equals(IAudioTag? other)
-    {
-        return Equals(other as Id3v1Tag);
-    }
+    public bool Equals(IAudioTag? other) => Equals(other as Id3v1Tag);
 
     /// <summary>
     /// Equals the specified <see cref="Id3v1Tag"/>.
@@ -157,14 +151,14 @@ public sealed partial class Id3v1Tag : IAudioTag
             // Start-time
             long startTimeMinutes = (StartTime.Days * 24 * 60) + (StartTime.Hours * 60) + StartTime.Minutes;
             long startTimeSeconds = StartTime.Seconds;
-            var startTime = startTimeMinutes.ToString("000") + ":" + startTimeSeconds.ToString("00");
+            var startTime = $"{startTimeMinutes:000}:{startTimeSeconds:00}";
             byteValue = Encoding.GetBytes(GetTruncatedEncodedString(startTime, 6));
             buffer.Write(byteValue);
 
             // End-time
             long endTimeMinutes = (EndTime.Days * 24 * 60) + (EndTime.Hours * 60) + EndTime.Minutes;
             long endTimeSeconds = EndTime.Seconds;
-            var endTime = endTimeMinutes.ToString("000") + ":" + endTimeSeconds.ToString("00");
+            var endTime = $"{endTimeMinutes:000}:{endTimeSeconds:00}";
             byteValue = Encoding.GetBytes(GetTruncatedEncodedString(endTime, 6));
             buffer.Write(byteValue);
         }
@@ -211,8 +205,5 @@ public sealed partial class Id3v1Tag : IAudioTag
     }
 
     /// <inheritdoc/>
-    public override string ToString()
-    {
-        return Version.ToString();
-    }
+    public override string ToString() => Version.ToString();
 }

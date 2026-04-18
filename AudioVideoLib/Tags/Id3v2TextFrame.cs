@@ -18,7 +18,6 @@ public sealed partial class Id3v2TextFrame : Id3v2Frame
     private const char TextValueDelimiter = '\0';
 
     private readonly string _identifier = null!;
-    private Id3v2FrameEncodingType _frameEncodingType;
 
     private static readonly Dictionary<Id3v2FrameEncodingType, byte[]> EncodingTypeDelimiters = new()
     {
@@ -72,7 +71,7 @@ public sealed partial class Id3v2TextFrame : Id3v2Frame
                     textFramePair.Value.OrderByDescending(f => f.Key).Any(f => f.Key.IndexOf(identifier, StringComparison.OrdinalIgnoreCase) >= 0))];
 
             // Grab the 'real' identifier for the version supplied.
-            var resolved = pairs.Any() ? pairs[0].Value.Where(t => t.Value.Contains(version)).Select(t => t.Key).FirstOrDefault() : null;
+            var resolved = pairs.Length != 0 ? pairs[0].Value.Where(t => t.Value.Contains(version)).Select(t => t.Key).FirstOrDefault() : null;
 
             if (string.IsNullOrEmpty(resolved))
             {
@@ -96,8 +95,7 @@ public sealed partial class Id3v2TextFrame : Id3v2Frame
             // A string should look like this in byte form:
             // TextEncoding + preamble + string1 + TextDelimiter + preamble + string2 + TextDelimiter + preamble + string3
             var encoding = Id3v2FrameEncoding.GetEncoding(TextEncoding);
-            byte[]? textDelimiterBytes;
-            if (!EncodingTypeDelimiters.TryGetValue(_frameEncodingType, out textDelimiterBytes))
+            if (!EncodingTypeDelimiters.TryGetValue(TextEncoding, out var textDelimiterBytes))
             {
                 textDelimiterBytes = encoding.GetBytes([TextDelimiter]);
             }
@@ -134,8 +132,8 @@ public sealed partial class Id3v2TextFrame : Id3v2Frame
 
             var stream = new StreamBuffer(value);
             // Read the used encoding from the stream
-            _frameEncodingType = Id3v2FrameEncoding.ReadEncodingTypeFromStream(stream);
-            var encoding = Id3v2FrameEncoding.GetEncoding(_frameEncodingType);
+            TextEncoding = Id3v2FrameEncoding.ReadEncodingTypeFromStream(stream);
+            var encoding = Id3v2FrameEncoding.GetEncoding(TextEncoding);
 
             // Since we're reading the data from a byte array, we can't assure that all values are valid, so unbind the events here.
             UnbindValueListEvents();
@@ -176,13 +174,7 @@ public sealed partial class Id3v2TextFrame : Id3v2Frame
     /// <summary>
     /// Gets the custom text delimiter.
     /// </summary>
-    public static char TextDelimiter
-    {
-        get
-        {
-            return TextValueDelimiter;
-        }
-    }
+    public static char TextDelimiter => TextValueDelimiter;
 
     /// <summary>
     /// Gets or sets the text encoding type.
@@ -195,10 +187,7 @@ public sealed partial class Id3v2TextFrame : Id3v2Frame
     /// </remarks>
     public Id3v2FrameEncodingType TextEncoding
     {
-        get
-        {
-            return _frameEncodingType;
-        }
+        get => field;
 
         set
         {
@@ -207,7 +196,7 @@ public sealed partial class Id3v2TextFrame : Id3v2Frame
                 throw new InvalidDataException(
                     "The values contains one or more string entries with one or more invalid characters for the specified frame encoding type.");
             }
-            _frameEncodingType = value;
+            field = value;
         }
     }
 
@@ -234,8 +223,7 @@ public sealed partial class Id3v2TextFrame : Id3v2Frame
     /// </returns>
     public static string? GetIdentifier(Id3v2Version version, Id3v2TextFrameIdentifier identifier)
     {
-        Dictionary<string, Id3v2Version[]>? identifiers;
-        return Identifiers.TryGetValue(identifier, out identifiers)
+        return Identifiers.TryGetValue(identifier, out var identifiers)
                    ? identifiers.Where(v => (v.Value == null) || v.Value.Contains(version)).Select(v => v.Key).FirstOrDefault()
                    : null;
     }
@@ -253,9 +241,8 @@ public sealed partial class Id3v2TextFrame : Id3v2Frame
     /// </remarks>
     public static bool IsValidTextIdentifier(Id3v2Version version, string identifier)
     {
-        return identifier == null
-            ? throw new ArgumentNullException("identifier")
-            : IsValidIdentifier(version, identifier) && identifier.StartsWith("T");
+        ArgumentNullException.ThrowIfNull(identifier);
+        return IsValidIdentifier(version, identifier) && identifier.StartsWith('T');
     }
 
     ////------------------------------------------------------------------------------------------------------------------------------

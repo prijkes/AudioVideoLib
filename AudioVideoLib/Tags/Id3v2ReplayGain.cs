@@ -22,7 +22,7 @@ using AudioVideoLib.IO;
 /// The ReplayGain technique measures the <i>effective power</i> of the waveform (i.e. the RMS power after applying an "equal loudness contour"), and then adjusts the amplitude of the waveform accordingly.
 /// The result is that Replay Gained waveforms are usually more uniformly amplified than peak-normalized waveforms. 
 /// </remarks>
-public class Id3v2ReplayGain
+public sealed class Id3v2ReplayGain
 {
     /// <summary>
     /// The name code mask.

@@ -27,7 +27,7 @@ public partial class ApeItem : IAudioTagFrame, IEquatable<ApeItem>
     /// <remarks>
     /// All characters in the key should be in the range of 0x20 to 0x7E, and may not be one of the following: ID3, TAG, OggS or MP+
     /// <para />
-    /// If encoding the key in the <see cref="Encoding.UTF8"/> encoding exceeds 255 bytes, 
+    /// If encoding the key in the <see cref="Encoding.UTF8"/> encoding exceeds 255 bytes,
     /// the key will be cut to the max character count which fits within 255 bytes.
     /// </remarks>
     public ApeItem(ApeVersion version, string key)
@@ -36,7 +36,7 @@ public partial class ApeItem : IAudioTagFrame, IEquatable<ApeItem>
 
         if (!IsValidItemKey(key))
         {
-            throw new InvalidDataException("key");
+            throw new InvalidDataException(nameof(key));
         }
 
         Version = version;
@@ -84,25 +84,16 @@ public partial class ApeItem : IAudioTagFrame, IEquatable<ApeItem>
     /// <returns>
     /// The keys as string array for the specified <see cref="ApeItemKey"/>, or null if not found.
     /// </returns>
-    public static IEnumerable<string> GetItemKeys(ApeItemKey key)
-    {
-        string[]? itemKeys;
-        return ItemKeys.TryGetValue(key, out itemKeys) ? itemKeys : Enumerable.Empty<string>();
-    }
+    public static IEnumerable<string> GetItemKeys(ApeItemKey key) =>
+        ItemKeys.TryGetValue(key, out var itemKeys) ? itemKeys : Enumerable.Empty<string>();
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <inheritdoc/>
-    public override bool Equals(object? obj)
-    {
-        return Equals(obj as ApeItem);
-    }
+    public override bool Equals(object? obj) => Equals(obj as ApeItem);
 
     /// <inheritdoc/>
-    public bool Equals(IAudioTagFrame? audioFrame)
-    {
-        return Equals(audioFrame as ApeItem);
-    }
+    public bool Equals(IAudioTagFrame? audioFrame) => Equals(audioFrame as ApeItem);
 
     /// <summary>
     /// Equals the specified <see cref="ApeItem"/>.
@@ -125,9 +116,9 @@ public partial class ApeItem : IAudioTagFrame, IEquatable<ApeItem>
 
         // Notes:
         // - APE Tags Item Key are case sensitive.
-        // - Nevertheless it is forbidden to use APE Tags Item Key which only differs in case. 
+        // - Nevertheless it is forbidden to use APE Tags Item Key which only differs in case.
         // - And nevertheless Tag readers are recommended to be case insensitive.
-        // - Every Tag Item Key can only occur (at most) once. It is not possible to transmit a Tag Key multiple time to change it contents. 
+        // - Every Tag Item Key can only occur (at most) once. It is not possible to transmit a Tag Key multiple time to change it contents.
         // - Tags can be partially or complete repeated in the streaming format.
         return (item.Version == Version) && string.Equals(item.Key, Key, StringComparison.OrdinalIgnoreCase);
     }
@@ -143,7 +134,7 @@ public partial class ApeItem : IAudioTagFrame, IEquatable<ApeItem>
     {
         unchecked
         {
-            return (Version.GetHashCode() * 397) ^ (((Key != null) ? Key.GetHashCode() : 0) * 397);
+            return (Version.GetHashCode() * 397) ^ ((Key != null ? Key.GetHashCode() : 0) * 397);
         }
     }
 

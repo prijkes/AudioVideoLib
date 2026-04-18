@@ -95,10 +95,7 @@ public sealed class Id3v2CompressedDataMetaFrame : Id3v2Frame
     }
 
     /// <inheritdoc />
-    public override string Identifier
-    {
-        get { return "CDM"; }
-    }
+    public override string Identifier => "CDM";
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

@@ -44,7 +44,7 @@ public sealed class Lyrics3Tag : IAudioTag
 
         set
         {
-            field = value ?? throw new ArgumentNullException("value");
+            field = value ?? throw new ArgumentNullException(nameof(value));
         }
     } = Encoding.Default;
 
@@ -58,37 +58,24 @@ public sealed class Lyrics3Tag : IAudioTag
     /// The keywords "<see cref="HeaderIdentifier">LYRICSBEGIN</see>" and "<see cref="FooterIdentifier">LYRICSEND</see>" may not be present in the lyrics.
     /// A byte in the lyrics must not have the binary value 255.
     /// The maximum length of the lyrics is 5100 bytes.
-    /// Newlines are made with CR+LF sequence. 
+    /// Newlines are made with CR+LF sequence.
     /// <para />
-    /// If encoding the value in the specified <see cref="Encoding"/> exceeds <see cref="MaxLyricsSize"/> bytes, 
+    /// If encoding the value in the specified <see cref="Encoding"/> exceeds <see cref="MaxLyricsSize"/> bytes,
     /// the value will be cut to the maximum character count which fits within <see cref="MaxLyricsSize"/> bytes.
     /// </remarks>
     public string? Lyrics
     {
-        get
-        {
-            return _lyrics != null ? Encoding.GetString(_lyrics) : null;
-        }
-
-        set
-        {
-            SetLyrics(value);
-        }
+        get => _lyrics != null ? Encoding.GetString(_lyrics) : null;
+        set => SetLyrics(value);
     }
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <inheritdoc/>
-    public override bool Equals(object? obj)
-    {
-        return Equals(obj as Lyrics3Tag);
-    }
+    public override bool Equals(object? obj) => Equals(obj as Lyrics3Tag);
 
     /// <inheritdoc/>
-    public bool Equals(IAudioTag? other)
-    {
-        return Equals(other as Lyrics3Tag);
-    }
+    public bool Equals(IAudioTag? other) => Equals(other as Lyrics3Tag);
 
     /// <summary>
     /// Equals the specified <see cref="Lyrics3Tag"/>.
@@ -106,7 +93,6 @@ public sealed class Lyrics3Tag : IAudioTag
     /// <returns>
     /// A hash code for the current <see cref="T:System.Object"/>.
     /// </returns>
-    /// <filterpriority>2</filterpriority>
     /// The value should be calculated on immutable fields only.
     public override int GetHashCode()
     {
@@ -133,10 +119,7 @@ public sealed class Lyrics3Tag : IAudioTag
     }
 
     /// <inheritdoc/>
-    public override string ToString()
-    {
-        return "Lyrics3";
-    }
+    public override string ToString() => "Lyrics3";
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
@@ -151,7 +134,7 @@ public sealed class Lyrics3Tag : IAudioTag
     /// The keywords "<see cref="HeaderIdentifier">LYRICSBEGIN</see>" and "<see cref="FooterIdentifier">LYRICSEND</see>" may not be present in the lyrics.
     /// A byte in the lyrics must not have the binary value 255.
     /// <para />
-    /// If encoding the value in the specified <see cref="Encoding"/> exceeds <see cref="MaxLyricsSize"/> bytes, 
+    /// If encoding the value in the specified <see cref="Encoding"/> exceeds <see cref="MaxLyricsSize"/> bytes,
     /// the value will be cut to the maximum character count which fits within <see cref="MaxLyricsSize"/> bytes.
     /// </remarks>
     private void SetLyrics(string? value)
@@ -159,7 +142,7 @@ public sealed class Lyrics3Tag : IAudioTag
         // The keywords "LYRICSBEGIN" and "LYRICSEND" must not be present in the lyrics.
         if (value != null && (value.Contains(HeaderIdentifier) || value.Contains(FooterIdentifier)))
         {
-            throw new InvalidDataException(string.Format("The lyrics may not contain the string {0} or {1}", HeaderIdentifier, FooterIdentifier));
+            throw new InvalidDataException($"The lyrics may not contain the string {HeaderIdentifier} or {FooterIdentifier}");
         }
 
         // A byte in the text must not have the binary value 255.

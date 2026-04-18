@@ -67,10 +67,7 @@ public sealed partial class MpaFrame
     /// <value>
     /// The sampling rate per second, in Hz, of the audio.
     /// </value>
-    public int SamplingRate
-    {
-        get { return SamplingRates[_audioVersion][_samplingRateFrequency]; }
-    }
+    public int SamplingRate => SamplingRates[_audioVersion][_samplingRateFrequency];
 
     /// <summary>
     /// Gets the size of a sample, in bits.
@@ -78,13 +75,7 @@ public sealed partial class MpaFrame
     /// <value>
     /// The size of a sample, in bits.
     /// </value>
-    public int SampleSize
-    {
-        get
-        {
-            return SamplingRate == 0 ? 0 : FrameLength / SamplingRate * 8;
-        }
-    }
+    public int SampleSize => SamplingRate == 0 ? 0 : FrameLength / SamplingRate * 8;
 
     /// <summary>
     /// Gets a value indicating whether the valid sampling rate is valid.
@@ -92,10 +83,7 @@ public sealed partial class MpaFrame
     /// <value>
     /// <c>true</c> if this instance is valid sampling rate; otherwise, <c>false</c>.
     /// </value>
-    public bool IsValidSampingRate
-    {
-        get { return _samplingRateFrequency != InvalidSamplingRate; }
-    }
+    public bool IsValidSampingRate => _samplingRateFrequency != InvalidSamplingRate;
 
     /// <summary>
     /// Gets the bitrate of the audio, in KBit.
@@ -105,11 +93,9 @@ public sealed partial class MpaFrame
     /// </value>
     //// TODO: add calc of free bitrate
     public int Bitrate
-    {
         // I don't know how to calculate the bitrate yet if the free bitrate is used.
         // The bitrate should be calculated from the frame data and that bitrate should be used to calculate the frame length.
-        get { return Bitrates[_audioVersion][_layerVersion][_bitrateIndex]; }
-    }
+        => Bitrates[_audioVersion][_layerVersion][_bitrateIndex];
 
     /// <summary>
     /// Gets a value indicating whether the bitrate is valid.
@@ -117,10 +103,7 @@ public sealed partial class MpaFrame
     /// <value>
     /// <c>true</c> if this instance is valid bitrate; otherwise, <c>false</c>.
     /// </value>
-    public bool IsValidBitrate
-    {
-        get { return _bitrateIndex != InvalidBitrateIndex; }
-    }
+    public bool IsValidBitrate => _bitrateIndex != InvalidBitrateIndex;
 
     /// <summary>
     /// Gets the bitrate in bits per second of the audio.
@@ -130,10 +113,8 @@ public sealed partial class MpaFrame
     /// </value>
     //// TODO: Take note for free bitrate when implemented.
     public int BitrateInBitsPerSecond
-    {
         // bitrate is in KBit per second * 1000 => Bit per second.
-        get { return (_bitrateIndex == 0) ? 0 : (Bitrate * 1000); }
-    }
+        => (_bitrateIndex == 0) ? 0 : (Bitrate * 1000);
 
     /// <summary>
     /// Gets the bitrate in bytes per second of the audio.
@@ -143,10 +124,8 @@ public sealed partial class MpaFrame
     /// </value>
     //// TODO: Take note for free bitrate when implemented.
     public int BitrateInBytesPerSecond
-    {
         // bitrate is in KBit per second * 1000 => Bit per second / 8 => bytes per second.
-        get { return (_bitrateIndex == 0) ? 0 : Bitrate * 1000 / 8; }
-    }
+        => (_bitrateIndex == 0) ? 0 : Bitrate * 1000 / 8;
 
     /// <summary>
     /// Gets the frame size of the current frame, this is the number of samples contained in the frame.
@@ -159,10 +138,7 @@ public sealed partial class MpaFrame
     /// It is constant and always 384 samples for Layer I, 1152 samples for Layer II and 576 (MPEG 2 and 2.5) or 1152 (MPEG 1) samples for Layer III.
     /// This is NOT the size of the frame itself. See <see cref="FrameLength"/> to retrieve the size of the full frame.
     /// </remarks>
-    public int FrameSize
-    {
-        get { return FrameSizeSamples[_audioVersion][_layerVersion]; }
-    }
+    public int FrameSize => FrameSizeSamples[_audioVersion][_layerVersion];
 
     /// <summary>
     /// Gets the frame multiplier size of the current frame.
@@ -170,10 +146,7 @@ public sealed partial class MpaFrame
     /// <value>
     /// The multiplier for the current frame based on the <see cref="AudioVersion"/> and the <see cref="LayerVersion"/>.
     /// </value>
-    public int FrameSizeMultiplier
-    {
-        get { return FrameSizeMultipliers[_audioVersion][_layerVersion]; }
-    }
+    public int FrameSizeMultiplier => FrameSizeMultipliers[_audioVersion][_layerVersion];
 
     /// <summary>
     /// Gets the size of the slot of the current frame.
@@ -184,10 +157,7 @@ public sealed partial class MpaFrame
     /// <remarks>
     /// For Layer I a slot is 32 bits (4 bytes) long, for Layer II and Layer III a slot is 8 bit (1 byte) long.
     /// </remarks>
-    public int SlotSize
-    {
-        get { return FrameSlotSizes[_layerVersion]; }
-    }
+    public int SlotSize => FrameSlotSizes[_layerVersion];
 
     /// <summary>
     /// Gets a value indicating whether this frame is in mono.
@@ -195,10 +165,7 @@ public sealed partial class MpaFrame
     /// <value>
     /// <c>true</c> if this frame is in mono; otherwise, <c>false</c>.
     /// </value>
-    public bool IsMono
-    {
-        get { return ChannelMode == MpaChannelMode.SingleChannel; }
-    }
+    public bool IsMono => ChannelMode == MpaChannelMode.SingleChannel;
 
     /// <summary>
     /// Gets the size of the side info.
@@ -210,10 +177,7 @@ public sealed partial class MpaFrame
     /// The side information follows the header or the CRC in Layer III files.
     /// It contains information about the general decoding of the frame, but doesn't contain the actual encoded audio samples.
     /// </remarks>
-    public int SideInfoSize
-    {
-        get { return LayerVersion == MpaFrameLayerVersion.Layer3 ? SideInfoSizes[_audioVersion][_channelMode] : 0; }
-    }
+    public int SideInfoSize => LayerVersion == MpaFrameLayerVersion.Layer3 ? SideInfoSizes[_audioVersion][_channelMode] : 0;
 
     /// <summary>
     /// Gets the frame length, in bytes.
@@ -246,10 +210,7 @@ public sealed partial class MpaFrame
     /// <value>
     /// The length of audio, in milliseconds.
     /// </value>
-    public long AudioLength
-    {
-        get { return SamplingRate == 0 ? 0L : Convert.ToInt64((double)FrameSize / SamplingRate * 1000); }
-    }
+    public long AudioLength => SamplingRate == 0 ? 0L : Convert.ToInt64((double)FrameSize / SamplingRate * 1000);
 
     /// <summary>
     /// Gets the audio version used in this frame.
@@ -257,10 +218,7 @@ public sealed partial class MpaFrame
     /// <value>
     /// The MPEG Audio Version, this can be one of the following: MPEG-1, MPEG-2 or MPEG-2.5.
     /// </value>
-    public MpaAudioVersion AudioVersion
-    {
-        get { return (MpaAudioVersion)_audioVersion; }
-    }
+    public MpaAudioVersion AudioVersion => (MpaAudioVersion)_audioVersion;
 
     /// <summary>
     /// Gets the layer version used in this frame.
@@ -268,10 +226,7 @@ public sealed partial class MpaFrame
     /// <value>
     /// The Layer Version, this can be one of the following: Layer I, Layer II or Layer III.
     /// </value>
-    public MpaFrameLayerVersion LayerVersion
-    {
-        get { return (MpaFrameLayerVersion)_layerVersion; }
-    }
+    public MpaFrameLayerVersion LayerVersion => (MpaFrameLayerVersion)_layerVersion;
 
     /// <summary>
     /// Gets the channel mode this frame is encoded in.
@@ -279,10 +234,7 @@ public sealed partial class MpaFrame
     /// <value>
     /// The Channel Mode, this can be one of the following: Stereo, Join Stereo, Dual Channel (Stereo) or Single Channel (Mono).
     /// </value>
-    public MpaChannelMode ChannelMode
-    {
-        get { return (MpaChannelMode)_channelMode; }
-    }
+    public MpaChannelMode ChannelMode => (MpaChannelMode)_channelMode;
 
     /// <summary>
     /// Gets the Emphasis used for this MPEG frame.
@@ -290,10 +242,7 @@ public sealed partial class MpaFrame
     /// <value>
     /// The Emphasis for this frame, if used; otherwise 0. Possible values are Half (50/15 milliseconds) or CCIT J.17.
     /// </value>
-    public MpaFrameEmphasis Emphasis
-    {
-        get { return (MpaFrameEmphasis)_emphasis; }
-    }
+    public MpaFrameEmphasis Emphasis => (MpaFrameEmphasis)_emphasis;
 
     /// <summary>
     /// Gets the Mode extension used for this MPEG frame.
@@ -305,10 +254,7 @@ public sealed partial class MpaFrame
     /// Mode extension is used to join information that are of no use for stereo effect, thus reducing needed resources.
     /// These bits are dynamically determined by an encoder in Joint stereo mode.
     /// </remarks>
-    public int ModeExtension
-    {
-        get { return _modeExtension; }
-    }
+    public int ModeExtension => _modeExtension;
 
     /// <summary>
     /// Gets a value indicating whether this MPEG frame is protected by a CRC that's appended after the header.
@@ -380,13 +326,7 @@ public sealed partial class MpaFrame
     /// <remarks>
     /// In MPEG 1 Layer II, there are only some combinations of bitrates and modes allowed. In MPEG 2/2.5, there is no such restriction.
     /// </remarks>
-    private bool IsAllowedBitrateChannelMode
-    {
-        get
-        {
-            return (AudioVersion != MpaAudioVersion.Version10) || (LayerVersion != MpaFrameLayerVersion.Layer2) || AllowedBitrateChannelModes[_bitrateIndex][_channelMode];
-        }
-    }
+    private bool IsAllowedBitrateChannelMode => (AudioVersion != MpaAudioVersion.Version10) || (LayerVersion != MpaFrameLayerVersion.Layer2) || AllowedBitrateChannelModes[_bitrateIndex][_channelMode];
 
     /// <summary>
     /// Gets a value indicating whether the <see cref="MpaFrame" /> is valid or not.

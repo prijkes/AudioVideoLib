@@ -81,43 +81,20 @@ public class NotifyingList<T> : IList<T>
     /// <exception cref="T:System.OutOfMemoryException">There is not enough memory available on the system.</exception>
     public int Capacity
     {
-        get
-        {
-            return _list.Capacity;
-        }
-
-        set
-        {
-            _list.Capacity = value;
-        }
+        get => _list.Capacity;
+        set => _list.Capacity = value;
     }
 
     /// <inheritdoc />
-    public int Count
-    {
-        get
-        {
-            return _list.Count;
-        }
-    }
+    public int Count => _list.Count;
 
     /// <inheritdoc />
-    public virtual bool IsReadOnly
-    {
-        get
-        {
-            return false;
-        }
-    }
+    public virtual bool IsReadOnly => false;
 
     /// <inheritdoc />
     public T this[int index]
     {
-        get
-        {
-            return _list[index];
-        }
-
+        get => _list[index];
         set
         {
             var oldItem = _list[index];
@@ -136,21 +113,15 @@ public class NotifyingList<T> : IList<T>
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <inheritdoc />
-    public virtual void Add(T item)
-    {
-        AddItem(item);
-    }
+    public virtual void Add(T item) => AddItem(item);
 
     /// <summary>
     /// Adds the elements of the specified collection to the end of the <see cref="NotifyingList{T}"/>.
     /// </summary>
-    /// <param name="collection">The collection whose elements should be added to the end of the <see cref="NotifyingList{T}"/>. 
+    /// <param name="collection">The collection whose elements should be added to the end of the <see cref="NotifyingList{T}"/>.
     /// The collection itself cannot be null, but it can contain elements that are null, if type <typeparamref name="T"/> is a reference type.</param>
     /// <exception cref="T:System.ArgumentNullException"><paramref name="collection"/> is null.</exception>
-    public virtual void AddRange(IEnumerable<T> collection)
-    {
-        AddRangeItems(collection);
-    }
+    public virtual void AddRange(IEnumerable<T> collection) => AddRangeItems(collection);
 
     /// <summary>
     /// Returns a read-only <see cref="T:System.Collections.Generic.IList`1"/> wrapper for the current collection.
@@ -158,64 +129,34 @@ public class NotifyingList<T> : IList<T>
     /// <returns>
     /// A <see cref="T:System.Collections.ObjectModel.ReadOnlyCollection`1"/> that acts as a read-only wrapper around the current <see cref="NotifyingList{T}"/>.
     /// </returns>
-    public ReadOnlyCollection<T> AsReadOnly()
-    {
-        return _list.AsReadOnly();
-    }
+    public ReadOnlyCollection<T> AsReadOnly() => _list.AsReadOnly();
 
     /// <inheritdoc />
-    public virtual void Clear()
-    {
-        ClearItems();
-    }
+    public virtual void Clear() => ClearItems();
 
     /// <inheritdoc />
-    public bool Contains(T item)
-    {
-        return _list.Contains(item);
-    }
+    public bool Contains(T item) => _list.Contains(item);
 
     /// <inheritdoc />
-    public void CopyTo(T[] array, int arrayIndex)
-    {
-        _list.CopyTo(array, arrayIndex);
-    }
+    public void CopyTo(T[] array, int arrayIndex) => _list.CopyTo(array, arrayIndex);
 
     /// <inheritdoc />
-    public int IndexOf(T item)
-    {
-        return _list.IndexOf(item);
-    }
+    public int IndexOf(T item) => _list.IndexOf(item);
 
     /// <inheritdoc />
-    public virtual bool Remove(T item)
-    {
-        return RemoveItem(item);
-    }
+    public virtual bool Remove(T item) => RemoveItem(item);
 
     /// <inheritdoc />
-    public IEnumerator<T> GetEnumerator()
-    {
-        return _list.GetEnumerator();
-    }
+    public IEnumerator<T> GetEnumerator() => _list.GetEnumerator();
 
     /// <inheritdoc />
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
-    }
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
     /// <inheritdoc />
-    public virtual void Insert(int index, T item)
-    {
-        InsertItem(index, item);
-    }
+    public virtual void Insert(int index, T item) => InsertItem(index, item);
 
     /// <inheritdoc />
-    public virtual void RemoveAt(int index)
-    {
-        RemoveItem(index);
-    }
+    public virtual void RemoveAt(int index) => RemoveItem(index);
 
     /// <summary>
     /// Removes the all the elements that match the conditions defined by the specified predicate.
@@ -225,47 +166,38 @@ public class NotifyingList<T> : IList<T>
     /// </returns>
     /// <param name="match">The <see cref="T:System.Predicate`1"/> delegate that defines the conditions of the elements to remove.</param>
     /// <exception cref="T:System.ArgumentNullException"><paramref name="match"/> is null.</exception>
-    public virtual int RemoveAll(Predicate<T> match)
-    {
-        return RemoveItems(match);
-    }
+    public virtual int RemoveAll(Predicate<T> match) => RemoveItems(match);
 
     /// <summary>
-    /// Searches for an element that matches the conditions defined by the specified predicate, 
+    /// Searches for an element that matches the conditions defined by the specified predicate,
     /// and returns the zero-based index of the first occurrence within the entire <see cref="NotifyingList{T}"/>.
     /// </summary>
     /// <returns>
-    /// The zero-based index of the first occurrence of an element that matches the conditions defined by <paramref name="match"/>, if found; otherwise, –1.
+    /// The zero-based index of the first occurrence of an element that matches the conditions defined by <paramref name="match"/>, if found; otherwise, -1.
     /// </returns>
     /// <param name="match">The <see cref="T:System.Predicate`1"/> delegate that defines the conditions of the element to search for.</param>
     /// <exception cref="T:System.ArgumentNullException"><paramref name="match"/> is null.</exception>
-    public int FindIndex(Predicate<T> match)
-    {
-        return _list.FindIndex(match);
-    }
+    public int FindIndex(Predicate<T> match) => _list.FindIndex(match);
 
     /// <summary>
-    /// Searches for an element that matches the conditions defined by the specified predicate, 
+    /// Searches for an element that matches the conditions defined by the specified predicate,
     /// and returns the zero-based index of the first occurrence within the range of elements in the <see cref="NotifyingList{T}"/> that extends from the specified index to the last element.
     /// </summary>
     /// <returns>
-    /// The zero-based index of the first occurrence of an element that matches the conditions defined by <paramref name="match"/>, if found; otherwise, –1.
+    /// The zero-based index of the first occurrence of an element that matches the conditions defined by <paramref name="match"/>, if found; otherwise, -1.
     /// </returns>
     /// <param name="startIndex">The zero-based starting index of the search.</param>
     /// <param name="match">The <see cref="T:System.Predicate`1"/> delegate that defines the conditions of the element to search for.</param>
     /// <exception cref="T:System.ArgumentNullException"><paramref name="match"/> is null.</exception>
     /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="startIndex"/> is outside the range of valid indexes for the <see cref="NotifyingList{T}"/>.</exception>
-    public int FindIndex(int startIndex, Predicate<T> match)
-    {
-        return _list.FindIndex(startIndex, match);
-    }
+    public int FindIndex(int startIndex, Predicate<T> match) => _list.FindIndex(startIndex, match);
 
     /// <summary>
-    /// Searches for an element that matches the conditions defined by the specified predicate, 
+    /// Searches for an element that matches the conditions defined by the specified predicate,
     /// and returns the zero-based index of the first occurrence within the range of elements in the <see cref="NotifyingList{T}"/> that starts at the specified index and contains the specified number of elements.
     /// </summary>
     /// <returns>
-    /// The zero-based index of the first occurrence of an element that matches the conditions defined by <paramref name="match"/>, if found; otherwise, –1.
+    /// The zero-based index of the first occurrence of an element that matches the conditions defined by <paramref name="match"/>, if found; otherwise, -1.
     /// </returns>
     /// <param name="startIndex">The zero-based starting index of the search.</param>
     /// <param name="count">The number of elements in the section to search.</param>
@@ -274,46 +206,37 @@ public class NotifyingList<T> : IList<T>
     /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="startIndex"/> is outside the range of valid indexes for the <see cref="NotifyingList{T}"/>.
     /// -or-<paramref name="count"/> is less than 0.
     /// -or-<paramref name="startIndex"/> and <paramref name="count"/> do not specify a valid section in the <see cref="NotifyingList{T}"/>.</exception>
-    public int FindIndex(int startIndex, int count, Predicate<T> match)
-    {
-        return _list.FindIndex(startIndex, count, match);
-    }
+    public int FindIndex(int startIndex, int count, Predicate<T> match) => _list.FindIndex(startIndex, count, match);
 
     /// <summary>
     /// Searches for an element that matches the conditions defined by the specified predicate, and returns the zero-based index of the last occurrence within the entire <see cref="NotifyingList{T}"/>.
     /// </summary>
     /// <returns>
-    /// The zero-based index of the last occurrence of an element that matches the conditions defined by <paramref name="match"/>, if found; otherwise, –1.
+    /// The zero-based index of the last occurrence of an element that matches the conditions defined by <paramref name="match"/>, if found; otherwise, -1.
     /// </returns>
     /// <param name="match">The <see cref="T:System.Predicate`1"/> delegate that defines the conditions of the element to search for.</param>
     /// <exception cref="T:System.ArgumentNullException"><paramref name="match"/> is null.</exception>
-    public int FindLastIndex(Predicate<T> match)
-    {
-        return _list.FindLastIndex(match);
-    }
+    public int FindLastIndex(Predicate<T> match) => _list.FindLastIndex(match);
 
     /// <summary>
-    /// Searches for an element that matches the conditions defined by the specified predicate, 
+    /// Searches for an element that matches the conditions defined by the specified predicate,
     /// and returns the zero-based index of the last occurrence within the range of elements in the <see cref="NotifyingList{T}"/> that extends from the first element to the specified index.
     /// </summary>
     /// <returns>
-    /// The zero-based index of the last occurrence of an element that matches the conditions defined by <paramref name="match"/>, if found; otherwise, –1.
+    /// The zero-based index of the last occurrence of an element that matches the conditions defined by <paramref name="match"/>, if found; otherwise, -1.
     /// </returns>
     /// <param name="startIndex">The zero-based starting index of the backward search.</param>
     /// <param name="match">The <see cref="T:System.Predicate`1"/> delegate that defines the conditions of the element to search for.</param>
     /// <exception cref="T:System.ArgumentNullException"><paramref name="match"/> is null.</exception>
     /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="startIndex"/> is outside the range of valid indexes for the <see cref="NotifyingList{T}"/>.</exception>
-    public int FindLastIndex(int startIndex, Predicate<T> match)
-    {
-        return _list.FindLastIndex(startIndex, match);
-    }
+    public int FindLastIndex(int startIndex, Predicate<T> match) => _list.FindLastIndex(startIndex, match);
 
     /// <summary>
-    /// Searches for an element that matches the conditions defined by the specified predicate, 
+    /// Searches for an element that matches the conditions defined by the specified predicate,
     /// and returns the zero-based index of the last occurrence within the range of elements in the <see cref="NotifyingList{T}"/> that contains the specified number of elements and ends at the specified index.
     /// </summary>
     /// <returns>
-    /// The zero-based index of the last occurrence of an element that matches the conditions defined by <paramref name="match"/>, if found; otherwise, –1.
+    /// The zero-based index of the last occurrence of an element that matches the conditions defined by <paramref name="match"/>, if found; otherwise, -1.
     /// </returns>
     /// <param name="startIndex">The zero-based starting index of the backward search.</param>
     /// <param name="count">The number of elements in the section to search.</param>
@@ -322,10 +245,7 @@ public class NotifyingList<T> : IList<T>
     /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="startIndex"/> is outside the range of valid indexes for the <see cref="NotifyingList{T}"/>.
     /// -or-<paramref name="count"/> is less than 0.
     /// -or-<paramref name="startIndex"/> and <paramref name="count"/> do not specify a valid section in the <see cref="NotifyingList{T}"/>.</exception>
-    public int FindLastIndex(int startIndex, int count, Predicate<T> match)
-    {
-        return _list.FindLastIndex(startIndex, count, match);
-    }
+    public int FindLastIndex(int startIndex, int count, Predicate<T> match) => _list.FindLastIndex(startIndex, count, match);
 
     /// <summary>
     /// Copies the elements of the <see cref="NotifyingList{T}"/> to a new array.
@@ -333,10 +253,7 @@ public class NotifyingList<T> : IList<T>
     /// <returns>
     /// An array containing copies of the elements of the <see cref="NotifyingList{T}"/>.
     /// </returns>
-    public T[] ToArray()
-    {
-        return [.. _list];
-    }
+    public T[] ToArray() => [.. _list];
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
@@ -347,7 +264,7 @@ public class NotifyingList<T> : IList<T>
     protected virtual void OnItemAdd(ListItemAddEventArgs<T> e)
     {
         var eventHandlers = ItemAdd;
-        if (eventHandlers == null)
+        if (eventHandlers is null)
         {
             return;
         }
@@ -366,10 +283,7 @@ public class NotifyingList<T> : IList<T>
     /// Called when an item has been added.
     /// </summary>
     /// <param name="e">The <see cref="ListItemAddedEventArgs{T}"/>.</param>
-    protected virtual void OnItemAdded(ListItemAddedEventArgs<T> e)
-    {
-        ItemAdded?.Invoke(this, e);
-    }
+    protected virtual void OnItemAdded(ListItemAddedEventArgs<T> e) => ItemAdded?.Invoke(this, e);
 
     /// <summary>
     /// Called when before an item is replaced.
@@ -378,7 +292,7 @@ public class NotifyingList<T> : IList<T>
     protected virtual void OnItemReplace(ListItemReplaceEventArgs<T> e)
     {
         var eventHandlers = ItemReplace;
-        if (eventHandlers == null)
+        if (eventHandlers is null)
         {
             return;
         }
@@ -397,10 +311,7 @@ public class NotifyingList<T> : IList<T>
     /// Called when an item has been replaced.
     /// </summary>
     /// <param name="e">The <see cref="ListItemReplacedEventArgs{T}"/>.</param>
-    protected virtual void OnItemReplaced(ListItemReplacedEventArgs<T> e)
-    {
-        ItemReplaced?.Invoke(this, e);
-    }
+    protected virtual void OnItemReplaced(ListItemReplacedEventArgs<T> e) => ItemReplaced?.Invoke(this, e);
 
     /// <summary>
     /// Called when before an item is removed.
@@ -409,7 +320,7 @@ public class NotifyingList<T> : IList<T>
     protected virtual void OnItemRemove(ListItemRemoveEventArgs<T> e)
     {
         var eventHandlers = ItemRemove;
-        if (eventHandlers == null)
+        if (eventHandlers is null)
         {
             return;
         }
@@ -428,17 +339,11 @@ public class NotifyingList<T> : IList<T>
     /// Called when an item has been removed.
     /// </summary>
     /// <param name="e">The <see cref="ListItemRemovedEventArgs{T}"/>.</param>
-    protected virtual void OnItemRemoved(ListItemRemovedEventArgs<T> e)
-    {
-        ItemRemoved?.Invoke(this, e);
-    }
+    protected virtual void OnItemRemoved(ListItemRemovedEventArgs<T> e) => ItemRemoved?.Invoke(this, e);
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
-    private void AddItem(T item)
-    {
-        InsertItem(-1, item);
-    }
+    private void AddItem(T item) => InsertItem(-1, item);
 
     private void AddRangeItems(IEnumerable<T> collection)
     {
@@ -469,7 +374,7 @@ public class NotifyingList<T> : IList<T>
             var addedEventArgs = new ListItemAddedEventArgs<T>(insertIndex, item);
             OnItemAdded(addedEventArgs);
         }
-        return (insertIndex == -1) ? 0 : insertIndex;
+        return insertIndex == -1 ? 0 : insertIndex;
     }
 
     private void ClearItems()
@@ -503,7 +408,7 @@ public class NotifyingList<T> : IList<T>
             return false;
         }
 
-        // Remove the exact indexed element, not the first `Equals`-match — the caller
+        // Remove the exact indexed element, not the first `Equals`-match -- the caller
         // resolved `item` from `index`, so duplicates with equal values must not shift
         // which entry gets deleted.
         _list.RemoveAt(index);

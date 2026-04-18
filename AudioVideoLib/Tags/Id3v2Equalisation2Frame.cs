@@ -41,7 +41,7 @@ public sealed class Id3v2Equalisation2Frame : Id3v2Frame
     {
         if (!IsVersionSupported(version))
         {
-            throw new InvalidVersionException(string.Format("Version {0} not supported by this frame.", version));
+            throw new InvalidVersionException($"Version {version} not supported by this frame.");
         }
 
         BindAdjustmentPointsListEvents();
@@ -61,16 +61,13 @@ public sealed class Id3v2Equalisation2Frame : Id3v2Frame
     /// </remarks>
     public Id3v2InterpolationMethod InterpolationMethod
     {
-        get
-        {
-            return _interpolationMethod;
-        }
+        get => _interpolationMethod;
 
         set
         {
             if (!IsValidInterpolationMethod(value))
             {
-                throw new ArgumentOutOfRangeException("value");
+                throw new ArgumentOutOfRangeException(nameof(value));
             }
 
             _interpolationMethod = value;
@@ -88,10 +85,7 @@ public sealed class Id3v2Equalisation2Frame : Id3v2Frame
     /// </remarks>
     public string Identification
     {
-        get
-        {
-            return _identification;
-        }
+        get => _identification;
 
         set
         {
@@ -115,13 +109,7 @@ public sealed class Id3v2Equalisation2Frame : Id3v2Frame
     /// <para />
     /// When adding items, the adjustment point will be ordered increasingly with reference to frequency.
     /// </remarks>
-    public ICollection<Id3v2AdjustmentPoint> AdjustmentPoints
-    {
-        get
-        {
-            return _adjustmentPoints;
-        }
-    }
+    public ICollection<Id3v2AdjustmentPoint> AdjustmentPoints => _adjustmentPoints;
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
@@ -175,10 +163,7 @@ public sealed class Id3v2Equalisation2Frame : Id3v2Frame
     }
 
     /// <inheritdoc />
-    public override string Identifier
-    {
-        get { return "EQU2"; }
-    }
+    public override string Identifier => "EQU2";
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

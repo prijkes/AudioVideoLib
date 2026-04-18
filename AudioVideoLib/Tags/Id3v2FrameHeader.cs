@@ -5,7 +5,6 @@ namespace AudioVideoLib.Tags;
 /// </summary>
 public partial class Id3v2Frame
 {
-
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -393,10 +392,7 @@ public partial class Id3v2Frame
     /// The length of the name field is 3 bytes for <see cref="Id3v2Version.Id3v220"/> 
     /// and 4 bytes for <see cref="Id3v2Version.Id3v230"/> and later.
     /// </remarks>
-    private int IdentifierFieldLength
-    {
-        get { return GetIdentifierFieldLength(Version); }
-    }
+    private int IdentifierFieldLength => GetIdentifierFieldLength(Version);
 
     /// <summary>
     /// Gets the length of the data size field, in bytes.
@@ -405,10 +401,7 @@ public partial class Id3v2Frame
     /// The length of the data size field is 3 bytes for <see cref="Id3v2Version.Id3v220"/> 
     /// and 4 bytes for <see cref="Id3v2Version.Id3v230"/> and later.
     /// </remarks>
-    private int DataSizeFieldLength
-    {
-        get { return GetDataSizeFieldLength(Version); }
-    }
+    private int DataSizeFieldLength => GetDataSizeFieldLength(Version);
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

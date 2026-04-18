@@ -18,13 +18,11 @@ public abstract class VbrHeader
     /// <param name="headerType">Type of the header.</param>
     protected VbrHeader(MpaFrame firstFrame, StreamBuffer firstFrameBuffer, long offset, VbrHeaderType headerType)
     {
+        ArgumentNullException.ThrowIfNull(firstFrame);
         ArgumentNullException.ThrowIfNull(firstFrameBuffer);
 
-        ////if (headerType == null)
-        ////throw new ArgumentNullException("headerType");
-
         // first frame contains the vbr header
-        FirstFrame = firstFrame ?? throw new ArgumentNullException("firstFrame");
+        FirstFrame = firstFrame;
 
         // Offset of this header in the first frame.
         Offset = offset;
@@ -159,9 +157,8 @@ public abstract class VbrHeader
     /// <returns>A VBR header if found; otherwise null.</returns>
     public static VbrHeader? FindHeader(MpaFrame firstFrame)
     {
-        return firstFrame == null
-            ? throw new ArgumentNullException("firstFrame")
-            : XingHeader.FindHeader(firstFrame) ?? (VbrHeader?)VbriHeader.FindHeader(firstFrame);
+        ArgumentNullException.ThrowIfNull(firstFrame);
+        return XingHeader.FindHeader(firstFrame) ?? (VbrHeader?)VbriHeader.FindHeader(firstFrame);
     }
 
     /// <summary>
@@ -169,20 +166,16 @@ public abstract class VbrHeader
     /// </summary>
     /// <param name="entryTimeMilliseconds">The entry time in milliseconds used to seek the time.</param>
     /// <returns>A point in the file to decode in bytes that is nearest to the given time in milliseconds.</returns>
-    public virtual int SeekPositionByTime(float entryTimeMilliseconds)
-    {
+    public virtual int SeekPositionByTime(float entryTimeMilliseconds) =>
         throw new NotSupportedException("VBRHeader does not support seeking position by milliseconds.");
-    }
 
     /// <summary>
     /// Seeks the time by position.
     /// </summary>
     /// <param name="entryPointInBytes">The entry point in bytes used to seek for the time.</param>
     /// <returns>Returns a time in the file to decode in seconds that is nearest to a given point in bytes.</returns>
-    public virtual float SeekTimeByPosition(int entryPointInBytes)
-    {
+    public virtual float SeekTimeByPosition(int entryPointInBytes) =>
         throw new NotSupportedException("VBRHeader does not support seeking time by position.");
-    }
 
     /// <summary>
     /// Seeks the position by percentage.
@@ -192,17 +185,13 @@ public abstract class VbrHeader
     /// Returns a point in the file to decode in bytes that is nearest to a given percentage of the time of the stream.
     /// </returns>
     /// <exception cref="System.NotSupportedException">VBRHeader does not support seeking position by percentage.</exception>
-    public virtual long SeekPositionByPercent(float percentage)
-    {
+    public virtual long SeekPositionByPercent(float percentage) =>
         throw new NotSupportedException("VBRHeader does not support seeking position by percentage.");
-    }
 
     /// <summary>
     /// Places the <see cref="VbrHeader"/> into a byte array.
-    /// </summary> 
+    /// </summary>
     /// <returns>A byte array that represents the <see cref="VbrHeader"/> instance.</returns>
-    public virtual byte[] ToByteArray()
-    {
+    public virtual byte[] ToByteArray() =>
         throw new NotSupportedException("VBRHeader does not support writing its data to a byte array.");
-    }
 }

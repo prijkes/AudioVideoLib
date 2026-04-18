@@ -1,23 +1,12 @@
 namespace AudioVideoLib.Formats;
 
-using System;
-
 using AudioVideoLib.IO;
 
 /// <summary>
 /// Represents a constant-signal subframe.
 /// </summary>
-public sealed class FlacConstantSubFrame : FlacSubFrame
+public sealed class FlacConstantSubFrame(FlacFrame flacFrame) : FlacSubFrame(flacFrame)
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="FlacConstantSubFrame"/> class.
-    /// </summary>
-    /// <param name="flacFrame">The FLAC frame.</param>
-    public FlacConstantSubFrame(FlacFrame flacFrame) : base(flacFrame)
-    {
-        ArgumentNullException.ThrowIfNull(flacFrame);
-    }
-
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>

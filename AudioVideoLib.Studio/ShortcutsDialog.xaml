@@ -1,0 +1,33 @@
+<Window x:Class="AudioVideoLib.Studio.ShortcutsDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Keyboard shortcuts"
+        Width="420"
+        Height="480"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="CanResizeWithGrip"
+        ShowInTaskbar="False">
+    <DockPanel Margin="12">
+        <Button DockPanel.Dock="Bottom"
+                Content="Close"
+                HorizontalAlignment="Right"
+                Padding="16,4"
+                Margin="0,10,0,0"
+                IsCancel="True"
+                Click="Close_Click" />
+        <DataGrid x:Name="Grid"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  CanUserSortColumns="False"
+                  CanUserReorderColumns="False"
+                  IsReadOnly="True"
+                  HeadersVisibility="Column"
+                  GridLinesVisibility="Horizontal">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Shortcut" Binding="{Binding Gesture}" Width="140" />
+                <DataGridTextColumn Header="Action"   Binding="{Binding Action}"  Width="*" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</Window>

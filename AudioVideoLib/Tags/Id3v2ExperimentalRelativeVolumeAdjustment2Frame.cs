@@ -78,13 +78,7 @@ public sealed class Id3v2ExperimentalRelativeVolumeAdjustment2Frame : Id3v2Frame
     /// <value>
     /// The channel information.
     /// </value>
-    public IList<Id3v2ChannelInformation> ChannelInformation
-    {
-        get
-        {
-            return _channelInformation;
-        }
-    }
+    public IList<Id3v2ChannelInformation> ChannelInformation => _channelInformation;
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
@@ -146,10 +140,7 @@ public sealed class Id3v2ExperimentalRelativeVolumeAdjustment2Frame : Id3v2Frame
     }
 
     /// <inheritdoc />
-    public override string Identifier
-    {
-        get { return "XRVA"; }
-    }
+    public override string Identifier => "XRVA";
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

@@ -273,10 +273,7 @@ namespace AudioVideoLibExamples
         }
 
         /// <inheritdoc />
-        public override string Identifier
-        {
-            get { return (Version < Id3v2Version.Id3v230) ? "XFT" : "XFTS"; }
-        }
+        public override string Identifier => (Version < Id3v2Version.Id3v230) ? "XFT" : "XFTS";
 
         ////------------------------------------------------------------------------------------------------------------------------------
 

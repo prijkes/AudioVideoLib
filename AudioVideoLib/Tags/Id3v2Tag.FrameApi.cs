@@ -53,9 +53,8 @@ public sealed partial class Id3v2Tag
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="identifier"/> is null.</exception>
     public T? GetFrame<T>(string identifier) where T : Id3v2Frame
     {
-        return identifier == null
-            ? throw new ArgumentNullException("identifier")
-            : _frames.OfType<T>().FirstOrDefault(f => string.Equals(f.Identifier, identifier, StringComparison.OrdinalIgnoreCase));
+        ArgumentNullException.ThrowIfNull(identifier);
+        return _frames.OfType<T>().FirstOrDefault(f => string.Equals(f.Identifier, identifier, StringComparison.OrdinalIgnoreCase));
     }
 
     /// <summary>
@@ -94,9 +93,8 @@ public sealed partial class Id3v2Tag
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="identifier"/> is null.</exception>
     public IEnumerable<T> GetFrames<T>(string identifier) where T : Id3v2Frame
     {
-        return identifier == null
-            ? throw new ArgumentNullException("identifier")
-            : _frames.OfType<T>().Where(f => string.Equals(f.Identifier, identifier, StringComparison.OrdinalIgnoreCase));
+        ArgumentNullException.ThrowIfNull(identifier);
+        return _frames.OfType<T>().Where(f => string.Equals(f.Identifier, identifier, StringComparison.OrdinalIgnoreCase));
     }
 
     /// <summary>

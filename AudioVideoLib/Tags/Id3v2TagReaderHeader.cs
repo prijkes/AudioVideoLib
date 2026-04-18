@@ -1,5 +1,7 @@
 namespace AudioVideoLib.Tags;
 
+using System;
+
 public sealed partial class Id3v2TagReader
 {
     private sealed class Id3v2Header
@@ -28,10 +30,7 @@ public sealed partial class Id3v2TagReader
         ////------------------------------------------------------------------------------------------------------------------------------
 
         /// <inheritdoc/>
-        public override bool Equals(object? obj)
-        {
-            return Equals(obj as Id3v2Header);
-        }
+        public override bool Equals(object? obj) => Equals(obj as Id3v2Header);
 
         /// <summary>
         /// Equals the specified <see cref="Id3v2Header"/>.
@@ -43,16 +42,6 @@ public sealed partial class Id3v2TagReader
             return hdr is not null && (ReferenceEquals(this, hdr) || ((Version == hdr.Version) && (Flags == hdr.Flags) && (Size == hdr.Size)));
         }
 
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                var hashCode = Identifier != null ? Identifier.GetHashCode() : 0;
-                hashCode = (hashCode * 397) ^ Version.GetHashCode();
-                hashCode = (hashCode * 397) ^ Flags.GetHashCode();
-                hashCode = (hashCode * 397) ^ Size.GetHashCode();
-                return hashCode;
-            }
-        }
+        public override int GetHashCode() => HashCode.Combine(Identifier, Version, Flags, Size);
     }
 }

@@ -20,5 +20,5 @@ public sealed class AudioStreamParseEventArgs(IAudioStream audioStream) : EventA
     /// <value>
     /// The audio stream.
     /// </value>
-    public IAudioStream AudioStream { get; private set; } = audioStream;
+    public IAudioStream AudioStream { get; } = audioStream;
 }

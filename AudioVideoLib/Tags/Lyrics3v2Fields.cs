@@ -13,8 +13,8 @@ public partial class Lyrics3v2Tag
     /// </value>
     public Lyrics3v2TextField? AdditionalInformation
     {
-        get { return GetField(Lyrics3v2TextFieldIdentifier.AdditionalInformation); }
-        set { SetField(value); }
+        get => GetField(Lyrics3v2TextFieldIdentifier.AdditionalInformation);
+        set => SetField(value);
     }
 
     /// <summary>
@@ -25,8 +25,8 @@ public partial class Lyrics3v2Tag
     /// </value>
     public Lyrics3v2TextField? ExtendedAlbumName
     {
-        get { return GetField(Lyrics3v2TextFieldIdentifier.ExtendedAlbumName); }
-        set { SetField(value); }
+        get => GetField(Lyrics3v2TextFieldIdentifier.ExtendedAlbumName);
+        set => SetField(value);
     }
 
     /// <summary>
@@ -37,8 +37,8 @@ public partial class Lyrics3v2Tag
     /// </value>
     public Lyrics3v2TextField? ExtendedArtistName
     {
-        get { return GetField(Lyrics3v2TextFieldIdentifier.ExtendedArtistName); }
-        set { SetField(value); }
+        get => GetField(Lyrics3v2TextFieldIdentifier.ExtendedArtistName);
+        set => SetField(value);
     }
 
     /// <summary>
@@ -49,8 +49,8 @@ public partial class Lyrics3v2Tag
     /// </value>
     public Lyrics3v2TextField? ExtendedTrackTitle
     {
-        get { return GetField(Lyrics3v2TextFieldIdentifier.ExtendedTrackTitle); }
-        set { SetField(value); }
+        get => GetField(Lyrics3v2TextFieldIdentifier.ExtendedTrackTitle);
+        set => SetField(value);
     }
 
     /// <summary>
@@ -61,8 +61,8 @@ public partial class Lyrics3v2Tag
     /// </value>
     public Lyrics3v2TextField? Genre
     {
-        get { return GetField(Lyrics3v2TextFieldIdentifier.Genre); }
-        set { SetField(value); }
+        get => GetField(Lyrics3v2TextFieldIdentifier.Genre);
+        set => SetField(value);
     }
 
     /// <summary>
@@ -73,8 +73,8 @@ public partial class Lyrics3v2Tag
     /// </value>
     public Lyrics3v2ImageFileField? ImageFile
     {
-        get { return GetField<Lyrics3v2ImageFileField>(); }
-        set { SetField(value); }
+        get => GetField<Lyrics3v2ImageFileField>();
+        set => SetField(value);
     }
 
     /// <summary>
@@ -85,8 +85,8 @@ public partial class Lyrics3v2Tag
     /// </value>
     public Lyrics3v2LyricsField? Lyrics
     {
-        get { return GetField<Lyrics3v2LyricsField>(); }
-        set { SetField(value); }
+        get => GetField<Lyrics3v2LyricsField>();
+        set => SetField(value);
     }
 
     /// <summary>
@@ -97,7 +97,7 @@ public partial class Lyrics3v2Tag
     /// </value>
     public Lyrics3v2TextField? LyricsAuthorName
     {
-        get { return GetField(Lyrics3v2TextFieldIdentifier.LyricsAuthorName); }
-        set { SetField(value); }
+        get => GetField(Lyrics3v2TextFieldIdentifier.LyricsAuthorName);
+        set => SetField(value);
     }
 }

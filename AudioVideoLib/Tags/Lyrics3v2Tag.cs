@@ -45,10 +45,7 @@ public sealed partial class Lyrics3v2Tag : IAudioTag
     /// Gets the fields in the tag.
     /// </summary>
     /// <value>A list of <see cref="Lyrics3v2Field"/>s in the tag.</value>
-    public IEnumerable<Lyrics3v2Field> Fields
-    {
-        get { return _fields.AsReadOnly(); }
-    }
+    public IEnumerable<Lyrics3v2Field> Fields => _fields.AsReadOnly();
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

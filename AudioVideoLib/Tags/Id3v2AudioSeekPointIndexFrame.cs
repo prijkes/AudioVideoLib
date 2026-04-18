@@ -41,7 +41,7 @@ public sealed class Id3v2AudioSeekPointIndexFrame : Id3v2Frame
     {
         if (!IsVersionSupported(version))
         {
-            throw new InvalidVersionException(string.Format("Version {0} not supported by this frame.", version));
+            throw new InvalidVersionException($"Version {version} not supported by this frame.");
         }
     }
 
@@ -103,13 +103,7 @@ public sealed class Id3v2AudioSeekPointIndexFrame : Id3v2Frame
     /// Fraction at index is the numerator of the fraction representing a relative position in the data.
     /// The denominator is 2 to the power of b.
     /// </remarks>
-    public IList<short> FractionAtIndex
-    {
-        get
-        {
-            return _fractionAtIndex;
-        }
-    }
+    public IList<short> FractionAtIndex => _fractionAtIndex;
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
@@ -151,10 +145,7 @@ public sealed class Id3v2AudioSeekPointIndexFrame : Id3v2Frame
     }
 
     /// <inheritdoc />
-    public override string Identifier
-    {
-        get { return "ASPI"; }
-    }
+    public override string Identifier => "ASPI";
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

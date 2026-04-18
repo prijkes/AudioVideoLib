@@ -64,13 +64,7 @@ public sealed partial class MusicMatchTag : IAudioTag
     /// In all cases, this section is padded with dashes ($2D) to achieve this constant size.
     /// </remarks>
     //private static readonly Dictionary<float, int> AudioMetaDataSizes = new Dictionary<float, int> { { 3.00f, 7868 }, { 3.10f, 7936 } };
-    public static int[] AudioMetaDataSizes
-    {
-        get
-        {
-            return [7868, 7936, 8004, 8132];
-        }
-    }
+    public static int[] AudioMetaDataSizes => [7868, 7936, 8004, 8132];
 
     private static readonly byte[] HeaderIdentifierBytes = System.Text.Encoding.ASCII.GetBytes(HeaderIdentifier);
 
@@ -83,13 +77,6 @@ public sealed partial class MusicMatchTag : IAudioTag
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MusicMatchTag"/> class.
-    /// </summary>
-    public MusicMatchTag()
-    {
-    }
-
-    /// <summary>
     /// Initializes a new instance of the <see cref="MusicMatchTag" /> class.
     /// </summary>
     /// <param name="majorVersion">The major version.</param>
@@ -100,7 +87,7 @@ public sealed partial class MusicMatchTag : IAudioTag
     /// </remarks>
     public MusicMatchTag(int majorVersion, int minorVersion)
     {
-        var version = string.Format("{0}.{1}", majorVersion, minorVersion);
+        var version = $"{majorVersion}.{minorVersion}";
         version = (version.Length > 8) ? version[..8] : version.PadRight(8);
         Version = version;
     }
@@ -114,7 +101,7 @@ public sealed partial class MusicMatchTag : IAudioTag
 
         set
         {
-            field = value ?? throw new ArgumentNullException("value");
+            field = value ?? throw new ArgumentNullException(nameof(value));
             field = (field.Length > 8) ? field[..8] : field.PadRight(8);
         }
     } = "3.100000";

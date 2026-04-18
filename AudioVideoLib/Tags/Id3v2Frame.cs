@@ -33,14 +33,14 @@ public partial class Id3v2Frame : IAudioTagFrame, IEquatable<Id3v2Frame>
     {
         if (!IsValidVersion(version))
         {
-            throw new InvalidDataException(string.Format("Version {0} not valid.", version));
+            throw new InvalidDataException($"Version {version} not valid.");
         }
 
         ArgumentNullException.ThrowIfNull(identifier);
 
         if (!IsValidIdentifier(version, identifier))
         {
-            throw new InvalidDataException(string.Format("identifier {0} is not valid for version {1}.", identifier, version));
+            throw new InvalidDataException($"identifier {identifier} is not valid for version {version}.");
         }
 
         Identifier = identifier;
@@ -55,7 +55,7 @@ public partial class Id3v2Frame : IAudioTagFrame, IEquatable<Id3v2Frame>
     {
         if (!IsValidVersion(version))
         {
-            throw new InvalidDataException(string.Format("Version {0} not valid.", version));
+            throw new InvalidDataException($"Version {version} not valid.");
         }
 
         Version = version;
@@ -192,7 +192,7 @@ public partial class Id3v2Frame : IAudioTagFrame, IEquatable<Id3v2Frame>
     {
         if (!IsVersionSupported(version))
         {
-            throw new InvalidVersionException(string.Format("Version {0} is not supported by this frame", version));
+            throw new InvalidVersionException($"Version {version} is not supported by this frame");
         }
 
         Version = version;
@@ -266,112 +266,110 @@ public partial class Id3v2Frame : IAudioTagFrame, IEquatable<Id3v2Frame>
             return [];
         }
 
-        using (var buffer = new StreamBuffer())
+        using var buffer = new StreamBuffer();
+
+        // Write the extra header fields if needed.
+        // Note that the order of fields differ by version.
+        if (Version is >= Id3v2Version.Id3v230 and < Id3v2Version.Id3v240)
         {
-            // Write the extra header fields if needed.
-            // Note that the order of fields differ by version.
-            if (Version is >= Id3v2Version.Id3v230 and < Id3v2Version.Id3v240)
+            // Some flags indicates that the frame header is extended with additional information.
+            // This information will be added to the frame header in the same order as the flags indicating the additions.
+            // I.e. the four bytes of decompressed size will precede the encryption method byte.
+
+            // Frame is compressed using [#ZLIB zlib] with 4 bytes for 'decompressed size' appended to the frame header.
+            if (UseCompression)
             {
-                // Some flags indicates that the frame header is extended with additional information.
-                // This information will be added to the frame header in the same order as the flags indicating the additions.
-                // I.e. the four bytes of decompressed size will precede the encryption method byte.
-
-                // Frame is compressed using [#ZLIB zlib] with 4 bytes for 'decompressed size' appended to the frame header.
-                if (UseCompression)
-                {
-                    buffer.WriteBigEndianInt32(data.Length);
-                }
-
-                // Frame is encrypted.
-                if (UseEncryption)
-                {
-                    buffer.WriteByte(EncryptionType);
-                }
-
-                // Frame contains group information
-                if (UseGroupingIdentity)
-                {
-                    buffer.WriteByte(GroupIdentifier);
-                }
-            }
-            else if (Version >= Id3v2Version.Id3v240)
-            {
-                // Some frame format flags indicate that additional information fields are added to the frame.
-                // This information is added after the frame header and before the frame data 
-                // in the same order as the flags that indicates them.
-                // I.e. the four bytes of decompressed size will precede the encryption method byte.
-
-                // Frame contains group information
-                if (UseGroupingIdentity)
-                {
-                    buffer.WriteByte(GroupIdentifier);
-                }
-
-                // Frame is encrypted.
-                if (UseEncryption)
-                {
-                    buffer.WriteByte(EncryptionType);
-                }
-
-                // A data length Indicator has been added to the frame.
-                if (UseCompression || UseDataLengthIndicator)
-                {
-                    buffer.WriteBigEndianInt32(Id3v2Tag.GetSynchsafeValue(data.Length));
-                }
+                buffer.WriteBigEndianInt32(data.Length);
             }
 
-            // If the frameData is not initially compressed and the compression flag has been set - compress the data.
-            if (!_isEncrypted && !_isCompressed && UseCompression && (Compressor != null))
+            // Frame is encrypted.
+            if (UseEncryption)
             {
-                // Frame should be compressed using zlib [zlib] deflate method.
-                data = Compressor.Compress(data);
-
-                // A 'Data Length Indicator' byte MUST be included in the frame.
-                UseDataLengthIndicator = true;
+                buffer.WriteByte(EncryptionType);
             }
 
-            // If we can't encrypt the frame, i.e. because it's encrypted and we couldn't decrypt it, we can't compress it or encrypt it again.
-            // If the encryption flag has been set - encrypt the data.
-            if (!_isEncrypted && UseEncryption && (Cryptor != null))
+            // Frame contains group information
+            if (UseGroupingIdentity)
             {
-                data = Cryptor.Encrypt(EncryptionType, data) ?? data;
+                buffer.WriteByte(GroupIdentifier);
             }
-
-            // Synchronize the data.
-            if (UseUnsynchronization)
-            {
-                data = Id3v2Tag.GetUnsynchronizedData(data, 0, data.Length);
-            }
-
-            // Write the data to the temp buffer; header has already been written at this point.
-            buffer.Write(data);
-
-            data = buffer.ToByteArray();
         }
-
-        // Write the frame header to the final buffer.
-        using (var buffer = new StreamBuffer())
+        else if (Version >= Id3v2Version.Id3v240)
         {
-            // identifier needs to match the IdentifierFieldLength; pad the identifier if needed (not legal, but some programs write incorrect identifiers).
-            var identifier = (Identifier ?? string.Empty).PadRight(GetIdentifierFieldLength(Version), '\0');
-            buffer.WriteString(identifier[..IdentifierFieldLength]);
-            if (Version >= Id3v2Version.Id3v240)
+            // Some frame format flags indicate that additional information fields are added to the frame.
+            // This information is added after the frame header and before the frame data
+            // in the same order as the flags that indicates them.
+            // I.e. the four bytes of decompressed size will precede the encryption method byte.
+
+            // Frame contains group information
+            if (UseGroupingIdentity)
+            {
+                buffer.WriteByte(GroupIdentifier);
+            }
+
+            // Frame is encrypted.
+            if (UseEncryption)
+            {
+                buffer.WriteByte(EncryptionType);
+            }
+
+            // A data length Indicator has been added to the frame.
+            if (UseCompression || UseDataLengthIndicator)
             {
                 buffer.WriteBigEndianInt32(Id3v2Tag.GetSynchsafeValue(data.Length));
             }
-            else
-            {
-                buffer.WriteBigEndianBytes(data.Length, DataSizeFieldLength);
-            }
-
-            // Write the flags to the final buffer.
-            if (Version >= Id3v2Version.Id3v230)
-            {
-                buffer.WriteBigEndianInt16((short)Flags);
-            }
-
-            buffer.Write(data);
-            return buffer.ToByteArray();
         }
+
+        // If the frameData is not initially compressed and the compression flag has been set - compress the data.
+        if (!_isEncrypted && !_isCompressed && UseCompression && (Compressor != null))
+        {
+            // Frame should be compressed using zlib [zlib] deflate method.
+            data = Compressor.Compress(data);
+
+            // A 'Data Length Indicator' byte MUST be included in the frame.
+            UseDataLengthIndicator = true;
+        }
+
+        // If we can't encrypt the frame, i.e. because it's encrypted and we couldn't decrypt it, we can't compress it or encrypt it again.
+        // If the encryption flag has been set - encrypt the data.
+        if (!_isEncrypted && UseEncryption && (Cryptor != null))
+        {
+            data = Cryptor.Encrypt(EncryptionType, data) ?? data;
+        }
+
+        // Synchronize the data.
+        if (UseUnsynchronization)
+        {
+            data = Id3v2Tag.GetUnsynchronizedData(data, 0, data.Length);
+        }
+
+        // Write the data to the temp buffer; header has already been written at this point.
+        buffer.Write(data);
+
+        data = buffer.ToByteArray();
+
+        // Write the frame header to the final buffer.
+        using var finalBuffer = new StreamBuffer();
+
+        // identifier needs to match the IdentifierFieldLength; pad the identifier if needed (not legal, but some programs write incorrect identifiers).
+        var identifier = (Identifier ?? string.Empty).PadRight(GetIdentifierFieldLength(Version), '\0');
+        finalBuffer.WriteString(identifier[..IdentifierFieldLength]);
+        if (Version >= Id3v2Version.Id3v240)
+        {
+            finalBuffer.WriteBigEndianInt32(Id3v2Tag.GetSynchsafeValue(data.Length));
+        }
+        else
+        {
+            finalBuffer.WriteBigEndianBytes(data.Length, DataSizeFieldLength);
+        }
+
+        // Write the flags to the final buffer.
+        if (Version >= Id3v2Version.Id3v230)
+        {
+            finalBuffer.WriteBigEndianInt16((short)Flags);
+        }
+
+        finalBuffer.Write(data);
+        return finalBuffer.ToByteArray();
     }
 }

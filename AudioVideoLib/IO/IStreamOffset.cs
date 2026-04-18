@@ -1,9 +1,7 @@
 namespace AudioVideoLib.IO;
 
-using System.IO;
-
 /// <summary>
-/// Defines the offset of an item in a <see cref="Stream"/>.
+/// Defines the offset of an item in a <see cref="System.IO.Stream"/>.
 /// </summary>
 public interface IStreamOffset
 {

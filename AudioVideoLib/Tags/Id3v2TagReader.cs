@@ -253,7 +253,7 @@ public sealed partial class Id3v2TagReader : IAudioTagReader
         var calculatedCrc = (int)Crc32.HashToUInt32(crcData);
         if (calculatedCrc != expectedCrc)
         {
-            throw new InvalidDataException(string.Format("CRC {0:X} in tag does not match calculated CRC {1:X}", expectedCrc, calculatedCrc));
+            throw new InvalidDataException($"CRC {expectedCrc:X} in tag does not match calculated CRC {calculatedCrc:X}");
         }
 
         sb.Position = currentPosition;
@@ -513,19 +513,13 @@ public sealed partial class Id3v2TagReader : IAudioTagReader
 
         return (streamBuffer.Position - startPosition) != extendedHeaderSize
             ? throw new InvalidDataException(
-                string.Format(
-                    "ExtendedHeaderSize does not match amount of bytes read: expected {0} but got {1} bytes.",
-                    extendedHeaderSize,
-                    streamBuffer.Position - startPosition))
+                $"ExtendedHeaderSize does not match amount of bytes read: expected {extendedHeaderSize} but got {streamBuffer.Position - startPosition} bytes.")
             : extendedHeader;
     }
 
     private static void AddRequiredFrames(Id3v2Version version, ICollection<Id3v2Frame> frames)
     {
-        if (frames == null)
-        {
-            return;
-        }
+        ArgumentNullException.ThrowIfNull(frames);
 
         var trackNumberIdentifier = Id3v2TextFrame.GetIdentifier(version, Id3v2TextFrameIdentifier.TrackNumber);
         Id3v2Frame? trackNumberFrame =

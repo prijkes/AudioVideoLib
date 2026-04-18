@@ -40,13 +40,7 @@ public sealed partial class FlacFrame
     /// <value>
     /// The blocking strategy.
     /// </value>
-    public FlacBlockingStrategy BlockingStrategy
-    {
-        get
-        {
-            return (FlacBlockingStrategy)((_header >> 16) & 0x01);
-        }
-    }
+    public FlacBlockingStrategy BlockingStrategy => (FlacBlockingStrategy)((_header >> 16) & 0x01);
 
     /// <summary>
     /// Gets the size of the block in inter-channel samples.
@@ -110,13 +104,7 @@ public sealed partial class FlacFrame
     /// <value>
     /// The bitrate of the audio, in KBit.
     /// </value>
-    public int Bitrate
-    {
-        get
-        {
-            throw new NotImplementedException();
-        }
-    }
+    public int Bitrate => throw new NotImplementedException();
 
     /// <summary>
     /// Gets the frame length, in bytes.
@@ -127,13 +115,7 @@ public sealed partial class FlacFrame
     /// <remarks>
     /// Length is the length of a frame in bytes when compressed.
     /// </remarks>
-    public int FrameLength
-    {
-        get
-        {
-            throw new NotImplementedException();
-        }
-    }
+    public int FrameLength => throw new NotImplementedException();
 
     /// <summary>
     /// Gets the frame size of the current frame, this is the number of samples contained in the frame.
@@ -144,13 +126,7 @@ public sealed partial class FlacFrame
     /// <remarks>
     /// Frame size is the number of samples contained in a frame.
     /// </remarks>
-    public int FrameSize
-    {
-        get
-        {
-            throw new NotImplementedException();
-        }
-    }
+    public int FrameSize => throw new NotImplementedException();
 
     /// <summary>
     /// Gets the length of audio, in milliseconds.
@@ -158,26 +134,20 @@ public sealed partial class FlacFrame
     /// <value>
     /// The length of audio, in milliseconds.
     /// </value>
-    public long AudioLength
-    {
-        get
-        {
-            throw new NotImplementedException();
-        }
-    }
+    public long AudioLength => throw new NotImplementedException();
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
     private static long ReadBigEndianUtf8Int64(StreamBuffer sb, out byte[] utf8Bytes)
     {
         //// Decoded long range              Coded value
-        //// 0000 0000 ・00 0000 007F   0xxxxxxx
-        //// 0000 0080 ・00 0000 07FF   110xxxxx 10xxxxxx
-        //// 0000 0800 ・00 0000 FFFF    1110xxxx 10xxxxxx 10xxxxxx
-        //// 0001 0000 ・00 001F FFFF    11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
-        //// 0020 0000 ・00 03FF FFFF     111110xx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx
-        //// 0400 0000 ・00 7FFF FFFF     1111110x 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx
-        //// 8000 0000 ・0F FFFF FFFF     11111110 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx
+        //// 0000 0000 -00 0000 007F   0xxxxxxx
+        //// 0000 0080 -00 0000 07FF   110xxxxx 10xxxxxx
+        //// 0000 0800 -00 0000 FFFF    1110xxxx 10xxxxxx 10xxxxxx
+        //// 0001 0000 -00 001F FFFF    11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+        //// 0020 0000 -00 03FF FFFF     111110xx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx
+        //// 0400 0000 -00 7FFF FFFF     1111110x 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx
+        //// 8000 0000 -0F FFFF FFFF     11111110 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx
         // Where xxx represent the bits in the uncoded value, in the same order.
         const int ByteCountMask = 0x80;     // 10000000
         const int ByteMask = 0x3F;               // 00111111
@@ -228,8 +198,8 @@ public sealed partial class FlacFrame
 
         /*
             Blocking strategy:
-                •0 : fixed-block size stream; frame header encodes the frame number 
-                •1 : variable-block size stream; frame header encodes the sample number 
+                -0 : fixed-block size stream; frame header encodes the frame number
+                -1 : variable-block size stream; frame header encodes the sample number
         */
         var num = ReadBigEndianUtf8Int64(sb, out _sampleFrameNumberBytes);
         switch (BlockingStrategy)
@@ -251,12 +221,12 @@ public sealed partial class FlacFrame
 
         /*
             Block size in inter-channel samples:
-                •0000 : reserved
-                •0001 : 192 samples
-                •0010-0101 : 576 * (2 ^ (n - 2)) samples, i.e. 576/1152/2304/4608
-                •0110 : get 8 bit (block size - 1) from end of header
-                •0111 : get 16 bit (block size - 1) from end of header
-                •1000-1111 : 256 * (2 ^ (n - 8)) samples, i.e. 256/512/1024/2048/4096/8192/16384/3276
+                -0000 : reserved
+                -0001 : 192 samples
+                -0010-0101 : 576 * (2 ^ (n - 2)) samples, i.e. 576/1152/2304/4608
+                -0110 : get 8 bit (block size - 1) from end of header
+                -0111 : get 16 bit (block size - 1) from end of header
+                -1000-1111 : 256 * (2 ^ (n - 8)) samples, i.e. 256/512/1024/2048/4096/8192/16384/3276
         */
         var blockSize = (_header >> 12) & 0xF;
         BlockSize = blockSize switch
@@ -270,71 +240,45 @@ public sealed partial class FlacFrame
 
         /*
             Sample rate:
-                •0000 : get from STREAMINFO metadata block 
-                •0001 : 88.2kHz 
-                •0010 : 176.4kHz 
-                •0011 : 192kHz 
-                •0100 : 8kHz 
-                •0101 : 16kHz 
-                •0110 : 22.05kHz 
-                •0111 : 24kHz 
-                •1000 : 32kHz 
-                •1001 : 44.1kHz 
-                •1010 : 48kHz 
-                •1011 : 96kHz 
-                •1100 : get 8 bit sample rate (in kHz) from end of header 
-                •1101 : get 16 bit sample rate (in Hz) from end of header 
-                •1110 : get 16 bit sample rate (in tens of Hz) from end of header 
-                •1111 : invalid, to prevent sync-fooling string of 1s 
+                -0000 : get from STREAMINFO metadata block
+                -0001 : 88.2kHz
+                -0010 : 176.4kHz
+                -0011 : 192kHz
+                -0100 : 8kHz
+                -0101 : 16kHz
+                -0110 : 22.05kHz
+                -0111 : 24kHz
+                -1000 : 32kHz
+                -1001 : 44.1kHz
+                -1010 : 48kHz
+                -1011 : 96kHz
+                -1100 : get 8 bit sample rate (in kHz) from end of header
+                -1101 : get 16 bit sample rate (in Hz) from end of header
+                -1110 : get 16 bit sample rate (in tens of Hz) from end of header
+                -1111 : invalid, to prevent sync-fooling string of 1s
         */
         var samplingRate = (_header >> 8) & 0xF;
-        if (samplingRate == 0x00)
-        {
-            SamplingRate = FlacStream.StreamInfoMetadataBlocks.Any()
-                               ? FlacStream.StreamInfoMetadataBlocks.First().SampleRate
-                               : 0;
-        }
-        else if (samplingRate <= 0x0B)
-        {
-            SamplingRate = SampleRates[samplingRate];
-        }
-        else
-        {
-            switch (samplingRate)
-            {
-                case 0x0C:
-                    // Sample rate in kHz
-                    SamplingRate = sb.ReadByte() * 1000;
-                    break;
-
-                case 0x0D:
-                    // Sample rate in Hz
-                    SamplingRate = sb.ReadBigEndianInt16();
-                    break;
-
-                case 0x0E:
-                    // Sample rate in 10s of Hz
-                    SamplingRate = sb.ReadBigEndianInt16() * 10;
-                    break;
-            }
-        }
+        SamplingRate = samplingRate == 0x00
+            ? (FlacStream.StreamInfoMetadataBlocks.Any()
+                   ? FlacStream.StreamInfoMetadataBlocks.First().SampleRate
+                   : 0)
+            : samplingRate <= 0x0B
+                ? SampleRates[samplingRate]
+                : samplingRate switch
+                {
+                    0x0C => sb.ReadByte() * 1000,
+                    0x0D => sb.ReadBigEndianInt16(),
+                    0x0E => sb.ReadBigEndianInt16() * 10,
+                    _ => SamplingRate,
+                };
 
         /*
             Channel assignment
-                •0000-0111 : (number of independent channels)-1. Where defined, the channel order follows SMPTE/ITU-R recommendations.
-                The assignments are as follows:
-                    ◦1 channel: mono
-                    ◦2 channels: left, right
-                    ◦3 channels: left, right, center
-                    ◦4 channels: front left, front right, back left, back right
-                    ◦5 channels: front left, front right, front center, back/surround left, back/surround right
-                    ◦6 channels: front left, front right, front center, LFE, back/surround left, back/surround right
-                    ◦7 channels: front left, front right, front center, LFE, back center, side left, side right
-                    ◦8 channels: front left, front right, front center, LFE, back left, back right, side left, side right
-                •1000 : left/side stereo: channel 0 is the left channel, channel 1 is the side(difference) channel
-                •1001 : right/side stereo: channel 0 is the side(difference) channel, channel 1 is the right channel
-                •1010 : mid/side stereo: channel 0 is the mid(average) channel, channel 1 is the side(difference) channel
-                •1011-1111 : reserved 
+                -0000-0111 : (number of independent channels)-1. Where defined, the channel order follows SMPTE/ITU-R recommendations.
+                -1000 : left/side stereo: channel 0 is the left channel, channel 1 is the side(difference) channel
+                -1001 : right/side stereo: channel 0 is the side(difference) channel, channel 1 is the right channel
+                -1010 : mid/side stereo: channel 0 is the mid(average) channel, channel 1 is the side(difference) channel
+                -1011-1111 : reserved
         */
         var channelAssignment = (_header >> 4) & 0xF;
         if (channelAssignment < 0x08)
@@ -345,35 +289,28 @@ public sealed partial class FlacFrame
         else
         {
             Channels = 2;
-            switch (channelAssignment)
+            ChannelAssignment = channelAssignment switch
             {
-                case 0x08:
-                    ChannelAssignment = FlacChannelAssignment.LeftSide;
-                    break;
-
-                case 0x09:
-                    ChannelAssignment = FlacChannelAssignment.RightSide;
-                    break;
-
-                case 0x0A:
-                    ChannelAssignment = FlacChannelAssignment.MidSide;
-                    break;
-            }
+                0x08 => FlacChannelAssignment.LeftSide,
+                0x09 => FlacChannelAssignment.RightSide,
+                0x0A => FlacChannelAssignment.MidSide,
+                _ => ChannelAssignment,
+            };
         }
 
         /*
             Sample size in bits:
-                •000 : get from STREAMINFO metadata block
-                •001 : 8 bits per sample
-                •010 : 12 bits per sample
-                •011 : reserved
-                •100 : 16 bits per sample
-                •101 : 20 bits per sample
-                •110 : 24 bits per sample
-                •111 : reserved
+                -000 : get from STREAMINFO metadata block
+                -001 : 8 bits per sample
+                -010 : 12 bits per sample
+                -011 : reserved
+                -100 : 16 bits per sample
+                -101 : 20 bits per sample
+                -110 : 24 bits per sample
+                -111 : reserved
         */
         var sampleSize = (_header >> 0x01) & 0x07;
-        SampleSize = (sampleSize == 0x00)
+        SampleSize = sampleSize == 0x00
                          ? (FlacStream.StreamInfoMetadataBlocks.Any()
                                 ? FlacStream.StreamInfoMetadataBlocks.First().BitsPerSample
                                 : 0)
@@ -387,6 +324,6 @@ public sealed partial class FlacFrame
         sb.Position -= length;
         sb.Read(crcBytes, (int)length);
         var crc8 = Crc8.Calculate(crcBytes);
-        return _crc8 != crc8 ? throw new InvalidDataException("Corrupt CRC8.") : true;
+        return _crc8 == crc8 ? true : throw new InvalidDataException("Corrupt CRC8.");
     }
 }

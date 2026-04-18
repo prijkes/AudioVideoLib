@@ -5,7 +5,7 @@ using System.Text;
 /// <summary>
 /// Class used to store an <see cref="ApeBinaryItem"/> item.
 /// </summary>
-public class ApeBinaryItem : ApeItem
+public sealed class ApeBinaryItem : ApeItem
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="ApeBinaryItem" /> class.
@@ -42,13 +42,7 @@ public class ApeBinaryItem : ApeItem
     /// <remarks>
     /// See <see cref="ApeItemType" /> for possible item types.
     /// </remarks>
-    public override ApeItemType ItemType
-    {
-        get
-        {
-            return ApeItemType.ContainsBinary;
-        }
-    }
+    public override ApeItemType ItemType => ApeItemType.ContainsBinary;
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

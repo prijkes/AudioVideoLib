@@ -5,7 +5,7 @@ public partial class FlacMetadataBlock
     /// <summary>
     /// Field flags.
     /// </summary>
-    private struct HeaderFlags
+    private readonly struct HeaderFlags
     {
         /// <summary>
         /// The last block bit.

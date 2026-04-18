@@ -15,13 +15,14 @@ public sealed class AudioStreams : IEnumerable<IAudioStream>
 {
     private readonly Dictionary<Type, Func<IAudioStream>> _supportedStreams = new()
     {
-            { typeof(MpaStream), () => new MpaStream() },
-            { typeof(FlacStream), () => new FlacStream() }
-        };
+        { typeof(MpaStream), () => new MpaStream() },
+        { typeof(FlacStream), () => new FlacStream() },
+        { typeof(RiffStream), () => new RiffStream() },
+        { typeof(AiffStream), () => new AiffStream() },
+        { typeof(OggStream), () => new OggStream() },
+    };
 
     private readonly NotifyingList<IAudioStream> _streams = [];
-
-    // Max length of spacing, in bytes, between 2 streams. If there is spacing between streams, this means that a stream is corrupted.
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
@@ -31,7 +32,6 @@ public sealed class AudioStreams : IEnumerable<IAudioStream>
     public AudioStreams()
     {
         _streams.ItemAdd += AudioStreamAdd;
-
         _streams.ItemReplace += AudioStreamReplace;
     }
 
@@ -96,15 +96,15 @@ public sealed class AudioStreams : IEnumerable<IAudioStream>
         var streamLength = stream.Length;
         var startPosition = stream.Position;
         long spacing = 0;
-        while ((stream.Position <= streamLength) && (spacing < MaxStreamSpacingLength))
+        while (stream.Position <= streamLength && spacing < MaxStreamSpacingLength)
         {
             var audioStream = ReadAudioStream(stream);
-            if (audioStream != null)
+            if (audioStream is not null)
             {
                 spacing = 0;
                 streamsFound++;
                 _streams.Add(audioStream);
-                stream.Position = (audioStream.EndOffset == startPosition) ? startPosition + 1 : audioStream.EndOffset;
+                stream.Position = audioStream.EndOffset == startPosition ? startPosition + 1 : audioStream.EndOffset;
                 continue;
             }
             spacing++;
@@ -121,10 +121,7 @@ public sealed class AudioStreams : IEnumerable<IAudioStream>
     /// <returns>
     /// An <see cref="T:System.Collections.IEnumerator"/> object that can be used to iterate through the collection.
     /// </returns>
-    IEnumerator<IAudioStream> IEnumerable<IAudioStream>.GetEnumerator()
-    {
-        return _streams.GetEnumerator();
-    }
+    IEnumerator<IAudioStream> IEnumerable<IAudioStream>.GetEnumerator() => _streams.GetEnumerator();
 
     /// <summary>
     /// Returns an enumerator that iterates through a collection.
@@ -132,22 +129,13 @@ public sealed class AudioStreams : IEnumerable<IAudioStream>
     /// <returns>
     /// An <see cref="T:System.Collections.IEnumerator"/> object that can be used to iterate through the collection.
     /// </returns>
-    public IEnumerator GetEnumerator()
-    {
-        return _streams.GetEnumerator();
-    }
+    public IEnumerator GetEnumerator() => _streams.GetEnumerator();
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
-    private void OnAudioStreamParse(AudioStreamParseEventArgs e)
-    {
-        AudioStreamParse?.Invoke(this, e);
-    }
+    private void OnAudioStreamParse(AudioStreamParseEventArgs e) => AudioStreamParse?.Invoke(this, e);
 
-    private void OnAudioStreamParsed(AudioStreamParsedEventArgs e)
-    {
-        AudioStreamParsed?.Invoke(this, e);
-    }
+    private void OnAudioStreamParsed(AudioStreamParsedEventArgs e) => AudioStreamParsed?.Invoke(this, e);
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
@@ -155,7 +143,7 @@ public sealed class AudioStreams : IEnumerable<IAudioStream>
     {
         ArgumentNullException.ThrowIfNull(e);
 
-        if (e.Item == null)
+        if (e.Item is null)
         {
             throw new NullReferenceException("e.Item may not be null");
         }
@@ -175,7 +163,7 @@ public sealed class AudioStreams : IEnumerable<IAudioStream>
     {
         ArgumentNullException.ThrowIfNull(e);
 
-        if (e.NewItem == null)
+        if (e.NewItem is null)
         {
             throw new NullReferenceException("e.NewItem may not be null");
         }
@@ -199,7 +187,7 @@ public sealed class AudioStreams : IEnumerable<IAudioStream>
     {
         ArgumentNullException.ThrowIfNull(stream);
 
-        if ((stream.CanRead == false) || (stream.Length == 0))
+        if (!stream.CanRead || stream.Length == 0)
         {
             return null;
         }

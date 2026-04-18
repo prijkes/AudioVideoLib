@@ -16,10 +16,7 @@ public sealed partial class Id3v1Tag
     /// <returns>
     /// <c>true</c> if the specified <param name="version">version</param> is valid; otherwise, <c>false</c>.
     /// </returns>
-    public static bool IsValidVersion(Id3v1Version version)
-    {
-        return Enum.TryParse(version.ToString(), true, out Id3v1Version _);
-    }
+    public static bool IsValidVersion(Id3v1Version version) => Enum.TryParse(version.ToString(), out Id3v1Version _);
 
     /// <summary>
     /// Determines whether the specified genre is valid.
@@ -28,27 +25,19 @@ public sealed partial class Id3v1Tag
     /// <returns>
     /// <c>true</c> if the specified <paramref name="genre">genre</paramref> is valid; otherwise, <c>false</c>.
     /// </returns>
-    public static bool IsValidGenre(Id3v1Genre genre)
-    {
-        return Enum.TryParse(genre.ToString(), true, out Id3v1Genre _);
-    }
+    public static bool IsValidGenre(Id3v1Genre genre) => Enum.TryParse(genre.ToString(), out Id3v1Genre _);
 
     /// <summary>
     /// Determines whether the specified track is valid.
     /// </summary>
     /// <param name="trackSpeed">The track speed.</param>
     /// <returns></returns>
-    public static bool IsValidTrackSpeed(Id3v1TrackSpeed trackSpeed)
-    {
-        return Enum.TryParse(trackSpeed.ToString(), true, out Id3v1TrackSpeed _);
-    }
+    public static bool IsValidTrackSpeed(Id3v1TrackSpeed trackSpeed) => Enum.TryParse(trackSpeed.ToString(), out Id3v1TrackSpeed _);
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
-    private string GetTruncatedEncodedString(string value, int maxBytesAllowed)
-    {
-        return StreamBuffer.GetTruncatedEncodedString(value, Encoding, maxBytesAllowed);
-    }
+    private string GetTruncatedEncodedString(string value, int maxBytesAllowed) =>
+        StreamBuffer.GetTruncatedEncodedString(value, Encoding, maxBytesAllowed);
 
     private string GetExtendedString(string? value, int maxLengthNormal, int maxLengthExtended, bool onlyLastPart = false)
     {

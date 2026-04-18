@@ -36,7 +36,7 @@ public sealed class Id3v2GeneralEncapsulatedObjectFrame : Id3v2Frame
     {
         if (!IsVersionSupported(version))
         {
-            throw new InvalidVersionException(string.Format("Version {0} not supported by this frame.", version));
+            throw new InvalidVersionException($"Version {version} not supported by this frame.");
         }
     }
 
@@ -54,10 +54,7 @@ public sealed class Id3v2GeneralEncapsulatedObjectFrame : Id3v2Frame
     /// </remarks>
     public Id3v2FrameEncodingType TextEncoding
     {
-        get
-        {
-            return _frameEncodingType;
-        }
+        get => _frameEncodingType;
 
         set
         {
@@ -89,10 +86,7 @@ public sealed class Id3v2GeneralEncapsulatedObjectFrame : Id3v2Frame
     /// </remarks>
     public string MimeType
     {
-        get
-        {
-            return _mimeType;
-        }
+        get => _mimeType;
 
         set
         {
@@ -118,10 +112,7 @@ public sealed class Id3v2GeneralEncapsulatedObjectFrame : Id3v2Frame
     /// </remarks>
     public string Filename
     {
-        get
-        {
-            return _filename;
-        }
+        get => _filename;
 
         set
         {
@@ -145,10 +136,7 @@ public sealed class Id3v2GeneralEncapsulatedObjectFrame : Id3v2Frame
     /// </remarks>
     public string ContentDescription
     {
-        get
-        {
-            return _contentDescription;
-        }
+        get => _contentDescription;
 
         set
         {
@@ -245,10 +233,7 @@ public sealed class Id3v2GeneralEncapsulatedObjectFrame : Id3v2Frame
     }
 
     /// <inheritdoc />
-    public override string Identifier
-    {
-        get { return (Version < Id3v2Version.Id3v230) ? "GEO" : "GEOB"; }
-    }
+    public override string Identifier => (Version < Id3v2Version.Id3v230) ? "GEO" : "GEOB";
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

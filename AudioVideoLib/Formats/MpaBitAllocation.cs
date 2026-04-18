@@ -6,7 +6,7 @@ namespace AudioVideoLib.Formats;
 /// </summary>
 public sealed partial class MpaFrame
 {
-    private class BitAllocation
+    private sealed class BitAllocation
     {
         /// <summary>
         /// Gets or sets the number of bits allocated.

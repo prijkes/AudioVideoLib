@@ -1,7 +1,6 @@
 namespace AudioVideoLib.Tags;
 
 using System;
-using System.Linq;
 
 /// <summary>
 /// Class to store an APE tag.
@@ -31,7 +30,7 @@ public partial class ApeTag
             return false;
         }
 
-        int checksum = isbn10.Last();
+        int checksum = isbn10[^1];
         int i, position, sum = 0;
         for (i = 0, position = 1; i < isbn10.Length - 1; i++, position++)
         {

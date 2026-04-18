@@ -1,7 +1,6 @@
 namespace AudioVideoLib.Cryptography;
 
 using System;
-using System.Linq;
 
 /// <summary>
 /// Calculates a 16-bit Cyclic Redundancy Checksum (CRC).
@@ -36,23 +35,22 @@ public static class Crc16
     }
 
     /// <summary>
-    /// Returns the CRC16 Checksum of a byte array.
+    /// Returns the CRC16 Checksum of a byte span.
     /// </summary>
-    /// <param name="data">The byte array.</param>
+    /// <param name="data">The byte span.</param>
     /// <returns>CRC16 Checksum.</returns>
-    public static int Calculate(byte[] data)
+    public static int Calculate(ReadOnlySpan<byte> data)
     {
-        ArgumentNullException.ThrowIfNull(data);
-
         unchecked
         {
-            int[] crc = [0x00];
-            foreach (var index in data.Select(t => (byte)(crc[0] ^ t)))
+            var crc = 0;
+            foreach (var b in data)
             {
-                crc[0] = (crc[0] >> 8) ^ Crc16Table[index];
+                var index = (byte)(crc ^ b);
+                crc = (crc >> 8) ^ Crc16Table[index];
             }
 
-            return crc[0];
+            return crc;
         }
     }
 }

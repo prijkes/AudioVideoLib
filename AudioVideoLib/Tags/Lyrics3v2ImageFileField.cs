@@ -13,12 +13,10 @@ using AudioVideoLib.IO;
 /// <summary>
 /// Class to store a Lyrics3v2 image file field.
 /// </summary>
-public sealed class Lyrics3v2ImageFileField : Lyrics3v2Field
+public sealed partial class Lyrics3v2ImageFileField : Lyrics3v2Field
 {
     // Image lines include filename, description and timestamp separated by delimiter - two ASCII chars 124 ("||").
     private const string Delimiter = "||";
-
-    private static readonly Regex TimeStampRegEx = new(@"\[(\d+):(\d+)\]");
 
     private readonly NotifyingList<Lyrics3v2ImageFile> _imageFiles = [];
 
@@ -39,13 +37,7 @@ public sealed class Lyrics3v2ImageFileField : Lyrics3v2Field
     /// <value>
     /// The image files.
     /// </value>
-    public IList<Lyrics3v2ImageFile> ImageFiles
-    {
-        get
-        {
-            return _imageFiles;
-        }
-    }
+    public IList<Lyrics3v2ImageFile> ImageFiles => _imageFiles;
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
@@ -112,7 +104,7 @@ public sealed class Lyrics3v2ImageFileField : Lyrics3v2Field
                 List<TimeSpan> imageTimeSpans = [];
                 if (imageLine.Length > 2)
                 {
-                    var matches = TimeStampRegEx.Matches(imageLine[2]);
+                    var matches = TimeStampPattern().Matches(imageLine[2]);
                     imageTimeSpans.AddRange(
                         from Match match in matches
                         let minutes = int.Parse(match.Groups[1].Value)
@@ -134,10 +126,7 @@ public sealed class Lyrics3v2ImageFileField : Lyrics3v2Field
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <inheritdoc/>
-    public override bool Equals(Lyrics3v2Field? audioFrame)
-    {
-        return Equals(audioFrame as Lyrics3v2ImageFileField);
-    }
+    public override bool Equals(Lyrics3v2Field? audioFrame) => Equals(audioFrame as Lyrics3v2ImageFileField);
 
     /// <summary>
     /// Equals the specified <see cref="Lyrics3v2ImageFileField"/>.
@@ -157,7 +146,6 @@ public sealed class Lyrics3v2ImageFileField : Lyrics3v2Field
     /// <returns>
     /// A hash code for the current <see cref="T:System.Object"/>.
     /// </returns>
-    /// <filterpriority>2</filterpriority>
     /// The value should be calculated on immutable fields only.
     public override int GetHashCode()
     {
@@ -166,4 +154,7 @@ public sealed class Lyrics3v2ImageFileField : Lyrics3v2Field
             return Identifier.GetHashCode() * 397;
         }
     }
+
+    [GeneratedRegex(@"\[(\d+):(\d+)\]")]
+    private static partial Regex TimeStampPattern();
 }

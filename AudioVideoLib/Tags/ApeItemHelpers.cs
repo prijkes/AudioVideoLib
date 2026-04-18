@@ -36,15 +36,9 @@ public partial class ApeItem
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
-    private static ApeItemType GetItemType(int flags)
-    {
-        return (ApeItemType)((flags & HeaderFlags.ItemType) >> 1);
-    }
+    private static ApeItemType GetItemType(int flags) => (ApeItemType)((flags & HeaderFlags.ItemType) >> 1);
 
-    private static bool IsValidItemType(ApeItemType itemType)
-    {
-        return Enum.TryParse(itemType.ToString(), true, out itemType) && Enum.IsDefined(typeof(ApeItemType), itemType);
-    }
+    private static bool IsValidItemType(ApeItemType itemType) => Enum.IsDefined(itemType);
 
     private static bool AreValidFlags(int flags)
     {
@@ -159,17 +153,17 @@ public partial class ApeItem
                 return false;
             }
 
-            if ((firstByte == 0xF0) && (secondByte >= 0x90) && (secondByte <= 0xBF))
+            if (firstByte == 0xF0 && secondByte is >= 0x90 and <= 0xBF)
             {
                 continue;
             }
 
-            if ((firstByte >= 0xF1) && (firstByte <= 0xF3) && (secondByte >= 0x80) && (secondByte <= 0xBF))
+            if (firstByte is >= 0xF1 and <= 0xF3 && secondByte is >= 0x80 and <= 0xBF)
             {
                 continue;
             }
 
-            if ((firstByte == 0xF4) && (secondByte >= 0x80) && (secondByte <= 0x8F))
+            if (firstByte == 0xF4 && secondByte is >= 0x80 and <= 0x8F)
             {
                 continue;
             }

@@ -15,9 +15,6 @@ using AudioVideoLib.IO;
 /// </remarks>
 public sealed class Id3v2CommentFrame : Id3v2Frame
 {
-    private Id3v2FrameEncodingType _frameEncodingType;
-
-    private string _language = null!, _shortContentDescription = null!, _text = null!;
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -36,7 +33,7 @@ public sealed class Id3v2CommentFrame : Id3v2Frame
     {
         if (!IsVersionSupported(version))
         {
-            throw new InvalidVersionException(string.Format("Version {0} not supported by this frame.", version));
+            throw new InvalidVersionException($"Version {version} not supported by this frame.");
         }
     }
 
@@ -59,10 +56,7 @@ public sealed class Id3v2CommentFrame : Id3v2Frame
     /// </remarks>
     public Id3v2FrameEncodingType TextEncoding
     {
-        get
-        {
-            return _frameEncodingType;
-        }
+        get => field;
 
         set
         {
@@ -76,7 +70,7 @@ public sealed class Id3v2CommentFrame : Id3v2Frame
                 throw new InvalidDataException("Text contains one or more invalid characters for the specified frame encoding type.");
             }
 
-            _frameEncodingType = value;
+            field = value;
         }
     }
 
@@ -94,29 +88,26 @@ public sealed class Id3v2CommentFrame : Id3v2Frame
     /// </remarks>
     public string Language
     {
-        get
-        {
-            return _language;
-        }
+        get => field;
 
         set
         {
             if (string.IsNullOrEmpty(value))
             {
-                _language = value;
+                field = value;
                 return;
             }
 
             // Id3v2.4.0 and later: If the language is not known the string "XXX" should be used.
             if (!IsValidLanguageCode(value) && ((Version != Id3v2Version.Id3v240) || !string.Equals(value, "XXX", StringComparison.OrdinalIgnoreCase)))
             {
-                throw new InvalidDataException(string.Format("Language code '{0}' is not a valid ISO-639-2 language code.", value));
+                throw new InvalidDataException($"Language code '{value}' is not a valid ISO-639-2 language code.");
             }
 
             // Id3v2.4.0 and later: The language should be represented in lower case.
-            _language = (Version >= Id3v2Version.Id3v240) ? value.ToLower() : value;
+            field = (Version >= Id3v2Version.Id3v240) ? value.ToLower() : value;
         }
-    }
+    } = null!;
 
     /// <summary>
     /// Gets or sets the short content description.
@@ -129,10 +120,7 @@ public sealed class Id3v2CommentFrame : Id3v2Frame
     /// </remarks>
     public string ShortContentDescription
     {
-        get
-        {
-            return _shortContentDescription;
-        }
+        get => field;
 
         set
         {
@@ -141,9 +129,9 @@ public sealed class Id3v2CommentFrame : Id3v2Frame
                 throw new InvalidDataException("value contains one or more invalid characters for the current frame encoding type.");
             }
 
-            _shortContentDescription = value;
+            field = value;
         }
-    }
+    } = null!;
 
     /// <summary>
     /// Gets or sets the actual text.
@@ -153,10 +141,7 @@ public sealed class Id3v2CommentFrame : Id3v2Frame
     /// </value>
     public string Text
     {
-        get
-        {
-            return _text;
-        }
+        get => field;
 
         set
         {
@@ -165,9 +150,9 @@ public sealed class Id3v2CommentFrame : Id3v2Frame
                 throw new InvalidDataException("value contains one or more invalid characters for the current frame encoding type.");
             }
 
-            _text = value;
+            field = value;
         }
-    }
+    } = null!;
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
@@ -220,19 +205,16 @@ public sealed class Id3v2CommentFrame : Id3v2Frame
 
             var languageEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
             var stream = new StreamBuffer(value);
-            _frameEncodingType = Id3v2FrameEncoding.ReadEncodingTypeFromStream(stream);
-            var encoding = Id3v2FrameEncoding.GetEncoding(_frameEncodingType);
-            _language = stream.ReadString(3, languageEncoding);
-            _shortContentDescription = stream.ReadString(encoding);
-            _text = stream.ReadString(encoding);
+            TextEncoding = Id3v2FrameEncoding.ReadEncodingTypeFromStream(stream);
+            var encoding = Id3v2FrameEncoding.GetEncoding(TextEncoding);
+            Language = stream.ReadString(3, languageEncoding);
+            ShortContentDescription = stream.ReadString(encoding);
+            Text = stream.ReadString(encoding);
         }
     }
 
     /// <inheritdoc />
-    public override string Identifier
-    {
-        get { return (Version < Id3v2Version.Id3v230) ? "COM" : "COMM"; }
-    }
+    public override string Identifier => (Version < Id3v2Version.Id3v230) ? "COM" : "COMM";
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

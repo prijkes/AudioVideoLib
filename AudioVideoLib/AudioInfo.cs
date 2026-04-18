@@ -23,7 +23,8 @@ public sealed class AudioInfo
     /// <exception cref="System.ArgumentNullException">Thrown if stream is null.</exception>
     private AudioInfo(Stream stream)
     {
-        _stream = stream ?? throw new ArgumentNullException("stream");
+        ArgumentNullException.ThrowIfNull(stream);
+        _stream = stream;
         AudioTags = new AudioTags();
         AudioStreams = new AudioStreams();
     }
@@ -36,7 +37,7 @@ public sealed class AudioInfo
     /// <value>
     /// The audio tags.
     /// </value>
-    public AudioTags AudioTags { get; private set; }
+    public AudioTags AudioTags { get; }
 
     /// <summary>
     /// Gets the audio stream.
@@ -44,7 +45,7 @@ public sealed class AudioInfo
     /// <value>
     /// The audio stream.
     /// </value>
-    public AudioStreams AudioStreams { get; private set; }
+    public AudioStreams AudioStreams { get; }
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
@@ -85,10 +86,10 @@ public sealed class AudioInfo
     {
         if (File.Exists(file))
         {
-            throw new ApplicationException(string.Format("File '{0}' already exists", file));
+            throw new ApplicationException($"File '{file}' already exists");
         }
 
-        var fileStream = new FileStream(file, FileMode.CreateNew);
+        using var fileStream = new FileStream(file, FileMode.CreateNew);
         foreach (var bytes in AudioTags.Where(t => t.TagOrigin == TagOrigin.Start).OrderBy(a => a.StartOffset).Select(t => t.AudioTag.ToByteArray()))
         {
             fileStream.Write(bytes, 0, bytes.Length);
