@@ -10,6 +10,7 @@ public partial class PlaybackBar : UserControl
 {
     private readonly PlaybackController _controller = new();
     private bool _scrubbing;
+    private int _totalFrames;
 
     public PlaybackBar()
     {
@@ -34,6 +35,7 @@ public partial class PlaybackBar : UserControl
             {
                 PositionSlider.Value = pos.TotalSeconds;
                 PositionText.Text = Format(pos);
+                UpdateFrameText(pos);
             });
         };
         _controller.Ended += (_, _) =>
@@ -51,7 +53,9 @@ public partial class PlaybackBar : UserControl
         };
     }
 
-    public void Open(string? filePath)
+    private string _frameUnit = "Frame";
+
+    public void Open(string? filePath, int totalFrames = 0, string unit = "Frame")
     {
         _controller.Stop();
         PlayPauseButton.Content = "▶";
@@ -59,10 +63,37 @@ public partial class PlaybackBar : UserControl
         PositionText.Text = "00:00";
         DurationText.Text = "00:00";
 
+        _totalFrames = totalFrames;
+        _frameUnit = unit;
+        if (_totalFrames > 0)
+        {
+            FrameText.Visibility = Visibility.Visible;
+            FrameText.Text = $"{_frameUnit} 0 / {_totalFrames:N0}";
+        }
+        else
+        {
+            FrameText.Visibility = Visibility.Collapsed;
+            FrameText.Text = string.Empty;
+        }
+
         if (!string.IsNullOrEmpty(filePath))
         {
             _controller.Open(filePath);
         }
+    }
+
+    private void UpdateFrameText(TimeSpan position)
+    {
+        if (_totalFrames <= 0)
+        {
+            return;
+        }
+
+        var duration = _controller.Duration.TotalSeconds;
+        var current = duration > 0
+            ? System.Math.Clamp((int)(position.TotalSeconds / duration * _totalFrames), 0, _totalFrames)
+            : 0;
+        FrameText.Text = $"{_frameUnit} {current:N0} / {_totalFrames:N0}";
     }
 
     public void Close() => _controller.Dispose();
@@ -87,6 +118,10 @@ public partial class PlaybackBar : UserControl
         PlayPauseButton.Content = "▶";
         PositionSlider.Value = 0;
         PositionText.Text = "00:00";
+        if (_totalFrames > 0)
+        {
+            FrameText.Text = $"{_frameUnit} 0 / {_totalFrames:N0}";
+        }
     }
 
     private void PositionSlider_DragStarted(object sender, DragStartedEventArgs e) => _scrubbing = true;

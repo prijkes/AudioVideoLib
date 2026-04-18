@@ -32,6 +32,15 @@
                        Width="50"
                        Margin="8,0,0,0"
                        TextAlignment="Right" />
+            <TextBlock x:Name="FrameText"
+                       DockPanel.Dock="Right"
+                       Text=""
+                       FontFamily="Consolas"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource TextSecondaryBrush}"
+                       Margin="8,0,0,0"
+                       TextAlignment="Right"
+                       Visibility="Collapsed" />
             <Slider x:Name="PositionSlider"
                     Minimum="0"
                     Maximum="1"

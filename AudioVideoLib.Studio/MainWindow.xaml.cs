@@ -157,7 +157,13 @@ public partial class MainWindow : Window
         TagTabControl.ItemsSource = CurrentDossier.TagTabs;
 
         AnalysisPanel.Load(CurrentDossier);
-        PlayBar.Open(CurrentDossier.FilePath);
+        var (frameCount, frameUnit) = CurrentDossier.AudioStream switch
+        {
+            AudioVideoLib.IO.MpaStream mpa => (mpa.Frames.Count(), "Frame"),
+            AudioVideoLib.IO.OggStream ogg => (ogg.PageCount, "Page"),
+            _ => (0, "Frame"),
+        };
+        PlayBar.Open(CurrentDossier.FilePath, frameCount, frameUnit);
         PlayBar.Visibility = Visibility.Visible;
 
         // Restore last selected node, or render the root.
