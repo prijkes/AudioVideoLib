@@ -27,6 +27,11 @@ public static class LintReport
     {
         var sections = new List<LintSection>();
 
+        if (dossier.ParseWarnings.Count > 0)
+        {
+            sections.Add(new LintSection("Tag parse warnings", dossier.ParseWarnings));
+        }
+
         // Per-tag validation via the existing TagValidator.
         foreach (var tab in dossier.TagTabs)
         {

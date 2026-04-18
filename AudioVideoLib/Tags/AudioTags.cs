@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
+using AudioVideoLib;
 using AudioVideoLib.Collections;
 
 /*
@@ -58,6 +59,18 @@ public sealed class AudioTags : IEnumerable<IAudioTagOffset>
     /// Occurs when an audio tag has been parsed.
     /// </summary>
     public event EventHandler<AudioTagParsedEventArgs>? AudioTagParsed;
+
+    /// <summary>
+    /// Occurs when a tag reader throws while parsing. The failing tag is skipped and the next
+    /// reader is tried — subscribers receive the exception and context without aborting the scan.
+    /// </summary>
+    public event EventHandler<AudioTagParseErrorEventArgs>? AudioTagParseError;
+
+    /// <summary>
+    /// Occurs when an ID3v2 frame fails to parse. Forwarded from <see cref="Id3v2TagReader.FrameParseError"/>
+    /// so callers can subscribe once at the <see cref="AudioTags"/> level.
+    /// </summary>
+    public event EventHandler<Id3v2FrameParseErrorEventArgs>? Id3v2FrameParseError;
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
@@ -228,6 +241,13 @@ public sealed class AudioTags : IEnumerable<IAudioTagOffset>
         AudioTagParsed?.Invoke(this, e);
     }
 
+    /// <summary>
+    /// Raises the <see cref="AudioTagParseError" /> event.
+    /// </summary>
+    /// <param name="e">The <see cref="AudioTagParseErrorEventArgs" /> instance containing the event data.</param>
+    private void OnAudioTagParseError(AudioTagParseErrorEventArgs e) =>
+        AudioTagParseError?.Invoke(this, e);
+
     ////------------------------------------------------------------------------------------------------------------------------------
 
     private List<IAudioTagOffset> ReadTagsAtStart(Stream stream, long streamPosition, long streamLength)
@@ -304,11 +324,28 @@ public sealed class AudioTags : IEnumerable<IAudioTagOffset>
 
         foreach (var reader in _audioTagFactory.Select(pair => pair.Value()))
         {
+            if (reader is Id3v2TagReader v2Reader)
+            {
+                v2Reader.FrameParseError += ForwardId3v2FrameParseError;
+            }
+
             // Raise before parsing event.
             var parseEventArgs = new AudioTagParseEventArgs(reader, tagOrigin);
             OnAudioTagParse(parseEventArgs);
 
-            var tagOffset = reader.ReadFromStream(stream, tagOrigin);
+            IAudioTagOffset? tagOffset;
+            try
+            {
+                tagOffset = reader.ReadFromStream(stream, tagOrigin);
+            }
+            catch (Exception ex) when (ex is InvalidDataException or ArgumentException or InvalidVersionException or EndOfStreamException)
+            {
+                // A single failing tag reader shouldn't kill the whole scan — surface the error
+                // via AudioTagParseError so the caller can log it, then try the next reader.
+                OnAudioTagParseError(new AudioTagParseErrorEventArgs(reader, tagOrigin, startPosition, ex));
+                tagOffset = null;
+            }
+
             if (tagOffset != null)
             {
                 // Raise after parsing event.
@@ -321,4 +358,7 @@ public sealed class AudioTags : IEnumerable<IAudioTagOffset>
         }
         return null;
     }
+
+    private void ForwardId3v2FrameParseError(object? sender, Id3v2FrameParseErrorEventArgs e) =>
+        Id3v2FrameParseError?.Invoke(this, e);
 }

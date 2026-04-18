@@ -17,6 +17,12 @@ public sealed partial class Id3v2TagReader
     /// </summary>
     public event EventHandler<Id3v2FrameParsedEventArgs>? FrameParsed;
 
+    /// <summary>
+    /// Occurs when a frame fails to parse. The reader skips the failing frame and continues —
+    /// subscribers can record the error without aborting the whole tag read.
+    /// </summary>
+    public event EventHandler<Id3v2FrameParseErrorEventArgs>? FrameParseError;
+
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -45,4 +51,10 @@ public sealed partial class Id3v2TagReader
     /// </summary>
     /// <param name="e">The <see cref="AudioVideoLib.Tags.Id3v2FrameParsedEventArgs"/> instance containing the event data.</param>
     private void OnFrameParsed(Id3v2FrameParsedEventArgs e) => FrameParsed?.Invoke(this, e);
+
+    /// <summary>
+    /// Raises the <see cref="FrameParseError"/> event.
+    /// </summary>
+    /// <param name="e">The <see cref="AudioVideoLib.Tags.Id3v2FrameParseErrorEventArgs"/> instance containing the event data.</param>
+    private void OnFrameParseError(Id3v2FrameParseErrorEventArgs e) => FrameParseError?.Invoke(this, e);
 }

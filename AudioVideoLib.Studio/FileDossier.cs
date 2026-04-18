@@ -28,7 +28,15 @@ public sealed class FileDossier : INotifyPropertyChanged
     private List<IAudioTagOffset> _offsets = [];
     private readonly HashSet<IAudioTag> _newTags = new(ReferenceEqualityComparer.Instance);
     private readonly HashSet<IAudioTag> _removedTags = new(ReferenceEqualityComparer.Instance);
+    private readonly List<ValidationIssue> _parseWarnings = [];
     private FlacStream? _flacStream;
+
+    /// <summary>
+    /// Non-fatal errors collected while parsing the file — e.g. a single ID3v2 frame with an
+    /// invalid language code. Surfaced in the validation/lint panel so the rest of the file
+    /// can still be inspected.
+    /// </summary>
+    public IReadOnlyList<ValidationIssue> ParseWarnings => _parseWarnings;
 
     public bool IsFlac { get; private set; }
 
@@ -493,7 +501,17 @@ public sealed class FileDossier : INotifyPropertyChanged
 
         using var fs = new MemoryStream(FileBytes);
 
-        _offsets = [.. AudioTags.ReadStream(fs).OfType<IAudioTagOffset>()];
+        var audioTags = new AudioTags();
+        audioTags.Id3v2FrameParseError += (_, e) =>
+            _parseWarnings.Add(new ValidationIssue(
+                ValidationSeverity.Warning,
+                $"ID3v2 frame at 0x{e.StartOffset:X8} ({e.Version}) skipped: {e.Exception.Message}"));
+        audioTags.AudioTagParseError += (_, e) =>
+            _parseWarnings.Add(new ValidationIssue(
+                ValidationSeverity.Warning,
+                $"{e.Reader.GetType().Name} at 0x{e.StartOffset:X8} skipped: {e.Exception.Message}"));
+        audioTags.ReadTags(fs);
+        _offsets = [.. audioTags.OfType<IAudioTagOffset>()];
         var tagOffsets = _offsets;
 
         var id3v2 = tagOffsets.Select(o => o.AudioTag).OfType<Id3v2Tag>().FirstOrDefault();

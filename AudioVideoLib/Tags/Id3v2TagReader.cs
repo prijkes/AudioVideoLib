@@ -7,6 +7,7 @@ using System.IO.Hashing;
 using System.Linq;
 using System.Text;
 
+using AudioVideoLib;
 using AudioVideoLib.IO;
 
 public sealed partial class Id3v2TagReader : IAudioTagReader
@@ -183,15 +184,27 @@ public sealed partial class Id3v2TagReader : IAudioTagReader
                 break;
             }
 
-            var frame = ReadSingleFrame(sb, tag, totalSizeItems - bytesRead);
+            Id3v2Frame? frame;
+            try
+            {
+                frame = ReadSingleFrame(sb, tag, totalSizeItems - bytesRead);
+            }
+            catch (Exception ex) when (ex is InvalidDataException or ArgumentException or InvalidVersionException or EndOfStreamException)
+            {
+                // One bad frame shouldn't kill the whole tag. Surface the error via
+                // FrameParseError so the caller can log it, then continue walking.
+                OnFrameParseError(new Id3v2FrameParseErrorEventArgs(null, startPosition, tag.Version, ex));
+                frame = null;
+            }
+
             if (frame != null)
             {
                 frames.Add(frame);
             }
             else if (sb.Position == startPosition)
             {
-                // Id3v2Frame.ReadFromStream returned null without consuming anything;
-                // skip the next byte so we make forward progress.
+                // Id3v2Frame.ReadFromStream returned null (or threw) without consuming
+                // anything; skip one byte so we make forward progress.
                 sb.Position = startPosition + 1;
             }
 
