@@ -56,7 +56,7 @@ public sealed partial class Id3v2UrlLinkFrame : Id3v2Frame
     /// <inheritdoc />
     public override byte[] Data
     {
-        get => Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default).GetBytes(Url);
+        get => Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default).GetBytes(Url ?? string.Empty);
 
         protected set
         {
