@@ -151,7 +151,7 @@
         <DataTemplate DataType="{x:Type local:Id3v1TabViewModel}">
             <Grid Margin="10" Width="640" HorizontalAlignment="Left">
                 <Grid.Resources>
-                    <Style x:Key="EncCombo" TargetType="ComboBox">
+                    <Style x:Key="EncCombo" TargetType="ComboBox" BasedOn="{StaticResource {x:Type ComboBox}}">
                         <Setter Property="Margin" Value="6,0,0,6" />
                         <Setter Property="MinWidth" Value="220" />
                         <Setter Property="ToolTip" Value="Encoding used to decode the bytes — and to re-encode them on save." />
@@ -182,10 +182,7 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0">
                             <TextBlock Text="Year"  Style="{StaticResource FieldLabel}" />
-                            <DockPanel Margin="0,0,0,6">
-                                <ComboBox DockPanel.Dock="Right" Style="{StaticResource EncCombo}" SelectedItem="{Binding YearEncoding}" />
-                                <TextBox  Style="{StaticResource EditField}" Margin="0" Text="{Binding Year, UpdateSourceTrigger=PropertyChanged}" MaxLength="4" />
-                            </DockPanel>
+                            <TextBox   Style="{StaticResource EditField}" Text="{Binding Year, UpdateSourceTrigger=PropertyChanged}" MaxLength="4" />
                         </StackPanel>
                         <StackPanel Grid.Column="2">
                             <TextBlock Text="Track" Style="{StaticResource FieldLabel}" />
