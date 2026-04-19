@@ -6,6 +6,7 @@ using System.IO;
 using System.Text;
 
 using AudioVideoLib.Formats;
+using AudioVideoLib.Tags;
 
 /// <summary>
 /// Minimal structural walker for RIFF containers (e.g. WAV and RIFX). Does not decode audio samples.
@@ -18,6 +19,8 @@ using AudioVideoLib.Formats;
 public sealed class RiffStream : IAudioStream
 {
     private const int MaxChunkCaptureSize = 64 * 1024;
+
+    private const int MaxMetadataChunkCaptureSize = 16 * 1024 * 1024;
 
     private readonly List<RiffChunk> _chunks = [];
 
@@ -98,6 +101,27 @@ public sealed class RiffStream : IAudioStream
     /// </summary>
     public long DataSize { get; private set; }
 
+    /// <summary>
+    /// Gets the parsed <c>LIST INFO</c> tag if one was present, otherwise <c>null</c>.
+    /// When multiple <c>LIST INFO</c> chunks are present, items are merged in file order.
+    /// </summary>
+    public RiffInfoTag? InfoTag { get; private set; }
+
+    /// <summary>
+    /// Gets the parsed ID3v2 tag from an embedded <c>id3 </c> (or <c>ID3 </c>) chunk, or <c>null</c>.
+    /// </summary>
+    public IAudioTagOffset? EmbeddedId3v2 { get; private set; }
+
+    /// <summary>
+    /// Gets the parsed BWF <c>bext</c> chunk, or <c>null</c> if absent or malformed.
+    /// </summary>
+    public BwfBextChunk? BextChunk { get; private set; }
+
+    /// <summary>
+    /// Gets the parsed <c>iXML</c> chunk, or <c>null</c> if absent or empty.
+    /// </summary>
+    public IxmlChunk? IxmlChunk { get; private set; }
+
     /// <inheritdoc/>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="stream"/> is <c>null</c>.</exception>
     public bool ReadStream(Stream stream)
@@ -147,7 +171,9 @@ public sealed class RiffStream : IAudioStream
             var dataEnd = Math.Min(dataStart + size, containerEnd);
 
             byte[] data = [];
-            if (id is "fmt " or "LIST" && size is > 0 and < MaxChunkCaptureSize)
+            var isMetadataChunk = id is "id3 " or "ID3 " or "bext" or "iXML";
+            var captureCap = isMetadataChunk ? MaxMetadataChunkCaptureSize : MaxChunkCaptureSize;
+            if ((id is "fmt " or "LIST" || isMetadataChunk) && size is > 0 && size < captureCap)
             {
                 data = new byte[size];
                 var read = stream.Read(data, 0, (int)size);
@@ -178,6 +204,44 @@ public sealed class RiffStream : IAudioStream
             {
                 DataOffset = dataStart;
                 DataSize = size;
+            }
+            else if (id == "LIST" && data.Length >= 4 && Encoding.ASCII.GetString(data, 0, 4) == "INFO")
+            {
+                var parsed = RiffInfoTag.FromListPayload(data);
+                if (parsed is not null)
+                {
+                    if (InfoTag is null)
+                    {
+                        InfoTag = parsed;
+                    }
+                    else
+                    {
+                        foreach (var kvp in parsed.Items)
+                        {
+                            InfoTag.SetItem(kvp.Key, kvp.Value);
+                        }
+                    }
+                }
+            }
+            else if (id is "id3 " or "ID3 " && data.Length > 0 && EmbeddedId3v2 is null)
+            {
+                try
+                {
+                    using var ms = new MemoryStream(data, writable: false);
+                    EmbeddedId3v2 = new Id3v2TagReader().ReadFromStream(ms, TagOrigin.Start);
+                }
+                catch (Exception ex) when (ex is InvalidDataException or ArgumentException or EndOfStreamException)
+                {
+                    EmbeddedId3v2 = null;
+                }
+            }
+            else if (id == "bext" && data.Length > 0 && BextChunk is null)
+            {
+                BextChunk = BwfBextChunk.Parse(data);
+            }
+            else if (id == "iXML" && data.Length > 0 && IxmlChunk is null)
+            {
+                IxmlChunk = AudioVideoLib.Formats.IxmlChunk.Parse(data);
             }
 
             // Word-align: chunks are padded to even length.

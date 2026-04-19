@@ -20,6 +20,11 @@ public sealed class AudioStreams : IEnumerable<IAudioStream>
         { typeof(RiffStream), () => new RiffStream() },
         { typeof(AiffStream), () => new AiffStream() },
         { typeof(OggStream), () => new OggStream() },
+        { typeof(DsfStream), () => new DsfStream() },
+        { typeof(DffStream), () => new DffStream() },
+        { typeof(Mp4Stream), () => new Mp4Stream() },
+        { typeof(AsfStream), () => new AsfStream() },
+        { typeof(MatroskaStream), () => new MatroskaStream() },
     };
 
     private readonly NotifyingList<IAudioStream> _streams = [];

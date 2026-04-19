@@ -18,8 +18,14 @@ using AudioVideoLib.Formats;
 public sealed class AiffStream : IAudioStream
 {
     private const int MaxChunkCaptureSize = 8 * 1024;
+    private const int MaxTextChunkCaptureSize = 64 * 1024;
 
     private readonly List<AiffChunk> _chunks = [];
+
+    private string? _name;
+    private string? _author;
+    private string? _annotation;
+    private List<AiffComment>? _comments;
 
     /// <inheritdoc/>
     public long StartOffset { get; private set; }
@@ -93,6 +99,12 @@ public sealed class AiffStream : IAudioStream
     /// </summary>
     public long SsndSize { get; private set; }
 
+    /// <summary>
+    /// Gets the bundle of standard AIFF text chunks (<c>NAME</c>, <c>AUTH</c>, <c>ANNO</c>, <c>COMT</c>)
+    /// discovered while walking the container, or <c>null</c> if none were present.
+    /// </summary>
+    public AiffTextChunks? TextChunks { get; private set; }
+
     /// <inheritdoc/>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="stream"/> is <c>null</c>.</exception>
     public bool ReadStream(Stream stream)
@@ -139,7 +151,8 @@ public sealed class AiffStream : IAudioStream
             var dataEnd = Math.Min(dataStart + size, containerEnd);
 
             byte[] data = [];
-            if (id is "COMM" && size is > 0 and < MaxChunkCaptureSize)
+            var captureLimit = id is "NAME" or "AUTH" or "ANNO" or "COMT" ? MaxTextChunkCaptureSize : MaxChunkCaptureSize;
+            if (id is "COMM" or "NAME" or "AUTH" or "ANNO" or "COMT" && size is > 0 && size < captureLimit)
             {
                 data = new byte[size];
                 var read = stream.Read(data, 0, (int)size);
@@ -172,6 +185,27 @@ public sealed class AiffStream : IAudioStream
                 SsndOffset = dataStart;
                 SsndSize = size;
             }
+            else if (id == "NAME" && data.Length > 0)
+            {
+                _name = AiffTextChunks.ReadText(data);
+            }
+            else if (id == "AUTH" && data.Length > 0)
+            {
+                _author = AiffTextChunks.ReadText(data);
+            }
+            else if (id == "ANNO" && data.Length > 0)
+            {
+                _annotation = AiffTextChunks.ReadText(data);
+            }
+            else if (id == "COMT" && data.Length > 0)
+            {
+                var parsed = AiffTextChunks.ReadComments(data);
+                if (parsed is not null)
+                {
+                    _comments ??= [];
+                    _comments.AddRange(parsed);
+                }
+            }
 
             if ((size & 1) != 0 && stream.Position < containerEnd)
             {
@@ -180,6 +214,11 @@ public sealed class AiffStream : IAudioStream
         }
 
         EndOffset = stream.Position;
+        if (_name is not null || _author is not null || _annotation is not null || _comments is not null)
+        {
+            TextChunks = new AiffTextChunks(_name, _author, _annotation, _comments ?? (IReadOnlyList<AiffComment>)[]);
+        }
+
         return _chunks.Count > 0;
     }
 
