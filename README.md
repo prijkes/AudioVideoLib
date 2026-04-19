@@ -20,7 +20,7 @@ dotnet add package AudioVideoLib
 | Project | Purpose |
 | --- | --- |
 | `AudioVideoLib` | The core library (formats, tags, streams). |
-| `AudioVideoLib.Tests` | xUnit test suite (800+ tests). |
+| `AudioVideoLib.Tests` | xUnit test suite (1000+ tests). |
 | `AudioVideoLib.Samples` | Example custom frame/tag implementations. |
 | `AudioVideoLib.Demo` | CLI tool that exercises every feature of the library. |
 | `AudioVideoLib.Cli` | `avs` command-line tool: `info`, `validate`, `batch`. |
@@ -35,7 +35,11 @@ dotnet add package AudioVideoLib
 * FLAC
 * RIFF / WAV (chunk walking)
 * AIFF / AIFF-C (chunk walking, 80-bit IEEE 754 sample-rate decoding)
-* OGG (page walking)
+* OGG (page walking, Vorbis / Opus codec identification)
+* MP4 / M4A (ISO/IEC 14496-12 box walker, iTunes-style atom metadata)
+* ASF / WMA / WMV (Header Object walker)
+* Matroska / WebM (EBML walker)
+* DSF / DFF (DSD audio)
 
 ### Metadata / tags
 * APE Tag (v1, v2)
@@ -44,6 +48,14 @@ dotnet add package AudioVideoLib
 * Lyrics3 (v1, v2)
 * MusicMatch Tag
 * Vorbis Comments (standalone and inside FLAC)
+* MP4 / iTunes ilst items (text, `trkn`/`disk` pairs, `tmpo`, `cpil`, `covr` JPEG/PNG, free-form `----`)
+* ASF Content Description, Extended Content Description, Metadata, Metadata Library
+* Matroska Tags / SimpleTag (incl. nested, TagBinary, TargetTypeValue)
+* WAV `LIST INFO` (INAM, IART, IPRD, ICRD, ICMT, IGNR, ITRK, IENG, ISFT, ICOP, …)
+* BWF `bext` chunk (broadcast metadata, EBU Tech 3285)
+* iXML chunk (film/audio production metadata)
+* AIFF text chunks (NAME, AUTH, ANNO, COMT)
+* ID3v2 embedded inside WAV (`id3 ` chunk) and DSF / DFF
 
 ### VBR headers
 * Xing

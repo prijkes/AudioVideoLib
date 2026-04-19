@@ -583,6 +583,8 @@ public sealed class FileDossier : INotifyPropertyChanged
             }
         }
 
+        AddContainerTabs(audio);
+
         BuildHexRegions(fs, tagOffsets);
 
         Notify(nameof(EncoderSummary));
@@ -668,6 +670,258 @@ public sealed class FileDossier : INotifyPropertyChanged
         }
 
         TechCards.Add(new TechCard("File Size", FileSizeText));
+    }
+
+    private void AddContainerTabs(IAudioStream? audio)
+    {
+        switch (audio)
+        {
+            case RiffStream riff:
+                AddRiffContainerTabs(riff);
+                break;
+            case AiffStream aiff:
+                AddAiffContainerTabs(aiff);
+                break;
+            case Mp4Stream mp4 when Mp4HasContent(mp4.Tag):
+                TagTabs.Add(BuildMp4Tab(mp4.Tag));
+                break;
+            case AsfStream asf when AsfHasContent(asf.MetadataTag):
+                TagTabs.Add(BuildAsfTab(asf.MetadataTag));
+                break;
+            case MatroskaStream mkv when mkv.Tag.Entries.Count > 0:
+                TagTabs.Add(BuildMatroskaTab(mkv.Tag));
+                break;
+            case DsfStream dsf when dsf.EmbeddedId3v2 is { } id3:
+                TagTabs.Add(new Id3v2TabViewModel(id3));
+                break;
+            case DffStream dff when dff.EmbeddedId3v2 is { } id3:
+                TagTabs.Add(new Id3v2TabViewModel(id3));
+                break;
+        }
+    }
+
+    private static bool Mp4HasContent(Mp4MetaTag tag) =>
+        !string.IsNullOrEmpty(tag.Title) || !string.IsNullOrEmpty(tag.Artist) || !string.IsNullOrEmpty(tag.Album)
+        || !string.IsNullOrEmpty(tag.AlbumArtist) || !string.IsNullOrEmpty(tag.Year) || !string.IsNullOrEmpty(tag.Genre)
+        || !string.IsNullOrEmpty(tag.Composer) || !string.IsNullOrEmpty(tag.Comment) || !string.IsNullOrEmpty(tag.Tool)
+        || tag.TrackNumber.HasValue || tag.DiscNumber.HasValue || tag.Bpm.HasValue || tag.Compilation.HasValue
+        || tag.CoverArt.Count > 0 || tag.FreeFormItems.Count > 0 || tag.Items.Count > 0;
+
+    private static bool AsfHasContent(AsfMetadataTag meta) =>
+        meta.HasContentDescription || meta.ExtendedItems.Count > 0
+        || meta.MetadataItems.Count > 0 || meta.MetadataLibraryItems.Count > 0;
+
+    private static void AddRow(List<ContainerTagRow> rows, string key, string? value)
+    {
+        if (!string.IsNullOrEmpty(value))
+        {
+            rows.Add(new ContainerTagRow(key, value));
+        }
+    }
+
+    private void AddRiffContainerTabs(RiffStream riff)
+    {
+        if (riff.InfoTag is { } info && info.Items.Count > 0)
+        {
+            var rows = new List<ContainerTagRow>();
+            void Add(string k, string? v) => AddRow(rows, k, v);
+            Add("Title", info.Title);
+            Add("Artist", info.Artist);
+            Add("Product", info.Product);
+            Add("Creation date", info.CreationDate);
+            Add("Comment", info.Comment);
+            Add("Genre", info.Genre);
+            Add("Track", info.Track);
+            Add("Engineer", info.Engineer);
+            Add("Software", info.Software);
+            Add("Copyright", info.Copyright);
+            foreach (var kv in info.Items)
+            {
+                if (kv.Key is not ("INAM" or "IART" or "IPRD" or "ICRD" or "ICMT" or "IGNR" or "ITRK" or "IENG" or "ISFT" or "ICOP"))
+                {
+                    rows.Add(new(kv.Key, kv.Value));
+                }
+            }
+
+            TagTabs.Add(new ContainerTagTabViewModel("WAV INFO", "INFO", rows));
+        }
+
+        if (riff.BextChunk is { } bext)
+        {
+            var rows = new List<ContainerTagRow>
+            {
+                new("Description", bext.Description ?? string.Empty),
+                new("Originator", bext.Originator ?? string.Empty),
+                new("Originator reference", bext.OriginatorReference ?? string.Empty),
+                new("Origination date", bext.OriginationDate ?? string.Empty),
+                new("Origination time", bext.OriginationTime ?? string.Empty),
+                new("Time reference", bext.TimeReference.ToString("N0", System.Globalization.CultureInfo.InvariantCulture)),
+                new("Version", bext.Version.ToString(System.Globalization.CultureInfo.InvariantCulture)),
+                new("Coding history", bext.CodingHistory ?? string.Empty),
+            };
+            TagTabs.Add(new ContainerTagTabViewModel("BWF bext", "BWF", rows));
+        }
+
+        if (riff.IxmlChunk is { } ixml)
+        {
+            var rows = new List<ContainerTagRow>();
+            void Add(string k, string? v) => AddRow(rows, k, v);
+            Add("Project", ixml.ProjectName);
+            Add("Scene", ixml.SceneName);
+            Add("Take", ixml.TakeName);
+            Add("Tape", ixml.Tape);
+            Add("Note", ixml.Note);
+            Add("File UID", ixml.FileUid);
+            Add("Ubits", ixml.Ubits);
+            if (rows.Count == 0)
+            {
+                rows.Add(new ContainerTagRow("(raw XML)", $"{ixml.Xml.Length:N0} chars"));
+            }
+
+            TagTabs.Add(new ContainerTagTabViewModel("iXML", "iXML", rows));
+        }
+
+        if (riff.EmbeddedId3v2?.AudioTag is Id3v2Tag wavId3)
+        {
+            TagTabs.Add(new Id3v2TabViewModel(wavId3));
+        }
+    }
+
+    private void AddAiffContainerTabs(AiffStream aiff)
+    {
+        if (aiff.TextChunks is not { } text)
+        {
+            return;
+        }
+
+        var rows = new List<ContainerTagRow>();
+        AddRow(rows, "Name", text.Name);
+        AddRow(rows, "Author", text.Author);
+        AddRow(rows, "Annotation", text.Annotation);
+        for (var i = 0; i < text.Comments.Count; i++)
+        {
+            var c = text.Comments[i];
+            rows.Add(new($"Comment {i + 1}", c.Text ?? string.Empty));
+        }
+
+        if (rows.Count > 0)
+        {
+            TagTabs.Add(new ContainerTagTabViewModel("AIFF text", "AIFF", rows));
+        }
+    }
+
+    private static ContainerTagTabViewModel BuildMp4Tab(Mp4MetaTag tag)
+    {
+        var rows = new List<ContainerTagRow>();
+        void Add(string k, string? v) => AddRow(rows, k, v);
+        Add("Title", tag.Title);
+        Add("Artist", tag.Artist);
+        Add("Album", tag.Album);
+        Add("Album artist", tag.AlbumArtist);
+        Add("Year", tag.Year);
+        Add("Genre", tag.Genre);
+        Add("Composer", tag.Composer);
+        Add("Comment", tag.Comment);
+        Add("Encoder", tag.Tool);
+        if (tag.TrackNumber is int tn)
+        {
+            rows.Add(new("Track", tag.TrackTotal is int tt ? $"{tn} / {tt}" : tn.ToString(System.Globalization.CultureInfo.InvariantCulture)));
+        }
+
+        if (tag.DiscNumber is int dn)
+        {
+            rows.Add(new("Disc", tag.DiscTotal is int dt ? $"{dn} / {dt}" : dn.ToString(System.Globalization.CultureInfo.InvariantCulture)));
+        }
+
+        if (tag.Bpm is int bpm)
+        {
+            rows.Add(new("BPM", bpm.ToString(System.Globalization.CultureInfo.InvariantCulture)));
+        }
+
+        if (tag.Compilation == true)
+        {
+            rows.Add(new("Compilation", "yes"));
+        }
+
+        for (var i = 0; i < tag.CoverArt.Count; i++)
+        {
+            var art = tag.CoverArt[i];
+            rows.Add(new($"Cover art {i + 1}", $"{art.Format}, {art.Data.Length:N0} bytes"));
+        }
+
+        foreach (var ff in tag.FreeFormItems)
+        {
+            rows.Add(new($"{ff.Key.Mean}/{ff.Key.Name}", ff.Value));
+        }
+
+        return new ContainerTagTabViewModel("MP4 / iTunes", "MP4", rows);
+    }
+
+    private static ContainerTagTabViewModel BuildAsfTab(AsfMetadataTag meta)
+    {
+        var rows = new List<ContainerTagRow>();
+        void Add(string k, string? v) => AddRow(rows, k, v);
+        Add("Title", meta.Title);
+        Add("Author", meta.Author);
+        Add("Copyright", meta.Copyright);
+        Add("Description", meta.Description);
+        Add("Rating", meta.Rating);
+
+        foreach (var kv in meta.ExtendedItems)
+        {
+            rows.Add(new(kv.Key, AsfValueToString(kv.Value)));
+        }
+
+        foreach (var item in meta.MetadataItems)
+        {
+            rows.Add(new($"[MO] {item.Name}", AsfValueToString(item.Value)));
+        }
+
+        foreach (var item in meta.MetadataLibraryItems)
+        {
+            rows.Add(new($"[MLO] {item.Name}", AsfValueToString(item.Value)));
+        }
+
+        return new ContainerTagTabViewModel("ASF / WMA", "ASF", rows);
+    }
+
+    private static string AsfValueToString(AsfTypedValue v) => v.Type switch
+    {
+        AsfDataType.UnicodeString => v.AsString ?? string.Empty,
+        AsfDataType.Bytes => $"{v.AsBytes?.Length ?? 0:N0} bytes",
+        AsfDataType.Bool => v.AsBool.ToString(),
+        AsfDataType.Word => v.AsWord.ToString(System.Globalization.CultureInfo.InvariantCulture),
+        AsfDataType.Dword => v.AsDword.ToString(System.Globalization.CultureInfo.InvariantCulture),
+        AsfDataType.Qword => v.AsQword.ToString(System.Globalization.CultureInfo.InvariantCulture),
+        _ => string.Empty,
+    };
+
+    private static ContainerTagTabViewModel BuildMatroskaTab(MatroskaTag tag)
+    {
+        var rows = new List<ContainerTagRow>();
+        foreach (var entry in tag.Entries)
+        {
+            var prefix = entry.Targets.TargetTypeValue > 0
+                ? $"[{entry.Targets.TargetTypeValue}] "
+                : string.Empty;
+            FlattenSimpleTags(entry.SimpleTags, prefix, rows);
+        }
+
+        return new ContainerTagTabViewModel("Matroska", "MKV", rows);
+    }
+
+    private static void FlattenSimpleTags(IList<MatroskaSimpleTag> tags, string prefix, List<ContainerTagRow> rows)
+    {
+        foreach (var st in tags)
+        {
+            var key = $"{prefix}{st.Name}";
+            var value = st.Value ?? (st.Binary is { Length: > 0 } b ? $"{b.Length:N0} bytes" : string.Empty);
+            rows.Add(new(key, value));
+            if (st.SimpleTags.Count > 0)
+            {
+                FlattenSimpleTags(st.SimpleTags, key + " / ", rows);
+            }
+        }
     }
 
     private void BuildEncoder(IAudioStream? audio)

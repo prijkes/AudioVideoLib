@@ -875,6 +875,25 @@ public sealed class Lyrics3v1TabViewModel : TagTabViewModel
     }
 }
 
+public sealed record ContainerTagRow(string Key, string Value);
+
+/// <summary>
+/// Read-only tag tab for container-embedded metadata (MP4 ilst, ASF CDO/ECDO,
+/// Matroska SimpleTag, RIFF INFO, AIFF text chunks). Editing of these formats
+/// is deferred to a follow-up.
+/// </summary>
+public sealed class ContainerTagTabViewModel : TagTabViewModel
+{
+    public ContainerTagTabViewModel(string header, string sourceBadge, IReadOnlyList<ContainerTagRow> rows)
+    {
+        Header = header;
+        SourceBadge = sourceBadge;
+        Rows = rows;
+    }
+
+    public IReadOnlyList<ContainerTagRow> Rows { get; }
+}
+
 public sealed class MusicMatchTabViewModel : TagTabViewModel
 {
     public MusicMatchTabViewModel(MusicMatchTag tag)

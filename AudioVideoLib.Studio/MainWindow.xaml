@@ -276,6 +276,29 @@
             </DockPanel>
         </DataTemplate>
 
+        <DataTemplate DataType="{x:Type local:ContainerTagTabViewModel}">
+            <DockPanel Margin="10">
+                <TextBlock DockPanel.Dock="Top"
+                           Text="(Read-only in this version)"
+                           Foreground="#888888"
+                           FontStyle="Italic"
+                           Margin="0,0,0,6" />
+                <DataGrid ItemsSource="{Binding Rows}"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True"
+                          CanUserAddRows="False"
+                          CanUserDeleteRows="False"
+                          HeadersVisibility="Column"
+                          GridLinesVisibility="Horizontal"
+                          SelectionMode="Single">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Key"   Binding="{Binding Key}"   Width="220" />
+                        <DataGridTextColumn Header="Value" Binding="{Binding Value}" Width="*" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </DockPanel>
+        </DataTemplate>
+
         <DataTemplate DataType="{x:Type local:MusicMatchTabViewModel}">
             <StackPanel Margin="10" MaxWidth="520" HorizontalAlignment="Left">
                 <TextBlock Text="Version"              Style="{StaticResource FieldLabel}" />

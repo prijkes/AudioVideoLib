@@ -89,26 +89,48 @@ public static class InspectorTreeBuilder
             root.Children.Add(BuildAudioRegion(cursor, fileBytes.Length, audioStream));
         }
 
-        // FLAC: if no tag offsets, try building from metadata blocks
-        if (sorted.Count == 0 && audioStream is FlacStream flac)
+        // Container-only formats: when no tag offsets are detected, surface the container's structure.
+        if (sorted.Count == 0)
         {
-            root.Children.Clear();
-            BuildFlacTree(root, fileBytes, flac);
-        }
-        else if (sorted.Count == 0 && audioStream is RiffStream riff)
-        {
-            root.Children.Clear();
-            BuildRiffTree(root, riff);
-        }
-        else if (sorted.Count == 0 && audioStream is AiffStream aiff)
-        {
-            root.Children.Clear();
-            BuildAiffTree(root, aiff);
-        }
-        else if (sorted.Count == 0 && audioStream is OggStream ogg)
-        {
-            root.Children.Clear();
-            BuildOggTree(root, ogg);
+            switch (audioStream)
+            {
+                case FlacStream flac:
+                    root.Children.Clear();
+                    BuildFlacTree(root, fileBytes, flac);
+                    break;
+                case RiffStream riff:
+                    root.Children.Clear();
+                    BuildRiffTree(root, riff);
+                    break;
+                case AiffStream aiff:
+                    root.Children.Clear();
+                    BuildAiffTree(root, aiff);
+                    break;
+                case OggStream ogg:
+                    root.Children.Clear();
+                    BuildOggTree(root, ogg);
+                    break;
+                case DsfStream dsf:
+                    root.Children.Clear();
+                    BuildDsfTree(root, dsf);
+                    break;
+                case DffStream dff:
+                    root.Children.Clear();
+                    BuildDffTree(root, dff);
+                    break;
+                case Mp4Stream mp4:
+                    root.Children.Clear();
+                    BuildMp4Tree(root, mp4);
+                    break;
+                case AsfStream asf:
+                    root.Children.Clear();
+                    BuildAsfTree(root, asf);
+                    break;
+                case MatroskaStream mkv:
+                    root.Children.Clear();
+                    BuildMatroskaTree(root, mkv);
+                    break;
+            }
         }
 
         return root;
@@ -1069,5 +1091,172 @@ public static class InspectorTreeBuilder
     {
         var ts = TimeSpan.FromMilliseconds(milliseconds);
         return $"{(int)ts.TotalMinutes:D2}:{ts.Seconds:D2}.{ts.Milliseconds:D3}";
+    }
+
+    ////------------------------------------------------------------------------------------------------------------------------------
+    //// DSF / DFF
+    ////------------------------------------------------------------------------------------------------------------------------------
+
+    private static void BuildDsfTree(InspectorNode root, DsfStream dsf)
+    {
+        root.Properties.Add(Prop("Format", "DSF / DSD"));
+        root.Properties.Add(Prop("Sample rate", $"{dsf.SampleRate:N0} Hz"));
+        root.Properties.Add(Prop("Channels", dsf.Channels.ToString()));
+        root.Properties.Add(Prop("Bits/sample", dsf.BitsPerSample.ToString()));
+        root.Properties.Add(Prop("Sample count", dsf.SampleCount.ToString("N0")));
+        root.Properties.Add(Prop("Metadata pointer", $"0x{dsf.MetadataPointer:X16}"));
+
+        foreach (var chunk in dsf.Chunks)
+        {
+            root.Children.Add(new InspectorNode
+            {
+                Label = $"{chunk.Id} ({chunk.EndOffset - chunk.StartOffset:N0} B)",
+                StartOffset = chunk.StartOffset,
+                EndOffset = chunk.EndOffset,
+            });
+        }
+
+        if (dsf.EmbeddedId3v2 is { } dsfId3)
+        {
+            root.Children.Add(BuildEmbeddedId3Node(dsfId3));
+        }
+    }
+
+    private static void BuildDffTree(InspectorNode root, DffStream dff)
+    {
+        root.Properties.Add(Prop("Format", "DFF / DSDIFF"));
+        root.Properties.Add(Prop("Sample rate", $"{dff.SampleRate:N0} Hz"));
+        root.Properties.Add(Prop("Channels", dff.Channels.ToString()));
+        root.Properties.Add(Prop("Sample count", dff.SampleCount.ToString("N0")));
+        root.Properties.Add(Prop("Chunk count", dff.Chunks.Count.ToString()));
+
+        foreach (var chunk in dff.Chunks)
+        {
+            root.Children.Add(new InspectorNode
+            {
+                Label = $"{chunk.Id} ({chunk.EndOffset - chunk.StartOffset:N0} B)",
+                StartOffset = chunk.StartOffset,
+                EndOffset = chunk.EndOffset,
+            });
+        }
+
+        if (dff.EmbeddedId3v2 is { } dffId3)
+        {
+            root.Children.Add(BuildEmbeddedId3Node(dffId3));
+        }
+    }
+
+    private static InspectorNode BuildEmbeddedId3Node(Id3v2Tag tag)
+    {
+        var node = new InspectorNode { Label = "Embedded ID3v2" };
+        node.Properties.Add(Prop("Version", tag.Version.ToString()));
+        node.Properties.Add(Prop("Frame count", tag.Frames.Count().ToString()));
+        foreach (var frame in tag.Frames)
+        {
+            node.Children.Add(new InspectorNode { Label = frame.Identifier ?? "?" });
+        }
+
+        return node;
+    }
+
+    ////------------------------------------------------------------------------------------------------------------------------------
+    //// MP4 / M4A
+    ////------------------------------------------------------------------------------------------------------------------------------
+
+    private static void BuildMp4Tree(InspectorNode root, Mp4Stream mp4)
+    {
+        root.Properties.Add(Prop("Format", "MP4 / ISO base media"));
+        root.Properties.Add(Prop("Top-level boxes", mp4.Boxes.Count.ToString()));
+        root.Properties.Add(Prop("Duration (ms)", mp4.TotalAudioLength.ToString("N0")));
+
+        foreach (var box in mp4.Boxes)
+        {
+            root.Children.Add(new InspectorNode
+            {
+                Label = $"{box.Type} ({box.EndOffset - box.StartOffset:N0} B)",
+                StartOffset = box.StartOffset,
+                EndOffset = box.EndOffset,
+            });
+        }
+
+        var tag = mp4.Tag;
+        if (tag.Items.Count > 0)
+        {
+            var ilst = new InspectorNode { Label = $"ilst items ({tag.Items.Count})" };
+            foreach (var item in tag.Items)
+            {
+                ilst.Children.Add(new InspectorNode
+                {
+                    Label = $"{item.AtomType}: {Mp4ItemDisplay(item)}",
+                });
+            }
+
+            root.Children.Add(ilst);
+        }
+    }
+
+    private static string Mp4ItemDisplay(Mp4MetaItem item) => item.AsUtf8String() switch
+    {
+        { } s when !string.IsNullOrEmpty(s) => s,
+        _ => $"{item.DataType}, {item.Payload.Length:N0} B",
+    };
+
+    ////------------------------------------------------------------------------------------------------------------------------------
+    //// ASF / WMA
+    ////------------------------------------------------------------------------------------------------------------------------------
+
+    private static void BuildAsfTree(InspectorNode root, AsfStream asf)
+    {
+        root.Properties.Add(Prop("Format", "ASF / WMA"));
+        root.Properties.Add(Prop("Header objects", asf.Objects.Count.ToString()));
+        root.Properties.Add(Prop("Duration (ms)", asf.TotalAudioLength.ToString("N0")));
+
+        foreach (var obj in asf.Objects)
+        {
+            root.Children.Add(new InspectorNode
+            {
+                Label = $"{AsfGuidLabel(obj.Id)} ({obj.EndOffset - obj.StartOffset:N0} B)",
+                StartOffset = obj.StartOffset,
+                EndOffset = obj.EndOffset,
+            });
+        }
+    }
+
+    private static string AsfGuidLabel(Guid g) =>
+        g == AsfMetadataTag.HeaderObjectGuid ? "Header"
+        : g == AsfMetadataTag.FilePropertiesObjectGuid ? "File Properties"
+        : g == AsfMetadataTag.ContentDescriptionObjectGuid ? "Content Description"
+        : g == AsfMetadataTag.ExtendedContentDescriptionObjectGuid ? "Extended Content Description"
+        : g == AsfMetadataTag.HeaderExtensionObjectGuid ? "Header Extension"
+        : g == AsfMetadataTag.MetadataObjectGuid ? "Metadata"
+        : g == AsfMetadataTag.MetadataLibraryObjectGuid ? "Metadata Library"
+        : g.ToString();
+
+    ////------------------------------------------------------------------------------------------------------------------------------
+    //// Matroska / WebM
+    ////------------------------------------------------------------------------------------------------------------------------------
+
+    private static void BuildMatroskaTree(InspectorNode root, MatroskaStream mkv)
+    {
+        root.Properties.Add(Prop("Format", $"Matroska / {mkv.DocType}"));
+        root.Properties.Add(Prop("Tag entries", mkv.Tag.Entries.Count.ToString()));
+        root.Properties.Add(Prop("Duration (ms)", mkv.TotalAudioLength.ToString("N0")));
+
+        foreach (var entry in mkv.Tag.Entries)
+        {
+            var node = new InspectorNode
+            {
+                Label = $"Tag (target {entry.Targets.TargetTypeValue})",
+            };
+            foreach (var st in entry.SimpleTags)
+            {
+                node.Children.Add(new InspectorNode
+                {
+                    Label = $"{st.Name}: {st.Value ?? string.Empty}",
+                });
+            }
+
+            root.Children.Add(node);
+        }
     }
 }
