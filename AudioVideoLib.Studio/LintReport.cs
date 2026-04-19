@@ -71,6 +71,21 @@ public static class LintReport
             sections.Add(new LintSection("File structure", structIssues));
         }
 
+        var containerIssues = audio switch
+        {
+            RiffStream riff => ContainerLinter.CheckRiff(riff),
+            Mp4Stream mp4 => ContainerLinter.CheckMp4(mp4),
+            AsfStream asf => ContainerLinter.CheckAsf(asf),
+            MatroskaStream mkv => ContainerLinter.CheckMatroska(mkv),
+            DsfStream or DffStream => ContainerLinter.CheckDsd(audio),
+            _ => (IReadOnlyList<ValidationIssue>)[],
+        };
+
+        if (containerIssues.Count > 0)
+        {
+            sections.Add(new LintSection("Container metadata", containerIssues));
+        }
+
         return new LintReportData(dossier.FilePath, dossier.FileSize, sections);
     }
 
