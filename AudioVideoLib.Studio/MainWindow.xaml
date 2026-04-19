@@ -399,12 +399,19 @@
                 BorderBrush="{DynamicResource BorderBrush}"
                 BorderThickness="0,0,0,1"
                 Padding="14,6">
-            <TextBlock x:Name="FilePathText"
-                       Text="No file loaded. Use File > Open (Ctrl+O)."
-                       FontFamily="Consolas"
-                       FontSize="12"
-                       Foreground="{DynamicResource TextSecondaryBrush}"
-                       TextTrimming="CharacterEllipsis" />
+            <TextBox x:Name="FilePathText"
+                     Text="No file loaded. Use File > Open (Ctrl+O)."
+                     FontFamily="Consolas"
+                     FontSize="12"
+                     Foreground="{DynamicResource TextSecondaryBrush}"
+                     Background="Transparent"
+                     BorderThickness="0"
+                     Padding="0"
+                     IsReadOnly="True"
+                     IsReadOnlyCaretVisible="False"
+                     HorizontalScrollBarVisibility="Hidden"
+                     VerticalScrollBarVisibility="Disabled"
+                     TextWrapping="NoWrap" />
         </Border>
 
         <!-- ==================== playback bar ==================== -->
