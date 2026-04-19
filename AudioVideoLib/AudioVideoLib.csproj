@@ -7,7 +7,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
     <PackageId>AudioVideoLib</PackageId>
-    <Version>0.1.0</Version>
+    <Version>0.2.0</Version>
     <Description>.NET library for reading and writing audio metadata: ID3v1, ID3v2 (2.2-2.4), APE v1/v2, Lyrics3, MusicMatch, Vorbis Comments, and MPEG audio / FLAC format parsing.</Description>
     <PackageTags>id3;id3v2;ape;flac;mp3;mpeg;audio;metadata;tags;vorbis;lyrics3</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
