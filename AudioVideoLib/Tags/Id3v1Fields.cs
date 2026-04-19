@@ -4,117 +4,169 @@ using System;
 using System.Text;
 
 /// <summary>
-/// Class to store an Id3v1 tag.
+/// Per-field text storage for an ID3v1 tag. The source of truth is the raw byte
+/// sequence captured at parse time; a per-field <see cref="Encoding"/> override
+/// controls how those bytes are decoded and (on save) how new string values are
+/// re-encoded. This lets callers display a tag written with one encoding (e.g.
+/// UTF-8) even when the tag-level default is something else (e.g. Latin-1).
 /// </summary>
 public partial class Id3v1Tag
 {
-    private string? _trackTitle, _artist, _albumTitle;
+    private byte[] _titleBytes = [];
+    private byte[] _artistBytes = [];
+    private byte[] _albumTitleBytes = [];
+    private byte[] _albumYearBytes = [];
+    private byte[] _trackCommentBytes = [];
+    private byte[] _extendedTrackGenreBytes = [];
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Gets or sets the <see cref="Encoding"/> used to read and write text to a byte array.
+    /// Tag-level fallback <see cref="Encoding"/>. Used for any field whose own
+    /// per-field <c>Encoding</c> property is <c>null</c>.
     /// </summary>
     public Encoding Encoding
     {
         get;
-
         set
         {
             field = value ?? throw new ArgumentNullException(nameof(value));
         }
     } = Encoding.Default;
 
+    /// <summary>Per-field encoding override for <see cref="TrackTitle"/>; <c>null</c> falls back to <see cref="Encoding"/>.</summary>
+    public Encoding? TrackTitleEncoding { get; set; }
+
+    /// <summary>Per-field encoding override for <see cref="Artist"/>; <c>null</c> falls back to <see cref="Encoding"/>.</summary>
+    public Encoding? ArtistEncoding { get; set; }
+
+    /// <summary>Per-field encoding override for <see cref="AlbumTitle"/>; <c>null</c> falls back to <see cref="Encoding"/>.</summary>
+    public Encoding? AlbumTitleEncoding { get; set; }
+
+    /// <summary>Per-field encoding override for <see cref="AlbumYear"/>; <c>null</c> falls back to <see cref="Encoding"/>.</summary>
+    public Encoding? AlbumYearEncoding { get; set; }
+
+    /// <summary>Per-field encoding override for <see cref="TrackComment"/>; <c>null</c> falls back to <see cref="Encoding"/>.</summary>
+    public Encoding? TrackCommentEncoding { get; set; }
+
+    /// <summary>Per-field encoding override for <see cref="ExtendedTrackGenre"/>; <c>null</c> falls back to <see cref="Encoding"/>.</summary>
+    public Encoding? ExtendedTrackGenreEncoding { get; set; }
+
+    ////------------------------------------------------------------------------------------------------------------------------------
+
+    /// <summary>Effective encoding used when decoding/encoding <see cref="TrackTitle"/>.</summary>
+    public Encoding EffectiveTrackTitleEncoding => TrackTitleEncoding ?? Encoding;
+
+    /// <summary>Effective encoding used when decoding/encoding <see cref="Artist"/>.</summary>
+    public Encoding EffectiveArtistEncoding => ArtistEncoding ?? Encoding;
+
+    /// <summary>Effective encoding used when decoding/encoding <see cref="AlbumTitle"/>.</summary>
+    public Encoding EffectiveAlbumTitleEncoding => AlbumTitleEncoding ?? Encoding;
+
+    /// <summary>Effective encoding used when decoding/encoding <see cref="AlbumYear"/>.</summary>
+    public Encoding EffectiveAlbumYearEncoding => AlbumYearEncoding ?? Encoding;
+
+    /// <summary>Effective encoding used when decoding/encoding <see cref="TrackComment"/>.</summary>
+    public Encoding EffectiveTrackCommentEncoding => TrackCommentEncoding ?? Encoding;
+
+    /// <summary>Effective encoding used when decoding/encoding <see cref="ExtendedTrackGenre"/>.</summary>
+    public Encoding EffectiveExtendedTrackGenreEncoding => ExtendedTrackGenreEncoding ?? Encoding;
+
+    ////------------------------------------------------------------------------------------------------------------------------------
+
+    /// <summary>Raw bytes for the title field — combined standard (30) + extended (60) regions if extended is in use.</summary>
+    public byte[] TrackTitleRawBytes
+    {
+        get => (byte[])_titleBytes.Clone();
+        set => _titleBytes = TrimTrailingZeros(value ?? []);
+    }
+
+    /// <summary>Raw bytes for the artist field — combined standard (30) + extended (60) regions if extended is in use.</summary>
+    public byte[] ArtistRawBytes
+    {
+        get => (byte[])_artistBytes.Clone();
+        set => _artistBytes = TrimTrailingZeros(value ?? []);
+    }
+
+    /// <summary>Raw bytes for the album field — combined standard (30) + extended (60) regions if extended is in use.</summary>
+    public byte[] AlbumTitleRawBytes
+    {
+        get => (byte[])_albumTitleBytes.Clone();
+        set => _albumTitleBytes = TrimTrailingZeros(value ?? []);
+    }
+
+    /// <summary>Raw bytes for the year field (4 bytes max).</summary>
+    public byte[] AlbumYearRawBytes
+    {
+        get => (byte[])_albumYearBytes.Clone();
+        set => _albumYearBytes = TrimTrailingZeros(value ?? []);
+    }
+
+    /// <summary>Raw bytes for the comment field (28 bytes for v1.1, 30 bytes for v1.0).</summary>
+    public byte[] TrackCommentRawBytes
+    {
+        get => (byte[])_trackCommentBytes.Clone();
+        set => _trackCommentBytes = TrimTrailingZeros(value ?? []);
+    }
+
+    /// <summary>Raw bytes for the extended genre field (TAG+, 30 bytes max).</summary>
+    public byte[] ExtendedTrackGenreRawBytes
+    {
+        get => (byte[])_extendedTrackGenreBytes.Clone();
+        set => _extendedTrackGenreBytes = TrimTrailingZeros(value ?? []);
+    }
+
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Gets or sets the artist.
+    /// Gets or sets the artist string. Decoded from <see cref="ArtistRawBytes"/> via
+    /// <see cref="EffectiveArtistEncoding"/>; assigning re-encodes the raw bytes,
+    /// truncated to the spec maximum (30 bytes standard, 90 bytes when <see cref="UseExtendedTag"/>).
     /// </summary>
-    /// <value>
-    /// The artist.
-    /// </value>
-    /// <remarks>
-    /// If encoding the value in the specified <see cref="Encoding"/> exceeds 30 bytes (or 90 bytes when <see cref="UseExtendedTag"/> is set to true),
-    /// the value will be cut to the max character count which fits within 30 bytes (or 90 bytes when <see cref="UseExtendedTag"/> is set to true).
-    /// <para />
-    /// The full string is stored internally and only cut to the max character count on retrieval.
-    /// This is done to preserve the value when changing the <see cref="Encoding"/>, so characters aren't lost when changing encoding.
-    /// </remarks>
     public string? Artist
     {
-        get => _artist != null ? GetExtendedString(_artist, 30, 60) : null;
-        set => _artist = value;
+        get => DecodeNullable(_artistBytes, EffectiveArtistEncoding);
+        set => _artistBytes = EncodeAndTruncate(value, EffectiveArtistEncoding, UseExtendedTag ? 90 : 30);
     }
 
     /// <summary>
-    /// Gets or sets the album title.
+    /// Gets or sets the album title string. Decoded from <see cref="AlbumTitleRawBytes"/> via
+    /// <see cref="EffectiveAlbumTitleEncoding"/>; assigning re-encodes the raw bytes,
+    /// truncated to the spec maximum (30 bytes standard, 90 bytes when <see cref="UseExtendedTag"/>).
     /// </summary>
-    /// <value>
-    /// The album title.
-    /// </value>
-    /// <remarks>
-    /// If encoding the value in the specified <see cref="Encoding"/> exceeds 30 bytes (or 90 bytes when <see cref="UseExtendedTag"/> is set to true),
-    /// the value will be cut to the max character count which fits within 30 bytes (or 90 bytes when <see cref="UseExtendedTag"/> is set to true).
-    /// <para />
-    /// The full string is stored internally and only cut to the max character count on retrieval.
-    /// This is done to preserve the value when changing the <see cref="Encoding"/>, so characters aren't lost when changing encoding.
-    /// </remarks>
-    /// Encoding issues could cause the first part to contain more than 30 bytes if we encode at max 90 bytes.
-    /// This will cause issues when writing the string as 2 separate byte arrays; characters can get lost.
-    /// This is why we have to encode the string in 2 parts: one for 30 bytes max and one fore 60 bytes max.
     public string? AlbumTitle
     {
-        get => _albumTitle != null ? GetExtendedString(_albumTitle, 30, 60) : null;
-        set => _albumTitle = value;
+        get => DecodeNullable(_albumTitleBytes, EffectiveAlbumTitleEncoding);
+        set => _albumTitleBytes = EncodeAndTruncate(value, EffectiveAlbumTitleEncoding, UseExtendedTag ? 90 : 30);
     }
 
     /// <summary>
-    /// Gets or sets the album year.
+    /// Gets or sets the album year string (4 bytes ASCII). Decoded from <see cref="AlbumYearRawBytes"/>
+    /// via <see cref="EffectiveAlbumYearEncoding"/>; assigning truncates to 4 bytes.
     /// </summary>
-    /// <value>
-    /// The album year.
-    /// </value>
-    /// <remarks>
-    /// If encoding the value in the specified <see cref="Encoding"/> exceeds 4 bytes, the value will be cut to the max character count which fits within 4 bytes.
-    /// <para />
-    /// The full string is stored internally and only cut to the max character count on retrieval.
-    /// This is done to preserve the value when changing the <see cref="Encoding"/>, so characters aren't lost when changing encoding.
-    /// </remarks>
     public string? AlbumYear
     {
-        get => field != null ? GetTruncatedEncodedString(field, 4) : null;
-        set;
+        get => DecodeNullable(_albumYearBytes, EffectiveAlbumYearEncoding);
+        set => _albumYearBytes = EncodeAndTruncate(value, EffectiveAlbumYearEncoding, 4);
     }
 
     /// <summary>
-    /// Gets or sets the track comment.
+    /// Gets or sets the track comment string. Decoded from <see cref="TrackCommentRawBytes"/>
+    /// via <see cref="EffectiveTrackCommentEncoding"/>; assigning truncates to
+    /// <see cref="TrackCommentLength"/> bytes.
     /// </summary>
-    /// <value>
-    /// The track comment.
-    /// </value>
-    /// <remarks>
-    /// If encoding the value in the specified <see cref="Encoding"/> exceeds <see cref="TrackCommentLength"/> bytes,
-    /// the value will be cut to the max character count which fits within <see cref="TrackCommentLength"/> bytes.
-    /// <para />
-    /// The full string is stored internally and only cut to the max character count on retrieval.
-    /// This is done to preserve the value when changing the <see cref="Encoding"/>, so characters aren't lost when changing encoding.
-    /// </remarks>
     public string? TrackComment
     {
-        get => field != null ? GetTruncatedEncodedString(field, TrackCommentLength) : null;
-        set;
+        get => DecodeNullable(_trackCommentBytes, EffectiveTrackCommentEncoding);
+        set => _trackCommentBytes = EncodeAndTruncate(value, EffectiveTrackCommentEncoding, TrackCommentLength);
     }
 
     /// <summary>
     /// Gets or sets the genre.
     /// </summary>
-    /// <value>
-    /// The genre.
-    /// </value>
     public Id3v1Genre Genre
     {
         get;
-
         set
         {
             if (!IsValidGenre(value))
@@ -127,78 +179,39 @@ public partial class Id3v1Tag
     }
 
     /// <summary>
-    /// Gets or sets the track number.
+    /// Gets or sets the track number (1-byte unsigned). Only meaningful for <see cref="Id3v1Version.Id3v11"/>.
     /// </summary>
-    /// <value>
-    /// The track number.
-    /// </value>
-    /// <remarks>
-    /// This field has been added as of <see cref="Id3v1Version.Id3v11"/>.
-    /// </remarks>
     public byte TrackNumber { get; set; }
 
     /// <summary>
-    /// Gets or sets the track title.
+    /// Gets or sets the title string. Decoded from <see cref="TrackTitleRawBytes"/> via
+    /// <see cref="EffectiveTrackTitleEncoding"/>; assigning re-encodes the raw bytes,
+    /// truncated to the spec maximum (30 bytes standard, 90 bytes when <see cref="UseExtendedTag"/>).
     /// </summary>
-    /// <value>
-    /// The track title.
-    /// </value>
-    /// <remarks>
-    /// If encoding the value in the specified <see cref="Encoding"/> exceeds 30 bytes (or 90 bytes when <see cref="UseExtendedTag"/> is set to true),
-    /// the value will be cut to the max character count which fits within 30 bytes (or 90 bytes when <see cref="UseExtendedTag"/> is set to true).
-    /// <para />
-    /// The full string is stored internally and only cut to the max character count on retrieval.
-    /// This is done to preserve the value when changing the <see cref="Encoding"/>, so characters aren't lost when changing encoding.
-    /// </remarks>
     public string? TrackTitle
     {
-        get => _trackTitle != null ? GetExtendedString(_trackTitle, 30, 60) : null;
-        set => _trackTitle = value;
+        get => DecodeNullable(_titleBytes, EffectiveTrackTitleEncoding);
+        set => _titleBytes = EncodeAndTruncate(value, EffectiveTrackTitleEncoding, UseExtendedTag ? 90 : 30);
     }
 
     /// <summary>
-    /// Gets the length of the track comment.
+    /// Gets the length of the track comment region for the current version (28 for v1.1, 30 for v1.0).
     /// </summary>
-    /// <value>
-    /// The length of the track comment.
-    /// </value>
-    /// <remarks>
-    /// This is 30 bytes for version <see cref="Id3v1Version.Id3v11"/> and 28 bytes for version <see cref="Id3v1Version.Id3v10"/> and later.
-    /// </remarks>
     public int TrackCommentLength => Version >= Id3v1Version.Id3v11 ? 28 : 30;
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Gets or sets a value indicating whether to use the extended tag.
+    /// Gets or sets a value indicating whether to write the extended TAG+ block.
     /// </summary>
-    /// <value>
-    ///   <c>true</c> if the extended tag should be used; otherwise, <c>false</c>.
-    /// </value>
-    /// <remarks>
-    /// The extended tag is an extra data block before an ID3v1 tag, which extends the title, artist and album fields by 60 bytes each,
-    /// offers a free text genre, a one-byte (values 0-5) speed and the start and stop time of the music in the MP3 file, e.g., for fading in.
-    /// If none of the fields are used, it will be automatically omitted.
-    /// <para />
-    /// Some programs supporting ID3v1 tags can read the extended tag, but writing may leave stale values in the extended block.
-    /// The extended block is not an official standard, and is only supported by few programs, not including XMMS or Winamp.
-    /// The extended tag is sometimes referred to as the "enhanced" tag.
-    /// </remarks>
     public bool UseExtendedTag { get; set; }
 
     /// <summary>
-    /// Gets or sets the track speed.
+    /// Gets or sets the track speed (TAG+ only).
     /// </summary>
-    /// <value>
-    /// The track speed.
-    /// </value>
-    /// <remarks>
-    /// This field is part of the extended tag and is only used when <see cref="UseExtendedTag"/> is set to true.
-    /// </remarks>
     public Id3v1TrackSpeed TrackSpeed
     {
         get;
-
         set
         {
             if (!IsValidTrackSpeed(value))
@@ -211,41 +224,86 @@ public partial class Id3v1Tag
     }
 
     /// <summary>
-    /// Gets or sets the extended track genre.
+    /// Gets or sets the extended track genre string (TAG+ only). Decoded from
+    /// <see cref="ExtendedTrackGenreRawBytes"/> via <see cref="EffectiveExtendedTrackGenreEncoding"/>.
     /// </summary>
-    /// <value>
-    /// The extended track genre.
-    /// </value>
-    /// <remarks>
-    /// This field is part of the extended tag and is only used when <see cref="UseExtendedTag"/> is set to true.
-    /// <para />
-    /// If encoding the value in the specified <see cref="Encoding"/> exceeds 30 bytes, the value will be cut to the max character count which fits within 30 bytes.
-    /// </remarks>
     public string? ExtendedTrackGenre
     {
-        get => field != null ? GetTruncatedEncodedString(field, 30) : field;
-        set;
+        get => DecodeNullable(_extendedTrackGenreBytes, EffectiveExtendedTrackGenreEncoding);
+        set => _extendedTrackGenreBytes = EncodeAndTruncate(value, EffectiveExtendedTrackGenreEncoding, 30);
     }
 
     /// <summary>
-    /// Gets or sets the start time.
+    /// Gets or sets the start time (TAG+ only).
     /// </summary>
-    /// <value>
-    /// The start time.
-    /// </value>
-    /// <remarks>
-    /// This field is part of the extended tag and is only used when <see cref="UseExtendedTag"/> is set to true.
-    /// </remarks>
     public TimeSpan StartTime { get; set; }
 
     /// <summary>
-    /// Gets or sets the end time.
+    /// Gets or sets the end time (TAG+ only).
     /// </summary>
-    /// <value>
-    /// The end time.
-    /// </value>
-    /// <remarks>
-    /// This field is part of the extended tag and is only used when <see cref="UseExtendedTag"/> is set to true.
-    /// </remarks>
     public TimeSpan EndTime { get; set; }
+
+    ////------------------------------------------------------------------------------------------------------------------------------
+
+    private static byte[] TrimTrailingZeros(byte[] bytes)
+    {
+        var len = bytes.Length;
+        while (len > 0 && bytes[len - 1] == 0)
+        {
+            len--;
+        }
+
+        if (len == bytes.Length)
+        {
+            return bytes;
+        }
+
+        var trimmed = new byte[len];
+        Array.Copy(bytes, trimmed, len);
+        return trimmed;
+    }
+
+    private static string? DecodeNullable(byte[] bytes, Encoding encoding)
+    {
+        if (bytes.Length == 0)
+        {
+            return string.Empty;
+        }
+
+        // Strip trailing zero padding for display.
+        var len = bytes.Length;
+        while (len > 0 && bytes[len - 1] == 0)
+        {
+            len--;
+        }
+
+        return len == 0 ? string.Empty : encoding.GetString(bytes, 0, len);
+    }
+
+    private static byte[] EncodeAndTruncate(string? value, Encoding encoding, int maxBytes)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            return [];
+        }
+
+        var bytes = encoding.GetBytes(value);
+        if (bytes.Length <= maxBytes)
+        {
+            return bytes;
+        }
+
+        // Re-encode shorter prefixes until the result fits — handles multi-byte
+        // encodings where a naive byte-truncation could split a code point.
+        for (var charCount = value.Length - 1; charCount >= 0; charCount--)
+        {
+            var prefix = encoding.GetBytes(value, 0, charCount);
+            if (prefix.Length <= maxBytes)
+            {
+                return prefix;
+            }
+        }
+
+        return [];
+    }
 }

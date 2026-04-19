@@ -454,6 +454,11 @@ public sealed class Id3v2FrameRow(Id3v2Frame frame, Action markDirty) : INotifyP
     }
 }
 
+public sealed record EncodingChoice(string DisplayName, System.Text.Encoding Encoding)
+{
+    public override string ToString() => DisplayName;
+}
+
 public sealed class Id3v1TabViewModel : TagTabViewModel
 {
     public Id3v1TabViewModel(Id3v1Tag tag)
@@ -466,6 +471,13 @@ public sealed class Id3v1TabViewModel : TagTabViewModel
             _ => $"ID3v1 ({tag.Version})",
         };
         SourceBadge = Header;
+
+        TitleEncoding = FindChoice(tag.EffectiveTrackTitleEncoding);
+        ArtistEncoding = FindChoice(tag.EffectiveArtistEncoding);
+        AlbumEncoding = FindChoice(tag.EffectiveAlbumTitleEncoding);
+        YearEncoding = FindChoice(tag.EffectiveAlbumYearEncoding);
+        CommentEncoding = FindChoice(tag.EffectiveTrackCommentEncoding);
+
         Title = tag.TrackTitle;
         Artist = tag.Artist;
         Album = tag.AlbumTitle;
@@ -484,6 +496,12 @@ public sealed class Id3v1TabViewModel : TagTabViewModel
     public string? Year    { get; set => SetStringField(ref field, value); }
     public string? Comment { get; set => SetStringField(ref field, value); }
     public string? Genre   { get; set => SetStringField(ref field, value); }
+
+    public EncodingChoice TitleEncoding   { get; set => SetEncodingField(ref field, value, raw => Tag.TrackTitleRawBytes = raw, () => Tag.TrackTitle, v => Title = v); }
+    public EncodingChoice ArtistEncoding  { get; set => SetEncodingField(ref field, value, raw => Tag.ArtistRawBytes = raw, () => Tag.Artist, v => Artist = v); }
+    public EncodingChoice AlbumEncoding   { get; set => SetEncodingField(ref field, value, raw => Tag.AlbumTitleRawBytes = raw, () => Tag.AlbumTitle, v => Album = v); }
+    public EncodingChoice YearEncoding    { get; set => SetEncodingField(ref field, value, raw => Tag.AlbumYearRawBytes = raw, () => Tag.AlbumYear, v => Year = v); }
+    public EncodingChoice CommentEncoding { get; set => SetEncodingField(ref field, value, raw => Tag.TrackCommentRawBytes = raw, () => Tag.TrackComment, v => Comment = v); }
 
     public int TrackNumber
     {
@@ -504,10 +522,18 @@ public sealed class Id3v1TabViewModel : TagTabViewModel
     public static IReadOnlyList<string> GenreValues { get; } =
         [.. Enum.GetNames<Id3v1Genre>().OrderBy(n => n)];
 
+    public static IReadOnlyList<EncodingChoice> EncodingChoices { get; } = BuildEncodingChoices();
+
     public Id3v1Tag Tag { get; }
 
     public void CommitToTag()
     {
+        Tag.TrackTitleEncoding = TitleEncoding.Encoding;
+        Tag.ArtistEncoding = ArtistEncoding.Encoding;
+        Tag.AlbumTitleEncoding = AlbumEncoding.Encoding;
+        Tag.AlbumYearEncoding = YearEncoding.Encoding;
+        Tag.TrackCommentEncoding = CommentEncoding.Encoding;
+
         Tag.TrackTitle = Title ?? string.Empty;
         Tag.Artist = Artist ?? string.Empty;
         Tag.AlbumTitle = Album ?? string.Empty;
@@ -530,6 +556,125 @@ public sealed class Id3v1TabViewModel : TagTabViewModel
         backing = value;
         Notify(propertyName);
         IsDirty = true;
+    }
+
+    private void SetEncodingField(
+        ref EncodingChoice backing,
+        EncodingChoice value,
+        Action<byte[]> rawSetter,
+        Func<string?> rawDecode,
+        Action<string?> stringSetter,
+        [CallerMemberName] string? propertyName = null)
+    {
+        if (ReferenceEquals(backing, value) || value is null)
+        {
+            return;
+        }
+
+        backing = value;
+        Notify(propertyName);
+
+        // Re-decode the underlying tag's raw bytes through the new encoding so
+        // the displayed string updates immediately.
+        rawSetter(rawSetter is null ? [] : GetTagRawBytes(propertyName));
+        ApplyEncodingToTag(propertyName, value.Encoding);
+        stringSetter(rawDecode());
+        IsDirty = true;
+    }
+
+    private byte[] GetTagRawBytes(string? propertyName) => propertyName switch
+    {
+        nameof(TitleEncoding) => Tag.TrackTitleRawBytes,
+        nameof(ArtistEncoding) => Tag.ArtistRawBytes,
+        nameof(AlbumEncoding) => Tag.AlbumTitleRawBytes,
+        nameof(YearEncoding) => Tag.AlbumYearRawBytes,
+        nameof(CommentEncoding) => Tag.TrackCommentRawBytes,
+        _ => [],
+    };
+
+    private void ApplyEncodingToTag(string? propertyName, System.Text.Encoding encoding)
+    {
+        switch (propertyName)
+        {
+            case nameof(TitleEncoding):
+                Tag.TrackTitleEncoding = encoding;
+                break;
+            case nameof(ArtistEncoding):
+                Tag.ArtistEncoding = encoding;
+                break;
+            case nameof(AlbumEncoding):
+                Tag.AlbumTitleEncoding = encoding;
+                break;
+            case nameof(YearEncoding):
+                Tag.AlbumYearEncoding = encoding;
+                break;
+            case nameof(CommentEncoding):
+                Tag.TrackCommentEncoding = encoding;
+                break;
+        }
+    }
+
+    private static EncodingChoice FindChoice(System.Text.Encoding encoding) =>
+        EncodingChoices.FirstOrDefault(c => c.Encoding.CodePage == encoding.CodePage)
+        ?? EncodingChoices[0];
+
+    private static IReadOnlyList<EncodingChoice> BuildEncodingChoices()
+    {
+        // Common encodings pinned to the top.
+        int[] preferred =
+        [
+            65001,  // UTF-8
+            28591,  // ISO-8859-1 (Latin-1)
+            1252,   // Windows-1252 (Western European)
+            932,    // Shift-JIS
+            54936,  // GB18030
+            949,    // EUC-KR / Windows-949
+            936,    // GB2312
+            950,    // Big5
+            1251,   // Windows-1251 (Cyrillic)
+            1250,   // Windows-1250 (Central European)
+            20866,  // KOI8-R
+            28592,  // ISO-8859-2
+        ];
+
+        var seen = new HashSet<int>();
+        var list = new List<EncodingChoice>();
+        foreach (var cp in preferred)
+        {
+            try
+            {
+                var enc = System.Text.Encoding.GetEncoding(cp);
+                if (seen.Add(enc.CodePage))
+                {
+                    list.Add(new EncodingChoice($"{enc.WebName} — {enc.EncodingName}", enc));
+                }
+            }
+            catch (ArgumentException)
+            {
+                // Code page not registered yet; skip.
+            }
+        }
+
+        var rest = System.Text.Encoding.GetEncodings()
+            .Where(e => !seen.Contains(e.CodePage))
+            .OrderBy(e => e.DisplayName, StringComparer.OrdinalIgnoreCase);
+        foreach (var e in rest)
+        {
+            try
+            {
+                var enc = e.GetEncoding();
+                if (seen.Add(enc.CodePage))
+                {
+                    list.Add(new EncodingChoice($"{enc.WebName} — {e.DisplayName}", enc));
+                }
+            }
+            catch (ArgumentException)
+            {
+                // Skip encodings the runtime claims to know about but can't actually instantiate.
+            }
+        }
+
+        return list;
     }
 }
 

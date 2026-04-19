@@ -149,14 +149,31 @@
         <!-- ==================== ID3v1 editor template ==================== -->
 
         <DataTemplate DataType="{x:Type local:Id3v1TabViewModel}">
-            <Grid Margin="10" Width="520" HorizontalAlignment="Left">
+            <Grid Margin="10" Width="640" HorizontalAlignment="Left">
+                <Grid.Resources>
+                    <Style x:Key="EncCombo" TargetType="ComboBox">
+                        <Setter Property="Margin" Value="6,0,0,6" />
+                        <Setter Property="MinWidth" Value="220" />
+                        <Setter Property="ToolTip" Value="Encoding used to decode the bytes — and to re-encode them on save." />
+                        <Setter Property="ItemsSource" Value="{Binding Source={x:Static local:Id3v1TabViewModel.EncodingChoices}}" />
+                    </Style>
+                </Grid.Resources>
                 <StackPanel>
-                    <TextBlock Text="Title"   Style="{StaticResource FieldLabel}" />
-                    <TextBox   Style="{StaticResource EditField}" Text="{Binding Title,   UpdateSourceTrigger=PropertyChanged}" MaxLength="30" />
-                    <TextBlock Text="Artist"  Style="{StaticResource FieldLabel}" />
-                    <TextBox   Style="{StaticResource EditField}" Text="{Binding Artist,  UpdateSourceTrigger=PropertyChanged}" MaxLength="30" />
-                    <TextBlock Text="Album"   Style="{StaticResource FieldLabel}" />
-                    <TextBox   Style="{StaticResource EditField}" Text="{Binding Album,   UpdateSourceTrigger=PropertyChanged}" MaxLength="30" />
+                    <TextBlock Text="Title"  Style="{StaticResource FieldLabel}" />
+                    <DockPanel Margin="0,0,0,6">
+                        <ComboBox DockPanel.Dock="Right" Style="{StaticResource EncCombo}" SelectedItem="{Binding TitleEncoding}" />
+                        <TextBox  Style="{StaticResource EditField}" Margin="0" Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" />
+                    </DockPanel>
+                    <TextBlock Text="Artist" Style="{StaticResource FieldLabel}" />
+                    <DockPanel Margin="0,0,0,6">
+                        <ComboBox DockPanel.Dock="Right" Style="{StaticResource EncCombo}" SelectedItem="{Binding ArtistEncoding}" />
+                        <TextBox  Style="{StaticResource EditField}" Margin="0" Text="{Binding Artist, UpdateSourceTrigger=PropertyChanged}" />
+                    </DockPanel>
+                    <TextBlock Text="Album"  Style="{StaticResource FieldLabel}" />
+                    <DockPanel Margin="0,0,0,6">
+                        <ComboBox DockPanel.Dock="Right" Style="{StaticResource EncCombo}" SelectedItem="{Binding AlbumEncoding}" />
+                        <TextBox  Style="{StaticResource EditField}" Margin="0" Text="{Binding Album, UpdateSourceTrigger=PropertyChanged}" />
+                    </DockPanel>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -165,7 +182,10 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0">
                             <TextBlock Text="Year"  Style="{StaticResource FieldLabel}" />
-                            <TextBox   Style="{StaticResource EditField}" Text="{Binding Year,  UpdateSourceTrigger=PropertyChanged}" MaxLength="4" />
+                            <DockPanel Margin="0,0,0,6">
+                                <ComboBox DockPanel.Dock="Right" Style="{StaticResource EncCombo}" SelectedItem="{Binding YearEncoding}" />
+                                <TextBox  Style="{StaticResource EditField}" Margin="0" Text="{Binding Year, UpdateSourceTrigger=PropertyChanged}" MaxLength="4" />
+                            </DockPanel>
                         </StackPanel>
                         <StackPanel Grid.Column="2">
                             <TextBlock Text="Track" Style="{StaticResource FieldLabel}" />
@@ -178,9 +198,11 @@
                                IsEditable="True"
                                Text="{Binding Genre, UpdateSourceTrigger=PropertyChanged}" />
                     <TextBlock Text="Comment" Style="{StaticResource FieldLabel}" />
-                    <TextBox   MaxLength="28"
-                               Style="{StaticResource EditField}"
-                               Text="{Binding Comment, UpdateSourceTrigger=PropertyChanged}" />
+                    <DockPanel Margin="0,0,0,6">
+                        <ComboBox DockPanel.Dock="Right" Style="{StaticResource EncCombo}" SelectedItem="{Binding CommentEncoding}" />
+                        <TextBox  Style="{StaticResource EditField}" Margin="0" MaxLength="28"
+                                  Text="{Binding Comment, UpdateSourceTrigger=PropertyChanged}" />
+                    </DockPanel>
                 </StackPanel>
             </Grid>
         </DataTemplate>

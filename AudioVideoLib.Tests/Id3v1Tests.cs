@@ -745,11 +745,14 @@ public class Id3v1Tests
     }
 
     [Fact]
-    public void ArtistReturnsNullWhenNotSet()
+    public void ArtistDefaultsToEmptyString()
     {
+        // Source of truth is per-field raw bytes (`[]` by default), so unset fields
+        // decode to the empty string rather than null. Matches the on-disk reality
+        // that ID3v1 always reserves the field bytes.
         var tag = new Id3v1Tag();
 
-        Assert.Null(tag.Artist);
+        Assert.Equal(string.Empty, tag.Artist);
     }
 
     [Fact]
@@ -762,19 +765,19 @@ public class Id3v1Tests
     }
 
     [Fact]
-    public void AlbumTitleReturnsNullWhenNotSet()
+    public void AlbumTitleDefaultsToEmptyString()
     {
         var tag = new Id3v1Tag();
 
-        Assert.Null(tag.AlbumTitle);
+        Assert.Equal(string.Empty, tag.AlbumTitle);
     }
 
     [Fact]
-    public void TrackTitleReturnsNullWhenNotSet()
+    public void TrackTitleDefaultsToEmptyString()
     {
         var tag = new Id3v1Tag();
 
-        Assert.Null(tag.TrackTitle);
+        Assert.Equal(string.Empty, tag.TrackTitle);
     }
 
     [Fact]
@@ -956,5 +959,128 @@ public class Id3v1Tests
     {
         // Enum.TryParse accepts any numeric value as valid
         Assert.True(Id3v1Tag.IsValidVersion((Id3v1Version)99));
+    }
+
+    ////------------------------------------------------------------------------------------------------------------------------------
+    // Per-field encoding (UTF-8 in the wild)
+    ////------------------------------------------------------------------------------------------------------------------------------
+
+    [Fact]
+    public void Utf8FieldRoundTripsBytesIdentically()
+    {
+        // Build a 128-byte ID3v1 with a UTF-8 title containing a multi-byte sequence.
+        var title = "Café"; // 4 chars, 5 UTF-8 bytes
+        var titleBytes = Encoding.UTF8.GetBytes(title);
+
+        var raw = new byte[128];
+        raw[0] = (byte)'T';
+        raw[1] = (byte)'A';
+        raw[2] = (byte)'G';
+        Array.Copy(titleBytes, 0, raw, 3, titleBytes.Length);
+
+        var reader = new Id3v1TagReader();
+        var offset = reader.ReadFromStream(new StreamBuffer(raw), TagOrigin.End);
+        Assert.NotNull(offset);
+        var tag = Assert.IsType<Id3v1Tag>(offset!.AudioTag);
+
+        Assert.Equal(Encoding.UTF8, tag.TrackTitleEncoding);
+        Assert.Equal(title, tag.TrackTitle);
+
+        var rewritten = tag.ToByteArray();
+        Assert.Equal(raw, rewritten);
+    }
+
+    [Fact]
+    public void AsciiFieldHasNoEncodingOverride()
+    {
+        var raw = new byte[128];
+        raw[0] = (byte)'T';
+        raw[1] = (byte)'A';
+        raw[2] = (byte)'G';
+        var titleBytes = Encoding.ASCII.GetBytes("Plain ASCII");
+        Array.Copy(titleBytes, 0, raw, 3, titleBytes.Length);
+
+        var reader = new Id3v1TagReader();
+        var offset = reader.ReadFromStream(new StreamBuffer(raw), TagOrigin.End);
+        Assert.NotNull(offset);
+        var tag = Assert.IsType<Id3v1Tag>(offset!.AudioTag);
+
+        // No multi-byte sequences -> no override applied.
+        Assert.Null(tag.TrackTitleEncoding);
+        Assert.Equal("Plain ASCII", tag.TrackTitle);
+    }
+
+    [Fact]
+    public void InvalidUtf8FieldFallsBackToTagDefault()
+    {
+        var raw = new byte[128];
+        raw[0] = (byte)'T';
+        raw[1] = (byte)'A';
+        raw[2] = (byte)'G';
+        // 0xC3 0x28 is invalid UTF-8 (start byte followed by non-continuation).
+        raw[3] = 0xC3;
+        raw[4] = 0x28;
+
+        var reader = new Id3v1TagReader { Encoding = Encoding.Latin1 };
+        var offset = reader.ReadFromStream(new StreamBuffer(raw), TagOrigin.End);
+        Assert.NotNull(offset);
+        var tag = Assert.IsType<Id3v1Tag>(offset!.AudioTag);
+
+        Assert.Null(tag.TrackTitleEncoding);
+        Assert.Equal(Encoding.Latin1, tag.EffectiveTrackTitleEncoding);
+    }
+
+    [Fact]
+    public void SwitchingFieldEncodingRedecodesRawBytes()
+    {
+        var raw = new byte[128];
+        raw[0] = (byte)'T';
+        raw[1] = (byte)'A';
+        raw[2] = (byte)'G';
+        var titleBytes = Encoding.UTF8.GetBytes("Café");
+        Array.Copy(titleBytes, 0, raw, 3, titleBytes.Length);
+
+        var reader = new Id3v1TagReader();
+        var offset = reader.ReadFromStream(new StreamBuffer(raw), TagOrigin.End);
+        var tag = (Id3v1Tag)offset!.AudioTag;
+        Assert.Equal("Café", tag.TrackTitle);
+
+        // Switch to Latin-1: the same raw bytes decode differently.
+        tag.TrackTitleEncoding = Encoding.Latin1;
+        Assert.NotEqual("Café", tag.TrackTitle);
+        Assert.Equal(Encoding.Latin1.GetString(titleBytes), tag.TrackTitle);
+    }
+
+    [Fact]
+    public void AssigningStringReencodesUsingFieldEncoding()
+    {
+        var tag = new Id3v1Tag(Id3v1Version.Id3v11)
+        {
+            TrackTitleEncoding = Encoding.UTF8,
+            TrackTitle = "日本語",
+        };
+
+        var expected = Encoding.UTF8.GetBytes("日本語");
+        Assert.Equal(expected, tag.TrackTitleRawBytes);
+    }
+
+    [Fact]
+    public void PerFieldEncodingsCanDifferWithinOneTag()
+    {
+        var raw = new byte[128];
+        raw[0] = (byte)'T';
+        raw[1] = (byte)'A';
+        raw[2] = (byte)'G';
+        var titleBytes = Encoding.UTF8.GetBytes("Café");
+        Array.Copy(titleBytes, 0, raw, 3, titleBytes.Length);
+        // Artist: pure ASCII (no override).
+        var artistBytes = Encoding.ASCII.GetBytes("Joe");
+        Array.Copy(artistBytes, 0, raw, 33, artistBytes.Length);
+
+        var reader = new Id3v1TagReader();
+        var tag = (Id3v1Tag)reader.ReadFromStream(new StreamBuffer(raw), TagOrigin.End)!.AudioTag;
+
+        Assert.Equal(Encoding.UTF8, tag.TrackTitleEncoding);
+        Assert.Null(tag.ArtistEncoding);
     }
 }

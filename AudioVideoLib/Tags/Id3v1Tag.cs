@@ -115,81 +115,66 @@ public sealed partial class Id3v1Tag : IAudioTag
     /// <inheritdoc/>
     /// <remarks>
     /// The extended tags will only be written when <see cref="UseExtendedTag"/> is set to true.
+    /// Field bytes are written verbatim from the per-field raw byte storage, so the per-field
+    /// <see cref="Encoding"/> chosen at parse (or set via <c>...Encoding</c> properties) round-trips
+    /// faithfully.
     /// </remarks>
     public byte[] ToByteArray()
     {
         var buffer = new StreamBuffer();
-        byte[] byteValue;
+
         if (UseExtendedTag)
         {
             // TAG+
             buffer.Write(ExtendedHeaderIdentifierBytes);
 
-            // Title - write the last 60 bytes
-            byteValue = Encoding.GetBytes(GetExtendedString(_trackTitle ?? string.Empty, 30, 60, true));
-            buffer.Write(byteValue);
-            buffer.WritePadding(0x00, 60 - byteValue.Length);
+            // Title - write the last 60 bytes (extended portion)
+            WriteFixedField(buffer, SliceFrom(_titleBytes, 30, 60), 60);
 
             // Artist - write the last 60 bytes
-            byteValue = Encoding.GetBytes(GetExtendedString(_artist ?? string.Empty, 30, 60, true));
-            buffer.Write(byteValue);
-            buffer.WritePadding(0x00, 60 - byteValue.Length);
+            WriteFixedField(buffer, SliceFrom(_artistBytes, 30, 60), 60);
 
             // Album Title - write the last 60 bytes
-            byteValue = Encoding.GetBytes(GetExtendedString(_albumTitle ?? string.Empty, 30, 60, true));
-            buffer.Write(byteValue);
-            buffer.WritePadding(0x00, 60 - byteValue.Length);
+            WriteFixedField(buffer, SliceFrom(_albumTitleBytes, 30, 60), 60);
 
             // Track Speed
             buffer.WriteByte((byte)TrackSpeed);
 
             // Extended Track Genre
-            byteValue = Encoding.GetBytes(ExtendedTrackGenre ?? string.Empty);
-            buffer.Write(byteValue);
-            buffer.WritePadding(0x00, 30 - byteValue.Length);
+            WriteFixedField(buffer, _extendedTrackGenreBytes, 30);
 
             // Start-time
             long startTimeMinutes = (StartTime.Days * 24 * 60) + (StartTime.Hours * 60) + StartTime.Minutes;
             long startTimeSeconds = StartTime.Seconds;
             var startTime = $"{startTimeMinutes:000}:{startTimeSeconds:00}";
-            byteValue = Encoding.GetBytes(GetTruncatedEncodedString(startTime, 6));
-            buffer.Write(byteValue);
+            var startTimeBytes = EncodeAndTruncate(startTime, Encoding, 6);
+            WriteFixedField(buffer, startTimeBytes, 6);
 
             // End-time
             long endTimeMinutes = (EndTime.Days * 24 * 60) + (EndTime.Hours * 60) + EndTime.Minutes;
             long endTimeSeconds = EndTime.Seconds;
             var endTime = $"{endTimeMinutes:000}:{endTimeSeconds:00}";
-            byteValue = Encoding.GetBytes(GetTruncatedEncodedString(endTime, 6));
-            buffer.Write(byteValue);
+            var endTimeBytes = EncodeAndTruncate(endTime, Encoding, 6);
+            WriteFixedField(buffer, endTimeBytes, 6);
         }
 
         // TAG
         buffer.Write(HeaderIdentifierBytes);
 
-        // Track Title
-        byteValue = Encoding.GetBytes(GetTruncatedEncodedString(_trackTitle ?? string.Empty, 30));
-        buffer.Write(byteValue);
-        buffer.WritePadding(0x00, 30 - byteValue.Length);
+        // Track Title (first 30 bytes)
+        WriteFixedField(buffer, SliceFrom(_titleBytes, 0, 30), 30);
 
-        // Artist
-        byteValue = Encoding.GetBytes(GetTruncatedEncodedString(_artist ?? string.Empty, 30));
-        buffer.Write(byteValue);
-        buffer.WritePadding(0x00, 30 - byteValue.Length);
+        // Artist (first 30 bytes)
+        WriteFixedField(buffer, SliceFrom(_artistBytes, 0, 30), 30);
 
-        // Album Title
-        byteValue = Encoding.GetBytes(GetTruncatedEncodedString(_albumTitle ?? string.Empty, 30));
-        buffer.Write(byteValue);
-        buffer.WritePadding(0x00, 30 - byteValue.Length);
+        // Album Title (first 30 bytes)
+        WriteFixedField(buffer, SliceFrom(_albumTitleBytes, 0, 30), 30);
 
         // Album Year
-        byteValue = Encoding.GetBytes(AlbumYear ?? string.Empty);
-        buffer.Write(byteValue);
-        buffer.WritePadding(0x00, 4 - byteValue.Length);
+        WriteFixedField(buffer, _albumYearBytes, 4);
 
         // Track comment
-        byteValue = Encoding.GetBytes(TrackComment ?? string.Empty);
-        buffer.Write(byteValue);
-        buffer.WritePadding(0x00, TrackCommentLength - byteValue.Length);
+        WriteFixedField(buffer, _trackCommentBytes, TrackCommentLength);
 
         // Track Number
         if (Version >= Id3v1Version.Id3v11)
@@ -202,6 +187,33 @@ public sealed partial class Id3v1Tag : IAudioTag
         buffer.WriteByte((byte)Genre);
 
         return buffer.ToByteArray();
+    }
+
+    private static void WriteFixedField(StreamBuffer buffer, byte[] bytes, int fixedLength)
+    {
+        var actual = System.Math.Min(bytes.Length, fixedLength);
+        if (actual > 0)
+        {
+            buffer.Write(bytes, 0, actual);
+        }
+
+        if (actual < fixedLength)
+        {
+            buffer.WritePadding(0x00, fixedLength - actual);
+        }
+    }
+
+    private static byte[] SliceFrom(byte[] source, int offset, int length)
+    {
+        if (source.Length <= offset)
+        {
+            return [];
+        }
+
+        var available = System.Math.Min(length, source.Length - offset);
+        var slice = new byte[available];
+        Array.Copy(source, offset, slice, 0, available);
+        return slice;
     }
 
     /// <inheritdoc/>

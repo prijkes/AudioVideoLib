@@ -55,11 +55,11 @@ public sealed class Id3v1TagReader : IAudioTagReader
         }
 
         var version = Id3v1Version.Id3v10;
-        var extendedTrackTitle = string.Empty;
-        var extendedArtist = string.Empty;
-        var extendAlbumTitle = string.Empty;
+        var extendedTitleBytes = System.Array.Empty<byte>();
+        var extendedArtistBytes = System.Array.Empty<byte>();
+        var extendedAlbumTitleBytes = System.Array.Empty<byte>();
+        var extendedGenreBytes = System.Array.Empty<byte>();
         Id3v1TrackSpeed trackSpeed = default;
-        var extendedTrackGenre = string.Empty;
         TimeSpan startTime = default;
         TimeSpan endTime = default;
         var useExtendedTag = false;
@@ -70,12 +70,12 @@ public sealed class Id3v1TagReader : IAudioTagReader
             if (string.Equals(extendedHeaderIdentifier, Id3v1Tag.ExtendedHeaderIdentifier, StringComparison.OrdinalIgnoreCase))
             {
                 startOffset -= ExtendedHeaderIdentifierBytes.Length;
-                extendedTrackTitle = sb.ReadString(60, Encoding);
-                extendedArtist = sb.ReadString(60, Encoding);
-                extendAlbumTitle = sb.ReadString(60, Encoding);
+                extendedTitleBytes = ReadFixedBytes(sb, 60);
+                extendedArtistBytes = ReadFixedBytes(sb, 60);
+                extendedAlbumTitleBytes = ReadFixedBytes(sb, 60);
                 var trackSpeedByte = (Id3v1TrackSpeed)sb.ReadByte();
                 trackSpeed = Id3v1Tag.IsValidTrackSpeed(trackSpeedByte) ? trackSpeedByte : Id3v1TrackSpeed.Unset;
-                extendedTrackGenre = sb.ReadString(30, Encoding);
+                extendedGenreBytes = ReadFixedBytes(sb, 30);
                 startTime = GetTimeSpan(sb.ReadString(6, Encoding));
                 endTime = GetTimeSpan(sb.ReadString(6, Encoding));
                 useExtendedTag = true;
@@ -86,47 +86,150 @@ public sealed class Id3v1TagReader : IAudioTagReader
             }
         }
 
-        // Read the rest of the tag.
-        var trackTitle = sb.ReadString(30, Encoding) + extendedTrackTitle;
-        var artist = sb.ReadString(30, Encoding) + extendedArtist;
-        var albumTitle = sb.ReadString(30, Encoding) + extendAlbumTitle;
-        var albumYear = sb.ReadString(4);
-        var comment = new byte[30];
-        var commentBytesRead = sb.Read(comment, 30);
-        if ((commentBytesRead == 30) && (comment[28] == '\0') && (comment[29] != '\0'))
+        // Read the standard 128-byte block as raw bytes per field.
+        var titleBytes = ReadFixedBytes(sb, 30);
+        var artistBytes = ReadFixedBytes(sb, 30);
+        var albumTitleBytes = ReadFixedBytes(sb, 30);
+        var yearBytes = ReadFixedBytes(sb, 4);
+        var commentRaw = ReadFixedBytes(sb, 30);
+        byte trackNumber = 0;
+        byte[] commentBytes;
+        if (commentRaw.Length == 30 && commentRaw[28] == 0x00 && commentRaw[29] != 0x00)
         {
             version = Id3v1Version.Id3v11;
+            trackNumber = commentRaw[29];
+            commentBytes = new byte[28];
+            Array.Copy(commentRaw, commentBytes, 28);
         }
+        else
+        {
+            commentBytes = commentRaw;
+        }
+
         var genreByte = (Id3v1Genre)sb.ReadByte();
         var genre = Id3v1Tag.IsValidGenre(genreByte) ? genreByte : Id3v1Genre.Unknown;
 
-        // Set values
-        var tag = new Id3v1Tag(version);
+        var tag = new Id3v1Tag(version) { Encoding = Encoding };
+
         if (useExtendedTag)
         {
             tag.TrackSpeed = trackSpeed;
-            tag.ExtendedTrackGenre = extendedTrackGenre;
             tag.StartTime = startTime;
             tag.EndTime = endTime;
             tag.UseExtendedTag = useExtendedTag;
         }
-        tag.TrackTitle = trackTitle;
-        tag.Artist = artist;
-        tag.AlbumTitle = albumTitle;
-        tag.AlbumYear = albumYear;
-        tag.Genre = genre;
-        if ((commentBytesRead == 30) && (comment[28] == '\0') && (comment[29] != '\0'))
+
+        var fullTitleBytes = ConcatBytes(titleBytes, extendedTitleBytes);
+        var fullArtistBytes = ConcatBytes(artistBytes, extendedArtistBytes);
+        var fullAlbumTitleBytes = ConcatBytes(albumTitleBytes, extendedAlbumTitleBytes);
+
+        tag.TrackTitleEncoding = SniffEncoding(fullTitleBytes);
+        tag.ArtistEncoding = SniffEncoding(fullArtistBytes);
+        tag.AlbumTitleEncoding = SniffEncoding(fullAlbumTitleBytes);
+        tag.AlbumYearEncoding = SniffEncoding(yearBytes);
+        tag.TrackCommentEncoding = SniffEncoding(commentBytes);
+        if (useExtendedTag)
         {
-            tag.TrackNumber = comment[29];
-            tag.TrackComment = Encoding.GetString(comment, 0, 28);
+            tag.ExtendedTrackGenreEncoding = SniffEncoding(extendedGenreBytes);
         }
-        else
+
+        tag.TrackTitleRawBytes = fullTitleBytes;
+        tag.ArtistRawBytes = fullArtistBytes;
+        tag.AlbumTitleRawBytes = fullAlbumTitleBytes;
+        tag.AlbumYearRawBytes = yearBytes;
+        tag.TrackCommentRawBytes = commentBytes;
+        if (useExtendedTag)
         {
-            tag.TrackComment = Encoding.GetString(comment);
+            tag.ExtendedTrackGenreRawBytes = extendedGenreBytes;
+        }
+
+        tag.Genre = genre;
+        if (version == Id3v1Version.Id3v11)
+        {
+            tag.TrackNumber = trackNumber;
         }
 
         var endOffset = sb.Position;
         return new AudioTagOffset(tagOrigin, startOffset, endOffset, tag);
+    }
+
+    private static byte[] ReadFixedBytes(Stream sb, int count)
+    {
+        var buffer = new byte[count];
+        var read = sb.Read(buffer, 0, count);
+        if (read == count)
+        {
+            return buffer;
+        }
+
+        var trimmed = new byte[read];
+        Array.Copy(buffer, trimmed, read);
+        return trimmed;
+    }
+
+    private static byte[] ConcatBytes(byte[] a, byte[] b)
+    {
+        if (b.Length == 0)
+        {
+            return a;
+        }
+
+        var combined = new byte[a.Length + b.Length];
+        Array.Copy(a, combined, a.Length);
+        Array.Copy(b, 0, combined, a.Length, b.Length);
+        return combined;
+    }
+
+    /// <summary>
+    /// If the bytes parse cleanly as UTF-8 *and* contain at least one multi-byte
+    /// sequence (so the choice is meaningful), return UTF-8 as the per-field encoding.
+    /// Otherwise return null so the field falls back to the tag-level default.
+    /// </summary>
+    private static Encoding? SniffEncoding(byte[] bytes)
+    {
+        if (bytes.Length == 0)
+        {
+            return null;
+        }
+
+        // Strip trailing zero padding so it doesn't confuse the multi-byte test.
+        var len = bytes.Length;
+        while (len > 0 && bytes[len - 1] == 0)
+        {
+            len--;
+        }
+
+        if (len == 0)
+        {
+            return null;
+        }
+
+        var hasNonAscii = false;
+        for (var i = 0; i < len; i++)
+        {
+            if (bytes[i] >= 0x80)
+            {
+                hasNonAscii = true;
+                break;
+            }
+        }
+
+        if (!hasNonAscii)
+        {
+            // Pure ASCII — every encoding decodes identically; no override needed.
+            return null;
+        }
+
+        try
+        {
+            var strict = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true);
+            _ = strict.GetString(bytes, 0, len);
+            return Encoding.UTF8;
+        }
+        catch (DecoderFallbackException)
+        {
+            return null;
+        }
     }
 
     ////------------------------------------------------------------------------------------------------------------------------------

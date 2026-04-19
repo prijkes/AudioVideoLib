@@ -2,8 +2,6 @@ namespace AudioVideoLib.Tags;
 
 using System;
 
-using AudioVideoLib.IO;
-
 /// <summary>
 /// Class to store an Id3v1 tag.
 /// </summary>
@@ -33,23 +31,4 @@ public sealed partial class Id3v1Tag
     /// <param name="trackSpeed">The track speed.</param>
     /// <returns></returns>
     public static bool IsValidTrackSpeed(Id3v1TrackSpeed trackSpeed) => Enum.TryParse(trackSpeed.ToString(), out Id3v1TrackSpeed _);
-
-    ////------------------------------------------------------------------------------------------------------------------------------
-
-    private string GetTruncatedEncodedString(string value, int maxBytesAllowed) =>
-        StreamBuffer.GetTruncatedEncodedString(value, Encoding, maxBytesAllowed);
-
-    private string GetExtendedString(string? value, int maxLengthNormal, int maxLengthExtended, bool onlyLastPart = false)
-    {
-        ArgumentNullException.ThrowIfNull(value);
-
-        var firstPart = GetTruncatedEncodedString(value, maxLengthNormal);
-        if (!UseExtendedTag || (firstPart.Length == value.Length))
-        {
-            return onlyLastPart ? string.Empty : firstPart;
-        }
-
-        var secondPart = GetTruncatedEncodedString(value[firstPart.Length..], maxLengthExtended);
-        return onlyLastPart ? secondPart : firstPart + secondPart;
-    }
 }
