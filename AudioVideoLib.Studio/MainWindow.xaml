@@ -202,6 +202,11 @@
                           AlternatingRowBackground="{DynamicResource Surface2Brush}"
                           SelectionMode="Single"
                           MinHeight="280">
+                    <DataGrid.RowStyle>
+                        <Style TargetType="DataGridRow">
+                            <EventSetter Event="PreviewMouseRightButtonUp" Handler="ApeItemRow_PreviewMouseRightButtonUp" />
+                        </Style>
+                    </DataGrid.RowStyle>
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Key"   Binding="{Binding Key}"   Width="200" IsReadOnly="True" />
                         <DataGridTextColumn Header="Type"  Binding="{Binding Type}"  Width="90"  IsReadOnly="True" />
@@ -228,6 +233,11 @@
                           AlternatingRowBackground="{DynamicResource Surface2Brush}"
                           SelectionMode="Single"
                           MinHeight="240">
+                    <DataGrid.RowStyle>
+                        <Style TargetType="DataGridRow">
+                            <EventSetter Event="PreviewMouseRightButtonUp" Handler="Lyrics3FieldRow_PreviewMouseRightButtonUp" />
+                        </Style>
+                    </DataGrid.RowStyle>
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="ID"    Binding="{Binding Identifier}" Width="80" IsReadOnly="True" />
                         <DataGridTextColumn Header="Value" Binding="{Binding Value, UpdateSourceTrigger=LostFocus}" Width="*" />
@@ -253,6 +263,11 @@
                           AlternatingRowBackground="{DynamicResource Surface2Brush}"
                           SelectionMode="Single"
                           MinHeight="280">
+                    <DataGrid.RowStyle>
+                        <Style TargetType="DataGridRow">
+                            <EventSetter Event="PreviewMouseRightButtonUp" Handler="VorbisCommentRow_PreviewMouseRightButtonUp" />
+                        </Style>
+                    </DataGrid.RowStyle>
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Name"  Binding="{Binding Name,  UpdateSourceTrigger=LostFocus}" Width="200" />
                         <DataGridTextColumn Header="Value" Binding="{Binding Value, UpdateSourceTrigger=LostFocus}" Width="*" />

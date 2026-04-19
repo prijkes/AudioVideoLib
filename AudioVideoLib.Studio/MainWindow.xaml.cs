@@ -902,6 +902,73 @@ public partial class MainWindow : Window
         }
     }
 
+    private void ApeItemRow_PreviewMouseRightButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        if (sender is not DataGridRow row || row.Item is not ApeItemRow item || CurrentApeTab is not { } tab)
+        {
+            return;
+        }
+
+        row.IsSelected = true;
+        ShowDeleteRowMenu(row, $"Delete {item.Key}", () =>
+        {
+            tab.RemoveItem(item);
+            UpdateStatus($"Removed APE item {item.Key}");
+        });
+        e.Handled = true;
+    }
+
+    private void Lyrics3FieldRow_PreviewMouseRightButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        if (sender is not DataGridRow row || row.Item is not Lyrics3v2FieldRow item || CurrentLyrics3v2Tab is not { } tab)
+        {
+            return;
+        }
+
+        row.IsSelected = true;
+        ShowDeleteRowMenu(row, $"Delete {item.Identifier}", () =>
+        {
+            tab.RemoveField(item);
+            UpdateStatus($"Removed Lyrics3v2 field {item.Identifier}");
+        });
+        e.Handled = true;
+    }
+
+    private void VorbisCommentRow_PreviewMouseRightButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        if (sender is not DataGridRow row || row.Item is not VorbisCommentRow item || CurrentVorbisTab is not { } tab)
+        {
+            return;
+        }
+
+        row.IsSelected = true;
+        ShowDeleteRowMenu(row, $"Delete {item.Name}", () =>
+        {
+            tab.RemoveComment(item);
+            UpdateStatus($"Removed Vorbis comment {item.Name}");
+        });
+        e.Handled = true;
+    }
+
+    private static void ShowDeleteRowMenu(DataGridRow row, string header, Action onDelete)
+    {
+        var menu = new ContextMenu();
+        var item = new MenuItem { Header = header };
+        item.Click += (_, _) => onDelete();
+        menu.Items.Add(item);
+        menu.PlacementTarget = row;
+        menu.IsOpen = true;
+    }
+
+    private ApeTabViewModel? CurrentApeTab =>
+        TagTabControl.SelectedItem as ApeTabViewModel;
+
+    private Lyrics3v2TabViewModel? CurrentLyrics3v2Tab =>
+        TagTabControl.SelectedItem as Lyrics3v2TabViewModel;
+
+    private VorbisTabViewModel? CurrentVorbisTab =>
+        TagTabControl.SelectedItem as VorbisTabViewModel;
+
     private static DataGrid? FindFirstDescendantDataGrid(DependencyObject? start)
     {
         if (start == null)
