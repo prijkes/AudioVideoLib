@@ -535,10 +535,10 @@ public sealed class Id3v1TabViewModel : TagTabViewModel
 
 public sealed class ApeTabViewModel : TagTabViewModel
 {
-    public ApeTabViewModel(ApeTag tag)
+    public ApeTabViewModel(ApeTag tag, string headerSuffix = "")
     {
         Tag = tag;
-        Header = tag.Version.ToString().Replace("Version", "APEv");
+        Header = tag.Version.ToString().Replace("Version", "APEv") + headerSuffix;
         SourceBadge = Header;
 
         foreach (var item in tag.Items)

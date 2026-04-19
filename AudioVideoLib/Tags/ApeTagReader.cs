@@ -145,6 +145,7 @@ public sealed partial class ApeTagReader : IAudioTagReader
             _ = ReadHeader(sb, TagOrigin.End);
         }
 
+        tag.SetItems(items);
 
         return new AudioTagOffset(tagOrigin, startOffset, endOffset, tag);
     }

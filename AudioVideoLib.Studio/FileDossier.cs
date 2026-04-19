@@ -516,7 +516,7 @@ public sealed class FileDossier : INotifyPropertyChanged
 
         var id3v2 = tagOffsets.Select(o => o.AudioTag).OfType<Id3v2Tag>().FirstOrDefault();
         var id3v1 = tagOffsets.Select(o => o.AudioTag).OfType<Id3v1Tag>().FirstOrDefault();
-        var ape = tagOffsets.Select(o => o.AudioTag).OfType<ApeTag>().FirstOrDefault();
+        var apeTags = tagOffsets.Select(o => o.AudioTag).OfType<ApeTag>().ToList();
         var lyrics3v1 = tagOffsets.Select(o => o.AudioTag).OfType<Lyrics3Tag>().FirstOrDefault();
         var lyrics3v2 = tagOffsets.Select(o => o.AudioTag).OfType<Lyrics3v2Tag>().FirstOrDefault();
         var musicMatch = tagOffsets.Select(o => o.AudioTag).OfType<MusicMatchTag>().FirstOrDefault();
@@ -526,9 +526,12 @@ public sealed class FileDossier : INotifyPropertyChanged
             TagTabs.Add(new Id3v2TabViewModel(id3v2));
         }
 
-        if (ape != null)
+        for (var i = 0; i < apeTags.Count; i++)
         {
-            TagTabs.Add(new ApeTabViewModel(ape));
+            // Multiple APE tags in a single file is uncommon but legal — give each its own tab,
+            // suffixed with "(N)" so the user can tell them apart.
+            var suffix = apeTags.Count > 1 ? $" ({i + 1})" : string.Empty;
+            TagTabs.Add(new ApeTabViewModel(apeTags[i], suffix));
         }
 
         if (lyrics3v1 != null)
