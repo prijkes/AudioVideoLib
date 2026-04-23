@@ -1,0 +1,12 @@
+apiRules:
+# Only document the AudioVideoLib namespace tree. Keep generated / internal
+# helper namespaces out of the site.
+- exclude:
+    uidRegex: ^System\.
+    type: Namespace
+- exclude:
+    hasAttribute:
+      uid: System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute
+- include:
+    uidRegex: ^AudioVideoLib(\..+)?$
+    type: Namespace

@@ -87,7 +87,7 @@ public sealed partial class Id3v2ExtendedHeader
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Id3v2ExtendedHeader" /> class reading the <see cref="extendedFlags"/> for the specified <see cref="version"/>.
+    /// Initializes a new instance of the <see cref="Id3v2ExtendedHeader" /> class reading the <paramref name="extendedFlags"/> for the specified <paramref name="version"/>.
     /// </summary>
     /// <param name="version">The version.</param>
     /// <param name="extendedFlags">The extended flags.</param>

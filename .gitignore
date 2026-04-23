@@ -398,3 +398,9 @@ FodyWeavers.xsd
 *.sln.iml
 
 getid3-mp3-testfiles/*
+
+# DocFX build outputs
+_site/
+api/.manifest
+api/*.yml
+!api/index.md
