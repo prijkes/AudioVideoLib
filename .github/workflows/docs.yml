@@ -15,7 +15,7 @@ env:
 
 jobs:
   build-and-publish:
-    name: Build DocFX site and publish to prijkes/audiovideolib.github.io
+    name: Build DocFX site and publish to audiovideolib.github.io
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -47,7 +47,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           deploy_key: ${{ secrets.DOCS_DEPLOY_KEY }}
-          external_repository: prijkes/audiovideolib.github.io
+          external_repository: audiovideolib/audiovideolib.github.io
           publish_branch: main
           publish_dir: ./_site
           cname: ""
