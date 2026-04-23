@@ -5,13 +5,8 @@ on:
     branches: [master]
   workflow_dispatch:
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
 concurrency:
-  group: pages
+  group: docs-publish
   cancel-in-progress: true
 
 env:
@@ -19,8 +14,8 @@ env:
   DOTNET_CLI_TELEMETRY_OPTOUT: true
 
 jobs:
-  build:
-    name: Build DocFX site
+  build-and-publish:
+    name: Build DocFX site and publish to audiovideolib.github.io
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -34,25 +29,29 @@ jobs:
       - name: Install DocFX
         run: dotnet tool install -g docfx
 
-      - name: Build library (populates XML docs next to DLLs)
+      - name: Build library (populates XML docs next to the DLL)
         run: dotnet build AudioVideoLib/AudioVideoLib.csproj -c Release
 
       - name: DocFX metadata + build
         run: docfx docfx.json
 
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: _site
+      - name: Copy CNAME and .nojekyll into _site
+        run: |
+          # Prevent GitHub Pages from running Jekyll over the DocFX output
+          # (Jekyll would hide files/folders starting with "_").
+          touch _site/.nojekyll
+          # If the target repo needs a CNAME, drop it in _site/ before publish:
+          # echo "docs.example.com" > _site/CNAME
 
-  deploy:
-    name: Deploy to GitHub Pages
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Publish to audiovideolib.github.io
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          deploy_key: ${{ secrets.DOCS_DEPLOY_KEY }}
+          external_repository: audiovideolib/audiovideolib.github.io
+          publish_branch: main
+          publish_dir: ./_site
+          cname: ""
+          commit_message: "docs: publish ${{ github.sha }}"
+          user_name: "github-actions[bot]"
+          user_email: "41898282+github-actions[bot]@users.noreply.github.com"
+          force_orphan: true
