@@ -254,7 +254,7 @@ public class MatroskaStreamTests
         Assert.True(stream.ReadStream(new MemoryStream(container)));
         Assert.Equal(1_000_000, stream.TimecodeScale);
         Assert.Equal(2500.0, stream.Duration, 6);
-        Assert.Equal(2500, stream.TotalAudioLength);
+        Assert.Equal(2500, stream.TotalDuration);
     }
 
     [Fact]
@@ -263,11 +263,11 @@ public class MatroskaStreamTests
         var container = BuildContainerNoTags("matroska");
         var stream = new MatroskaStream();
         Assert.True(stream.ReadStream(new MemoryStream(container)));
-        Assert.Equal(0, stream.TotalAudioLength);
+        Assert.Equal(0, stream.TotalDuration);
     }
 
     // ================================================================
-    // 7. IAudioStream interface basics.
+    // 7. IMediaContainer interface basics.
     // ================================================================
 
     [Fact]
@@ -278,7 +278,7 @@ public class MatroskaStreamTests
         Assert.True(stream.ReadStream(new MemoryStream(container)));
         Assert.Equal(0, stream.StartOffset);
         Assert.Equal(container.Length, stream.EndOffset);
-        Assert.Equal(container.Length, stream.TotalAudioSize);
+        Assert.Equal(container.Length, stream.TotalMediaSize);
     }
 
     [Fact]

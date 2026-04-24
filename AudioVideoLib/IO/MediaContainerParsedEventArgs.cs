@@ -6,10 +6,10 @@ using System;
 /// Class for storing event data passed as argument to subscribed event handlers.
 /// </summary>
 /// <remarks>
-/// Initializes a new instance of the <see cref="AudioStreamParseEventArgs"/> class.
+/// Initializes a new instance of the <see cref="MediaContainerParsedEventArgs"/> class.
 /// </remarks>
 /// <param name="audioStream">The audio stream.</param>
-public sealed class AudioStreamParseEventArgs(IAudioStream audioStream) : EventArgs
+public sealed class MediaContainerParsedEventArgs(IMediaContainer audioStream) : EventArgs
 {
 
     ////------------------------------------------------------------------------------------------------------------------------------
@@ -20,5 +20,5 @@ public sealed class AudioStreamParseEventArgs(IAudioStream audioStream) : EventA
     /// <value>
     /// The audio stream.
     /// </value>
-    public IAudioStream AudioStream { get; } = audioStream;
+    public IMediaContainer AudioStream { get; } = audioStream;
 }

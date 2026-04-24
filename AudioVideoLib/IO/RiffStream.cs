@@ -16,7 +16,7 @@ using AudioVideoLib.Tags;
 /// locate the sample block, and records every other chunk structurally without materialising its payload.
 /// Only the <c>WAVE</c> form type is recognised; other RIFF types such as AVI are ignored.
 /// </remarks>
-public sealed class RiffStream : IAudioStream
+public sealed class RiffStream : IMediaContainer
 {
     private const int MaxChunkCaptureSize = 64 * 1024;
 
@@ -31,7 +31,7 @@ public sealed class RiffStream : IAudioStream
     public long EndOffset { get; private set; }
 
     /// <inheritdoc/>
-    public long TotalAudioLength
+    public long TotalDuration
     {
         get
         {
@@ -46,7 +46,7 @@ public sealed class RiffStream : IAudioStream
     }
 
     /// <inheritdoc/>
-    public long TotalAudioSize => DataSize;
+    public long TotalMediaSize => DataSize;
 
     /// <inheritdoc/>
     public int MaxFrameSpacingLength { get; set; } = 0;

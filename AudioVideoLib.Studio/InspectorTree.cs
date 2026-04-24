@@ -55,7 +55,7 @@ public static class InspectorTreeBuilder
 {
     private static int MaxAudioFramesInTree => AppSettings.Current.MaxAudioFramesInTree;
 
-    public static InspectorNode Build(string filePath, byte[] fileBytes, IReadOnlyList<IAudioTagOffset> offsets, IAudioStream? audioStream)
+    public static InspectorNode Build(string filePath, byte[] fileBytes, IReadOnlyList<IAudioTagOffset> offsets, IMediaContainer? audioStream)
     {
         var root = new InspectorNode
         {
@@ -710,7 +710,7 @@ public static class InspectorTreeBuilder
     //// Audio region (MPEG)
     ////------------------------------------------------------------------------------------------------------------------------------
 
-    private static InspectorNode BuildAudioRegion(long start, long end, IAudioStream? audioStream)
+    private static InspectorNode BuildAudioRegion(long start, long end, IMediaContainer? audioStream)
     {
         var node = new InspectorNode
         {
@@ -735,7 +735,7 @@ public static class InspectorTreeBuilder
                 node.Properties.Add(Prop("Sample rate", $"{first.SamplingRate} Hz"));
                 node.Properties.Add(Prop("Channels", first.ChannelMode.ToString()));
                 node.Properties.Add(Prop("Frame count", framesInRange.Count.ToString()));
-                node.Properties.Add(Prop("Duration", FormatDuration(mpa.TotalAudioLength)));
+                node.Properties.Add(Prop("Duration", FormatDuration(mpa.TotalDuration)));
 
                 if (mpa.VbrHeader is { } vbr)
                 {
@@ -1167,7 +1167,7 @@ public static class InspectorTreeBuilder
     {
         root.Properties.Add(Prop("Format", "MP4 / ISO base media"));
         root.Properties.Add(Prop("Top-level boxes", mp4.Boxes.Count.ToString()));
-        root.Properties.Add(Prop("Duration (ms)", mp4.TotalAudioLength.ToString("N0")));
+        root.Properties.Add(Prop("Duration (ms)", mp4.TotalDuration.ToString("N0")));
 
         foreach (var box in mp4.Boxes)
         {
@@ -1209,7 +1209,7 @@ public static class InspectorTreeBuilder
     {
         root.Properties.Add(Prop("Format", "ASF / WMA"));
         root.Properties.Add(Prop("Header objects", asf.Objects.Count.ToString()));
-        root.Properties.Add(Prop("Duration (ms)", asf.TotalAudioLength.ToString("N0")));
+        root.Properties.Add(Prop("Duration (ms)", asf.TotalDuration.ToString("N0")));
 
         foreach (var obj in asf.Objects)
         {
@@ -1240,7 +1240,7 @@ public static class InspectorTreeBuilder
     {
         root.Properties.Add(Prop("Format", $"Matroska / {mkv.DocType}"));
         root.Properties.Add(Prop("Tag entries", mkv.Tag.Entries.Count.ToString()));
-        root.Properties.Add(Prop("Duration (ms)", mkv.TotalAudioLength.ToString("N0")));
+        root.Properties.Add(Prop("Duration (ms)", mkv.TotalDuration.ToString("N0")));
 
         foreach (var entry in mkv.Tag.Entries)
         {

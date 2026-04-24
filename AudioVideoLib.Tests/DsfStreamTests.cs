@@ -156,7 +156,7 @@ public class DsfStreamTests
         Assert.Equal(1, stream.BitsPerSample);
         Assert.Equal(5_644_800, stream.SampleCount);
         Assert.Equal(4096, stream.BlockSizePerChannel);
-        Assert.Equal(2_000L, stream.TotalAudioLength); // 5644800 / 2822400 * 1000 = 2000ms
+        Assert.Equal(2_000L, stream.TotalDuration); // 5644800 / 2822400 * 1000 = 2000ms
     }
 
     [Fact]

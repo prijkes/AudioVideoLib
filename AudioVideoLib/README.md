@@ -11,7 +11,7 @@ warnings treated as errors.
 | `Collections/` | Generic support — `NotifyingList<T>` and its event args, used to let tag readers raise per-item parse events. |
 | `Cryptography/` | CRC helpers (`Crc8`, `Crc16`) and compression shims used by ID3v2 frame flags. |
 | `Formats/` | Plain records and readers for non-tag data: MPEG audio frames and headers (`MpaFrame`, `MpaFrameHeader`), FLAC metadata blocks / frames / sub-frames, VBR / Xing / LAME / VBRI headers, RIFF / AIFF chunks, OGG pages, MP4 boxes + ilst items, DSD chunks, EBML elements, BWF bext, iXML, and the container-level tag models (`RiffInfoTag`, `AiffTextChunks`). |
-| `IO/` | Stream walkers (`IAudioStream` implementations): `MpaStream`, `FlacStream`, `RiffStream`, `AiffStream`, `OggStream`, `DsfStream`, `DffStream`, `Mp4Stream`, `AsfStream`, `MatroskaStream`. Plus `AudioStreams` (the factory/registry that probes a stream and returns matching walkers) and the seekable buffer primitives `StreamBuffer`, `StreamBufferReader`, `StreamBufferWriter`, `BitStream`. |
+| `IO/` | Stream walkers (`IMediaContainer` implementations): `MpaStream`, `FlacStream`, `RiffStream`, `AiffStream`, `OggStream`, `DsfStream`, `DffStream`, `Mp4Stream`, `AsfStream`, `MatroskaStream`. Plus `MediaContainers` (the factory/registry that probes a stream and returns matching walkers) and the seekable buffer primitives `StreamBuffer`, `StreamBufferReader`, `StreamBufferWriter`, `BitStream`. |
 | `Tags/` | Tag readers and models: `Id3v1Tag` / `Id3v1TagReader`, the `Id3v2*` family (readers, frame subclasses, helpers, extended header, language/country tables), `ApeTag` / `ApeItem` / `ApeTagReader`, `Lyrics3*`, `MusicMatch*`, `VorbisComments`, plus container-embedded tag models `Mp4MetaTag`, `AsfMetadataTag`, `MatroskaTag`. Also the plumbing interfaces `IAudioTag`, `IAudioTagReader`, `IAudioTagOffset`, `AudioTags` (the end-of-file / start-of-file scanner), and parse-event args. |
 | `InvalidVersionException.cs` | Shared exception type used by versioned frame constructors. |
 
@@ -28,11 +28,11 @@ and origin (`Start` or `End` of stream). Malformed individual tags /
 frames surface via the `AudioTagParseError` and `Id3v2FrameParseError`
 events rather than throwing; parsing continues with the next reader.
 
-### `AudioStreams.ReadStream(stream)`
+### `MediaContainers.ReadStream(stream)`
 
 Probes a stream for container formats — MPEG audio, FLAC, RIFF/WAV,
 AIFF, OGG, DSF/DFF, MP4/M4A, ASF/WMA, Matroska/WebM. Each container
-walker implements `IAudioStream` and exposes format-specific structure
+walker implements `IMediaContainer` and exposes format-specific structure
 (chunks, pages, boxes, objects, EBML elements) plus any embedded
 metadata (e.g. `Mp4Stream.Tag`, `AsfStream.MetadataTag`,
 `MatroskaStream.Tag`, `RiffStream.InfoTag`, `DsfStream.EmbeddedId3v2`).
@@ -51,9 +51,9 @@ outside the edited region.
 
 - **New tag format at a flat byte position:** implement `IAudioTagReader`,
   register it via `AudioTags.AddReader<YourReader, YourTag>()`.
-- **New container:** implement `IAudioStream` (see `RiffStream` /
+- **New container:** implement `IMediaContainer` (see `RiffStream` /
   `OggStream` for compact references), register it in
-  `AudioStreams._supportedStreams`.
+  `MediaContainers._supportedStreams`.
 - **New ID3v2 frame type:** subclass `Id3v2Frame`, override `Identifier`,
   `IsVersionSupported`, and the `Data` getter/setter, then register in
   `Id3v2FrameHelpers` if it should be discovered by default.

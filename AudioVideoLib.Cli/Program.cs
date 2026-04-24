@@ -92,7 +92,7 @@ internal static class Program
                     Console.WriteLine($"  MPEG {first.AudioVersion} {first.LayerVersion}");
                     Console.WriteLine($"  {first.SamplingRate} Hz, {first.ChannelMode}, {first.Bitrate} kbps");
                     Console.WriteLine($"  Frames: {mpa.Frames.Count():N0}");
-                    Console.WriteLine($"  Duration: {FormatMs(mpa.TotalAudioLength)}");
+                    Console.WriteLine($"  Duration: {FormatMs(mpa.TotalDuration)}");
                 }
                 break;
             case FlacStream flac:
@@ -218,7 +218,7 @@ internal static class Program
         return 0;
     }
 
-    private static (IReadOnlyList<IAudioTagOffset> Offsets, IAudioStream? Audio, byte[] Bytes) Load(string path)
+    private static (IReadOnlyList<IAudioTagOffset> Offsets, IMediaContainer? Audio, byte[] Bytes) Load(string path)
     {
         var bytes = File.ReadAllBytes(path);
         using var ms = new MemoryStream(bytes);
@@ -229,7 +229,7 @@ internal static class Program
             .DefaultIfEmpty(0L)
             .Max();
         ms.Position = startTagEnd;
-        var audio = AudioStreams.ReadStream(ms).FirstOrDefault();
+        var audio = MediaContainers.ReadStream(ms).FirstOrDefault();
         return (offsets, audio, bytes);
     }
 

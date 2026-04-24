@@ -62,7 +62,7 @@ public partial class AnalysisPanel : UserControl
     {
         var frames = mpa.Frames.ToList();
         rows.Add(new("Frames detected", frames.Count.ToString("N0")));
-        rows.Add(new("Declared duration", FormatMs(mpa.TotalAudioLength)));
+        rows.Add(new("Declared duration", FormatMs(mpa.TotalDuration)));
 
         if (frames.Count > 0)
         {
@@ -79,11 +79,11 @@ public partial class AnalysisPanel : UserControl
             rows.Add(new("Channels", frames[0].ChannelMode.ToString()));
 
             // Sanity: average bitrate from frames × frame count should match declared duration.
-            var totalDataSize = mpa.TotalAudioSize;
+            var totalDataSize = mpa.TotalMediaSize;
             if (totalDataSize > 0 && avg > 0)
             {
                 var expectedMs = (long)(totalDataSize * 8.0 / (avg * 1000) * 1000);
-                var diff = System.Math.Abs(expectedMs - mpa.TotalAudioLength);
+                var diff = System.Math.Abs(expectedMs - mpa.TotalDuration);
                 rows.Add(new("Duration from data÷bitrate", FormatMs(expectedMs)));
                 rows.Add(new("Δ from declared", $"{diff:N0} ms" + (diff < 1000 ? " ✓" : " — check")));
             }
@@ -115,9 +115,9 @@ public partial class AnalysisPanel : UserControl
         rows.Add(new("Channels", riff.Channels.ToString()));
         rows.Add(new("Bits/sample", riff.BitsPerSample.ToString()));
         rows.Add(new("Data size", $"{riff.DataSize:N0} bytes"));
-        if (riff.TotalAudioLength > 0)
+        if (riff.TotalDuration > 0)
         {
-            rows.Add(new("Duration", FormatMs(riff.TotalAudioLength)));
+            rows.Add(new("Duration", FormatMs(riff.TotalDuration)));
         }
     }
 
@@ -128,9 +128,9 @@ public partial class AnalysisPanel : UserControl
         rows.Add(new("Channels", aiff.Channels.ToString()));
         rows.Add(new("Sample size", $"{aiff.SampleSize}-bit"));
         rows.Add(new("Sample frames", aiff.SampleFrames.ToString("N0")));
-        if (aiff.TotalAudioLength > 0)
+        if (aiff.TotalDuration > 0)
         {
-            rows.Add(new("Duration", FormatMs(aiff.TotalAudioLength)));
+            rows.Add(new("Duration", FormatMs(aiff.TotalDuration)));
         }
     }
 

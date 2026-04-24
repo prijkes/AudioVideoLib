@@ -165,7 +165,7 @@ internal static class ContainerLinter
         return issues;
     }
 
-    public static IReadOnlyList<ValidationIssue> CheckDsd(IAudioStream audio)
+    public static IReadOnlyList<ValidationIssue> CheckDsd(IMediaContainer audio)
     {
         var (rate, channels) = audio switch
         {

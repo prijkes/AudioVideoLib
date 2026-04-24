@@ -256,7 +256,7 @@ public class Mp4StreamTests
         Assert.True(stream.ReadStream(new MemoryStream(bytes)));
 
         // 5000 / 1000 * 1000ms = 5000ms
-        Assert.Equal(5000, stream.TotalAudioLength);
+        Assert.Equal(5000, stream.TotalDuration);
     }
 
     // ================================================================
@@ -299,7 +299,7 @@ public class Mp4StreamTests
     }
 
     // ================================================================
-    // IAudioStream contract
+    // IMediaContainer contract
     // ================================================================
 
     [Fact]
@@ -313,7 +313,7 @@ public class Mp4StreamTests
 
         Assert.Equal(0, stream.StartOffset);
         Assert.Equal(bytes.Length, stream.EndOffset);
-        Assert.Equal(bytes.Length, stream.TotalAudioSize);
+        Assert.Equal(bytes.Length, stream.TotalMediaSize);
     }
 
     [Fact]

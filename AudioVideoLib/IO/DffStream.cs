@@ -18,7 +18,7 @@ using AudioVideoLib.Tags;
 /// locates optional <c>DIIN</c>, <c>COMT</c>, and <c>ID3 </c> chunks. All multi-byte integers in DFF are
 /// big-endian.
 /// </remarks>
-public sealed class DffStream : IAudioStream
+public sealed class DffStream : IMediaContainer
 {
     private const long MaxAllowedFormSize = 1L << 40;
     private const int MaxChunkCaptureSize = 64 * 1024;
@@ -32,10 +32,10 @@ public sealed class DffStream : IAudioStream
     public long EndOffset { get; private set; }
 
     /// <inheritdoc/>
-    public long TotalAudioLength => SampleRate == 0 ? 0 : SampleCount * 1000L / SampleRate;
+    public long TotalDuration => SampleRate == 0 ? 0 : SampleCount * 1000L / SampleRate;
 
     /// <inheritdoc/>
-    public long TotalAudioSize => DataSize;
+    public long TotalMediaSize => DataSize;
 
     /// <inheritdoc/>
     public int MaxFrameSpacingLength { get; set; } = 0;

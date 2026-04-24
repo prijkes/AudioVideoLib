@@ -253,7 +253,7 @@ public static class Program
         PrintSection("Audio streams");
 
         stream.Position = 0;
-        var streams = AudioStreams.ReadStream(stream).ToList();
+        var streams = MediaContainers.ReadStream(stream).ToList();
         if (streams.Count == 0)
         {
             Console.WriteLine("  (none detected)");
@@ -291,7 +291,7 @@ public static class Program
         Print("  channels", first.ChannelMode);
         Print("  padded", first.IsPadded);
         Print("  frame-length", $"{first.FrameLength} bytes");
-        Print("  total-length", FormatDuration(mpa.TotalAudioLength));
+        Print("  total-length", FormatDuration(mpa.TotalDuration));
 
         if (mpa.VbrHeader is { } vbr)
         {
@@ -337,7 +337,7 @@ public static class Program
     private static void DumpVorbisInsideFlac(Stream stream)
     {
         stream.Position = 0;
-        var audioStreams = AudioStreams.ReadStream(stream);
+        var audioStreams = MediaContainers.ReadStream(stream);
         var flac = audioStreams.OfType<FlacStream>().FirstOrDefault();
         if (flac == null)
         {

@@ -34,15 +34,15 @@ tags.ReadTags(stream);
 ## Add a new container walker
 
 For container formats where metadata lives inside the structure (MP4,
-ASF, Matroska-style), implement `IAudioStream`:
+ASF, Matroska-style), implement `IMediaContainer`:
 
 ```csharp
-public sealed class MyContainerStream : IAudioStream
+public sealed class MyContainerStream : IMediaContainer
 {
     public long StartOffset { get; private set; }
     public long EndOffset { get; private set; }
-    public long TotalAudioLength { get; /* ms */ }
-    public long TotalAudioSize { get; /* bytes */ }
+    public long TotalDuration { get; /* ms */ }
+    public long TotalMediaSize { get; /* bytes */ }
     public int MaxFrameSpacingLength { get; set; } = 0;
 
     public bool ReadStream(Stream stream)
@@ -56,11 +56,11 @@ public sealed class MyContainerStream : IAudioStream
 }
 ```
 
-Register with the `AudioStreams` factory — add your type to the
-dictionary in `AudioVideoLib/IO/AudioStreams.cs`:
+Register with the `MediaContainers` factory — add your type to the
+dictionary in `AudioVideoLib/IO/MediaContainers.cs`:
 
 ```csharp
-private readonly Dictionary<Type, Func<IAudioStream>> _supportedStreams = new()
+private readonly Dictionary<Type, Func<IMediaContainer>> _supportedStreams = new()
 {
     // ...
     { typeof(MyContainerStream), () => new MyContainerStream() },

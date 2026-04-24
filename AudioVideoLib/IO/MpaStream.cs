@@ -10,7 +10,7 @@ using AudioVideoLib.Formats;
 /// <summary>
 /// The stream containing MPEG Audio <see cref="MpaFrame"/>s.
 /// </summary>
-public sealed class MpaStream : IAudioStream
+public sealed class MpaStream : IMediaContainer
 {
     private readonly List<MpaFrame> _frames = [];
 
@@ -72,7 +72,7 @@ public sealed class MpaStream : IAudioStream
     ///         MPAFrame frame = mpaStream.FirstFrame;
     ///         <para/>
     ///         // Calculate the audio size, in bits per second.
-    ///         long totalAudioSize = TotalAudioSize * 8;
+    ///         long totalAudioSize = TotalMediaSize * 8;
     ///         <para/>
     ///         // Return the divided total audio size by the bitrate of the first frame,
     ///         // this results in a roughly estimated audio length in milliseconds.
@@ -112,10 +112,10 @@ public sealed class MpaStream : IAudioStream
     ///     }
     /// }
     /// </example>
-    public long TotalAudioLength => Frames.Sum(f => f.AudioLength);
+    public long TotalDuration => Frames.Sum(f => f.AudioLength);
 
     /// <inheritdoc/>
-    public long TotalAudioSize => Frames.Sum(f => f.FrameLength);
+    public long TotalMediaSize => Frames.Sum(f => f.FrameLength);
 
     /// <inheritdoc/>
     public int MaxFrameSpacingLength { get; set; } = 2048;

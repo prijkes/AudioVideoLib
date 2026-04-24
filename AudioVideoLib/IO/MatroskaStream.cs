@@ -15,7 +15,7 @@ using AudioVideoLib.Tags;
 /// Supports round-trip serialisation: the original input bytes are preserved and a new <c>Tags</c>
 /// element is spliced in (or appended) when <see cref="ToByteArray"/> is called.
 /// </remarks>
-public sealed class MatroskaStream : IAudioStream
+public sealed class MatroskaStream : IMediaContainer
 {
     /// <summary>The four-byte EBML header magic.</summary>
     public static readonly byte[] EbmlMagic = [0x1A, 0x45, 0xDF, 0xA3];
@@ -77,7 +77,7 @@ public sealed class MatroskaStream : IAudioStream
     public long EndOffset { get; private set; }
 
     /// <inheritdoc/>
-    public long TotalAudioLength
+    public long TotalDuration
     {
         get
         {
@@ -93,7 +93,7 @@ public sealed class MatroskaStream : IAudioStream
     }
 
     /// <inheritdoc/>
-    public long TotalAudioSize => EndOffset - StartOffset;
+    public long TotalMediaSize => EndOffset - StartOffset;
 
     /// <inheritdoc/>
     public int MaxFrameSpacingLength { get; set; } = 0;

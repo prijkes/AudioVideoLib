@@ -6,7 +6,7 @@ using AudioVideoLib.IO;
 
 public static class FrameIntegrityChecker
 {
-    public static IReadOnlyList<ValidationIssue> Check(IAudioStream? audio)
+    public static IReadOnlyList<ValidationIssue> Check(IMediaContainer? audio)
     {
         if (audio is not MpaStream mpa)
         {

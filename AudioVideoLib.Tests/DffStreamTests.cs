@@ -238,7 +238,7 @@ public class DffStreamTests
         Assert.Equal("SLFT", stream.ChannelIds[0]);
         Assert.Equal("SRGT", stream.ChannelIds[1]);
         // 282240 bytes * 8 / 2 channels = 1128960 samples per channel, /2822400 * 1000 = 400ms
-        Assert.Equal(400L, stream.TotalAudioLength);
+        Assert.Equal(400L, stream.TotalDuration);
     }
 
     [Fact]

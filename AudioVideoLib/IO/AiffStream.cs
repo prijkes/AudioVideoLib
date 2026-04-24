@@ -15,7 +15,7 @@ using AudioVideoLib.Formats;
 /// <c>SSND</c> chunk, while recording every other chunk structurally without materialising its payload.
 /// Sample rate is decoded from the 80-bit IEEE 754 extended-precision value stored by the AIFF spec.
 /// </remarks>
-public sealed class AiffStream : IAudioStream
+public sealed class AiffStream : IMediaContainer
 {
     private const int MaxChunkCaptureSize = 8 * 1024;
     private const int MaxTextChunkCaptureSize = 64 * 1024;
@@ -34,7 +34,7 @@ public sealed class AiffStream : IAudioStream
     public long EndOffset { get; private set; }
 
     /// <inheritdoc/>
-    public long TotalAudioLength
+    public long TotalDuration
     {
         get
         {
@@ -49,7 +49,7 @@ public sealed class AiffStream : IAudioStream
     }
 
     /// <inheritdoc/>
-    public long TotalAudioSize => SsndSize;
+    public long TotalMediaSize => SsndSize;
 
     /// <inheritdoc/>
     public int MaxFrameSpacingLength { get; set; } = 0;

@@ -18,7 +18,7 @@ using AudioVideoLib.Tags;
 /// Extension Object) are parsed into <see cref="MetadataTag"/>. Unrecognised objects are recorded
 /// generically and skipped without failing the walk.
 /// </remarks>
-public sealed class AsfStream : IAudioStream
+public sealed class AsfStream : IMediaContainer
 {
     private const int MaxObjectsToRecord = 4096;
 
@@ -32,10 +32,10 @@ public sealed class AsfStream : IAudioStream
     public long EndOffset { get; private set; }
 
     /// <inheritdoc/>
-    public long TotalAudioLength { get; private set; }
+    public long TotalDuration { get; private set; }
 
     /// <inheritdoc/>
-    public long TotalAudioSize => EndOffset - StartOffset;
+    public long TotalMediaSize => EndOffset - StartOffset;
 
     /// <inheritdoc/>
     public int MaxFrameSpacingLength { get; set; }
@@ -281,7 +281,7 @@ public sealed class AsfStream : IAudioStream
 
         PlayDuration100Ns = ReadU64(data, offset + PlayDurationOffset);
         // Convert 100-ns units to milliseconds.
-        TotalAudioLength = (long)(PlayDuration100Ns / 10000UL);
+        TotalDuration = (long)(PlayDuration100Ns / 10000UL);
     }
 
     private void ParseHeaderExtension(byte[] data, int offset, int length)

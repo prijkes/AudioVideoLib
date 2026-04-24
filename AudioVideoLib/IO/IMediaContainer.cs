@@ -5,21 +5,21 @@ using System.IO;
 /// <summary>
 /// Interface for an audio format to implement streaming.
 /// </summary>
-public interface IAudioStream
+public interface IMediaContainer
 {
     /// <summary>
-    /// Gets the start offset of the <see cref="IAudioStream"/>, where it starts in the stream.
+    /// Gets the start offset of the <see cref="IMediaContainer"/>, where it starts in the stream.
     /// </summary>
     /// <value>
-    /// The start offset of the <see cref="IAudioStream"/>, counting from the start of the stream.
+    /// The start offset of the <see cref="IMediaContainer"/>, counting from the start of the stream.
     /// </value>
     long StartOffset { get; }
 
     /// <summary>
-    /// Gets the end offset of the <see cref="IAudioStream"/>, where it ends in the stream.
+    /// Gets the end offset of the <see cref="IMediaContainer"/>, where it ends in the stream.
     /// </summary>
     /// <value>
-    /// The end offset of the <see cref="IAudioStream"/>, counting from the start of the stream.
+    /// The end offset of the <see cref="IMediaContainer"/>, counting from the start of the stream.
     /// </value>
     long EndOffset { get; }
 
@@ -29,7 +29,7 @@ public interface IAudioStream
     /// <value>
     /// The total length of audio, in milliseconds.
     /// </value>
-    long TotalAudioLength { get; }
+    long TotalDuration { get; }
 
     /// <summary>
     /// Gets the total size of audio data in bytes.
@@ -37,7 +37,7 @@ public interface IAudioStream
     /// <value>
     /// The total size of the audio data in the stream, in bytes.
     /// </value>
-    long TotalAudioSize { get; }
+    long TotalMediaSize { get; }
 
     /// <summary>
     /// Gets or sets the max length of spacing, in bytes, between 2 frames when searching for frames.
@@ -63,10 +63,10 @@ public interface IAudioStream
     bool ReadStream(Stream stream);
 
     /// <summary>
-    /// Places the <see cref="IAudioStream"/> into a byte array.
+    /// Places the <see cref="IMediaContainer"/> into a byte array.
     /// </summary>
     /// <returns>
-    /// A byte array that represents the <see cref="IAudioStream"/>.
+    /// A byte array that represents the <see cref="IMediaContainer"/>.
     /// </returns>
     byte[] ToByteArray();
 }

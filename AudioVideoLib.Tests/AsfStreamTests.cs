@@ -277,7 +277,7 @@ public class AsfStreamTests
         var s = new AsfStream();
         Assert.True(s.ReadStream(new MemoryStream(bytes)));
         Assert.Equal(OneSecond100Ns, s.PlayDuration100Ns);
-        Assert.Equal(1000L, s.TotalAudioLength);
+        Assert.Equal(1000L, s.TotalDuration);
     }
 
     [Fact]
@@ -286,7 +286,7 @@ public class AsfStreamTests
         var bytes = BuildHeaderObject([]);
         var s = new AsfStream();
         Assert.True(s.ReadStream(new MemoryStream(bytes)));
-        Assert.Equal(0L, s.TotalAudioLength);
+        Assert.Equal(0L, s.TotalDuration);
     }
 
     // ================================================================
@@ -374,7 +374,7 @@ public class AsfStreamTests
         var s = new AsfStream();
         Assert.True(s.ReadStream(new MemoryStream(header)));
         Assert.Equal("Old", s.MetadataTag.Title);
-        Assert.Equal(2000L, s.TotalAudioLength);
+        Assert.Equal(2000L, s.TotalDuration);
 
         // Mutate the tag — change title and add an extended item.
         s.MetadataTag.Title = "New";
@@ -389,7 +389,7 @@ public class AsfStreamTests
         Assert.Equal("New", s2.MetadataTag.Title);
         Assert.Equal("2026", s2.MetadataTag.Extended["WM/Year"].AsString);
         // File Properties Object preserved.
-        Assert.Equal(2000L, s2.TotalAudioLength);
+        Assert.Equal(2000L, s2.TotalDuration);
     }
 
     [Fact]
@@ -422,7 +422,7 @@ public class AsfStreamTests
     }
 
     // ================================================================
-    // 9. IAudioStream surface
+    // 9. IMediaContainer surface
     // ================================================================
 
     [Fact]
@@ -448,6 +448,6 @@ public class AsfStreamTests
         var bytes = BuildHeaderObject([]);
         var s = new AsfStream();
         Assert.True(s.ReadStream(new MemoryStream(bytes)));
-        Assert.Equal(bytes.Length, s.TotalAudioSize);
+        Assert.Equal(bytes.Length, s.TotalMediaSize);
     }
 }

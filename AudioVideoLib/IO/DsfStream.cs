@@ -17,7 +17,7 @@ using AudioVideoLib.Tags;
 /// and locates an optional ID3v2 metadata block at the absolute offset given by the <c>DSD </c>
 /// chunk's metadata-pointer field. All multi-byte integers in DSF are little-endian.
 /// </remarks>
-public sealed class DsfStream : IAudioStream
+public sealed class DsfStream : IMediaContainer
 {
     private const int DsdChunkSize = 28;
     private const int FmtChunkSize = 52;
@@ -32,10 +32,10 @@ public sealed class DsfStream : IAudioStream
     public long EndOffset { get; private set; }
 
     /// <inheritdoc/>
-    public long TotalAudioLength => SampleRate == 0 ? 0 : SampleCount * 1000L / SampleRate;
+    public long TotalDuration => SampleRate == 0 ? 0 : SampleCount * 1000L / SampleRate;
 
     /// <inheritdoc/>
-    public long TotalAudioSize => DataSize;
+    public long TotalMediaSize => DataSize;
 
     /// <inheritdoc/>
     public int MaxFrameSpacingLength { get; set; } = 0;

@@ -37,7 +37,7 @@ foreach (var offset in tags)
 }
 ```
 
-### `AudioStreams` — container probe
+### `MediaContainers` — container probe
 
 Probes for container formats and returns whatever walker matches:
 
@@ -53,13 +53,13 @@ Probes for container formats and returns whatever walker matches:
 
 ```csharp
 fs.Position = 0;
-var streams = AudioStreams.ReadStream(fs);
+var streams = MediaContainers.ReadStream(fs);
 
 foreach (var stream in streams)
 {
     if (stream is MpaStream mpa)
     {
-        Console.WriteLine($"MPEG: {mpa.Frames.Count()} frames, {mpa.TotalAudioLength:N0} ms");
+        Console.WriteLine($"MPEG: {mpa.Frames.Count()} frames, {mpa.TotalDuration:N0} ms");
     }
     else if (stream is FlacStream flac)
     {

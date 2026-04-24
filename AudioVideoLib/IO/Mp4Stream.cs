@@ -19,7 +19,7 @@ using AudioVideoLib.Tags;
 /// size==1 ("64-bit extended size in the next 8 bytes") are both supported. Recursion is bounded by an
 /// explicit depth cap to avoid stack blow-up on malicious input.
 /// </remarks>
-public sealed class Mp4Stream : IAudioStream
+public sealed class Mp4Stream : IMediaContainer
 {
     private const int MaxDepth = 16;
     private static readonly Encoding Latin1 = Encoding.GetEncoding("ISO-8859-1");
@@ -50,10 +50,10 @@ public sealed class Mp4Stream : IAudioStream
     public long EndOffset { get; private set; }
 
     /// <inheritdoc/>
-    public long TotalAudioLength => _movieTimescale == 0 ? 0 : (long)(_movieDuration * 1000UL / _movieTimescale);
+    public long TotalDuration => _movieTimescale == 0 ? 0 : (long)(_movieDuration * 1000UL / _movieTimescale);
 
     /// <inheritdoc/>
-    public long TotalAudioSize => EndOffset - StartOffset;
+    public long TotalMediaSize => EndOffset - StartOffset;
 
     /// <inheritdoc/>
     public int MaxFrameSpacingLength { get; set; } = 0;

@@ -15,7 +15,7 @@ using AudioVideoLib.Formats;
 /// page to identify the codec (Vorbis or Opus) so it can report channel count, sample rate, and an
 /// approximate duration derived from the largest observed granule position.
 /// </remarks>
-public sealed class OggStream : IAudioStream
+public sealed class OggStream : IMediaContainer
 {
     private const int MaxPages = 100_000;
     private const int CodecIdentificationPeekSize = 64;
@@ -29,7 +29,7 @@ public sealed class OggStream : IAudioStream
     public long EndOffset { get; private set; }
 
     /// <inheritdoc/>
-    public long TotalAudioLength
+    public long TotalDuration
     {
         get
         {
@@ -45,7 +45,7 @@ public sealed class OggStream : IAudioStream
     }
 
     /// <inheritdoc/>
-    public long TotalAudioSize => EndOffset - StartOffset;
+    public long TotalMediaSize => EndOffset - StartOffset;
 
     /// <inheritdoc/>
     public int MaxFrameSpacingLength { get; set; } = 0;
@@ -96,7 +96,7 @@ public sealed class OggStream : IAudioStream
     /// </summary>
     /// <remarks>
     /// For Opus this is the original sample rate; Opus always encodes at 48 kHz internally, which is
-    /// what <see cref="TotalAudioLength"/> uses for duration calculation.
+    /// what <see cref="TotalDuration"/> uses for duration calculation.
     /// </remarks>
     public int SampleRate { get; private set; }
 

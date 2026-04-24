@@ -1,5 +1,38 @@
 # Release notes
 
+## 0.3.0 — 2026-04-25
+
+**Breaking:** `IAudioStream` and related types renamed to reflect that
+they describe a media container walker, not strictly an audio stream.
+MP4 / Matroska / ASF files routinely carry video and metadata
+alongside audio, and the audio-centric name was misleading.
+
+### Renames
+
+| Before (`0.2.0`) | After (`0.3.0`) |
+|---|---|
+| `IAudioStream` | `IMediaContainer` |
+| `AudioStreams` (collection / factory) | `MediaContainers` |
+| `AudioStreamParseEventArgs` | `MediaContainerParseEventArgs` |
+| `AudioStreamParsedEventArgs` | `MediaContainerParsedEventArgs` |
+| `AudioStreams.AudioStreamParse` (event) | `MediaContainers.MediaContainerParse` |
+| `AudioStreams.AudioStreamParsed` (event) | `MediaContainers.MediaContainerParsed` |
+| `IAudioStream.TotalAudioLength` (property) | `IMediaContainer.TotalDuration` |
+| `IAudioStream.TotalAudioSize` (property) | `IMediaContainer.TotalMediaSize` |
+
+Everything else (the tag APIs — `AudioTags`, `IAudioTag`,
+`IAudioTagReader`, `IAudioTagOffset`, `AudioTagOffset`, event args)
+stays as-is: tags *are* audio-format concepts (ID3, APE, Lyrics3,
+MusicMatch), so the "audio" prefix is accurate there.
+
+### Migration
+
+One-line sed / find-replace for most projects:
+
+```
+sed -i -E 's/\bIAudioStream\b/IMediaContainer/g; s/\bAudioStreams\b/MediaContainers/g; s/\bTotalAudioLength\b/TotalDuration/g; s/\bTotalAudioSize\b/TotalMediaSize/g; s/AudioStreamParseEventArgs/MediaContainerParseEventArgs/g; s/AudioStreamParsedEventArgs/MediaContainerParsedEventArgs/g' **/*.cs
+```
+
 ## 0.2.0 — 2026-04-19
 
 ### New formats

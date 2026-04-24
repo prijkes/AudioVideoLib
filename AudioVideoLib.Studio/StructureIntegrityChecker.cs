@@ -11,7 +11,7 @@ public static class StructureIntegrityChecker
     public static IReadOnlyList<ValidationIssue> Check(
         byte[] fileBytes,
         IReadOnlyList<IAudioTagOffset> offsets,
-        IAudioStream? audio)
+        IMediaContainer? audio)
     {
         var issues = new List<ValidationIssue>();
         var sorted = offsets.OrderBy(o => o.StartOffset).ToList();

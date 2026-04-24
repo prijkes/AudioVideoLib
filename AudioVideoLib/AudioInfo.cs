@@ -26,7 +26,7 @@ public sealed class AudioInfo
         ArgumentNullException.ThrowIfNull(stream);
         _stream = stream;
         AudioTags = new AudioTags();
-        AudioStreams = new AudioStreams();
+        MediaContainers = new MediaContainers();
     }
 
     ////------------------------------------------------------------------------------------------------------------------------------
@@ -45,7 +45,7 @@ public sealed class AudioInfo
     /// <value>
     /// The audio stream.
     /// </value>
-    public AudioStreams AudioStreams { get; }
+    public MediaContainers MediaContainers { get; }
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
@@ -75,7 +75,7 @@ public sealed class AudioInfo
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Saves the <see cref="AudioTags" /> and <see cref="AudioStreams" /> to specified file. File should not exist.
+    /// Saves the <see cref="AudioTags" /> and <see cref="MediaContainers" /> to specified file. File should not exist.
     /// </summary>
     /// <param name="file">The file.</param>
     /// <remarks>
@@ -95,7 +95,7 @@ public sealed class AudioInfo
             fileStream.Write(bytes, 0, bytes.Length);
         }
 
-        foreach (var bytes in AudioStreams.Select(a => a.ToByteArray()))
+        foreach (var bytes in MediaContainers.Select(a => a.ToByteArray()))
         {
             fileStream.Write(bytes, 0, bytes.Length);
         }
@@ -117,6 +117,6 @@ public sealed class AudioInfo
         _stream.Position = AudioTags.Where(t => t.TagOrigin == TagOrigin.Start).Select(t => t.EndOffset).LastOrDefault();
 
         // Find all streams.
-        AudioStreams.ReadStreams(_stream);
+        MediaContainers.ReadStreams(_stream);
     }
 }

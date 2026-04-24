@@ -23,7 +23,7 @@ public sealed record LintReportData(
 
 public static class LintReport
 {
-    public static LintReportData Build(FileDossier dossier, IAudioStream? audio, IReadOnlyList<IAudioTagOffset> offsets)
+    public static LintReportData Build(FileDossier dossier, IMediaContainer? audio, IReadOnlyList<IAudioTagOffset> offsets)
     {
         var sections = new List<LintSection>();
 

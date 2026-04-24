@@ -52,7 +52,7 @@ public static class BatchScanner
                 .DefaultIfEmpty(0L)
                 .Max();
             ms.Position = startTagEnd;
-            var audio = AudioStreams.ReadStream(ms).FirstOrDefault();
+            var audio = MediaContainers.ReadStream(ms).FirstOrDefault();
 
             var format = audio switch
             {

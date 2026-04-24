@@ -10,7 +10,7 @@ using AudioVideoLib.Formats;
 /// <summary>
 /// The stream containing FLAC Audio <see cref="FlacFrame"/>s.
 /// </summary>
-public sealed partial class FlacStream : IAudioStream
+public sealed partial class FlacStream : IMediaContainer
 {
     private const string Identifier = "fLaC";
 
@@ -21,18 +21,18 @@ public sealed partial class FlacStream : IAudioStream
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Gets the start offset of the <see cref="IAudioStream"/>, where it starts in the stream.
+    /// Gets the start offset of the <see cref="IMediaContainer"/>, where it starts in the stream.
     /// </summary>
     /// <value>
-    /// The start offset of the <see cref="IAudioStream"/>, counting from the start of the stream.
+    /// The start offset of the <see cref="IMediaContainer"/>, counting from the start of the stream.
     /// </value>
     public long StartOffset => _frames.Count > 0 ? _frames[0].StartOffset : 0;
 
     /// <summary>
-    /// Gets the end offset of the <see cref="IAudioStream"/>, where it ends in the stream.
+    /// Gets the end offset of the <see cref="IMediaContainer"/>, where it ends in the stream.
     /// </summary>
     /// <value>
-    /// The end offset of the <see cref="IAudioStream"/>, counting from the start of the stream.
+    /// The end offset of the <see cref="IMediaContainer"/>, counting from the start of the stream.
     /// </value>
     public long EndOffset => _frames.Count > 0 ? _frames[^1].EndOffset : 0;
 
@@ -50,7 +50,7 @@ public sealed partial class FlacStream : IAudioStream
     /// <value>
     /// The total length of audio, in milliseconds.
     /// </value>
-    public long TotalAudioLength => Frames.Sum(f => f.AudioLength);
+    public long TotalDuration => Frames.Sum(f => f.AudioLength);
 
     /// <summary>
     /// Gets the total size of audio data in bytes.
@@ -58,7 +58,7 @@ public sealed partial class FlacStream : IAudioStream
     /// <value>
     /// The total size of the audio data in the stream, in bytes.
     /// </value>
-    public long TotalAudioSize => Frames.Sum(f => f.FrameLength);
+    public long TotalMediaSize => Frames.Sum(f => f.FrameLength);
 
     /// <summary>
     /// Gets or sets the max length of spacing, in bytes, between 2 frames when searching for frames.

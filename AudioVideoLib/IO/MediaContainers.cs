@@ -11,9 +11,9 @@ using AudioVideoLib.Collections;
 /// <summary>
 /// Represents a collection of audio streams.
 /// </summary>
-public sealed class AudioStreams : IEnumerable<IAudioStream>
+public sealed class MediaContainers : IEnumerable<IMediaContainer>
 {
-    private readonly Dictionary<Type, Func<IAudioStream>> _supportedStreams = new()
+    private readonly Dictionary<Type, Func<IMediaContainer>> _supportedStreams = new()
     {
         { typeof(MpaStream), () => new MpaStream() },
         { typeof(FlacStream), () => new FlacStream() },
@@ -27,14 +27,14 @@ public sealed class AudioStreams : IEnumerable<IAudioStream>
         { typeof(MatroskaStream), () => new MatroskaStream() },
     };
 
-    private readonly NotifyingList<IAudioStream> _streams = [];
+    private readonly NotifyingList<IMediaContainer> _streams = [];
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AudioStreams" /> class.
+    /// Initializes a new instance of the <see cref="MediaContainers" /> class.
     /// </summary>
-    public AudioStreams()
+    public MediaContainers()
     {
         _streams.ItemAdd += AudioStreamAdd;
         _streams.ItemReplace += AudioStreamReplace;
@@ -45,12 +45,12 @@ public sealed class AudioStreams : IEnumerable<IAudioStream>
     /// <summary>
     /// Occurs when parsing an audio stream.
     /// </summary>
-    public event EventHandler<AudioStreamParseEventArgs>? AudioStreamParse;
+    public event EventHandler<MediaContainerParseEventArgs>? MediaContainerParse;
 
     /// <summary>
     /// Occurs when an audio stream has been parsed.
     /// </summary>
-    public event EventHandler<AudioStreamParsedEventArgs>? AudioStreamParsed;
+    public event EventHandler<MediaContainerParsedEventArgs>? MediaContainerParsed;
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
@@ -69,18 +69,18 @@ public sealed class AudioStreams : IEnumerable<IAudioStream>
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Reads an <see cref="AudioStreams"/> instance from the stream.
+    /// Reads an <see cref="MediaContainers"/> instance from the stream.
     /// </summary>
     /// <param name="stream">The stream.</param>
     /// <returns>
-    /// An <see cref="AudioStreams"/> instance.
+    /// An <see cref="MediaContainers"/> instance.
     /// </returns>
     /// <exception cref="System.ArgumentNullException">Thrown if stream is null.</exception>
-    public static AudioStreams ReadStream(Stream stream)
+    public static MediaContainers ReadStream(Stream stream)
     {
         ArgumentNullException.ThrowIfNull(stream);
 
-        var audioStreams = new AudioStreams();
+        var audioStreams = new MediaContainers();
         audioStreams.ReadStreams(stream);
         return audioStreams;
     }
@@ -103,7 +103,7 @@ public sealed class AudioStreams : IEnumerable<IAudioStream>
         long spacing = 0;
         while (stream.Position <= streamLength && spacing < MaxStreamSpacingLength)
         {
-            var audioStream = ReadAudioStream(stream);
+            var audioStream = ReadMediaContainer(stream);
             if (audioStream is not null)
             {
                 spacing = 0;
@@ -126,7 +126,7 @@ public sealed class AudioStreams : IEnumerable<IAudioStream>
     /// <returns>
     /// An <see cref="T:System.Collections.IEnumerator"/> object that can be used to iterate through the collection.
     /// </returns>
-    IEnumerator<IAudioStream> IEnumerable<IAudioStream>.GetEnumerator() => _streams.GetEnumerator();
+    IEnumerator<IMediaContainer> IEnumerable<IMediaContainer>.GetEnumerator() => _streams.GetEnumerator();
 
     /// <summary>
     /// Returns an enumerator that iterates through a collection.
@@ -138,13 +138,13 @@ public sealed class AudioStreams : IEnumerable<IAudioStream>
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
-    private void OnAudioStreamParse(AudioStreamParseEventArgs e) => AudioStreamParse?.Invoke(this, e);
+    private void OnMediaContainerParse(MediaContainerParseEventArgs e) => MediaContainerParse?.Invoke(this, e);
 
-    private void OnAudioStreamParsed(AudioStreamParsedEventArgs e) => AudioStreamParsed?.Invoke(this, e);
+    private void OnMediaContainerParsed(MediaContainerParsedEventArgs e) => MediaContainerParsed?.Invoke(this, e);
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
-    private void AudioStreamAdd(object? sender, ListItemAddEventArgs<IAudioStream> e)
+    private void AudioStreamAdd(object? sender, ListItemAddEventArgs<IMediaContainer> e)
     {
         ArgumentNullException.ThrowIfNull(e);
 
@@ -164,7 +164,7 @@ public sealed class AudioStreams : IEnumerable<IAudioStream>
         }
     }
 
-    private void AudioStreamReplace(object? sender, ListItemReplaceEventArgs<IAudioStream> e)
+    private void AudioStreamReplace(object? sender, ListItemReplaceEventArgs<IMediaContainer> e)
     {
         ArgumentNullException.ThrowIfNull(e);
 
@@ -188,7 +188,7 @@ public sealed class AudioStreams : IEnumerable<IAudioStream>
     /// True if an audio stream was found; otherwise, false.
     /// </returns>
     /// <exception cref="System.ArgumentNullException">Thrown if stream is null.</exception>
-    private IAudioStream? ReadAudioStream(Stream stream)
+    private IMediaContainer? ReadMediaContainer(Stream stream)
     {
         ArgumentNullException.ThrowIfNull(stream);
 
@@ -203,14 +203,14 @@ public sealed class AudioStreams : IEnumerable<IAudioStream>
         foreach (var audioStream in _supportedStreams.Select(pair => pair.Value()))
         {
             // Raise before parsing event.
-            var parseEventArgs = new AudioStreamParseEventArgs(audioStream);
-            OnAudioStreamParse(parseEventArgs);
+            var parseEventArgs = new MediaContainerParseEventArgs(audioStream);
+            OnMediaContainerParse(parseEventArgs);
 
             if (audioStream.ReadStream(stream))
             {
                 // Raise after parsing event.
-                var parsedEventArgs = new AudioStreamParsedEventArgs(audioStream);
-                OnAudioStreamParsed(parsedEventArgs);
+                var parsedEventArgs = new MediaContainerParsedEventArgs(audioStream);
+                OnMediaContainerParsed(parsedEventArgs);
                 return audioStream;
             }
             stream.Position = startPosition;

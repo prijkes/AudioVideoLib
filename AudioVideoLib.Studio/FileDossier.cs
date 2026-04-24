@@ -40,7 +40,7 @@ public sealed class FileDossier : INotifyPropertyChanged
 
     public bool IsFlac { get; private set; }
 
-    public IAudioStream? AudioStream { get; private set; }
+    public IMediaContainer? AudioStream { get; private set; }
 
     public IReadOnlyList<IAudioTagOffset> TagOffsets => _offsets;
 
@@ -555,7 +555,7 @@ public sealed class FileDossier : INotifyPropertyChanged
         }
 
         // Skip past any start-origin tags (e.g. large ID3v2) so the scanner
-        // doesn't give up before reaching the audio frames. AudioStreams only
+        // doesn't give up before reaching the audio frames. MediaContainers only
         // tolerates MaxStreamSpacingLength (128) bytes of non-audio before
         // bailing out.
         var startTagEnd = tagOffsets
@@ -564,7 +564,7 @@ public sealed class FileDossier : INotifyPropertyChanged
             .DefaultIfEmpty(0L)
             .Max();
         fs.Position = startTagEnd;
-        var audio = AudioStreams.ReadStream(fs).FirstOrDefault();
+        var audio = MediaContainers.ReadStream(fs).FirstOrDefault();
         AudioStream = audio;
         _flacStream = audio as FlacStream;
         IsFlac = _flacStream != null;
@@ -594,7 +594,7 @@ public sealed class FileDossier : INotifyPropertyChanged
         Notify(nameof(LastModifiedText));
     }
 
-    private void BuildTechCards(IAudioStream? audio)
+    private void BuildTechCards(IMediaContainer? audio)
     {
         TechCards.Clear();
         switch (audio)
@@ -608,7 +608,7 @@ public sealed class FileDossier : INotifyPropertyChanged
                         mpa.VbrHeader != null ? $"{first.Bitrate} kbps VBR" : $"{first.Bitrate} kbps CBR"));
                     TechCards.Add(new TechCard("Sample Rate", $"{first.SamplingRate / 1000.0:0.#} kHz"));
                     TechCards.Add(new TechCard("Channels", first.ChannelMode.ToString()));
-                    TechCards.Add(new TechCard("Duration", FormatDuration(mpa.TotalAudioLength)));
+                    TechCards.Add(new TechCard("Duration", FormatDuration(mpa.TotalDuration)));
                     TechCards.Add(new TechCard("Frames", mpa.Frames.Count().ToString("N0")));
                     break;
                 }
@@ -638,9 +638,9 @@ public sealed class FileDossier : INotifyPropertyChanged
                     TechCards.Add(new TechCard("Sample Rate", $"{riff.SampleRate / 1000.0:0.#} kHz"));
                     TechCards.Add(new TechCard("Channels", riff.Channels.ToString()));
                     TechCards.Add(new TechCard("Bits", $"{riff.BitsPerSample}-bit"));
-                    if (riff.TotalAudioLength > 0)
+                    if (riff.TotalDuration > 0)
                     {
-                        TechCards.Add(new TechCard("Duration", FormatDuration(riff.TotalAudioLength)));
+                        TechCards.Add(new TechCard("Duration", FormatDuration(riff.TotalDuration)));
                     }
                 }
                 break;
@@ -652,9 +652,9 @@ public sealed class FileDossier : INotifyPropertyChanged
                     TechCards.Add(new TechCard("Sample Rate", $"{aiff.SampleRate / 1000.0:0.#} kHz"));
                     TechCards.Add(new TechCard("Channels", aiff.Channels.ToString()));
                     TechCards.Add(new TechCard("Bits", $"{aiff.SampleSize}-bit"));
-                    if (aiff.TotalAudioLength > 0)
+                    if (aiff.TotalDuration > 0)
                     {
-                        TechCards.Add(new TechCard("Duration", FormatDuration(aiff.TotalAudioLength)));
+                        TechCards.Add(new TechCard("Duration", FormatDuration(aiff.TotalDuration)));
                     }
                 }
                 break;
@@ -672,7 +672,7 @@ public sealed class FileDossier : INotifyPropertyChanged
         TechCards.Add(new TechCard("File Size", FileSizeText));
     }
 
-    private void AddContainerTabs(IAudioStream? audio)
+    private void AddContainerTabs(IMediaContainer? audio)
     {
         switch (audio)
         {
@@ -924,7 +924,7 @@ public sealed class FileDossier : INotifyPropertyChanged
         }
     }
 
-    private void BuildEncoder(IAudioStream? audio)
+    private void BuildEncoder(IMediaContainer? audio)
     {
         if (audio is MpaStream mpa && mpa.VbrHeader is { } vbr)
         {

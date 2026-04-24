@@ -1,7 +1,7 @@
 # Container formats
 
-Walkers in `AudioVideoLib.IO`. Each implements `IAudioStream` and is
-auto-detected by `AudioStreams.ReadStream(stream)`.
+Walkers in `AudioVideoLib.IO`. Each implements `IMediaContainer` and is
+auto-detected by `MediaContainers.ReadStream(stream)`.
 
 ## MpaStream — MPEG-1 / MPEG-2 / MPEG-2.5 audio
 
@@ -58,7 +58,7 @@ standard path `moov.udta.meta.ilst` for iTunes metadata. Surfaces:
 
 - `Boxes` — top-level atoms.
 - `Tag` (`Mp4MetaTag`) — strongly-typed ilst model.
-- `TotalAudioLength` from `moov.mvhd` (v0 or v1 duration / timescale).
+- `TotalDuration` from `moov.mvhd` (v0 or v1 duration / timescale).
 
 ## AsfStream — ASF / WMA / WMV
 
