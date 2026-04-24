@@ -46,7 +46,7 @@ jobs:
       - name: Publish to audiovideolib.github.io
         uses: peaceiris/actions-gh-pages@v4
         with:
-          deploy_key: ${{ secrets.DOCS_DEPLOY_KEY }}
+          personal_token: ${{ secrets.DOCS_PUBLISH_TOKEN }}
           external_repository: audiovideolib/audiovideolib.github.io
           publish_branch: main
           publish_dir: ./_site
