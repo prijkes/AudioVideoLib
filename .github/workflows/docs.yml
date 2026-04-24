@@ -12,6 +12,9 @@ concurrency:
 env:
   DOTNET_NOLOGO: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true
+  # Actions still advertising Node.js 20 (checkout/setup-dotnet/peaceiris)
+  # run on Node.js 24 now — forward-compatible with the June 2026 default flip.
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   build-and-publish:
