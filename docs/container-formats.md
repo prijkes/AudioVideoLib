@@ -1,7 +1,7 @@
 # Container formats
 
 Walkers in `AudioVideoLib.IO`. Each implements `IAudioStream` and is
-auto-detected by `AudioStreams.ReadStreams(stream)`.
+auto-detected by `AudioStreams.ReadStream(stream)`.
 
 ## MpaStream — MPEG-1 / MPEG-2 / MPEG-2.5 audio
 

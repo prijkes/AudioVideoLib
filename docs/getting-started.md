@@ -53,8 +53,7 @@ Probes for container formats and returns whatever walker matches:
 
 ```csharp
 fs.Position = 0;
-var streams = new AudioStreams();
-streams.ReadStreams(fs);
+var streams = AudioStreams.ReadStream(fs);
 
 foreach (var stream in streams)
 {

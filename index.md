@@ -30,8 +30,7 @@ foreach (var offset in tags)
 }
 
 fs.Position = 0;
-var streams = new AudioStreams();
-streams.ReadStreams(fs);
+var streams = AudioStreams.ReadStream(fs);
 foreach (var stream in streams)
 {
     Console.WriteLine($"{stream.GetType().Name}: {stream.TotalAudioLength:N0} ms");
