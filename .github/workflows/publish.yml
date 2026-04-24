@@ -26,7 +26,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          global-json-file: src/global.json
+          global-json-file: global.json
 
       - name: Derive version from tag
         id: version
@@ -39,16 +39,16 @@ jobs:
           fi
 
       - name: Restore
-        run: dotnet restore src/AudioVideoLib/AudioVideoLib.csproj
+        run: dotnet restore AudioVideoLib/AudioVideoLib.csproj
 
       - name: Build
-        run: dotnet build src/AudioVideoLib/AudioVideoLib.csproj -c Release --no-restore -p:Version=${{ steps.version.outputs.version }}
+        run: dotnet build AudioVideoLib/AudioVideoLib.csproj -c Release --no-restore -p:Version=${{ steps.version.outputs.version }}
 
       - name: Test
-        run: dotnet test src/AudioVideoLib.Tests/AudioVideoLib.Tests.csproj -c Release
+        run: dotnet test AudioVideoLib.Tests/AudioVideoLib.Tests.csproj -c Release
 
       - name: Pack
-        run: dotnet pack src/AudioVideoLib/AudioVideoLib.csproj -c Release --no-build -o ./artifacts -p:Version=${{ steps.version.outputs.version }}
+        run: dotnet pack AudioVideoLib/AudioVideoLib.csproj -c Release --no-build -o ./artifacts -p:Version=${{ steps.version.outputs.version }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
