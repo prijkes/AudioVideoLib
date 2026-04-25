@@ -208,14 +208,29 @@ public sealed class MpaStream : IMediaContainer
     public byte[] ToByteArray()
     {
         var sb = new StreamBuffer();
+        WriteTo((Stream)sb);
+        return sb.ToByteArray();
+    }
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// Streaming override: each frame is written directly to <paramref name="destination"/>
+    /// without building an intermediate byte array. For multi-MB MP3 files this avoids a
+    /// peak allocation roughly equal to the total audio size.
+    /// </remarks>
+    public void WriteTo(Stream destination)
+    {
+        ArgumentNullException.ThrowIfNull(destination);
         foreach (var frame in Frames)
         {
-            if (frame.AudioData is not null)
+            if (frame.AudioData is null)
             {
-                sb.Write(frame.ToByteArray());
+                continue;
             }
+
+            var bytes = frame.ToByteArray();
+            destination.Write(bytes, 0, bytes.Length);
         }
-        return sb.ToByteArray();
     }
 
     ////------------------------------------------------------------------------------------------------------------------------------

@@ -74,6 +74,21 @@ public sealed class IxmlChunk
     public static IxmlChunk? Parse(byte[] payload)
     {
         ArgumentNullException.ThrowIfNull(payload);
+        return Parse((ReadOnlySpan<byte>)payload);
+    }
+
+    /// <summary>
+    /// Parses an iXML chunk payload. Returns <c>null</c> for empty input; otherwise always returns a
+    /// chunk (well-formedness is reported via <see cref="IsWellFormed"/>).
+    /// </summary>
+    /// <param name="payload">The raw <c>iXML</c> chunk payload.</param>
+    /// <remarks>
+    /// Span-based overload: lets callers pass slices of an existing buffer without allocating
+    /// an intermediate <see cref="T:byte[]"/>. The chunk still keeps its own raw-payload copy
+    /// for byte-identical round-trip, so internally one allocation occurs.
+    /// </remarks>
+    public static IxmlChunk? Parse(ReadOnlySpan<byte> payload)
+    {
         if (payload.Length == 0)
         {
             return null;
@@ -92,8 +107,8 @@ public sealed class IxmlChunk
             len--;
         }
 
-        var xml = Encoding.UTF8.GetString(payload, offset, len);
-        return new IxmlChunk(payload, xml);
+        var xml = Encoding.UTF8.GetString(payload.Slice(offset, len));
+        return new IxmlChunk(payload.ToArray(), xml);
     }
 
     /// <summary>

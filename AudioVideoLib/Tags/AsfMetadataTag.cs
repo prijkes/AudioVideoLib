@@ -305,6 +305,19 @@ public sealed class AsfMetadataTag
     public void ParseContentDescription(byte[] payload)
     {
         ArgumentNullException.ThrowIfNull(payload);
+        ParseContentDescription((ReadOnlySpan<byte>)payload);
+    }
+
+    /// <summary>
+    /// Parses a Content Description Object payload (after the 24-byte object header) into this tag.
+    /// </summary>
+    /// <param name="payload">The CDO payload bytes.</param>
+    /// <remarks>
+    /// Span-based overload: lets callers pass slices of an existing buffer without
+    /// allocating an intermediate <see cref="T:byte[]"/>.
+    /// </remarks>
+    public void ParseContentDescription(ReadOnlySpan<byte> payload)
+    {
         if (payload.Length < 10)
         {
             return;
@@ -333,6 +346,19 @@ public sealed class AsfMetadataTag
     public void ParseExtendedContentDescription(byte[] payload)
     {
         ArgumentNullException.ThrowIfNull(payload);
+        ParseExtendedContentDescription((ReadOnlySpan<byte>)payload);
+    }
+
+    /// <summary>
+    /// Parses an Extended Content Description Object payload (after the 24-byte object header).
+    /// </summary>
+    /// <param name="payload">The ECDO payload bytes.</param>
+    /// <remarks>
+    /// Span-based overload: lets callers pass slices of an existing buffer without
+    /// allocating an intermediate <see cref="T:byte[]"/>.
+    /// </remarks>
+    public void ParseExtendedContentDescription(ReadOnlySpan<byte> payload)
+    {
         if (payload.Length < 2)
         {
             return;
@@ -386,6 +412,23 @@ public sealed class AsfMetadataTag
     public void ParseMetadata(byte[] payload, bool library)
     {
         ArgumentNullException.ThrowIfNull(payload);
+        ParseMetadata((ReadOnlySpan<byte>)payload, library);
+    }
+
+    /// <summary>
+    /// Parses a Metadata Object or Metadata Library Object payload (after the 24-byte object header).
+    /// </summary>
+    /// <param name="payload">The MO / MLO payload bytes.</param>
+    /// <param name="library">
+    /// <c>true</c> to append parsed items to <see cref="MetadataLibraryItems"/>; <c>false</c> for
+    /// <see cref="MetadataItems"/>. Both objects share the same on-disk shape.
+    /// </param>
+    /// <remarks>
+    /// Span-based overload: lets callers pass slices of an existing buffer without
+    /// allocating an intermediate <see cref="T:byte[]"/>.
+    /// </remarks>
+    public void ParseMetadata(ReadOnlySpan<byte> payload, bool library)
+    {
         if (payload.Length < 2)
         {
             return;
@@ -630,7 +673,7 @@ public sealed class AsfMetadataTag
         return b;
     }
 
-    private static AsfTypedValue DecodeTypedValue(int dataType, byte[] data, int offset, int length)
+    private static AsfTypedValue DecodeTypedValue(int dataType, ReadOnlySpan<byte> data, int offset, int length)
     {
         return (AsfDataType)dataType switch
         {
@@ -645,23 +688,11 @@ public sealed class AsfMetadataTag
             AsfDataType.Dword => AsfTypedValue.FromDword(length >= 4 ? ReadU32(data, offset) : 0),
             AsfDataType.Qword => AsfTypedValue.FromQword(length >= 8 ? ReadU64(data, offset) : 0),
             AsfDataType.Word => AsfTypedValue.FromWord(length >= 2 ? ReadU16(data, offset) : (ushort)0),
-            _ => AsfTypedValue.FromBytes(SliceCopy(data, offset, length)),
+            _ => AsfTypedValue.FromBytes(length <= 0 ? [] : data.Slice(offset, length).ToArray()),
         };
     }
 
-    private static byte[] SliceCopy(byte[] src, int offset, int length)
-    {
-        if (length <= 0)
-        {
-            return [];
-        }
-
-        var dst = new byte[length];
-        Buffer.BlockCopy(src, offset, dst, 0, length);
-        return dst;
-    }
-
-    private static string DecodeUnicodeStripped(byte[] data, int offset, int length)
+    private static string DecodeUnicodeStripped(ReadOnlySpan<byte> data, int offset, int length)
     {
         if (length <= 0)
         {
@@ -675,10 +706,10 @@ public sealed class AsfMetadataTag
             effective -= 2;
         }
 
-        return effective <= 0 ? string.Empty : Encoding.Unicode.GetString(data, offset, effective);
+        return effective <= 0 ? string.Empty : Encoding.Unicode.GetString(data.Slice(offset, effective));
     }
 
-    private static string? ReadFixedUnicode(byte[] data, ref int pos, int length)
+    private static string? ReadFixedUnicode(ReadOnlySpan<byte> data, ref int pos, int length)
     {
         if (length == 0)
         {
@@ -696,12 +727,12 @@ public sealed class AsfMetadataTag
         return value;
     }
 
-    private static ushort ReadU16(byte[] b, int off) => (ushort)(b[off] | (b[off + 1] << 8));
+    private static ushort ReadU16(ReadOnlySpan<byte> b, int off) => (ushort)(b[off] | (b[off + 1] << 8));
 
-    private static uint ReadU32(byte[] b, int off) =>
+    private static uint ReadU32(ReadOnlySpan<byte> b, int off) =>
         (uint)(b[off] | (b[off + 1] << 8) | (b[off + 2] << 16) | (b[off + 3] << 24));
 
-    private static ulong ReadU64(byte[] b, int off)
+    private static ulong ReadU64(ReadOnlySpan<byte> b, int off)
     {
         ulong v = 0;
         for (var i = 7; i >= 0; i--)

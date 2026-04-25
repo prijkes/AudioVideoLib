@@ -153,23 +153,40 @@ public sealed partial class FlacStream : IMediaContainer
     public byte[] ToByteArray()
     {
         var sb = new StreamBuffer();
-        sb.WriteString(Identifier);
+        WriteTo((Stream)sb);
+        return sb.ToByteArray();
+    }
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// Streaming override: emits the <c>fLaC</c> magic, then each metadata block, then each
+    /// audio frame, in turn — written directly to <paramref name="destination"/> without
+    /// building an intermediate byte array.
+    /// </remarks>
+    public void WriteTo(Stream destination)
+    {
+        ArgumentNullException.ThrowIfNull(destination);
+
+        var identifierBytes = System.Text.Encoding.ASCII.GetBytes(Identifier);
+        destination.Write(identifierBytes, 0, identifierBytes.Length);
+
         var streamInfoMetadataBlock = StreamInfoMetadataBlocks.FirstOrDefault();
         if (streamInfoMetadataBlock is not null)
         {
-            sb.Write(streamInfoMetadataBlock.ToByteArray());
+            var bytes = streamInfoMetadataBlock.ToByteArray();
+            destination.Write(bytes, 0, bytes.Length);
         }
 
         foreach (var metadataBlock in MetadataBlocks.Where(m => !ReferenceEquals(m, streamInfoMetadataBlock)))
         {
-            sb.Write(metadataBlock.ToByteArray());
+            var bytes = metadataBlock.ToByteArray();
+            destination.Write(bytes, 0, bytes.Length);
         }
 
         foreach (var frame in Frames)
         {
-            sb.Write(frame.ToByteArray());
+            var bytes = frame.ToByteArray();
+            destination.Write(bytes, 0, bytes.Length);
         }
-
-        return sb.ToByteArray();
     }
 }

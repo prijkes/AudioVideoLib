@@ -55,15 +55,39 @@ public sealed record AiffTextChunks(
         payload is null ? null : Encoding.ASCII.GetString(payload);
 
     /// <summary>
+    /// Parses a single <c>NAME</c>, <c>AUTH</c>, or <c>ANNO</c> chunk payload into a string.
+    /// </summary>
+    /// <param name="payload">The raw chunk payload (ASCII text, no null terminator).</param>
+    /// <returns>The decoded ASCII string.</returns>
+    /// <remarks>
+    /// Span-based overload: lets callers pass slices of an existing buffer without
+    /// allocating an intermediate <see cref="T:byte[]"/>.
+    /// </remarks>
+    public static string ReadText(ReadOnlySpan<byte> payload) =>
+        Encoding.ASCII.GetString(payload);
+
+    /// <summary>
     /// Parses a <c>COMT</c> chunk payload into a sequence of <see cref="AiffComment"/> records.
     /// </summary>
     /// <param name="payload">The raw <c>COMT</c> chunk payload.</param>
     /// <returns>
     /// The decoded list of comments, or <c>null</c> if <paramref name="payload"/> is <c>null</c> or malformed.
     /// </returns>
-    public static IReadOnlyList<AiffComment>? ReadComments(byte[]? payload)
+    public static IReadOnlyList<AiffComment>? ReadComments(byte[]? payload) =>
+        payload is null ? null : ReadComments((ReadOnlySpan<byte>)payload);
+
+    /// <summary>
+    /// Parses a <c>COMT</c> chunk payload into a sequence of <see cref="AiffComment"/> records.
+    /// </summary>
+    /// <param name="payload">The raw <c>COMT</c> chunk payload.</param>
+    /// <returns>The decoded list of comments, or <c>null</c> if the payload is malformed.</returns>
+    /// <remarks>
+    /// Span-based overload: lets callers pass slices of an existing buffer without
+    /// allocating an intermediate <see cref="T:byte[]"/>.
+    /// </remarks>
+    public static IReadOnlyList<AiffComment>? ReadComments(ReadOnlySpan<byte> payload)
     {
-        if (payload is null || payload.Length < 2)
+        if (payload.Length < 2)
         {
             return null;
         }
@@ -89,7 +113,7 @@ public sealed record AiffTextChunks(
                 return null;
             }
 
-            var text = Encoding.ASCII.GetString(payload, pos, count);
+            var text = Encoding.ASCII.GetString(payload.Slice(pos, count));
             pos += count;
 
             // Per spec the text is padded to even length; the pad byte is NOT counted in count.

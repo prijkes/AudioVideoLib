@@ -69,7 +69,19 @@ public sealed class BwfBextChunk
     public static BwfBextChunk? Parse(byte[] payload)
     {
         ArgumentNullException.ThrowIfNull(payload);
+        return Parse((ReadOnlySpan<byte>)payload);
+    }
 
+    /// <summary>
+    /// Parses a <c>bext</c> chunk payload, or returns <c>null</c> for malformed input.
+    /// </summary>
+    /// <param name="payload">The raw chunk payload (excluding the 8-byte chunk header).</param>
+    /// <remarks>
+    /// Span-based overload: lets callers pass slices of an existing buffer without
+    /// allocating an intermediate <see cref="T:byte[]"/>.
+    /// </remarks>
+    public static BwfBextChunk? Parse(ReadOnlySpan<byte> payload)
+    {
         // The fixed-size header is 256+32+32+10+8+8+2+64+10+180 = 602 bytes.
         // Per spec, even v0 reserves 254 bytes (no loudness fields), but the layout offsets
         // for the loudness fields are identical because the reserved region absorbs them.
@@ -91,7 +103,7 @@ public sealed class BwfBextChunk
         };
 
         var umid = new byte[64];
-        Array.Copy(payload, 348, umid, 0, 64);
+        payload.Slice(348, 64).CopyTo(umid);
         c.Umid = umid;
 
         c.LoudnessValue = (short)(payload[412] | (payload[413] << 8));
@@ -110,7 +122,7 @@ public sealed class BwfBextChunk
                 historyLen--;
             }
 
-            c.CodingHistory = Encoding.ASCII.GetString(payload, historyOffset, historyLen);
+            c.CodingHistory = Encoding.ASCII.GetString(payload.Slice(historyOffset, historyLen));
         }
 
         return c;
@@ -165,7 +177,7 @@ public sealed class BwfBextChunk
         return buf;
     }
 
-    private static string ReadFixedAscii(byte[] b, int off, int len)
+    private static string ReadFixedAscii(ReadOnlySpan<byte> b, int off, int len)
     {
         var n = 0;
         while (n < len && b[off + n] != 0)
@@ -173,7 +185,7 @@ public sealed class BwfBextChunk
             n++;
         }
 
-        return Encoding.ASCII.GetString(b, off, n);
+        return Encoding.ASCII.GetString(b.Slice(off, n));
     }
 
     private static void WriteFixedAscii(byte[] b, int off, int len, string value)
@@ -183,7 +195,7 @@ public sealed class BwfBextChunk
         Array.Copy(bytes, 0, b, off, copy);
     }
 
-    private static ulong ReadLeU64(byte[] b, int off)
+    private static ulong ReadLeU64(ReadOnlySpan<byte> b, int off)
     {
         ulong v = 0;
         for (var i = 0; i < 8; i++)

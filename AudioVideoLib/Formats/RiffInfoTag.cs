@@ -85,12 +85,25 @@ public sealed class RiffInfoTag
     public static RiffInfoTag? Parse(byte[] payload)
     {
         ArgumentNullException.ThrowIfNull(payload);
+        return Parse((ReadOnlySpan<byte>)payload);
+    }
 
+    /// <summary>
+    /// Parses a <c>LIST</c> chunk payload (form-type <c>INFO</c> already consumed) into a tag,
+    /// or returns <c>null</c> for malformed input.
+    /// </summary>
+    /// <param name="payload">The raw payload bytes following the 4-byte form-type field.</param>
+    /// <remarks>
+    /// Span-based overload: lets callers pass slices of an existing buffer without
+    /// allocating an intermediate <see cref="T:byte[]"/>.
+    /// </remarks>
+    public static RiffInfoTag? Parse(ReadOnlySpan<byte> payload)
+    {
         var tag = new RiffInfoTag();
         var pos = 0;
         while (pos + 8 <= payload.Length)
         {
-            var id = Latin1.GetString(payload, pos, 4);
+            var id = Latin1.GetString(payload.Slice(pos, 4));
             var size = (uint)(payload[pos + 4] | (payload[pos + 5] << 8) | (payload[pos + 6] << 16) | (payload[pos + 7] << 24));
             pos += 8;
 
@@ -106,7 +119,7 @@ public sealed class RiffInfoTag
                 trimLen--;
             }
 
-            tag._items[id] = Latin1.GetString(payload, pos, trimLen);
+            tag._items[id] = Latin1.GetString(payload.Slice(pos, trimLen));
             pos += rawLen;
             if ((rawLen & 1) != 0 && pos < payload.Length)
             {
@@ -125,20 +138,23 @@ public sealed class RiffInfoTag
     public static RiffInfoTag? FromListPayload(byte[] listPayload)
     {
         ArgumentNullException.ThrowIfNull(listPayload);
+        return FromListPayload((ReadOnlySpan<byte>)listPayload);
+    }
+
+    /// <summary>
+    /// Parses a full WAV <c>LIST</c> chunk payload — including the leading 4-byte form-type — into
+    /// a tag, or returns <c>null</c> if the form-type is not <c>INFO</c> or input is malformed.
+    /// </summary>
+    /// <param name="listPayload">The raw <c>LIST</c> chunk payload (starts with the 4-byte form-type).</param>
+    public static RiffInfoTag? FromListPayload(ReadOnlySpan<byte> listPayload)
+    {
         if (listPayload.Length < 4)
         {
             return null;
         }
 
-        var formType = Latin1.GetString(listPayload, 0, 4);
-        if (formType != "INFO")
-        {
-            return null;
-        }
-
-        var inner = new byte[listPayload.Length - 4];
-        Array.Copy(listPayload, 4, inner, 0, inner.Length);
-        return Parse(inner);
+        var formType = Latin1.GetString(listPayload[..4]);
+        return formType != "INFO" ? null : Parse(listPayload[4..]);
     }
 
     /// <summary>
