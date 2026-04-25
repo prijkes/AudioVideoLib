@@ -89,11 +89,15 @@ if (streams.OfType<RiffStream>().FirstOrDefault() is { InfoTag: var info } && in
 
 ## Modifying and saving
 
-Every tag model exposes a `ToByteArray()`:
+Every tag model exposes a `ToByteArray()`. ID3v2 fields are frame-shaped, so
+edits go through `Id3v2TextFrame` (or one of the strongly-typed property
+setters that wraps it):
 
 ```csharp
 var id3v2 = tags.Select(o => o.AudioTag).OfType<Id3v2Tag>().First();
-id3v2.Title = "New title";
+var title = new Id3v2TextFrame(id3v2.Version, "TIT2");
+title.Values.Add("New title");
+id3v2.TrackTitle = title;
 var rewrittenTag = id3v2.ToByteArray();
 ```
 
@@ -108,6 +112,86 @@ File.WriteAllBytes("out.m4a", mp4.ToByteArray());
 
 See [Round-trip semantics](round-trip.md) for what's preserved and
 what's rebuilt.
+
+## Combined workflows
+
+### Print a one-line summary for a file
+
+`AudioTags` and `MediaContainers` are designed to be called in sequence on
+the same stream:
+
+```csharp
+using var fs = File.OpenRead(path);
+
+var tags = AudioTags.ReadStream(fs);
+var id3v2 = tags.Select(o => o.AudioTag).OfType<Id3v2Tag>().FirstOrDefault();
+var title = id3v2?.TrackTitle?.Values.FirstOrDefault();
+var artist = id3v2?.Artist?.Values.FirstOrDefault();
+
+fs.Position = 0;
+var streams = MediaContainers.ReadStream(fs);
+var totalMs = streams.Sum(s => s.TotalDuration);
+
+Console.WriteLine($"{Path.GetFileName(path)}  {artist} – {title}  ({totalMs} ms)");
+```
+
+### Migrate metadata between formats
+
+Reading tags from one format and writing the equivalent tag in another is
+just two model walks. Here, ID3v2 → APEv2:
+
+```csharp
+var ape = new ApeTag(ApeVersion.Version2);
+
+if (id3v2.TrackTitle is { } titleFrame)
+{
+    var item = new ApeUtf8Item(ape.Version, ApeItemKey.Title);
+    foreach (var v in titleFrame.Values) item.Values.Add(v);
+    ape.SetItem(item);
+}
+if (id3v2.Artist is { } artistFrame)
+{
+    var item = new ApeUtf8Item(ape.Version, ApeItemKey.Artist);
+    foreach (var v in artistFrame.Values) item.Values.Add(v);
+    ape.SetItem(item);
+}
+
+File.WriteAllBytes("track.ape-tag", ape.ToByteArray());
+```
+
+See [the full Examples page](examples.md) for an end-to-end ID3v2 → APE
+migration that covers comments, composer, cover art, and free-form
+identifiers.
+
+### Pull cover art out of any format
+
+Each tag/container exposes its own picture model — a tiny `OfType<>`
+chain handles them uniformly:
+
+```csharp
+foreach (var apic in id3v2?.AttachedPictures ?? [])
+{
+    var ext = apic.ImageFormat.Split('/').Last();
+    File.WriteAllBytes($"cover-{apic.PictureType}.{ext}", apic.PictureData);
+}
+
+foreach (var flac in streams.OfType<FlacStream>())
+{
+    foreach (var pic in flac.PictureMetadataBlocks)
+    {
+        var ext = pic.MimeType.Split('/').Last();
+        File.WriteAllBytes($"cover-{pic.PictureType}.{ext}", pic.PictureData);
+    }
+}
+
+foreach (var mp4 in streams.OfType<Mp4Stream>())
+{
+    foreach (var cover in mp4.Tag.CoverArt)
+    {
+        File.WriteAllBytes($"cover.{cover.Format.ToString().ToLowerInvariant()}", cover.Data);
+    }
+}
+```
 
 ## Non-fatal parse errors
 

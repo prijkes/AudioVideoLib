@@ -8,5 +8,7 @@
   href: round-trip.md
 - name: Extending
   href: extending.md
+- name: Examples
+  href: examples.md
 - name: Release notes
   href: release-notes.md

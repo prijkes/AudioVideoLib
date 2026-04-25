@@ -33,6 +33,24 @@ offset fields.
 - **Unsynchronization:** re-applied on write when the flag is set.
 - **Footer:** preserved if `UseFooter` is true (2.4 only).
 
+```csharp
+// Read-then-write with no edits is byte-identical to the input bytes within
+// the tag's [StartOffset .. EndOffset] window.
+using var fs = File.OpenRead("track.mp3");
+var tags = AudioTags.ReadStream(fs);
+var offset = tags.First(t => t.AudioTag is Id3v2Tag);
+var id3v2 = (Id3v2Tag)offset.AudioTag;
+var rewritten = id3v2.ToByteArray();
+
+// Now edit one frame and re-emit; only the affected frame and the tag
+// header's size field change.
+var artist = id3v2.Artist ?? new Id3v2TextFrame(id3v2.Version, "TPE1");
+artist.Values.Clear();
+artist.Values.Add("Different artist");
+id3v2.Artist = artist;
+File.WriteAllBytes("tag.id3v2", id3v2.ToByteArray());
+```
+
 ## APE
 
 - Byte-identical round-trip for read-then-write-no-edits.
@@ -64,6 +82,13 @@ editor ships yet.
   creating the chain if absent), and splices in the serialized new
   ilst, patching the enclosing atom sizes (`ilst`, `meta`, `udta`,
   `moov`) in-place.
+
+```csharp
+// Splice an MP4 metadata change without touching the audio sample tables.
+var mp4 = MediaContainers.ReadStream(fs).OfType<Mp4Stream>().Single();
+mp4.Tag.Title = "Edited";
+File.WriteAllBytes("out.m4a", mp4.ToByteArray());  // entire file, with ilst rewritten
+```
 - **`stco` / `co64` audio offsets:** when `moov` is after `mdat` (the
   common QuickTime layout), shrinking or growing the metadata doesn't
   move the audio, so these tables stay valid. When `moov` is before

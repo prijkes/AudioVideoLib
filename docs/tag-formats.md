@@ -30,6 +30,31 @@ gives you the raw bytes directly.
 preamble with extended title (+60), artist (+60), album (+60),
 speed (byte), free-text genre (30), start time (6), end time (6).
 
+```csharp
+var id3v1 = tags.Select(o => o.AudioTag).OfType<Id3v1Tag>().First();
+Console.WriteLine($"{id3v1.TrackTitle} – {id3v1.Artist} ({id3v1.AlbumYear})");
+
+// Force the title to be re-encoded as Latin-1 instead of the tag-level default
+// before assigning, so the byte storage and the displayed string agree.
+id3v1.TrackTitleEncoding = Encoding.Latin1;
+id3v1.TrackTitle = "Naïve";
+File.WriteAllBytes("tag.id3v1", id3v1.ToByteArray());
+```
+
+```csharp
+// A v1.1 tag with the TAG+ extended block enabled.
+var id3v1 = new Id3v1Tag(Id3v1Version.Id3v11)
+{
+    TrackTitle = "A song with a title longer than the 30-byte v1 cap",
+    Artist = "An artist with a long name",
+    UseExtendedTag = true,
+    TrackSpeed = Id3v1TrackSpeed.Medium,
+    ExtendedTrackGenre = "Post-Hardcore",
+    StartTime = TimeSpan.FromSeconds(12),
+    EndTime = TimeSpan.FromMinutes(3),
+};
+```
+
 ## ID3v2
 
 **Spec:** [id3.org](https://id3.org) — 2.2.0 (1998), 2.3.0 (1999),
@@ -60,6 +85,43 @@ etc.) accept both ISO 639-2/B (bibliographic, e.g. `dut`) and
 ISO 639-2/T (terminological, e.g. `nld`). The library also accepts
 `XXX` (unknown) per 2.4+.
 
+```csharp
+// Read the well-known text frames; properties hide the version-specific
+// identifier mapping (TIT2 / TT2, TYER vs TDRC, etc.).
+var id3v2 = tags.Select(o => o.AudioTag).OfType<Id3v2Tag>().First();
+var title  = id3v2.TrackTitle?.Values.FirstOrDefault();
+var artist = id3v2.Artist?.Values.FirstOrDefault();
+var year   = id3v2.RecordingTime?.Values.FirstOrDefault()    // 2.4
+          ?? id3v2.YearRecording?.Values.FirstOrDefault();   // 2.2 / 2.3
+```
+
+```csharp
+// Set a TIT2, asking for UTF-8 encoding (only honoured by 2.4+).
+var title = new Id3v2TextFrame(id3v2.Version, "TIT2") { TextEncoding = Id3v2FrameEncodingType.UTF8 };
+title.Values.Add("Track 1");
+id3v2.TrackTitle = title;
+```
+
+```csharp
+// Bulk-convert every text frame in a 2.4 tag to UTF-8.
+if (id3v2.Version >= Id3v2Version.Id3v240)
+{
+    foreach (var frame in id3v2.GetFrames<Id3v2TextFrame>())
+    {
+        frame.TextEncoding = Id3v2FrameEncodingType.UTF8;
+    }
+}
+```
+
+```csharp
+// Extract every embedded picture.
+foreach (var pic in id3v2.AttachedPictures)
+{
+    var ext = pic.ImageFormat.Split('/').Last();
+    File.WriteAllBytes($"cover-{pic.PictureType}.{ext}", pic.PictureData);
+}
+```
+
 ## APE
 
 **Spec:** [hydrogenaudio wiki](https://wiki.hydrogenaud.io/index.php?title=APE_tag) —
@@ -76,6 +138,28 @@ redirect).
 end, sometimes from a botched re-tag). Both surface as separate
 `ApeTag` instances in the offset list; the Studio shows them as
 `APEv2 (1)`, `APEv2 (2)`.
+
+```csharp
+// Walk every APE item, printing key + type + (for UTF-8 items) values.
+var ape = tags.Select(o => o.AudioTag).OfType<ApeTag>().First();
+foreach (var item in ape.Items)
+{
+    Console.WriteLine($"{item.Key} ({item.ItemType})");
+    if (item is ApeUtf8Item utf8)
+    {
+        Console.WriteLine($"  {string.Join(" / ", utf8.Values)}");
+    }
+}
+
+// Add (or replace) a UTF-8 item.
+var album = new ApeUtf8Item(ape.Version, ApeItemKey.AlbumName);
+album.Values.Add("Hello");
+ape.SetItem(album);
+
+// Add a binary cover-art item.
+var cover = new ApeBinaryItem(ape.Version, "Cover Art (Front)") { Data = jpegBytes };
+ape.SetItem(cover);
+```
 
 ## Lyrics3
 
@@ -101,7 +185,28 @@ Appears standalone in OGG streams and inside FLAC's
 `VORBIS_COMMENT` metadata block.
 
 Exposed via `VorbisComments` inside `FlacVorbisCommentsMetadataBlock`
-for FLAC files, and via the OGG walker for OGG streams.
+for FLAC files, and as the standalone `VorbisComments.ReadStream` parser
+for OGG payloads (the OGG walker itself currently only surfaces pages
+and codec metadata — the comment packet is reachable through
+`flac.VorbisCommentsMetadataBlock?.VorbisComments` for FLAC files).
+
+```csharp
+// FLAC: replace the TITLE entries inside the VORBIS_COMMENT metadata block.
+var flac = streams.OfType<FlacStream>().First();
+var vc = flac.VorbisCommentsMetadataBlock?.VorbisComments;
+if (vc is not null)
+{
+    for (var i = vc.Comments.Count - 1; i >= 0; i--)
+    {
+        if (string.Equals(vc.Comments[i].Name, "TITLE", StringComparison.OrdinalIgnoreCase))
+        {
+            vc.Comments.RemoveAt(i);
+        }
+    }
+    vc.Comments.Add(new VorbisComment { Name = "TITLE", Value = "New title" });
+}
+File.WriteAllBytes("out.flac", flac.ToByteArray());
+```
 
 ## MP4 / iTunes ilst
 
@@ -127,6 +232,24 @@ needed. Audio offsets are preserved if `mdat` is before `moov`; if
 `stco`/`co64`. The library doesn't rewrite those tables — document
 this with the [round-trip notes](round-trip.md).
 
+```csharp
+var mp4 = streams.OfType<Mp4Stream>().Single();
+var tag = mp4.Tag;
+
+Console.WriteLine($"{tag.Title} – {tag.Artist} [{tag.Album}] {tag.Year}");
+Console.WriteLine($"track {tag.TrackNumber}/{tag.TrackTotal}, BPM {tag.Bpm}");
+
+tag.Title = "New title";
+tag.SetFreeFormItem("com.apple.iTunes", "MusicBrainz Track Id", "guid-here");
+
+foreach (var cover in tag.CoverArt)
+{
+    File.WriteAllBytes($"cover.{cover.Format.ToString().ToLowerInvariant()}", cover.Data);
+}
+
+File.WriteAllBytes("out.m4a", mp4.ToByteArray());
+```
+
 ## ASF / WMA
 
 **Spec:** Microsoft ASF spec.
@@ -147,6 +270,23 @@ string, byte array, BOOL (32-bit on disk), DWORD, QWORD, WORD.
 objects into the Header Object by GUID. Existing MO / MLO objects are
 preserved verbatim.
 
+```csharp
+var asf = streams.OfType<AsfStream>().Single();
+var meta = asf.MetadataTag;
+
+Console.WriteLine($"{meta.Title} – {meta.Author}");
+foreach (var (name, value) in meta.ExtendedItems)
+{
+    Console.WriteLine($"  {name} ({value.Type}) = {value.AsString ?? value.AsDword.ToString()}");
+}
+
+// Append two ECDO items, one string and one DWORD.
+meta.AddExtended("WM/Mood", AsfTypedValue.FromString("Energetic"));
+meta.AddExtended("WM/BeatsPerMinute", AsfTypedValue.FromDword(128));
+
+File.WriteAllBytes("out.wma", asf.ToByteArray());
+```
+
 ## Matroska / WebM
 
 **Spec:** [matroska.org](https://matroska.org).
@@ -165,6 +305,30 @@ comes from `Segment.Info.Duration × TimecodeScale`.
 element in place while preserving the segment's size VINT length, so
 Cluster / Cues offsets stay valid.
 
+```csharp
+var mkv = streams.OfType<MatroskaStream>().Single();
+
+foreach (var entry in mkv.Tag.Entries)
+{
+    Console.WriteLine($"target {entry.Targets.TargetTypeValue} ({entry.Targets.TargetType})");
+    foreach (var st in entry.SimpleTags)
+    {
+        Console.WriteLine($"  {st.Name} [{st.Language}] = {st.Value}");
+    }
+}
+
+// Append a track-level title applied to track UID 1.
+var trackEntry = new MatroskaTagEntry
+{
+    Targets = { TargetTypeValue = MatroskaTag.TrackLevel, TargetType = "TRACK" },
+};
+trackEntry.Targets.TrackUids.Add(1);
+trackEntry.SimpleTags.Add(new MatroskaSimpleTag { Name = "TITLE", Value = "Bonus" });
+mkv.Tag.Entries.Add(trackEntry);
+
+File.WriteAllBytes("out.mkv", mkv.ToByteArray());
+```
+
 ## WAV / AIFF container-level metadata
 
 - **WAV `LIST` chunk with form-type `INFO`:** ASCII key/value
@@ -181,6 +345,43 @@ Cluster / Cues offsets stay valid.
   Mac Roman). Exposed as `AiffStream.TextChunks` with typed
   `Name`, `Author`, `Annotation`, and `Comments` (timestamped).
 
+```csharp
+// All four WAV side-channels surface as their own properties on RiffStream.
+var riff = streams.OfType<RiffStream>().Single();
+
+if (riff.InfoTag is { } info)
+{
+    Console.WriteLine($"INFO {info.Title} / {info.Artist} ({info.CreationDate})");
+}
+if (riff.BextChunk is { } bext)
+{
+    Console.WriteLine($"BWF {bext.Description} – {bext.Originator} on {bext.OriginationDate}");
+}
+if (riff.IxmlChunk is { IsWellFormed: true } ixml)
+{
+    Console.WriteLine($"iXML PROJECT={ixml.ProjectName} SCENE={ixml.SceneName}");
+}
+if (riff.EmbeddedId3v2?.AudioTag is Id3v2Tag id3v2)
+{
+    Console.WriteLine($"ID3v2 in 'id3 ' chunk: {id3v2.TrackTitle?.Values.FirstOrDefault()}");
+}
+```
+
+```csharp
+// AIFF text chunks.
+var aiff = streams.OfType<AiffStream>().Single();
+if (aiff.TextChunks is { IsEmpty: false } text)
+{
+    Console.WriteLine($"NAME: {text.Name}");
+    Console.WriteLine($"AUTH: {text.Author}");
+    Console.WriteLine($"ANNO: {text.Annotation}");
+    foreach (var c in text.Comments)
+    {
+        Console.WriteLine($"  COMT @ {c.TimeStampUtc:u}: {c.Text}");
+    }
+}
+```
+
 ## DSF / DFF (DSD audio)
 
 - **DSF** (Sony): DSD / fmt / data chunks (LE), optional ID3v2 metadata
@@ -188,3 +389,15 @@ Cluster / Cues offsets stay valid.
   `DsfStream.EmbeddedId3v2`.
 - **DFF** (Philips): FRM8 form (BE) with FVER / PROP / DSD / optional
   DIIN / COMT / ID3 sub-chunks. Exposed as `DffStream.EmbeddedId3v2`.
+
+```csharp
+// DSF / DFF expose any ID3v2 inside the container directly as a fully-parsed Id3v2Tag.
+foreach (var dsf in streams.OfType<DsfStream>())
+{
+    Console.WriteLine($"DSF: {dsf.EmbeddedId3v2?.TrackTitle?.Values.FirstOrDefault()}");
+}
+foreach (var dff in streams.OfType<DffStream>())
+{
+    Console.WriteLine($"DFF: {dff.EmbeddedId3v2?.TrackTitle?.Values.FirstOrDefault()}");
+}
+```

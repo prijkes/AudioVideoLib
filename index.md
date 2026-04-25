@@ -44,6 +44,7 @@ foreach (var stream in streams)
 - [**Container formats**](docs/container-formats.md) — MPEG audio, FLAC, WAV, AIFF, OGG, MP4, ASF, Matroska, DSF/DFF.
 - [**Round-trip semantics**](docs/round-trip.md) — what's preserved, what's rewritten, when offsets shift.
 - [**Extending**](docs/extending.md) — add a new tag reader or container walker.
+- [**Examples**](docs/examples.md) — full programs that combine the readers and writers.
 - [**API reference**](api/index.md) — every public type, auto-generated from the XML doc comments.
 
 ## License
