@@ -4,48 +4,48 @@
   href: tag-formats.md
   items:
     - name: ID3v1
-      href: tag-formats.md#id3v1
+      href: tag-formats/id3v1.md
     - name: ID3v2
-      href: tag-formats.md#id3v2
+      href: tag-formats/id3v2.md
     - name: APE
-      href: tag-formats.md#ape
+      href: tag-formats/ape.md
     - name: Lyrics3
-      href: tag-formats.md#lyrics3
+      href: tag-formats/lyrics3.md
     - name: MusicMatch
-      href: tag-formats.md#musicmatch
+      href: tag-formats/musicmatch.md
     - name: Vorbis Comments
-      href: tag-formats.md#vorbis-comments
+      href: tag-formats/vorbis-comments.md
     - name: MP4 / iTunes ilst
-      href: tag-formats.md#mp4--itunes-ilst
+      href: tag-formats/mp4-itunes.md
     - name: ASF / WMA
-      href: tag-formats.md#asf--wma
+      href: tag-formats/asf.md
     - name: Matroska / WebM
-      href: tag-formats.md#matroska--webm
+      href: tag-formats/matroska.md
     - name: WAV / AIFF chunks
-      href: tag-formats.md#wav--aiff-container-level-metadata
+      href: tag-formats/wav-aiff-chunks.md
     - name: DSF / DFF
-      href: tag-formats.md#dsf--dff-dsd-audio
+      href: tag-formats/dsf-dff.md
 - name: Container formats
   href: container-formats.md
   items:
     - name: MpaStream
-      href: container-formats.md#mpastream--mpeg-1--mpeg-2--mpeg-25-audio
+      href: container-formats/mpastream.md
     - name: FlacStream
-      href: container-formats.md#flacstream
+      href: container-formats/flacstream.md
     - name: RiffStream
-      href: container-formats.md#riffstream--riff--wav--rifx
+      href: container-formats/riffstream.md
     - name: AiffStream
-      href: container-formats.md#aiffstream--aiff--aiff-c
+      href: container-formats/aiffstream.md
     - name: OggStream
-      href: container-formats.md#oggstream
+      href: container-formats/oggstream.md
     - name: Mp4Stream
-      href: container-formats.md#mp4stream--mp4--m4a
+      href: container-formats/mp4stream.md
     - name: AsfStream
-      href: container-formats.md#asfstream--asf--wma--wmv
+      href: container-formats/asfstream.md
     - name: MatroskaStream
-      href: container-formats.md#matroskastream--mkv--mka--webm
+      href: container-formats/matroskastream.md
     - name: DsfStream / DffStream
-      href: container-formats.md#dsfstream--dffstream
+      href: container-formats/dsf-dff-streams.md
 - name: Round-trip semantics
   href: round-trip.md
 - name: Extending
@@ -54,18 +54,18 @@
   href: examples.md
   items:
     - name: One-line summary per file
-      href: examples.md#print-a-one-line-summary-for-every-audio-file-in-a-directory
+      href: examples/summary-per-file.md
     - name: ID3v2 → APEv2 migration
-      href: examples.md#migrate-id3v2--apev2-alongside-the-original-file
+      href: examples/id3v2-to-ape.md
     - name: Bulk encoding conversion
-      href: examples.md#bulk-convert-id3v24-frame-text-encodings
+      href: examples/bulk-encoding-conversion.md
     - name: Cross-format cover-art extractor
-      href: examples.md#extract-every-embedded-picture-regardless-of-format
+      href: examples/cover-art-extractor.md
     - name: BWF metadata report
-      href: examples.md#report-broadcast-wav-bwf-metadata
+      href: examples/bwf-report.md
     - name: Validate MPEG audio
-      href: examples.md#validate-mpeg-audio-frames-and-report-vbr-header--lame-tag
+      href: examples/validate-mpa.md
     - name: Custom tag reader
-      href: examples.md#register-a-custom-tag-reader
+      href: examples/custom-tag-reader.md
 - name: Release notes
   href: release-notes.md
