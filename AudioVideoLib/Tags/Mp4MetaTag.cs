@@ -1,6 +1,7 @@
 namespace AudioVideoLib.Tags;
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -142,7 +143,21 @@ public sealed class Mp4MetaTag
     public static Mp4MetaTag Parse(byte[] payload)
     {
         ArgumentNullException.ThrowIfNull(payload);
+        return Parse((ReadOnlySpan<byte>)payload);
+    }
 
+    /// <summary>
+    /// Parses the body of an <c>ilst</c> atom (children only — no surrounding <c>ilst</c> header) into a tag.
+    /// </summary>
+    /// <param name="payload">The raw ilst payload bytes.</param>
+    /// <returns>A parsed tag — possibly empty if no recognised children were found.</returns>
+    /// <remarks>
+    /// Span-based overload. Lets callers pass slices of an existing buffer
+    /// (<see cref="ArrayPool{T}"/>-rented, memory-mapped, etc.) without
+    /// allocating an intermediate <see cref="T:byte[]"/>.
+    /// </remarks>
+    public static Mp4MetaTag Parse(ReadOnlySpan<byte> payload)
+    {
         var tag = new Mp4MetaTag();
         var pos = 0;
         while (pos + 8 <= payload.Length)
@@ -153,7 +168,7 @@ public sealed class Mp4MetaTag
                 break;
             }
 
-            var atomType = Latin1.GetString(payload, pos + 4, 4);
+            var atomType = Latin1.GetString(payload.Slice(pos + 4, 4));
             var childStart = pos + 8;
             var childEnd = pos + (int)size;
             tag.AbsorbItem(atomType, payload, childStart, childEnd);
@@ -219,7 +234,7 @@ public sealed class Mp4MetaTag
         return ms.ToArray();
     }
 
-    private void AbsorbItem(string atomType, byte[] payload, int start, int end)
+    private void AbsorbItem(string atomType, ReadOnlySpan<byte> payload, int start, int end)
     {
         if (atomType == "----")
         {
@@ -232,7 +247,7 @@ public sealed class Mp4MetaTag
             return;
         }
 
-        var item = new Mp4MetaItem(atomType, dataType, payload.AsSpan(dataStart, dataLen).ToArray());
+        var item = new Mp4MetaItem(atomType, dataType, payload.Slice(dataStart, dataLen).ToArray());
         _items.Add(item);
 
         switch (atomType)
@@ -304,7 +319,7 @@ public sealed class Mp4MetaTag
         }
     }
 
-    private void AbsorbFreeForm(byte[] payload, int start, int end)
+    private void AbsorbFreeForm(ReadOnlySpan<byte> payload, int start, int end)
     {
         string? mean = null;
         string? name = null;
@@ -320,20 +335,20 @@ public sealed class Mp4MetaTag
                 break;
             }
 
-            var subType = Latin1.GetString(payload, pos + 4, 4);
+            var subType = Latin1.GetString(payload.Slice(pos + 4, 4));
             var bodyStart = pos + 8;
             var bodyEnd = pos + (int)size;
             switch (subType)
             {
                 case "mean" when bodyEnd - bodyStart >= 4:
-                    mean = Encoding.UTF8.GetString(payload, bodyStart + 4, bodyEnd - bodyStart - 4);
+                    mean = Encoding.UTF8.GetString(payload.Slice(bodyStart + 4, bodyEnd - bodyStart - 4));
                     break;
                 case "name" when bodyEnd - bodyStart >= 4:
-                    name = Encoding.UTF8.GetString(payload, bodyStart + 4, bodyEnd - bodyStart - 4);
+                    name = Encoding.UTF8.GetString(payload.Slice(bodyStart + 4, bodyEnd - bodyStart - 4));
                     break;
                 case "data" when bodyEnd - bodyStart >= 8:
                     dataType = (Mp4DataType)ReadBeU32(payload, bodyStart);
-                    data = payload.AsSpan(bodyStart + 8, bodyEnd - bodyStart - 8).ToArray();
+                    data = payload.Slice(bodyStart + 8, bodyEnd - bodyStart - 8).ToArray();
                     break;
             }
 
@@ -350,7 +365,7 @@ public sealed class Mp4MetaTag
         _freeForm[new Mp4FreeFormKey(mean, name)] = Encoding.UTF8.GetString(data);
     }
 
-    private static bool TryReadDataChild(byte[] payload, int start, int end, out Mp4DataType dataType, out int dataStart, out int dataLen)
+    private static bool TryReadDataChild(ReadOnlySpan<byte> payload, int start, int end, out Mp4DataType dataType, out int dataStart, out int dataLen)
     {
         var pos = start;
         while (pos + 8 <= end)
@@ -361,7 +376,7 @@ public sealed class Mp4MetaTag
                 break;
             }
 
-            var subType = Latin1.GetString(payload, pos + 4, 4);
+            var subType = Latin1.GetString(payload.Slice(pos + 4, 4));
             var bodyStart = pos + 8;
             var bodyEnd = pos + (int)size;
             if (subType == "data" && bodyEnd - bodyStart >= 8)
@@ -443,7 +458,7 @@ public sealed class Mp4MetaTag
                 ? Mp4CoverArtFormat.Png
                 : Mp4CoverArtFormat.Unknown;
 
-    private static uint ReadBeU32(byte[] b, int off) =>
+    private static uint ReadBeU32(ReadOnlySpan<byte> b, int off) =>
         ((uint)b[off] << 24) | ((uint)b[off + 1] << 16) | ((uint)b[off + 2] << 8) | b[off + 3];
 
     private static void WriteBeU32(Stream s, uint v)
