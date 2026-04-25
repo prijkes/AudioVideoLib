@@ -2,13 +2,70 @@
   href: getting-started.md
 - name: Tag formats
   href: tag-formats.md
+  items:
+    - name: ID3v1
+      href: tag-formats.md#id3v1
+    - name: ID3v2
+      href: tag-formats.md#id3v2
+    - name: APE
+      href: tag-formats.md#ape
+    - name: Lyrics3
+      href: tag-formats.md#lyrics3
+    - name: MusicMatch
+      href: tag-formats.md#musicmatch
+    - name: Vorbis Comments
+      href: tag-formats.md#vorbis-comments
+    - name: MP4 / iTunes ilst
+      href: tag-formats.md#mp4--itunes-ilst
+    - name: ASF / WMA
+      href: tag-formats.md#asf--wma
+    - name: Matroska / WebM
+      href: tag-formats.md#matroska--webm
+    - name: WAV / AIFF chunks
+      href: tag-formats.md#wav--aiff-container-level-metadata
+    - name: DSF / DFF
+      href: tag-formats.md#dsf--dff-dsd-audio
 - name: Container formats
   href: container-formats.md
+  items:
+    - name: MpaStream
+      href: container-formats.md#mpastream--mpeg-1--mpeg-2--mpeg-25-audio
+    - name: FlacStream
+      href: container-formats.md#flacstream
+    - name: RiffStream
+      href: container-formats.md#riffstream--riff--wav--rifx
+    - name: AiffStream
+      href: container-formats.md#aiffstream--aiff--aiff-c
+    - name: OggStream
+      href: container-formats.md#oggstream
+    - name: Mp4Stream
+      href: container-formats.md#mp4stream--mp4--m4a
+    - name: AsfStream
+      href: container-formats.md#asfstream--asf--wma--wmv
+    - name: MatroskaStream
+      href: container-formats.md#matroskastream--mkv--mka--webm
+    - name: DsfStream / DffStream
+      href: container-formats.md#dsfstream--dffstream
 - name: Round-trip semantics
   href: round-trip.md
 - name: Extending
   href: extending.md
 - name: Examples
   href: examples.md
+  items:
+    - name: One-line summary per file
+      href: examples.md#print-a-one-line-summary-for-every-audio-file-in-a-directory
+    - name: ID3v2 → APEv2 migration
+      href: examples.md#migrate-id3v2--apev2-alongside-the-original-file
+    - name: Bulk encoding conversion
+      href: examples.md#bulk-convert-id3v24-frame-text-encodings
+    - name: Cross-format cover-art extractor
+      href: examples.md#extract-every-embedded-picture-regardless-of-format
+    - name: BWF metadata report
+      href: examples.md#report-broadcast-wav-bwf-metadata
+    - name: Validate MPEG audio
+      href: examples.md#validate-mpeg-audio-frames-and-report-vbr-header--lame-tag
+    - name: Custom tag reader
+      href: examples.md#register-a-custom-tag-reader
 - name: Release notes
   href: release-notes.md
