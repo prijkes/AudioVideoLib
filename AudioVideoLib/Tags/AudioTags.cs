@@ -200,26 +200,12 @@ public sealed class AudioTags : IEnumerable<IAudioTagOffset>
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Gets the enumerator.
+    /// Returns a typed enumerator over the parsed <see cref="IAudioTagOffset"/>s.
     /// </summary>
-    /// <returns>
-    /// An <see cref="T:System.Collections.IEnumerator"/> object that can be used to iterate through the collection.
-    /// </returns>
-    IEnumerator<IAudioTagOffset> IEnumerable<IAudioTagOffset>.GetEnumerator()
-    {
-        return _tags.GetEnumerator();
-    }
+    /// <returns>An <see cref="IEnumerator{T}"/> of <see cref="IAudioTagOffset"/>.</returns>
+    public IEnumerator<IAudioTagOffset> GetEnumerator() => _tags.GetEnumerator();
 
-    /// <summary>
-    /// Returns an enumerator that iterates through a collection.
-    /// </summary>
-    /// <returns>
-    /// An <see cref="T:System.Collections.IEnumerator"/> object that can be used to iterate through the collection.
-    /// </returns>
-    public IEnumerator GetEnumerator()
-    {
-        return _tags.GetEnumerator();
-    }
+    IEnumerator IEnumerable.GetEnumerator() => _tags.GetEnumerator();
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

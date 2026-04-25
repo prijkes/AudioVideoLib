@@ -121,20 +121,12 @@ public sealed class MediaContainers : IEnumerable<IMediaContainer>
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Gets the enumerator.
+    /// Returns a typed enumerator over the parsed <see cref="IMediaContainer"/>s.
     /// </summary>
-    /// <returns>
-    /// An <see cref="T:System.Collections.IEnumerator"/> object that can be used to iterate through the collection.
-    /// </returns>
-    IEnumerator<IMediaContainer> IEnumerable<IMediaContainer>.GetEnumerator() => _streams.GetEnumerator();
+    /// <returns>An <see cref="IEnumerator{T}"/> of <see cref="IMediaContainer"/>.</returns>
+    public IEnumerator<IMediaContainer> GetEnumerator() => _streams.GetEnumerator();
 
-    /// <summary>
-    /// Returns an enumerator that iterates through a collection.
-    /// </summary>
-    /// <returns>
-    /// An <see cref="T:System.Collections.IEnumerator"/> object that can be used to iterate through the collection.
-    /// </returns>
-    public IEnumerator GetEnumerator() => _streams.GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => _streams.GetEnumerator();
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
