@@ -17,10 +17,16 @@ namespace DocSnippets;
 
 internal static class Program
 {
-    public static int Main()
+    public static int Main(string[] args)
     {
         // Quiet snippet output — only Run() status (on stderr) is interesting here.
         Console.SetOut(TextWriter.Null);
+
+        if (args.Length == 1 && args[0] == "--custom-tag-only")
+        {
+            Run("S70_ProcessedStampRoundTrip", CustomTagRoundTrip.Verify);
+            return _failures == 0 ? 0 : 1;
+        }
 
         Run("S01_GettingStartedCombinedRead", S01_GettingStartedCombinedRead);
         Run("S02_GettingStartedEditId3v2", S02_GettingStartedEditId3v2);
@@ -54,6 +60,7 @@ internal static class Program
         Run("S41_RoundTripEditOneFrame", S41_RoundTripEditOneFrame);
 
         Run("S50_CustomTagReader", S50_CustomTagReader);
+        Run("S70_ProcessedStampRoundTrip", CustomTagRoundTrip.Verify);
 
         return _failures == 0 ? 0 : 1;
     }
@@ -872,4 +879,123 @@ internal sealed class DemoTag : IAudioTag
 internal sealed class DemoTagReader : IAudioTagReader
 {
     public IAudioTagOffset? ReadFromStream(Stream stream, TagOrigin tagOrigin) => null;
+}
+
+// ---- compile-check for examples/custom-tag-reader.md ----
+
+public sealed class ProcessedStamp : IAudioTag
+{
+    public const int Version = 1;
+    public static readonly byte[] Magic = "PRCS"u8.ToArray();
+
+    public string ToolName { get; set; } = string.Empty;
+    public string Note { get; set; } = string.Empty;
+    public DateTimeOffset TimestampUtc { get; set; } = DateTimeOffset.UtcNow;
+
+    public bool Equals(IAudioTag? other) =>
+        other is ProcessedStamp s
+        && s.ToolName == ToolName
+        && s.Note == Note
+        && s.TimestampUtc.ToUnixTimeMilliseconds() == TimestampUtc.ToUnixTimeMilliseconds();
+
+    public byte[] ToByteArray()
+    {
+        var toolBytes = System.Text.Encoding.UTF8.GetBytes(ToolName);
+        var noteBytes = System.Text.Encoding.UTF8.GetBytes(Note);
+        if (toolBytes.Length > 255) throw new InvalidOperationException("ToolName too long");
+        if (noteBytes.Length > 255) throw new InvalidOperationException("Note too long");
+
+        var totalSize = 4 + 1 + 1 + toolBytes.Length + 1 + noteBytes.Length + 8 + 4;
+        var buf = new byte[totalSize];
+        var pos = 0;
+
+        Magic.CopyTo(buf, pos);            pos += 4;
+        buf[pos++] = Version;
+        buf[pos++] = (byte)toolBytes.Length;
+        toolBytes.CopyTo(buf, pos);        pos += toolBytes.Length;
+        buf[pos++] = (byte)noteBytes.Length;
+        noteBytes.CopyTo(buf, pos);        pos += noteBytes.Length;
+
+        System.Buffers.Binary.BinaryPrimitives.WriteInt64BigEndian(buf.AsSpan(pos), TimestampUtc.ToUnixTimeMilliseconds());
+        pos += 8;
+        System.Buffers.Binary.BinaryPrimitives.WriteInt32BigEndian(buf.AsSpan(pos), totalSize);
+
+        return buf;
+    }
+}
+
+public sealed class ProcessedStampReader : IAudioTagReader
+{
+    public IAudioTagOffset? ReadFromStream(Stream stream, TagOrigin tagOrigin)
+    {
+        ArgumentNullException.ThrowIfNull(stream);
+        if (tagOrigin != TagOrigin.End) return null;
+
+        var pos = stream.Position;
+        if (pos < 4 + 1 + 2 + 8 + 4) return null;
+
+        stream.Position = pos - 4;
+        Span<byte> sizeBytes = stackalloc byte[4];
+        if (stream.Read(sizeBytes) != 4) return null;
+        var totalSize = System.Buffers.Binary.BinaryPrimitives.ReadInt32BigEndian(sizeBytes);
+        if (totalSize < 4 + 1 + 2 + 8 + 4 || totalSize > pos) return null;
+
+        var startOffset = pos - totalSize;
+        stream.Position = startOffset;
+        Span<byte> magicBytes = stackalloc byte[4];
+        if (stream.Read(magicBytes) != 4) return null;
+        if (!magicBytes.SequenceEqual(ProcessedStamp.Magic)) return null;
+
+        var version = stream.ReadByte();
+        if (version != ProcessedStamp.Version) return null;
+
+        var toolLen = stream.ReadByte();
+        if (toolLen < 0) return null;
+        var toolBuf = new byte[toolLen];
+        if (stream.Read(toolBuf) != toolLen) return null;
+
+        var noteLen = stream.ReadByte();
+        if (noteLen < 0) return null;
+        var noteBuf = new byte[noteLen];
+        if (stream.Read(noteBuf) != noteLen) return null;
+
+        Span<byte> tsBytes = stackalloc byte[8];
+        if (stream.Read(tsBytes) != 8) return null;
+        var ts = System.Buffers.Binary.BinaryPrimitives.ReadInt64BigEndian(tsBytes);
+
+        var stamp = new ProcessedStamp
+        {
+            ToolName = System.Text.Encoding.UTF8.GetString(toolBuf),
+            Note = System.Text.Encoding.UTF8.GetString(noteBuf),
+            TimestampUtc = DateTimeOffset.FromUnixTimeMilliseconds(ts),
+        };
+
+        return new AudioTagOffset(tagOrigin, startOffset, pos, stamp);
+    }
+}
+
+public sealed class ProcessedStampWriter : IAudioTagWriter
+{
+    public byte[] ToByteArray(ProcessedStamp tag) => tag.ToByteArray();
+}
+
+internal static class CustomTagRoundTrip
+{
+    public static void Verify()
+    {
+        // Round-trip serialise then parse, asserting all fields match.
+        var original = new ProcessedStamp
+        {
+            ToolName = "loudness-normaliser",
+            Note = "EBU R128, target -23 LUFS",
+            TimestampUtc = DateTimeOffset.FromUnixTimeMilliseconds(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()),
+        };
+        var bytes = original.ToByteArray();
+        using var ms = new MemoryStream(bytes) { Position = bytes.Length };
+        var parsed = (ProcessedStamp)new ProcessedStampReader().ReadFromStream(ms, TagOrigin.End)!.AudioTag;
+        if (!parsed.Equals(original))
+        {
+            throw new InvalidOperationException("ProcessedStamp round-trip mismatch");
+        }
+    }
 }
