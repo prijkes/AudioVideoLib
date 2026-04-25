@@ -763,6 +763,104 @@ internal static class Program
         Console.WriteLine($"frames: {mpa.Frames.Count():N0}, CRC failures: {crcFailures}");
         // ===== SNIPPET END =====
     }
+
+    // S63 — examples.md: bulk-remove an ID3v2 frame, save via AudioInfo.
+    private static void S63_BulkRemoveFrame()
+    {
+        var info = AudioInfo.Analyse(new MemoryStream([0]));
+
+        // ===== SNIPPET START =====
+        string[] frameIds = ["PRIV", "GEOB"];
+        foreach (var id3v2 in info.AudioTags.Select(o => o.AudioTag).OfType<Id3v2Tag>())
+        {
+            var doomed = frameIds.SelectMany(id => id3v2.GetFrames<Id3v2Frame>(id)).ToList();
+            if (doomed.Count == 0) continue;
+            id3v2.RemoveFrames(doomed);
+        }
+        // ===== SNIPPET END =====
+    }
+
+    // S64 — examples.md: set the ID3v2 padding budget.
+    private static void S64_SetPadding()
+    {
+        var info = AudioInfo.Analyse(new MemoryStream([0]));
+        var paddingSize = 4096;
+
+        // ===== SNIPPET START =====
+        foreach (var id3v2 in info.AudioTags.Select(o => o.AudioTag).OfType<Id3v2Tag>())
+        {
+            if (id3v2.PaddingSize == paddingSize) continue;
+            id3v2.PaddingSize = paddingSize;
+        }
+        // ===== SNIPPET END =====
+    }
+
+    // S65 — examples.md: inspect a file's layout.
+    private static void S65_InspectLayout()
+    {
+        var tags = AudioTags.ReadStream(new MemoryStream([0]));
+        var streams = MediaContainers.ReadStream(new MemoryStream([0]));
+
+        // ===== SNIPPET START =====
+        foreach (var offset in tags)
+        {
+            var size = offset.EndOffset - offset.StartOffset;
+            Console.WriteLine($"  TAG  0x{offset.StartOffset:X10}..0x{offset.EndOffset:X10}  {size,8:N0} B  {offset.AudioTag.GetType().Name} ({offset.TagOrigin})");
+        }
+        foreach (var s in streams)
+        {
+            Console.WriteLine($"  CONT 0x{s.StartOffset:X10}..0x{s.EndOffset:X10}  {s.TotalMediaSize,8:N0} B  {s.GetType().Name}, {s.TotalDuration:N0} ms");
+        }
+        // ===== SNIPPET END =====
+    }
+
+    // S66 — examples.md: MPA bitrate / channel-mode histogram.
+    private static void S66_MpaHistogram()
+    {
+        var streams = new MediaContainers();
+
+        // ===== SNIPPET START =====
+        var bitrates = new SortedDictionary<int, int>();
+        var channels = new SortedDictionary<MpaChannelMode, int>();
+
+        var first = streams.OfType<MpaStream>().FirstOrDefault()?.Frames.FirstOrDefault();
+        if (first is not null)
+        {
+            bitrates.TryGetValue(first.Bitrate, out var b);
+            bitrates[first.Bitrate] = b + 1;
+
+            channels.TryGetValue(first.ChannelMode, out var c);
+            channels[first.ChannelMode] = c + 1;
+        }
+        // ===== SNIPPET END =====
+
+        _ = bitrates;
+        _ = channels;
+    }
+
+    // S67 — examples.md: find files missing required tags.
+    private static void S67_MissingTags()
+    {
+        var tags = AudioTags.ReadStream(new MemoryStream([0]));
+
+        // ===== SNIPPET START =====
+        var id3v2 = tags.Select(o => o.AudioTag).OfType<Id3v2Tag>().FirstOrDefault();
+        var missing = new List<string>();
+        if (id3v2 is null)
+        {
+            missing.Add("no ID3v2 tag");
+        }
+        else
+        {
+            if (string.IsNullOrEmpty(id3v2.TrackTitle?.Values.FirstOrDefault())) missing.Add("Title");
+            if (string.IsNullOrEmpty(id3v2.Artist?.Values.FirstOrDefault()))     missing.Add("Artist");
+            if (string.IsNullOrEmpty(id3v2.AlbumTitle?.Values.FirstOrDefault())) missing.Add("Album");
+            if (id3v2.AttachedPictures.Count == 0)                                missing.Add("Cover");
+        }
+        // ===== SNIPPET END =====
+
+        _ = missing;
+    }
 }
 
 internal sealed class DemoTag : IAudioTag

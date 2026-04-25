@@ -16,4 +16,9 @@ the format pages — see [Tag formats](tag-formats.md) and
 | [Cross-format cover-art extractor](examples/cover-art-extractor.md) | one pass across `APIC`, FLAC `PICTURE`, and MP4 `covr` |
 | [BWF metadata report](examples/bwf-report.md) | `RiffStream.BextChunk`, including the v1+ loudness fields |
 | [Validate MPEG audio](examples/validate-mpa.md) | `MpaStream` frame count + per-frame CRC + Xing/VBRI/LAME header |
+| [Bulk-remove an ID3v2 frame](examples/bulk-remove-frame.md) | strip every `PRIV` / `GEOB` across a library; `RemoveFrames` + `AudioInfo.Save` |
+| [Set the ID3v2 padding budget](examples/edit-id3v2-padding.md) | `Id3v2Tag.PaddingSize` for in-place edits later |
+| [Inspect a file's layout](examples/inspect-layout.md) | print every tag + container offset / size as a layout map |
+| [MP3 bitrate / channel-mode audit](examples/mpa-bitrate-histogram.md) | walk a library, histogram first-frame `Bitrate` / `ChannelMode` |
+| [Find files missing required tags](examples/find-missing-tags.md) | gate a release on Title / Artist / Album / Cover presence |
 | [Register a custom tag reader](examples/custom-tag-reader.md) | `IAudioTagReader` + `AudioTags.AddReader<TR, TT>()` |

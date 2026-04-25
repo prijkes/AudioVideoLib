@@ -65,6 +65,16 @@
       href: examples/bwf-report.md
     - name: Validate MPEG audio
       href: examples/validate-mpa.md
+    - name: Bulk-remove ID3v2 frame
+      href: examples/bulk-remove-frame.md
+    - name: Set ID3v2 padding budget
+      href: examples/edit-id3v2-padding.md
+    - name: Inspect file layout
+      href: examples/inspect-layout.md
+    - name: MP3 bitrate / channel audit
+      href: examples/mpa-bitrate-histogram.md
+    - name: Find files missing tags
+      href: examples/find-missing-tags.md
     - name: Custom tag reader
       href: examples/custom-tag-reader.md
 - name: Release notes
