@@ -1,6 +1,7 @@
 namespace AudioVideoLib.IO;
 
 using System;
+using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -62,7 +63,15 @@ public sealed class Mp4Stream : IMediaContainer
     public IReadOnlyList<Mp4Box> Boxes => _boxes;
 
     /// <summary>Gets the parsed iTunes metadata tag, or an empty tag if none was present.</summary>
-    public Mp4MetaTag Tag { get; private set; } = new();
+    /// <remarks>
+    /// Setter accepts <c>null</c> as shorthand for "clear all metadata"; the property
+    /// is reset to a fresh empty <see cref="Mp4MetaTag"/> in that case.
+    /// </remarks>
+    public Mp4MetaTag Tag
+    {
+        get;
+        set => field = value ?? new Mp4MetaTag();
+    } = new();
 
     /// <summary>Gets the four-character major brand reported by the <c>ftyp</c> box, or <see cref="string.Empty"/> if absent.</summary>
     public string MajorBrand { get; private set; } = string.Empty;
@@ -140,6 +149,32 @@ public sealed class Mp4Stream : IMediaContainer
             : BuildChainAndInsert(newIlstBody);
     }
 
+    /// <inheritdoc/>
+    /// <remarks>
+    /// Streaming override: writes head + new ilst + tail directly to <paramref name="destination"/>
+    /// instead of materialising the full output as a single byte array. Halves peak memory for
+    /// edits on multi-MB files. The source is still buffered in <c>_originalBytes</c>; lifting
+    /// that buffer is a separate piece of work.
+    /// </remarks>
+    public void WriteTo(Stream destination)
+    {
+        ArgumentNullException.ThrowIfNull(destination);
+        if (_originalBytes.Length == 0)
+        {
+            return;
+        }
+
+        var newIlstBody = Tag.ToByteArray();
+        if (_ilstHeaderStart >= 0 && _moovHeaderStart >= 0)
+        {
+            SpliceExistingIlstStreaming(destination, newIlstBody);
+        }
+        else
+        {
+            BuildChainAndInsertStreaming(destination, newIlstBody);
+        }
+    }
+
     private byte[] SpliceExistingIlst(byte[] newIlstBody)
     {
         var newIlstAtomSize = 8 + newIlstBody.Length;
@@ -196,6 +231,67 @@ public sealed class Mp4Stream : IMediaContainer
 
         PatchAncestorSize(result, _moovHeaderStart, _moovHeaderSize, _moovEnd - _moovHeaderStart, udtaAtom.Length);
         return result;
+    }
+
+    private void SpliceExistingIlstStreaming(Stream destination, byte[] newIlstBody)
+    {
+        var newIlstAtomSize = 8 + newIlstBody.Length;
+        var oldIlstAtomSize = _ilstEnd - _ilstHeaderStart;
+        var delta = newIlstAtomSize - oldIlstAtomSize;
+
+        // Patches sit inside the head region — we need a writable copy of head[0.._ilstHeaderStart]
+        // so we can overwrite the meta/udta/moov size fields. The tail is written straight from
+        // _originalBytes; that's where the bigger saving lives for files with large mdat segments.
+        var head = new byte[_ilstHeaderStart];
+        Array.Copy(_originalBytes, 0, head, 0, head.Length);
+        PatchAncestorSize(head, _metaHeaderStart, _metaHeaderSize, _metaEnd - _metaHeaderStart, delta);
+        PatchAncestorSize(head, _udtaHeaderStart, _udtaHeaderSize, _udtaEnd - _udtaHeaderStart, delta);
+        PatchAncestorSize(head, _moovHeaderStart, _moovHeaderSize, _moovEnd - _moovHeaderStart, delta);
+        destination.Write(head, 0, head.Length);
+
+        Span<byte> ilstHeader = stackalloc byte[8];
+        BinaryPrimitives.WriteUInt32BigEndian(ilstHeader, (uint)newIlstAtomSize);
+        Latin1.GetBytes("ilst", ilstHeader[4..]);
+        destination.Write(ilstHeader);
+        destination.Write(newIlstBody, 0, newIlstBody.Length);
+
+        var tailStart = _ilstEnd;
+        var tailLen = _originalBytes.Length - tailStart;
+        if (tailLen > 0)
+        {
+            destination.Write(_originalBytes, tailStart, tailLen);
+        }
+    }
+
+    private void BuildChainAndInsertStreaming(Stream destination, byte[] newIlstBody)
+    {
+        var ilstAtom = WrapAtom("ilst", newIlstBody);
+        var hdlrAtom = BuildHdlrAtom();
+        var metaInner = ConcatBytes(hdlrAtom, ilstAtom);
+        var metaPayload = ConcatBytes([0, 0, 0, 0], metaInner);
+        var metaAtom = WrapAtom("meta", metaPayload);
+        var udtaAtom = WrapAtom("udta", metaAtom);
+
+        if (_moovHeaderStart < 0)
+        {
+            var moovAtom = WrapAtom("moov", udtaAtom);
+            destination.Write(_originalBytes, 0, _originalBytes.Length);
+            destination.Write(moovAtom, 0, moovAtom.Length);
+            return;
+        }
+
+        var insertOffset = _moovEnd;
+        var head = new byte[insertOffset];
+        Array.Copy(_originalBytes, 0, head, 0, insertOffset);
+        PatchAncestorSize(head, _moovHeaderStart, _moovHeaderSize, _moovEnd - _moovHeaderStart, udtaAtom.Length);
+        destination.Write(head, 0, head.Length);
+        destination.Write(udtaAtom, 0, udtaAtom.Length);
+
+        var tailLen = _originalBytes.Length - insertOffset;
+        if (tailLen > 0)
+        {
+            destination.Write(_originalBytes, insertOffset, tailLen);
+        }
     }
 
     private static void PatchAncestorSize(byte[] buffer, int headerStart, int headerSize, int oldSize, int delta)

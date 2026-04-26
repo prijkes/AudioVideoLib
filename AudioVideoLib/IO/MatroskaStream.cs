@@ -109,7 +109,15 @@ public sealed class MatroskaStream : IMediaContainer
 
     /// <summary>Gets the parsed <c>Tags</c> element, aggregating all top-level Tag entries from the first segment.</summary>
     /// <remarks>Always non-<c>null</c>; an empty value indicates the segment had no <c>Tags</c> element.</remarks>
-    public MatroskaTag Tag { get; private set; } = new();
+    /// <remarks>
+    /// Setter accepts <c>null</c> as shorthand for "clear all metadata"; the property
+    /// is reset to a fresh empty <see cref="MatroskaTag"/> in that case.
+    /// </remarks>
+    public MatroskaTag Tag
+    {
+        get;
+        set => field = value ?? new MatroskaTag();
+    } = new();
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="stream"/> is <c>null</c>.</exception>

@@ -131,19 +131,13 @@ public sealed class ProcessedStampReader : IAudioTagReader
 }
 ```
 
-## The writer
+## Writing
 
-`IAudioTagWriter` is currently a marker interface — the actual
-serialisation lives on `IAudioTag.ToByteArray()`. Defining a type that
-implements `IAudioTagWriter` is conventional for symmetry with the
-reader but is not required by the scanner.
-
-```csharp
-public sealed class ProcessedStampWriter : IAudioTagWriter
-{
-    public byte[] ToByteArray(ProcessedStamp tag) => tag.ToByteArray();
-}
-```
+There's no separate "writer" type — serialisation lives on the tag
+itself, via `IAudioTag.ToByteArray()` and the streaming
+`WriteTo(Stream)` overloads on the same interface. To append a tag
+to a file, build the model, call `AudioTags.AddTag(tag, TagOrigin.End)`,
+and `AudioInfo.Save` handles the rest.
 
 ## Wire it up and use it
 

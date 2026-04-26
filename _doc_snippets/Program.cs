@@ -974,11 +974,6 @@ public sealed class ProcessedStampReader : IAudioTagReader
     }
 }
 
-public sealed class ProcessedStampWriter : IAudioTagWriter
-{
-    public byte[] ToByteArray(ProcessedStamp tag) => tag.ToByteArray();
-}
-
 internal static class CustomTagRoundTrip
 {
     public static void Verify()

@@ -1,6 +1,7 @@
 namespace AudioVideoLib.Tags;
 
 using System;
+using System.IO;
 
 /// <summary>
 /// Event data raised when <see cref="Id3v2TagReader"/> encounters a frame that cannot be parsed.
@@ -24,4 +25,19 @@ public sealed class Id3v2FrameParseErrorEventArgs(string? identifier, long start
 
     /// <summary>Gets the exception thrown during frame parsing.</summary>
     public Exception Exception { get; } = exception;
+
+    /// <summary>
+    /// Gets a structured classification of <see cref="Exception"/> so callers can dispatch
+    /// without parsing the message text.
+    /// </summary>
+    public AudioTagParseErrorKind Kind { get; } = ClassifyError(exception);
+
+    private static AudioTagParseErrorKind ClassifyError(Exception ex) => ex switch
+    {
+        EndOfStreamException => AudioTagParseErrorKind.Truncated,
+        InvalidVersionException => AudioTagParseErrorKind.UnsupportedVersion,
+        InvalidDataException => AudioTagParseErrorKind.MalformedData,
+        ArgumentException => AudioTagParseErrorKind.InvalidArgument,
+        _ => AudioTagParseErrorKind.Unknown,
+    };
 }

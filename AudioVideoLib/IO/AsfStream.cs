@@ -54,7 +54,15 @@ public sealed class AsfStream : IMediaContainer
     /// collections (<see cref="AsfMetadataTag.HasContentDescription"/>, <c>ExtendedItems.Count</c>, …)
     /// for emptiness.
     /// </summary>
-    public AsfMetadataTag MetadataTag { get; private set; } = new();
+    /// <remarks>
+    /// Setter accepts <c>null</c> as shorthand for "clear all metadata"; the property
+    /// is reset to a fresh empty <see cref="AsfMetadataTag"/> in that case.
+    /// </remarks>
+    public AsfMetadataTag MetadataTag
+    {
+        get;
+        set => field = value ?? new AsfMetadataTag();
+    } = new();
 
     /// <summary>
     /// Gets the absolute offset of the Header Object payload (the byte immediately after its 30-byte

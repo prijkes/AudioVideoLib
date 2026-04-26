@@ -5,9 +5,89 @@ Change categories follow [Keep a Changelog](https://keepachangelog.com/):
 
 | Version | Date | Highlights |
 |---|---|---|
+| [`0.4.0`](#040--2026-04-26) | 2026-04-26 | Streaming write API; magic-byte fast path; structured parse errors; async entry points; assorted API cleanup. |
 | [`0.3.0`](#030--2026-04-25) | 2026-04-25 | `IAudioStream` → `IMediaContainer` rename. |
 | [`0.2.0`](#020--2026-04-19) | 2026-04-19 | Nine new tag/container formats; non-fatal parse errors; per-field encoding for ID3v1. |
 | [`0.1.0`](#010--2026-04-17) | 2026-04-17 | Initial release. |
+
+---
+
+## 0.4.0 — 2026-04-26
+
+> Performance, ergonomics, and API surface clean-up. Streaming write
+> hooks across `IAudioTag` / `IMediaContainer`, magic-byte container
+> dispatch, structured parse-error classification, async overloads at
+> the public entry points, plus a sweep of small API gaps that bit
+> real callers.
+
+### Added
+
+- **Streaming write surface** on `IAudioTag` and `IMediaContainer`:
+  `WriteTo(Stream)`, `WriteTo(IBufferWriter<byte>)`,
+  `TryWriteTo(Span<byte>, out int)`, `GetSerializedSize()`. Default
+  implementations forward to `ToByteArray()` for back-compat.
+- **`ReadOnlySpan<byte>` parse overloads** on `Mp4MetaTag.Parse`,
+  `RiffInfoTag.Parse` / `FromListPayload`, `BwfBextChunk.Parse`,
+  `IxmlChunk.Parse`, `AsfMetadataTag.ParseContentDescription` /
+  `ParseExtendedContentDescription` / `ParseMetadata`,
+  `AiffTextChunks.ReadText` / `ReadComments`. Each `byte[]` overload
+  is a one-line wrapper around the new `ReadOnlySpan<byte>` overload.
+- **Streaming `WriteTo(Stream)` overrides** on `MpaStream` (frame-by-frame),
+  `FlacStream` (magic + blocks + frames), and `Mp4Stream` (chunked head +
+  new ilst + tail). Halves peak memory on edits to large files.
+- **Magic-byte fast path** in `MediaContainers.ReadStreams`. Files with
+  recognisable signatures (FLAC / OGG / WAV / RIFX / AIFF / DSF / DFF /
+  Matroska / ASF / MP4) dispatch to the matching walker in O(1)
+  instead of probing every walker at every byte position.
+- **Strict scan mode** — `AudioTags.MaxTagSpacingLength` and
+  `MediaContainers.MaxStreamSpacingLength` accept `0` (a new `Strict`
+  constant) to skip the byte-by-byte rescan and only check the
+  canonical anchor positions. Useful for clean / pipeline-controlled
+  inputs where the rescan is pure overhead.
+- **Structured parse errors** — `AudioTagParseErrorEventArgs.Kind` and
+  `Id3v2FrameParseErrorEventArgs.Kind` (both typed as
+  `AudioTagParseErrorKind`) classify the failure as
+  `Truncated` / `MalformedData` / `UnsupportedVersion` /
+  `InvalidArgument` / `Unknown`, so callers can dispatch without
+  parsing the exception message.
+- **`AudioTags.RemoveTag` / `RemoveTags<T>` / `Clear`** — closing the
+  obvious gap next to the existing `AddTag`.
+- **`AudioInfo.Save(Stream)`** for streaming output.
+- **Async entry points** — `AudioInfo.AnalyseAsync`, `SaveAsync`,
+  `AudioTags.ReadStreamAsync`, `MediaContainers.ReadStreamAsync`.
+  Currently `Task.Run` wrappers around the sync code; honestly
+  documented as not-yet-truly-async pending a reader-chain refactor.
+- **`Strict` and `Default` named constants** on the spacing-length
+  knobs for readability.
+
+### Changed
+
+- **`Mp4Stream.Tag` / `MatroskaStream.Tag` / `AsfStream.MetadataTag`**
+  are now publicly settable. `null` is treated as "clear all metadata"
+  — assigning resets to a fresh empty model. Previously these were
+  `private set;`, forcing callers to mutate in place.
+- **`IAudioTag` / `IMediaContainer.GetEnumerator`** typed
+  `IEnumerator<T>` is now public; the non-generic version is the
+  explicit interface implementation. `foreach (var x in tags)` now
+  binds `x` to the typed element instead of `object`.
+- **`AudioInfo.Save(string, bool overwrite = true)`** — overwrite is
+  now the default. The previous behaviour of throwing on existing files
+  is reachable via `overwrite: false`, which yields an `IOException`
+  rather than the previous `ApplicationException`.
+- **Throw type for "file already exists"** changed from
+  `ApplicationException` to `IOException`.
+
+### Breaking
+
+- **`IAudioTagWriter` interface removed.** It was an empty marker;
+  serialisation lives on `IAudioTag.ToByteArray()` / the new
+  `WriteTo(Stream)` overloads. Any code referencing
+  `IAudioTagWriter` should drop the reference; no concrete behaviour
+  changes.
+
+> **Migration:** the new `WriteTo` / `TryWriteTo` / `GetSerializedSize`
+> members on `IAudioTag` and `IMediaContainer` are default-implemented,
+> so existing implementers stay source-compatible.
 
 ---
 

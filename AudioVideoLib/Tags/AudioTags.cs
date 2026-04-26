@@ -5,6 +5,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 using AudioVideoLib;
 using AudioVideoLib.Collections;
@@ -75,16 +77,29 @@ public sealed class AudioTags : IEnumerable<IAudioTagOffset>
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Gets or sets the max length of spacing, in bytes, between 2 tags when searching for tags.
+    /// "Strict mode" sentinel for <see cref="MaxTagSpacingLength"/> — only probe the
+    /// expected anchor position(s); never rescan byte-by-byte.
     /// </summary>
-    /// <value>
-    ///  The max length of spacing.
-    /// </value>
+    public const int Strict = 0;
+
+    /// <summary>
+    /// Default value of <see cref="MaxTagSpacingLength"/> — tolerates up to 128 bytes
+    /// of junk between tags before giving up.
+    /// </summary>
+    public const int DefaultTagSpacingLength = 128;
+
+    /// <summary>
+    /// Gets or sets the max length of spacing, in bytes, between two tags when searching the stream.
+    /// </summary>
+    /// <value>The max length of spacing, in bytes.</value>
     /// <remarks>
-    /// When searching for tags, spacing might exist between 2 tags.
-    /// Setting the max spacing length to a large value will decrease performance but increase accuracy, while a lower value will increase performance but decrease accuracy.
+    /// Larger values cost more in scan time but tolerate more junk between tags.
+    /// Set to <see cref="Strict"/> (= 0) to skip the byte-by-byte rescan entirely —
+    /// the reader will only check the canonical anchor positions (start or end of
+    /// stream depending on <see cref="TagOrigin"/>). Recommended for clean,
+    /// well-formed input where you control how files were written.
     /// </remarks>
-    public int MaxTagSpacingLength { get; set; } = 128;
+    public int MaxTagSpacingLength { get; set; } = DefaultTagSpacingLength;
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
@@ -103,6 +118,23 @@ public sealed class AudioTags : IEnumerable<IAudioTagOffset>
         var audioTags = new AudioTags();
         audioTags.ReadTags(stream);
         return audioTags;
+    }
+
+    /// <summary>
+    /// Asynchronously reads tags from a <see cref="Stream"/> as a new <see cref="AudioTags"/> instance.
+    /// </summary>
+    /// <param name="stream">The stream.</param>
+    /// <param name="cancellationToken">A token to observe for cancellation.</param>
+    /// <returns>A task that resolves to a populated <see cref="AudioTags"/>.</returns>
+    /// <remarks>
+    /// The underlying readers are still synchronous — this overload runs the scan on a background
+    /// thread via <see cref="Task.Run(System.Action)"/> for async-friendly call sites; true async
+    /// I/O is a follow-up (it requires reworking the per-format readers).
+    /// </remarks>
+    public static Task<AudioTags> ReadStreamAsync(Stream stream, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(stream);
+        return Task.Run(() => ReadStream(stream), cancellationToken);
     }
 
     /// <summary>
@@ -165,6 +197,45 @@ public sealed class AudioTags : IEnumerable<IAudioTagOffset>
     public void AddTag(IAudioTag audioTag, TagOrigin tagOrigin)
     {
         _tags.Add(new AudioTagOffset(tagOrigin, 0, 0, audioTag));
+    }
+
+    /// <summary>
+    /// Removes a previously parsed or added tag from the collection.
+    /// </summary>
+    /// <param name="offset">The tag offset to remove.</param>
+    /// <returns><c>true</c> if the tag was found and removed; otherwise, <c>false</c>.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="offset"/> is <c>null</c>.</exception>
+    public bool RemoveTag(IAudioTagOffset offset)
+    {
+        ArgumentNullException.ThrowIfNull(offset);
+        return _tags.Remove(offset);
+    }
+
+    /// <summary>
+    /// Removes every tag whose <see cref="IAudioTagOffset.AudioTag"/> is of type <typeparamref name="T"/>.
+    /// </summary>
+    /// <typeparam name="T">The concrete <see cref="IAudioTag"/> type to remove.</typeparam>
+    /// <returns>The number of tags removed.</returns>
+    public int RemoveTags<T>() where T : IAudioTag
+    {
+        var doomed = _tags.Where(o => o.AudioTag is T).ToList();
+        foreach (var item in doomed)
+        {
+            _tags.Remove(item);
+        }
+
+        return doomed.Count;
+    }
+
+    /// <summary>
+    /// Removes every tag from the collection.
+    /// </summary>
+    /// <returns>The number of tags removed.</returns>
+    public int Clear()
+    {
+        var count = _tags.Count;
+        _tags.Clear();
+        return count;
     }
 
     ////------------------------------------------------------------------------------------------------------------------------------

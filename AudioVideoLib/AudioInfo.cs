@@ -3,6 +3,8 @@ namespace AudioVideoLib;
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 using AudioVideoLib.IO;
 using AudioVideoLib.Tags;
@@ -72,38 +74,100 @@ public sealed class AudioInfo
         return audioInfo;
     }
 
+    /// <summary>
+    /// Asynchronously analyses the supplied stream.
+    /// </summary>
+    /// <param name="stream">The stream to analyse.</param>
+    /// <param name="cancellationToken">A token to observe for cancellation.</param>
+    /// <returns>A task that resolves to the populated <see cref="AudioInfo"/>.</returns>
+    /// <remarks>
+    /// First-class async support is a follow-up: the underlying reader chain
+    /// (<see cref="AudioTags.ReadTags(Stream)"/>, <see cref="MediaContainers.ReadStreams"/>) is still
+    /// synchronous. This overload runs the analysis on a background thread via
+    /// <see cref="Task.Run(System.Action)"/>, which keeps the call site async-friendly without
+    /// blocking the caller's thread but doesn't yet do true async I/O.
+    /// </remarks>
+    public static Task<AudioInfo> AnalyseAsync(Stream stream, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(stream);
+        return Task.Run(() => Analyse(stream), cancellationToken);
+    }
+
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Saves the <see cref="AudioTags" /> and <see cref="MediaContainers" /> to specified file. File should not exist.
+    /// Saves the <see cref="AudioTags" /> and <see cref="MediaContainers" /> to the specified file.
     /// </summary>
-    /// <param name="file">The file.</param>
-    /// <remarks>
-    /// An <see cref="System.ApplicationException"/> is thrown when the file already exists.
-    /// </remarks>
-    /// <exception cref="System.ApplicationException">thrown when the file already exists</exception>
-    public void Save(string file)
+    /// <param name="file">The destination file.</param>
+    /// <param name="overwrite">When <c>true</c> (default), an existing file is overwritten; when
+    /// <c>false</c>, an <see cref="IOException"/> is thrown if the file exists.</param>
+    /// <exception cref="IOException">Thrown when the file exists and <paramref name="overwrite"/> is <c>false</c>.</exception>
+    public void Save(string file, bool overwrite = true)
     {
-        if (File.Exists(file))
+        var mode = overwrite ? FileMode.Create : FileMode.CreateNew;
+        using var fileStream = new FileStream(file, mode);
+        Save(fileStream);
+    }
+
+    /// <summary>
+    /// Writes the <see cref="AudioTags" /> and <see cref="MediaContainers" /> to the supplied stream.
+    /// </summary>
+    /// <param name="destination">The destination stream.</param>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="destination"/> is <c>null</c>.</exception>
+    /// <remarks>
+    /// Tags with <see cref="TagOrigin.Start"/> are written first (sorted by <see cref="IAudioTagOffset.StartOffset"/>),
+    /// then each container, then tags with <see cref="TagOrigin.End"/>. Container walkers use their
+    /// streaming <c>WriteTo</c> implementation when available.
+    /// </remarks>
+    public void Save(Stream destination)
+    {
+        ArgumentNullException.ThrowIfNull(destination);
+
+        foreach (var tag in AudioTags.Where(t => t.TagOrigin == TagOrigin.Start).OrderBy(a => a.StartOffset))
         {
-            throw new ApplicationException($"File '{file}' already exists");
+            tag.AudioTag.WriteTo(destination);
         }
 
-        using var fileStream = new FileStream(file, FileMode.CreateNew);
-        foreach (var bytes in AudioTags.Where(t => t.TagOrigin == TagOrigin.Start).OrderBy(a => a.StartOffset).Select(t => t.AudioTag.ToByteArray()))
+        foreach (var container in MediaContainers)
         {
-            fileStream.Write(bytes, 0, bytes.Length);
+            container.WriteTo(destination);
         }
 
-        foreach (var bytes in MediaContainers.Select(a => a.ToByteArray()))
+        foreach (var tag in AudioTags.Where(t => t.TagOrigin == TagOrigin.End).OrderBy(a => a.StartOffset))
         {
-            fileStream.Write(bytes, 0, bytes.Length);
+            tag.AudioTag.WriteTo(destination);
         }
+    }
 
-        foreach (var bytes in AudioTags.Where(t => t.TagOrigin == TagOrigin.End).OrderBy(a => a.StartOffset).Select(t => t.AudioTag.ToByteArray()))
-        {
-            fileStream.Write(bytes, 0, bytes.Length);
-        }
+    /// <summary>
+    /// Asynchronously saves the contents to the specified file.
+    /// </summary>
+    /// <param name="file">The destination file.</param>
+    /// <param name="overwrite">When <c>true</c> (default), an existing file is overwritten.</param>
+    /// <param name="cancellationToken">A token to observe for cancellation.</param>
+    /// <remarks>
+    /// First-class async writes are a follow-up — see <see cref="AnalyseAsync"/> for the
+    /// same caveat. Backed by <see cref="Task.Run(System.Action)"/>.
+    /// </remarks>
+    public Task SaveAsync(string file, bool overwrite = true, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(file);
+        return Task.Run(() => Save(file, overwrite), cancellationToken);
+    }
+
+    /// <summary>
+    /// Asynchronously writes the contents to the supplied stream.
+    /// </summary>
+    /// <param name="destination">The destination stream.</param>
+    /// <param name="cancellationToken">A token to observe for cancellation.</param>
+    /// <remarks>
+    /// First-class async writes are a follow-up — see <see cref="AnalyseAsync"/> for the
+    /// same caveat. Backed by <see cref="Task.Run(System.Action)"/>.
+    /// </remarks>
+    public Task SaveAsync(Stream destination, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(destination);
+        return Task.Run(() => Save(destination), cancellationToken);
     }
 
     ////------------------------------------------------------------------------------------------------------------------------------
