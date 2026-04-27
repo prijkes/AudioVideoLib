@@ -1,6 +1,7 @@
 namespace AudioVideoLib.IO;
 
 using System;
+using System.Buffers;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -850,71 +851,60 @@ public sealed partial class StreamBuffer
     /// </remarks>
     private string ReadString(int lengthBytes, Encoding encoding, bool ignoreByteOrderMarker, bool movePosition, out int bytesRead)
     {
-        var buffer = new byte[lengthBytes];
-        bytesRead = Read(buffer, lengthBytes, movePosition);
-        if (bytesRead == 0)
+        // Rent a buffer for the read; rented arrays may be larger than requested, so all
+        // span work is bounded to the actually-read prefix [0..bytesRead).
+        var buffer = ArrayPool<byte>.Shared.Rent(lengthBytes);
+        try
         {
-            return string.Empty;
-        }
-
-        // Get preamble of the encoding
-        var encodingPreambleBytes = encoding.GetPreamble();
-        var preambleLength = encodingPreambleBytes.Length;
-        if (bytesRead < preambleLength)
-        {
-            preambleLength = 0;
-        }
-        else if (preambleLength > 0)
-        {
-            // If we have enough bytes for the preamble of the given encoding
-            // See if we can match it
-            var preamble = encoding.GetPreamble();
-            for (var i = 0; i < preambleLength; i++)
+            bytesRead = Read(buffer, lengthBytes, movePosition);
+            if (bytesRead == 0)
             {
-                if (preamble[i] != buffer[i])
-                {
-                    preambleLength = 0;
-                    break;
-                }
+                return string.Empty;
             }
-        }
 
-        // See if there's a preamble we know the encoding of
-        if (preambleLength == 0)
-        {
-            // For each encoding...
-            foreach (var e in EncodingsWithPreambleList)
+            var data = buffer.AsSpan(0, bytesRead);
+
+            // Match the supplied encoding's BOM first.
+            var preamble = encoding.GetPreamble();
+            var preambleLength = preamble.Length;
+            if (bytesRead < preambleLength)
             {
-                // Get the preamble
-                encodingPreambleBytes = e.GetPreamble();
+                preambleLength = 0;
+            }
+            else if (preambleLength > 0 && !data[..preambleLength].SequenceEqual(preamble))
+            {
+                preambleLength = 0;
+            }
 
-                // See if it matches
-                if (SequenceEqual(encodingPreambleBytes, buffer))
+            // Otherwise sniff every known encoding for a BOM match.
+            if (preambleLength == 0)
+            {
+                foreach (var e in EncodingsWithPreambleList)
                 {
-                    // Set the preamble length
-                    preambleLength = encodingPreambleBytes.Length;
-
-                    // If we should not ignore the encoding
-                    if (!ignoreByteOrderMarker)
+                    var ePreamble = e.GetPreamble();
+                    if (ePreamble.Length == 0 || bytesRead < ePreamble.Length)
                     {
-                        encoding = e;
+                        continue;
                     }
 
-                    break;
+                    if (data[..ePreamble.Length].SequenceEqual(ePreamble))
+                    {
+                        preambleLength = ePreamble.Length;
+                        if (!ignoreByteOrderMarker)
+                        {
+                            encoding = e;
+                        }
+                        break;
+                    }
                 }
             }
+
+            return encoding.GetString(data[preambleLength..]);
         }
-
-        var finalBuffer = buffer;
-
-        // If there's a preamble
-        if (preambleLength > 0)
+        finally
         {
-            var preambleBytesToRead = bytesRead - preambleLength;
-            finalBuffer = new byte[preambleBytesToRead];
-            Buffer.BlockCopy(buffer, preambleLength, finalBuffer, 0, preambleBytesToRead);
+            ArrayPool<byte>.Shared.Return(buffer);
         }
-        return encoding.GetString(finalBuffer);
     }
 
     /// <summary>

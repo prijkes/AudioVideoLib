@@ -5,11 +5,70 @@ Change categories follow [Keep a Changelog](https://keepachangelog.com/):
 
 | Version | Date | Highlights |
 |---|---|---|
+| [`0.6.0`](#060--2026-04-27) | 2026-04-27 | Large-file performance: streaming Matroska reader/writer (40 GB MKV is now viable); `ISourceReader` random-access abstraction; ID3v2 read-path allocation fixes. |
 | [`0.5.0`](#050--2026-04-27) | 2026-04-27 | `WriteTo(Stream)` is now the canonical serialisation primitive; `ToByteArray` becomes an extension-method convenience. |
 | [`0.4.0`](#040--2026-04-26) | 2026-04-26 | Streaming write API; magic-byte fast path; structured parse errors; async entry points; assorted API cleanup. |
 | [`0.3.0`](#030--2026-04-25) | 2026-04-25 | `IAudioStream` → `IMediaContainer` rename. |
 | [`0.2.0`](#020--2026-04-19) | 2026-04-19 | Nine new tag/container formats; non-fatal parse errors; per-field encoding for ID3v1. |
 | [`0.1.0`](#010--2026-04-17) | 2026-04-17 | Initial release. |
+
+---
+
+## 0.6.0 — 2026-04-27
+
+> Large-file performance round. `MatroskaStream` no longer copies the
+> entire input file into memory — a 40 GB MKV that previously peaked
+> around **120 GB RAM** during a tag edit now stays in the **low MB**
+> range, with the unchanged regions streamed directly from source to
+> destination. Plus a sweep of allocation hotspots in the read path.
+
+### Added
+
+- **`ISourceReader`** — random-access read facade with two
+  implementations: `MemorySourceReader` (wraps a `byte[]`) and
+  `StreamSourceReader` (wraps a seekable `Stream`). Splice-rewriter
+  walkers use this to copy unchanged byte ranges from source to
+  destination at write time without materialising the full file.
+
+### Changed
+
+- **`MatroskaStream` no longer buffers the source file.**
+  `ReadStream` now wraps the supplied stream in a
+  `StreamSourceReader` and walks the structure on the live stream
+  (Cluster / BlockGroup payloads are seeked past, never copied).
+  `WriteTo(Stream)` streams head + new Tags + tail directly. Peak
+  memory drops from O(file size) to O(metadata) on edits.
+- **ID3v2 CRC validation** (`Id3v2TagReader`) no longer materialises
+  the whole tag-bearing stream three times via
+  `ToByteArray().Skip().Take().ToArray()`. The CRC is now hashed
+  incrementally over a 4 KB stack-allocated chunk.
+- **`StreamBufferReader.ReadString`** uses `ArrayPool<byte>` and span
+  slicing for BOM stripping — no extra buffer allocation per call.
+  Hot for ID3v2 frame parsing where dozens of short reads happen per
+  frame.
+- **`Id3v2FrameReader.ReadIdentifier`** stack-allocates the 4-byte
+  identifier buffer instead of `new byte[4]` per frame.
+
+### Breaking
+
+- **`MatroskaStream` lifetime contract:** the source `Stream` passed
+  to `ReadStream` must stay alive until `WriteTo` / `ToByteArray`
+  finishes — the walker reads from it on demand at write time. The
+  previous behaviour of capturing all bytes up-front is gone (it's
+  what made multi-GB files unworkable). Most callers use
+  `using var fs = File.OpenRead(...); var info = AudioInfo.Analyse(fs); info.Save(...)`
+  inside the `using` already, which works as expected.
+- **`MatroskaStream` now implements `IDisposable`** — its
+  `ISourceReader` is disposed on `Dispose`. The user's source stream
+  is **not** closed; that remains caller-owned.
+
+### Queued for follow-up (not in this release)
+
+- **`Mp4Stream`** still buffers the full input. Same refactor pattern
+  as MatroskaStream applies; deferred to a separate release for
+  reviewability.
+- **`AsfStream`** likewise. Recursive Header-Object walker makes the
+  refactor more involved.
 
 ---
 

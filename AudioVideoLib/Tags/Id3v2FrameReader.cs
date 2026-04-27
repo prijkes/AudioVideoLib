@@ -2,7 +2,6 @@ namespace AudioVideoLib.Tags;
 
 using System;
 using System.IO;
-using System.Linq;
 using System.Text;
 
 using AudioVideoLib.IO;
@@ -104,13 +103,23 @@ public partial class Id3v2Frame
         // Move the stream position to the start of the frame.
         sb.Position = startPosition + bytesToSkip;
 
-        // ID3v2 frame identifier field length.
+        // ID3v2 frame identifier is at most 4 bytes (3 for 2.2, 4 for 2.3+) — stack-allocate.
         var identifierFieldLength = GetIdentifierFieldLength(version);
-        var identifierBytes = new byte[identifierFieldLength];
-        sb.Read(identifierBytes, identifierFieldLength);
+        Span<byte> identifierBytes = stackalloc byte[4];
+        identifierBytes = identifierBytes[..identifierFieldLength];
+        sb.ReadExactly(identifierBytes);
 
-        // Filter the bad chars out
-        return Encoding.ASCII.GetString([.. identifierBytes.Where(b => IsValidIdentifierByte(b))]);
+        // Filter the bad chars out (compact in place).
+        var written = 0;
+        foreach (var b in identifierBytes)
+        {
+            if (IsValidIdentifierByte(b))
+            {
+                identifierBytes[written++] = b;
+            }
+        }
+
+        return Encoding.ASCII.GetString(identifierBytes[..written]);
     }
 
     private bool ReadFrame(StreamBuffer sb, long maximumFrameSize)

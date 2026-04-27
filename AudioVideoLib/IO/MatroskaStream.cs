@@ -12,10 +12,17 @@ using AudioVideoLib.Tags;
 /// Does not decode codec payload from <c>Cluster</c> children.
 /// </summary>
 /// <remarks>
-/// Supports round-trip serialisation: the original input bytes are preserved and a new <c>Tags</c>
-/// element is spliced in (or appended) when <see cref="ToByteArray"/> is called.
+/// Supports round-trip serialisation: the source bytes are kept reachable via an
+/// <see cref="ISourceReader"/> reference (no full-file copy in memory), and a new
+/// <c>Tags</c> element is spliced in (or appended) at <see cref="WriteTo(Stream)"/> time
+/// by streaming unchanged regions directly from the source. This is what makes editing
+/// a 40 GB MKV viable: peak memory stays in the low MB range regardless of file size.
+/// <para />
+/// Callers must keep the underlying source (the <see cref="Stream"/> passed to
+/// <see cref="ReadStream(Stream)"/>) alive until <see cref="WriteTo(Stream)"/> /
+/// <c>ToByteArray</c> finishes — the walker reads from it on demand.
 /// </remarks>
-public sealed class MatroskaStream : IMediaContainer
+public sealed class MatroskaStream : IMediaContainer, IDisposable
 {
     /// <summary>The four-byte EBML header magic.</summary>
     public static readonly byte[] EbmlMagic = [0x1A, 0x45, 0xDF, 0xA3];
@@ -61,7 +68,10 @@ public sealed class MatroskaStream : IMediaContainer
 
     private const int MaxRecursionDepth = 16;
 
-    private byte[] _originalBytes = [];
+    // Random-access source captured at ReadStream time. Offsets below are relative to the
+    // start of the source (i.e. relative to the position the stream was at when ReadStream
+    // was called).
+    private ISourceReader? _source;
     private long _segmentHeaderStart;
     private long _segmentPayloadStart;
     private long _segmentPayloadEnd;
@@ -81,7 +91,6 @@ public sealed class MatroskaStream : IMediaContainer
     {
         get
         {
-            // Duration is in TimecodeScale units (which is in nanoseconds; default 1000000 = 1ms).
             if (Duration <= 0 || TimecodeScale == 0)
             {
                 return 0;
@@ -108,10 +117,9 @@ public sealed class MatroskaStream : IMediaContainer
     public double Duration { get; private set; }
 
     /// <summary>Gets the parsed <c>Tags</c> element, aggregating all top-level Tag entries from the first segment.</summary>
-    /// <remarks>Always non-<c>null</c>; an empty value indicates the segment had no <c>Tags</c> element.</remarks>
     /// <remarks>
-    /// Setter accepts <c>null</c> as shorthand for "clear all metadata"; the property
-    /// is reset to a fresh empty <see cref="MatroskaTag"/> in that case.
+    /// Always non-<c>null</c>; an empty value indicates the segment had no <c>Tags</c> element.
+    /// Setter accepts <c>null</c> as shorthand for "clear all metadata".
     /// </remarks>
     public MatroskaTag Tag
     {
@@ -131,8 +139,8 @@ public sealed class MatroskaStream : IMediaContainer
             return false;
         }
 
-        var magic = new byte[4];
-        if (stream.Read(magic, 0, 4) != 4 ||
+        Span<byte> magic = stackalloc byte[4];
+        if (stream.Read(magic) != 4 ||
             magic[0] != EbmlMagic[0] || magic[1] != EbmlMagic[1] ||
             magic[2] != EbmlMagic[2] || magic[3] != EbmlMagic[3])
         {
@@ -143,60 +151,77 @@ public sealed class MatroskaStream : IMediaContainer
         stream.Position = start;
         StartOffset = start;
 
-        // Cache the original bytes so ToByteArray() can splice the Tags element back in.
-        var fileLen = stream.Length - start;
-        _originalBytes = new byte[fileLen];
-        var read = 0;
-        while (read < _originalBytes.Length)
-        {
-            var n = stream.Read(_originalBytes, read, _originalBytes.Length - read);
-            if (n <= 0)
-            {
-                break;
-            }
+        // Wrap the source for random-access reads at write time. The full file is NOT
+        // copied — that's the whole point. The reader leaves the underlying stream open;
+        // it's the caller's job to keep it alive until WriteTo finishes.
+        _source?.Dispose();
+        _source = new StreamSourceReader(stream, leaveOpen: true);
+        EndOffset = start + _source.Length;
 
-            read += n;
-        }
+        // Walk the structure on the live stream. Cluster/BlockGroup payloads are seeked
+        // past, not buffered, so a 40 GB MKV walks in O(metadata) bytes touched.
+        var ok = WalkTopLevel(stream);
 
-        if (read < _originalBytes.Length)
-        {
-            Array.Resize(ref _originalBytes, read);
-        }
-
-        EndOffset = start + _originalBytes.Length;
+        // Leave the stream positioned at the end of the matroska container so the
+        // outer scanner (MediaContainers) can continue past us.
         stream.Position = EndOffset;
-
-        // Walk the in-memory buffer.
-        using var ms = new MemoryStream(_originalBytes, writable: false);
-        return WalkTopLevel(ms);
+        return ok;
     }
 
     /// <inheritdoc/>
     public void WriteTo(Stream destination)
     {
         ArgumentNullException.ThrowIfNull(destination);
-        var bytes = ToByteArray();
-        destination.Write(bytes, 0, bytes.Length);
-    }
-
-    /// <inheritdoc/>
-    /// <remarks>
-    /// Buffer-shaped override: kept as the fast path for callers who want bytes in hand.
-    /// </remarks>
-    public byte[] ToByteArray()
-    {
-        if (_originalBytes.Length == 0)
+        if (_source is null)
         {
-            return [];
+            return;
         }
 
         var newTagsBytes = Tag.Entries.Count > 0 ? Tag.ToByteArray() : [];
 
-        return _hasTagsElement
-            ? SpliceTags(newTagsBytes)
-            : newTagsBytes.Length == 0
-                ? (byte[])_originalBytes.Clone()
-                : AppendTagsToSegment(newTagsBytes);
+        if (!_hasTagsElement && newTagsBytes.Length == 0)
+        {
+            // No edits, no Tags element — copy the source verbatim.
+            _source.CopyTo(0, _source.Length, destination);
+            return;
+        }
+
+        if (_hasTagsElement)
+        {
+            SpliceTagsStreaming(destination, newTagsBytes);
+        }
+        else
+        {
+            AppendTagsStreaming(destination, newTagsBytes);
+        }
+    }
+
+    /// <inheritdoc/>
+    /// <remarks>
+    /// Buffer-shaped fallback: materialises the full output in memory. For multi-GB
+    /// containers prefer <see cref="WriteTo(Stream)"/>, which streams chunks directly
+    /// from the source to the destination.
+    /// </remarks>
+    public byte[] ToByteArray()
+    {
+        if (_source is null)
+        {
+            return [];
+        }
+
+        using var ms = new MemoryStream();
+        WriteTo(ms);
+        return ms.ToArray();
+    }
+
+    /// <summary>
+    /// Releases the underlying <see cref="ISourceReader"/>. Does not dispose the user's
+    /// source <see cref="Stream"/>; the caller still owns that.
+    /// </summary>
+    public void Dispose()
+    {
+        _source?.Dispose();
+        _source = null;
     }
 
     private bool WalkTopLevel(Stream stream)
@@ -239,12 +264,12 @@ public sealed class MatroskaStream : IMediaContainer
 
             if (topId == SegmentId)
             {
-                _segmentHeaderStart = elemHeaderStart;
-                _segmentPayloadStart = payloadStart;
-                _segmentPayloadEnd = payloadStart + actualSize;
+                _segmentHeaderStart = elemHeaderStart - StartOffset;
+                _segmentPayloadStart = payloadStart - StartOffset;
+                _segmentPayloadEnd = payloadStart + actualSize - StartOffset;
                 _segmentSizeWasUnknown = topUnknown;
-                ParseSegment(stream, _segmentPayloadEnd);
-                stream.Position = _segmentPayloadEnd;
+                ParseSegment(stream, payloadStart + actualSize);
+                stream.Position = payloadStart + actualSize;
                 return true;
             }
 
@@ -275,7 +300,7 @@ public sealed class MatroskaStream : IMediaContainer
             if (id == DocTypeId)
             {
                 var buf = new byte[actualSize];
-                _ = stream.Read(buf, 0, buf.Length);
+                stream.ReadExactly(buf, 0, buf.Length);
                 DocType = Encoding.ASCII.GetString(buf).TrimEnd('\0');
             }
             else
@@ -305,7 +330,8 @@ public sealed class MatroskaStream : IMediaContainer
                 return;
             }
 
-            // Skip massive media chunks outright.
+            // Skip massive media chunks outright — this is the magic that keeps reads
+            // bounded: Cluster + BlockGroup are seeked past, not buffered.
             if (id is ClusterId or BlockGroupId)
             {
                 stream.Position = payloadStart + actualSize;
@@ -321,11 +347,11 @@ public sealed class MatroskaStream : IMediaContainer
 
             if (id == MatroskaElementIds.Tags)
             {
-                _tagsHeaderStart = headerStart;
-                _tagsEndOffset = payloadStart + actualSize;
+                _tagsHeaderStart = headerStart - StartOffset;
+                _tagsEndOffset = payloadStart + actualSize - StartOffset;
                 _hasTagsElement = true;
                 var payloadBytes = new byte[actualSize];
-                _ = stream.Read(payloadBytes, 0, payloadBytes.Length);
+                stream.ReadExactly(payloadBytes, 0, payloadBytes.Length);
                 Tag = MatroskaTag.FromPayload(payloadBytes);
                 continue;
             }
@@ -361,7 +387,7 @@ public sealed class MatroskaStream : IMediaContainer
             if (id == TimecodeScaleId)
             {
                 var buf = new byte[actualSize];
-                _ = stream.Read(buf, 0, buf.Length);
+                stream.ReadExactly(buf, 0, buf.Length);
                 TimecodeScale = EbmlElement.DecodeUInt(buf);
                 if (TimecodeScale == 0)
                 {
@@ -371,7 +397,7 @@ public sealed class MatroskaStream : IMediaContainer
             else if (id == DurationId)
             {
                 var buf = new byte[actualSize];
-                _ = stream.Read(buf, 0, buf.Length);
+                stream.ReadExactly(buf, 0, buf.Length);
                 Duration = EbmlElement.DecodeFloat(buf);
             }
             else
@@ -381,89 +407,79 @@ public sealed class MatroskaStream : IMediaContainer
         }
     }
 
-    private byte[] SpliceTags(byte[] newTagsBytes)
+    private void SpliceTagsStreaming(Stream destination, byte[] newTagsBytes)
     {
-        // Existing Tags element extends from _tagsHeaderStart to _tagsEndOffset (offsets relative to the buffer start).
-        // Build: prefix [0, _tagsHeaderStart) + newTagsBytes + suffix [_tagsEndOffset, end).
-        // Then update the segment size VINT if it was a known size.
-        var prefixLen = (int)_tagsHeaderStart;
-        var suffix = _originalBytes.AsSpan((int)_tagsEndOffset).ToArray();
-
-        // Compute the new segment payload size.
         var oldSegPayload = _segmentPayloadEnd - _segmentPayloadStart;
         var oldTagsSize = _tagsEndOffset - _tagsHeaderStart;
         var newSegPayload = oldSegPayload - oldTagsSize + newTagsBytes.Length;
 
-        return RebuildWithSegmentSize(prefixLen, newTagsBytes, suffix, newSegPayload);
+        WriteHeadAndSegmentHeader(destination, newSegPayload);
+
+        // Write segment payload up to the existing Tags element.
+        var preTagsLen = _tagsHeaderStart - _segmentPayloadStart;
+        if (preTagsLen > 0)
+        {
+            _source!.CopyTo(_segmentPayloadStart, preTagsLen, destination);
+        }
+
+        // Write the new Tags element (omit if empty).
+        if (newTagsBytes.Length > 0)
+        {
+            destination.Write(newTagsBytes, 0, newTagsBytes.Length);
+        }
+
+        // Write the rest of the segment payload + anything after.
+        var afterTagsLen = _source!.Length - _tagsEndOffset;
+        if (afterTagsLen > 0)
+        {
+            _source.CopyTo(_tagsEndOffset, afterTagsLen, destination);
+        }
     }
 
-    private byte[] AppendTagsToSegment(byte[] newTagsBytes)
+    private void AppendTagsStreaming(Stream destination, byte[] newTagsBytes)
     {
-        // Append at the end of the existing segment payload.
-        var prefixLen = (int)_segmentPayloadEnd;
-        var suffix = _originalBytes.AsSpan(prefixLen).ToArray();
-
         var newSegPayload = _segmentPayloadEnd - _segmentPayloadStart + newTagsBytes.Length;
-        return RebuildWithSegmentSize(prefixLen, newTagsBytes, suffix, newSegPayload);
+
+        WriteHeadAndSegmentHeader(destination, newSegPayload);
+
+        // Write the rest of the segment payload (everything after the segment header).
+        var segPayloadLen = _segmentPayloadEnd - _segmentPayloadStart;
+        if (segPayloadLen > 0)
+        {
+            _source!.CopyTo(_segmentPayloadStart, segPayloadLen, destination);
+        }
+
+        // Append the new Tags inside the (now-larger) segment.
+        destination.Write(newTagsBytes, 0, newTagsBytes.Length);
+
+        // Then any post-segment bytes — usually none.
+        var postSegmentLen = _source!.Length - _segmentPayloadEnd;
+        if (postSegmentLen > 0)
+        {
+            _source.CopyTo(_segmentPayloadEnd, postSegmentLen, destination);
+        }
     }
 
-    private byte[] RebuildWithSegmentSize(int prefixLen, byte[] inserted, byte[] suffix, long newSegPayload)
+    private void WriteHeadAndSegmentHeader(Stream destination, long newSegPayload)
     {
-        // The segment header consists of: [_segmentHeaderStart .. _segmentPayloadStart)
-        // = id VINT (4 bytes for the canonical Matroska Segment id) + size VINT.
+        // Bytes before the Segment element (EBML header + any pre-segment elements).
+        if (_segmentHeaderStart > 0)
+        {
+            _source!.CopyTo(0, _segmentHeaderStart, destination);
+        }
+
+        // Segment element header: id + size VINT. We preserve the VINT length so
+        // any internal segment-relative offsets (Cluster / Cues references) stay valid.
         var idBytes = EbmlElement.EncodeId(SegmentId);
         var oldSegHeaderLen = (int)(_segmentPayloadStart - _segmentHeaderStart);
         var oldSegSizeVintLen = oldSegHeaderLen - idBytes.Length;
 
-        byte[] newSegSizeVint;
-        if (_segmentSizeWasUnknown)
-        {
-            // Preserve length-unknown encoding using the same VINT length as before.
-            newSegSizeVint = MakeUnknownSizeVint(oldSegSizeVintLen <= 0 ? 1 : oldSegSizeVintLen);
-        }
-        else
-        {
-            newSegSizeVint = EbmlElement.EncodeVintSize(newSegPayload, oldSegSizeVintLen <= 0 ? 8 : oldSegSizeVintLen);
-        }
+        var newSegSizeVint = _segmentSizeWasUnknown
+            ? MakeUnknownSizeVint(oldSegSizeVintLen <= 0 ? 1 : oldSegSizeVintLen)
+            : EbmlElement.EncodeVintSize(newSegPayload, oldSegSizeVintLen <= 0 ? 8 : oldSegSizeVintLen);
 
-        var newSegHeaderLen = idBytes.Length + newSegSizeVint.Length;
-        var prefix = _originalBytes.AsSpan(0, prefixLen).ToArray();
-        var totalLen = prefix.Length + inserted.Length + suffix.Length;
-
-        // If the segment header changed length (it shouldn't, since we passed the same VINT length),
-        // we'd need to rebuild prefix from scratch — but we forced same-length encoding.
-        if (newSegHeaderLen != oldSegHeaderLen)
-        {
-            // Fallback: rebuild without the old segment header bytes.
-            var preSeg = _originalBytes.AsSpan(0, (int)_segmentHeaderStart).ToArray();
-            var postSegHeader = _originalBytes.AsSpan((int)_segmentPayloadStart, prefixLen - (int)_segmentPayloadStart).ToArray();
-            var combined = new byte[preSeg.Length + newSegHeaderLen + postSegHeader.Length + inserted.Length + suffix.Length];
-            var pos = 0;
-            Buffer.BlockCopy(preSeg, 0, combined, pos, preSeg.Length);
-            pos += preSeg.Length;
-            Buffer.BlockCopy(idBytes, 0, combined, pos, idBytes.Length);
-            pos += idBytes.Length;
-            Buffer.BlockCopy(newSegSizeVint, 0, combined, pos, newSegSizeVint.Length);
-            pos += newSegSizeVint.Length;
-            Buffer.BlockCopy(postSegHeader, 0, combined, pos, postSegHeader.Length);
-            pos += postSegHeader.Length;
-            Buffer.BlockCopy(inserted, 0, combined, pos, inserted.Length);
-            pos += inserted.Length;
-            Buffer.BlockCopy(suffix, 0, combined, pos, suffix.Length);
-            return combined;
-        }
-
-        // Patch the segment size VINT in-place inside `prefix`.
-        Buffer.BlockCopy(newSegSizeVint, 0, prefix, (int)_segmentHeaderStart + idBytes.Length, newSegSizeVint.Length);
-
-        var output = new byte[totalLen];
-        var off = 0;
-        Buffer.BlockCopy(prefix, 0, output, off, prefix.Length);
-        off += prefix.Length;
-        Buffer.BlockCopy(inserted, 0, output, off, inserted.Length);
-        off += inserted.Length;
-        Buffer.BlockCopy(suffix, 0, output, off, suffix.Length);
-        return output;
+        destination.Write(idBytes, 0, idBytes.Length);
+        destination.Write(newSegSizeVint, 0, newSegSizeVint.Length);
     }
 
     private static byte[] MakeUnknownSizeVint(int length)
@@ -474,10 +490,7 @@ public sealed class MatroskaStream : IMediaContainer
         }
 
         var buf = new byte[length];
-        // All data bits set, marker bit at position (8 - length) of the high byte.
         var markerMask = (byte)(0x80 >> (length - 1));
-        // For length L: high byte value = markerMask | ((markerMask - 1)) — all bits below the marker set.
-        // Then low (length - 1) bytes are 0xFF.
         buf[0] = (byte)(markerMask | (markerMask - 1));
         for (var i = 1; i < length; i++)
         {
@@ -491,10 +504,6 @@ public sealed class MatroskaStream : IMediaContainer
     /// Helper for tests / writers: build a complete Matroska file containing only the EBML header and
     /// a Segment whose payload is exactly <paramref name="segmentPayload"/>.
     /// </summary>
-    /// <param name="docType">DocType (e.g. <c>"matroska"</c>).</param>
-    /// <param name="segmentPayload">Raw segment payload bytes.</param>
-    /// <returns>The bytes of a minimal valid EBML container.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="segmentPayload"/> is <c>null</c>.</exception>
     public static byte[] BuildMinimalContainer(string docType, byte[] segmentPayload)
     {
         ArgumentNullException.ThrowIfNull(segmentPayload);

@@ -262,8 +262,27 @@ public sealed partial class Id3v2TagReader : IAudioTagReader
                               ? totalSizeItems
                               : totalSizeItems - (tag.PaddingSize + tag.ExtendedHeader.PaddingSize) - 4)
                          - tag.ExtendedHeader.GetHeaderSize(tag.Version);
-        var crcData = sb.ToByteArray().Skip((int)currentPosition).Take(dataLength).ToArray();
-        var calculatedCrc = (int)Crc32.HashToUInt32(crcData);
+
+        // Stream the CRC over the relevant byte range without materialising the entire
+        // tag-bearing stream (the previous LINQ Skip/Take/ToArray approach allocated three
+        // copies of `sb` for a single CRC validation — catastrophic on large files).
+        var hash = new Crc32();
+        Span<byte> chunk = stackalloc byte[4096];
+        var remaining = dataLength;
+        while (remaining > 0)
+        {
+            var want = Math.Min(remaining, chunk.Length);
+            var read = sb.Read(chunk[..want]);
+            if (read <= 0)
+            {
+                break;
+            }
+
+            hash.Append(chunk[..read]);
+            remaining -= read;
+        }
+
+        var calculatedCrc = (int)hash.GetCurrentHashAsUInt32();
         if (calculatedCrc != expectedCrc)
         {
             throw new InvalidDataException($"CRC {expectedCrc:X} in tag does not match calculated CRC {calculatedCrc:X}");
