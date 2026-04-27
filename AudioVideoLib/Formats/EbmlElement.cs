@@ -213,6 +213,20 @@ public sealed record EbmlElement(
     public static long DecodeUInt(byte[] payload)
     {
         ArgumentNullException.ThrowIfNull(payload);
+        return DecodeUInt((ReadOnlySpan<byte>)payload);
+    }
+
+    /// <summary>
+    /// Decodes a big-endian unsigned integer payload (1..8 bytes) read from an EBML uint element.
+    /// </summary>
+    /// <param name="payload">The payload bytes.</param>
+    /// <returns>The decoded value, or 0 for an empty payload.</returns>
+    /// <remarks>
+    /// Span-based overload: lets callers pass a stack-allocated buffer or a slice of an existing
+    /// array without allocating an intermediate <see cref="T:byte[]"/>.
+    /// </remarks>
+    public static long DecodeUInt(ReadOnlySpan<byte> payload)
+    {
         long v = 0;
         var n = Math.Min(payload.Length, 8);
         for (var i = 0; i < n; i++)
@@ -232,10 +246,24 @@ public sealed record EbmlElement(
     public static double DecodeFloat(byte[] payload)
     {
         ArgumentNullException.ThrowIfNull(payload);
+        return DecodeFloat((ReadOnlySpan<byte>)payload);
+    }
+
+    /// <summary>
+    /// Decodes a big-endian IEEE 754 floating-point payload of length 4 or 8 bytes.
+    /// </summary>
+    /// <param name="payload">The payload bytes.</param>
+    /// <returns>The decoded value, or 0 for unsupported lengths.</returns>
+    /// <remarks>
+    /// Span-based overload: lets callers pass a stack-allocated buffer or a slice of an existing
+    /// array without allocating an intermediate <see cref="T:byte[]"/>.
+    /// </remarks>
+    public static double DecodeFloat(ReadOnlySpan<byte> payload)
+    {
         if (payload.Length == 4)
         {
             Span<byte> tmp = stackalloc byte[4];
-            payload.AsSpan(0, 4).CopyTo(tmp);
+            payload[..4].CopyTo(tmp);
             tmp.Reverse();
             return System.Buffers.Binary.BinaryPrimitives.ReadSingleLittleEndian(tmp);
         }
@@ -243,7 +271,7 @@ public sealed record EbmlElement(
         if (payload.Length == 8)
         {
             Span<byte> tmp = stackalloc byte[8];
-            payload.AsSpan(0, 8).CopyTo(tmp);
+            payload[..8].CopyTo(tmp);
             tmp.Reverse();
             return System.Buffers.Binary.BinaryPrimitives.ReadDoubleLittleEndian(tmp);
         }

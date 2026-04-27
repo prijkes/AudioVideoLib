@@ -368,6 +368,10 @@ public sealed class MatroskaStream : IMediaContainer, IDisposable
             return;
         }
 
+        // EBML uint payloads are at most 8 bytes by spec; floats are 4 or 8. Reuse the same
+        // 8-byte stack buffer across the loop so the analyser is happy.
+        Span<byte> scalarBuf = stackalloc byte[8];
+
         while (stream.Position < end)
         {
             if (!EbmlElement.TryReadVintId(stream, out _, out var id) ||
@@ -386,19 +390,22 @@ public sealed class MatroskaStream : IMediaContainer, IDisposable
 
             if (id == TimecodeScaleId)
             {
-                var buf = new byte[actualSize];
-                stream.ReadExactly(buf, 0, buf.Length);
-                TimecodeScale = EbmlElement.DecodeUInt(buf);
+                var n = (int)Math.Min(actualSize, scalarBuf.Length);
+                stream.ReadExactly(scalarBuf[..n]);
+                TimecodeScale = EbmlElement.DecodeUInt(scalarBuf[..n]);
                 if (TimecodeScale == 0)
                 {
                     TimecodeScale = 1_000_000;
                 }
+
+                stream.Position = payloadStart + actualSize;
             }
             else if (id == DurationId)
             {
-                var buf = new byte[actualSize];
-                stream.ReadExactly(buf, 0, buf.Length);
-                Duration = EbmlElement.DecodeFloat(buf);
+                var n = (int)Math.Min(actualSize, scalarBuf.Length);
+                stream.ReadExactly(scalarBuf[..n]);
+                Duration = EbmlElement.DecodeFloat(scalarBuf[..n]);
+                stream.Position = payloadStart + actualSize;
             }
             else
             {
