@@ -14,32 +14,38 @@ using AudioVideoLib.Tags;
 /// Surfaces the iTunes-style metadata in <c>moov.udta.meta.ilst</c> and reports duration from <c>moov.mvhd</c>.
 /// </summary>
 /// <remarks>
-/// The walker captures every top-level box structurally and descends into the
-/// <c>moov.udta.meta.ilst</c> chain. The <c>meta</c> box is treated as a full-box (4-byte version/flags
-/// before its children). Box sizes are bound-checked against the parent; size==0 ("to end of file") and
-/// size==1 ("64-bit extended size in the next 8 bytes") are both supported. Recursion is bounded by an
-/// explicit depth cap to avoid stack blow-up on malicious input.
+/// The walker keeps an <see cref="ISourceReader"/> reference rather than buffering the file
+/// in memory; <see cref="WriteTo(Stream)"/> streams unchanged regions directly from source to
+/// destination, so editing iTunes metadata in a multi-GB MP4 is bounded by the metadata size,
+/// not the file size.
+/// <para />
+/// Box sizes are bound-checked against the parent; <c>size==0</c> ("to end of file") and
+/// <c>size==1</c> ("64-bit extended size in the next 8 bytes") are both supported. Recursion
+/// is bounded by an explicit depth cap to avoid stack blow-up on malicious input.
+/// <para />
+/// Callers must keep the source <see cref="Stream"/> passed to <see cref="ReadStream(Stream)"/>
+/// alive until <see cref="WriteTo(Stream)"/> / <c>ToByteArray</c> finishes.
 /// </remarks>
-public sealed class Mp4Stream : IMediaContainer
+public sealed class Mp4Stream : IMediaContainer, IDisposable
 {
     private const int MaxDepth = 16;
     private static readonly Encoding Latin1 = Encoding.GetEncoding("ISO-8859-1");
 
     private readonly List<Mp4Box> _boxes = [];
-    private byte[] _originalBytes = [];
+    private ISourceReader? _source;
 
-    // All offsets below are buffer-relative (i.e. bytes from start of _originalBytes).
-    private int _ilstHeaderStart = -1;
-    private int _ilstPayloadStart = -1;
-    private int _ilstEnd = -1;
-    private int _metaHeaderStart = -1;
-    private int _metaEnd = -1;
+    // All offsets below are file offsets (relative to the source start).
+    private long _ilstHeaderStart = -1;
+    private long _ilstPayloadStart = -1;
+    private long _ilstEnd = -1;
+    private long _metaHeaderStart = -1;
+    private long _metaEnd = -1;
     private int _metaHeaderSize = 8;
-    private int _udtaHeaderStart = -1;
-    private int _udtaEnd = -1;
+    private long _udtaHeaderStart = -1;
+    private long _udtaEnd = -1;
     private int _udtaHeaderSize = 8;
-    private int _moovHeaderStart = -1;
-    private int _moovEnd = -1;
+    private long _moovHeaderStart = -1;
+    private long _moovEnd = -1;
     private int _moovHeaderSize = 8;
     private uint _movieTimescale;
     private ulong _movieDuration;
@@ -89,83 +95,54 @@ public sealed class Mp4Stream : IMediaContainer
             return false;
         }
 
-        // Peek the first box; an MP4 must begin with ftyp (occasionally a bare moov / wide / styp).
-        var headerPeek = new byte[8];
-        if (stream.Read(headerPeek, 0, 8) != 8)
+        // Peek the first box; an MP4 must begin with one of a small set of recognised top-level types.
+        Span<byte> headerPeek = stackalloc byte[8];
+        if (stream.Read(headerPeek) != 8)
         {
             return false;
         }
 
         stream.Position = start;
-        var firstType = Latin1.GetString(headerPeek, 4, 4);
+        var firstType = Latin1.GetString(headerPeek[4..]);
         if (firstType is not ("ftyp" or "moov" or "mdat" or "free" or "skip" or "wide" or "styp" or "pdin"))
         {
             return false;
         }
 
-        // Buffer the whole stream so we can splice on write and so the walker has random access.
-        var totalLength = (int)(length - start);
-        _originalBytes = new byte[totalLength];
-        var read = stream.Read(_originalBytes, 0, totalLength);
-        if (read != totalLength)
-        {
-            Array.Resize(ref _originalBytes, read);
-        }
-
         StartOffset = start;
-        EndOffset = start + read;
+        _source?.Dispose();
+        _source = new StreamSourceReader(stream, leaveOpen: true);
+        EndOffset = start + _source.Length;
 
-        WalkTopLevel();
+        // Walk the live stream — reads are sequential within each box, with seek-past
+        // for nested-box content we don't need (mdat in particular).
+        WalkTopLevel(stream, EndOffset);
 
-        // If we found an ilst, parse it now into the tag model.
+        // Parse the ilst payload (typically a few KB).
         if (_ilstPayloadStart >= 0)
         {
-            var len = _ilstEnd - _ilstPayloadStart;
+            var len = (int)(_ilstEnd - _ilstPayloadStart);
             var slice = new byte[len];
-            Array.Copy(_originalBytes, _ilstPayloadStart, slice, 0, len);
+            _source.Read(_ilstPayloadStart, slice);
             Tag = Mp4MetaTag.Parse(slice);
         }
 
+        // Position the stream after the container so the outer scanner can continue.
+        stream.Position = EndOffset;
         return _boxes.Count > 0;
     }
 
     /// <inheritdoc/>
     /// <remarks>
-    /// Returns the original container bytes with the <c>ilst</c> body replaced by <see cref="Tag"/>'s serialised form,
-    /// patching the size fields of the enclosing <c>ilst</c>, <c>meta</c>, <c>udta</c>, and <c>moov</c> boxes.
-    /// If the original container has no <c>moov.udta.meta.ilst</c> chain, a fresh chain is built and inserted
-    /// inside the existing <c>moov</c> (or appended to the file if no <c>moov</c> exists).
-    /// </remarks>
-    /// <inheritdoc/>
-    /// <remarks>
-    /// Buffer-shaped override: kept as the fast path for callers who want bytes in hand.
-    /// Equivalent to <see cref="WriteTo(Stream)"/> into a <see cref="MemoryStream"/> but
-    /// returns the assembled byte array directly without an intermediate copy.
-    /// </remarks>
-    public byte[] ToByteArray()
-    {
-        if (_originalBytes.Length == 0)
-        {
-            return [];
-        }
-
-        var newIlstBody = Tag.ToByteArray();
-        return _ilstHeaderStart >= 0 && _moovHeaderStart >= 0
-            ? SpliceExistingIlst(newIlstBody)
-            : BuildChainAndInsert(newIlstBody);
-    }
-
-    /// <inheritdoc/>
-    /// <remarks>
-    /// Streaming override: writes head + new ilst + tail directly to <paramref name="destination"/>
-    /// instead of materialising the full output as a single byte array. Halves peak memory for
-    /// edits on multi-MB files. The source is still buffered in <c>_originalBytes</c>; lifting
-    /// that buffer is a separate piece of work.
+    /// Streams head + new <c>ilst</c> + tail directly from the source to the destination,
+    /// patching the size fields of the enclosing <c>moov</c> / <c>udta</c> / <c>meta</c>
+    /// boxes inline as the bytes flow through. Peak memory is bounded by the metadata
+    /// size, not the file size.
     /// </remarks>
     public void WriteTo(Stream destination)
     {
         ArgumentNullException.ThrowIfNull(destination);
-        if (_originalBytes.Length == 0)
+        if (_source is null)
         {
             return;
         }
@@ -173,103 +150,84 @@ public sealed class Mp4Stream : IMediaContainer
         var newIlstBody = Tag.ToByteArray();
         if (_ilstHeaderStart >= 0 && _moovHeaderStart >= 0)
         {
-            SpliceExistingIlstStreaming(destination, newIlstBody);
+            SpliceExistingIlst(destination, newIlstBody);
         }
         else
         {
-            BuildChainAndInsertStreaming(destination, newIlstBody);
+            BuildChainAndInsert(destination, newIlstBody);
         }
     }
 
-    private byte[] SpliceExistingIlst(byte[] newIlstBody)
+    /// <summary>
+    /// Releases the underlying <see cref="ISourceReader"/>. Does not close the user's source
+    /// <see cref="Stream"/>; the caller still owns that.
+    /// </summary>
+    public void Dispose()
     {
-        var newIlstAtomSize = 8 + newIlstBody.Length;
+        _source?.Dispose();
+        _source = null;
+    }
+
+    /// <summary>
+    /// File offset of the byte immediately after a box's header bytes.
+    /// </summary>
+    private static long PayloadStartOf(long headerStart, int headerSize) => headerStart + headerSize;
+
+    private void SpliceExistingIlst(Stream destination, byte[] newIlstBody)
+    {
+        var newIlstAtomSize = 8L + newIlstBody.Length;
         var oldIlstAtomSize = _ilstEnd - _ilstHeaderStart;
         var delta = newIlstAtomSize - oldIlstAtomSize;
 
-        var resultLength = _originalBytes.Length + delta;
-        var result = new byte[resultLength];
-
-        Array.Copy(_originalBytes, 0, result, 0, _ilstHeaderStart);
-
-        WriteBeU32(result, _ilstHeaderStart, (uint)newIlstAtomSize);
-        WriteAscii(result, _ilstHeaderStart + 4, "ilst");
-        Array.Copy(newIlstBody, 0, result, _ilstHeaderStart + 8, newIlstBody.Length);
-
-        var tail = _originalBytes.Length - _ilstEnd;
-        if (tail > 0)
+        // Pre-moov bytes (often the large mdat, for non-faststart files).
+        if (_moovHeaderStart > 0)
         {
-            Array.Copy(_originalBytes, _ilstEnd, result, _ilstHeaderStart + newIlstAtomSize, tail);
+            _source!.CopyTo(0, _moovHeaderStart, destination);
         }
 
-        PatchAncestorSize(result, _metaHeaderStart, _metaHeaderSize, _metaEnd - _metaHeaderStart, delta);
-        PatchAncestorSize(result, _udtaHeaderStart, _udtaHeaderSize, _udtaEnd - _udtaHeaderStart, delta);
-        PatchAncestorSize(result, _moovHeaderStart, _moovHeaderSize, _moovEnd - _moovHeaderStart, delta);
-        return result;
-    }
+        // Patched moov header.
+        WriteAtomHeader(destination, "moov", _moovEnd - _moovHeaderStart + delta, _moovHeaderSize);
 
-    private byte[] BuildChainAndInsert(byte[] newIlstBody)
-    {
-        // Build: udta { meta(version/flags) { hdlr { 'mdir' 'appl' } ilst { ... } } }
-        // hdlr is required by some readers; we provide a minimal one.
-        var ilstAtom = WrapAtom("ilst", newIlstBody);
-        var hdlrAtom = BuildHdlrAtom();
-        var metaInner = ConcatBytes(hdlrAtom, ilstAtom);
-        var metaPayload = ConcatBytes([0, 0, 0, 0], metaInner);
-        var metaAtom = WrapAtom("meta", metaPayload);
-        var udtaAtom = WrapAtom("udta", metaAtom);
-
-        if (_moovHeaderStart < 0)
+        // Moov children before udta.
+        var moovDataStart = PayloadStartOf(_moovHeaderStart, _moovHeaderSize);
+        if (_udtaHeaderStart > moovDataStart)
         {
-            // No moov in the original — append a moov containing just udta. Many players will reject this,
-            // but it is the best we can do for inputs that never had one to begin with.
-            var moovAtom = WrapAtom("moov", udtaAtom);
-            return ConcatBytes(_originalBytes, moovAtom);
+            _source!.CopyTo(moovDataStart, _udtaHeaderStart - moovDataStart, destination);
         }
 
-        // Insert the udta box at the end of the existing moov payload, then patch moov size.
-        var insertOffset = _moovEnd;
-        var resultLength = _originalBytes.Length + udtaAtom.Length;
-        var result = new byte[resultLength];
-        Array.Copy(_originalBytes, 0, result, 0, insertOffset);
-        Array.Copy(udtaAtom, 0, result, insertOffset, udtaAtom.Length);
-        Array.Copy(_originalBytes, insertOffset, result, insertOffset + udtaAtom.Length, _originalBytes.Length - insertOffset);
+        // Patched udta header.
+        WriteAtomHeader(destination, "udta", _udtaEnd - _udtaHeaderStart + delta, _udtaHeaderSize);
 
-        PatchAncestorSize(result, _moovHeaderStart, _moovHeaderSize, _moovEnd - _moovHeaderStart, udtaAtom.Length);
-        return result;
-    }
+        // Udta children before meta.
+        var udtaDataStart = PayloadStartOf(_udtaHeaderStart, _udtaHeaderSize);
+        if (_metaHeaderStart > udtaDataStart)
+        {
+            _source!.CopyTo(udtaDataStart, _metaHeaderStart - udtaDataStart, destination);
+        }
 
-    private void SpliceExistingIlstStreaming(Stream destination, byte[] newIlstBody)
-    {
-        var newIlstAtomSize = 8 + newIlstBody.Length;
-        var oldIlstAtomSize = _ilstEnd - _ilstHeaderStart;
-        var delta = newIlstAtomSize - oldIlstAtomSize;
+        // Patched meta header.
+        WriteAtomHeader(destination, "meta", _metaEnd - _metaHeaderStart + delta, _metaHeaderSize);
 
-        // Patches sit inside the head region — we need a writable copy of head[0.._ilstHeaderStart]
-        // so we can overwrite the meta/udta/moov size fields. The tail is written straight from
-        // _originalBytes; that's where the bigger saving lives for files with large mdat segments.
-        var head = new byte[_ilstHeaderStart];
-        Array.Copy(_originalBytes, 0, head, 0, head.Length);
-        PatchAncestorSize(head, _metaHeaderStart, _metaHeaderSize, _metaEnd - _metaHeaderStart, delta);
-        PatchAncestorSize(head, _udtaHeaderStart, _udtaHeaderSize, _udtaEnd - _udtaHeaderStart, delta);
-        PatchAncestorSize(head, _moovHeaderStart, _moovHeaderSize, _moovEnd - _moovHeaderStart, delta);
-        destination.Write(head, 0, head.Length);
+        // Meta children before ilst (version+flags + optional hdlr).
+        var metaDataStart = PayloadStartOf(_metaHeaderStart, _metaHeaderSize);
+        if (_ilstHeaderStart > metaDataStart)
+        {
+            _source!.CopyTo(metaDataStart, _ilstHeaderStart - metaDataStart, destination);
+        }
 
-        Span<byte> ilstHeader = stackalloc byte[8];
-        BinaryPrimitives.WriteUInt32BigEndian(ilstHeader, (uint)newIlstAtomSize);
-        Latin1.GetBytes("ilst", ilstHeader[4..]);
-        destination.Write(ilstHeader);
+        // New ilst header + body.
+        WriteAtomHeader(destination, "ilst", newIlstAtomSize, 8);
         destination.Write(newIlstBody, 0, newIlstBody.Length);
 
-        var tailStart = _ilstEnd;
-        var tailLen = _originalBytes.Length - tailStart;
+        // Tail — everything after the old ilst.
+        var tailLen = _source!.Length - _ilstEnd;
         if (tailLen > 0)
         {
-            destination.Write(_originalBytes, tailStart, tailLen);
+            _source.CopyTo(_ilstEnd, tailLen, destination);
         }
     }
 
-    private void BuildChainAndInsertStreaming(Stream destination, byte[] newIlstBody)
+    private void BuildChainAndInsert(Stream destination, byte[] newIlstBody)
     {
         var ilstAtom = WrapAtom("ilst", newIlstBody);
         var hdlrAtom = BuildHdlrAtom();
@@ -280,121 +238,149 @@ public sealed class Mp4Stream : IMediaContainer
 
         if (_moovHeaderStart < 0)
         {
+            // No moov in original — stream the source verbatim then append a fresh moov.
+            // Many players will reject this layout, but it's the best we can do.
             var moovAtom = WrapAtom("moov", udtaAtom);
-            destination.Write(_originalBytes, 0, _originalBytes.Length);
+            _source!.CopyTo(0, _source.Length, destination);
             destination.Write(moovAtom, 0, moovAtom.Length);
             return;
         }
 
-        var insertOffset = _moovEnd;
-        var head = new byte[insertOffset];
-        Array.Copy(_originalBytes, 0, head, 0, insertOffset);
-        PatchAncestorSize(head, _moovHeaderStart, _moovHeaderSize, _moovEnd - _moovHeaderStart, udtaAtom.Length);
-        destination.Write(head, 0, head.Length);
+        // Pre-moov bytes.
+        if (_moovHeaderStart > 0)
+        {
+            _source!.CopyTo(0, _moovHeaderStart, destination);
+        }
+
+        // Patched moov header — size grows by udtaAtom.Length.
+        WriteAtomHeader(destination, "moov", _moovEnd - _moovHeaderStart + udtaAtom.Length, _moovHeaderSize);
+
+        // Existing moov children.
+        var moovDataStart = PayloadStartOf(_moovHeaderStart, _moovHeaderSize);
+        var moovDataLen = _moovEnd - moovDataStart;
+        if (moovDataLen > 0)
+        {
+            _source!.CopyTo(moovDataStart, moovDataLen, destination);
+        }
+
+        // New udta atom appended inside moov.
         destination.Write(udtaAtom, 0, udtaAtom.Length);
 
-        var tailLen = _originalBytes.Length - insertOffset;
-        if (tailLen > 0)
+        // Anything after moov.
+        var postMoovLen = _source!.Length - _moovEnd;
+        if (postMoovLen > 0)
         {
-            destination.Write(_originalBytes, insertOffset, tailLen);
+            _source.CopyTo(_moovEnd, postMoovLen, destination);
         }
     }
 
-    private static void PatchAncestorSize(byte[] buffer, int headerStart, int headerSize, int oldSize, int delta)
+    private static void WriteAtomHeader(Stream destination, string type, long size, int headerSize)
     {
-        if (headerStart < 0)
-        {
-            return;
-        }
-
-        var newSize = oldSize + delta;
+        Span<byte> hdr = stackalloc byte[16];
         if (headerSize == 16)
         {
-            // 64-bit extended size: size32 field stays as 1, true size lives 8 bytes after the type.
-            WriteBeU64(buffer, headerStart + 8, (ulong)newSize);
+            BinaryPrimitives.WriteUInt32BigEndian(hdr, 1);
+            Latin1.GetBytes(type, hdr[4..8]);
+            BinaryPrimitives.WriteUInt64BigEndian(hdr[8..16], (ulong)size);
+            destination.Write(hdr);
         }
         else
         {
-            WriteBeU32(buffer, headerStart, (uint)newSize);
+            if (size > uint.MaxValue)
+            {
+                throw new InvalidOperationException(
+                    $"Atom '{type}' size {size} exceeds 32-bit limit; the original header used a 32-bit size, " +
+                    "and growing to 64-bit would shift downstream offsets which the splice writer can't safely fix up.");
+            }
+
+            BinaryPrimitives.WriteUInt32BigEndian(hdr, (uint)size);
+            Latin1.GetBytes(type, hdr[4..8]);
+            destination.Write(hdr[..8]);
         }
     }
 
-    private void WalkTopLevel()
+    private void WalkTopLevel(Stream stream, long end)
     {
-        var pos = 0;
-        while (pos + 8 <= _originalBytes.Length)
+        Span<byte> brandBuf = stackalloc byte[4];
+        while (stream.Position + 8 <= end)
         {
-            if (!TryReadBoxHeader(_originalBytes, pos, _originalBytes.Length, out var type, out var atomSize, out var headerSize))
+            var pos = stream.Position;
+            if (!TryReadBoxHeader(stream, end, out var type, out var atomSize, out var headerSize))
             {
                 break;
             }
 
-            var atomEnd = pos + (int)atomSize;
-            _boxes.Add(new Mp4Box(type, StartOffset + pos, StartOffset + atomEnd, headerSize));
+            var atomEnd = pos + atomSize;
+            _boxes.Add(new Mp4Box(type, pos, atomEnd, headerSize));
 
             switch (type)
             {
                 case "ftyp":
                     if (atomSize >= headerSize + 4)
                     {
-                        MajorBrand = Latin1.GetString(_originalBytes, pos + headerSize, 4);
+                        stream.Position = pos + headerSize;
+                        stream.ReadExactly(brandBuf);
+                        MajorBrand = Latin1.GetString(brandBuf);
                     }
 
                     break;
                 case "moov":
-                    _moovHeaderStart = pos;
+                    _moovHeaderStart = pos - StartOffset;
                     _moovHeaderSize = headerSize;
-                    _moovEnd = atomEnd;
-                    WalkContainer(pos + headerSize, atomEnd, 1);
+                    _moovEnd = atomEnd - StartOffset;
+                    stream.Position = pos + headerSize;
+                    WalkContainer(stream, atomEnd, 1);
                     break;
             }
 
-            pos = atomEnd;
+            stream.Position = atomEnd;
         }
     }
 
-    private void WalkContainer(int start, int end, int depth)
+    private void WalkContainer(Stream stream, long end, int depth)
     {
         if (depth > MaxDepth)
         {
             return;
         }
 
-        var pos = start;
-        while (pos + 8 <= end)
+        while (stream.Position + 8 <= end)
         {
-            if (!TryReadBoxHeader(_originalBytes, pos, end, out var type, out var atomSize, out var headerSize))
+            var pos = stream.Position;
+            if (!TryReadBoxHeader(stream, end, out var type, out var atomSize, out var headerSize))
             {
                 break;
             }
 
-            var atomEnd = pos + (int)atomSize;
+            var atomEnd = pos + atomSize;
             switch (type)
             {
                 case "udta":
-                    _udtaHeaderStart = pos;
+                    _udtaHeaderStart = pos - StartOffset;
                     _udtaHeaderSize = headerSize;
-                    _udtaEnd = atomEnd;
-                    WalkContainer(pos + headerSize, atomEnd, depth + 1);
+                    _udtaEnd = atomEnd - StartOffset;
+                    stream.Position = pos + headerSize;
+                    WalkContainer(stream, atomEnd, depth + 1);
                     break;
                 case "meta":
-                    _metaHeaderStart = pos;
+                    _metaHeaderStart = pos - StartOffset;
                     _metaHeaderSize = headerSize;
-                    _metaEnd = atomEnd;
+                    _metaEnd = atomEnd - StartOffset;
                     // Full-box header: skip 4 bytes of version+flags before recursing.
                     if (atomEnd - (pos + headerSize) >= 4)
                     {
-                        WalkContainer(pos + headerSize + 4, atomEnd, depth + 1);
+                        stream.Position = pos + headerSize + 4;
+                        WalkContainer(stream, atomEnd, depth + 1);
                     }
 
                     break;
                 case "ilst":
-                    _ilstHeaderStart = pos;
-                    _ilstPayloadStart = pos + headerSize;
-                    _ilstEnd = atomEnd;
+                    _ilstHeaderStart = pos - StartOffset;
+                    _ilstPayloadStart = pos + headerSize - StartOffset;
+                    _ilstEnd = atomEnd - StartOffset;
                     break;
                 case "mvhd":
-                    AbsorbMvhd(pos + headerSize, atomEnd);
+                    AbsorbMvhd(stream, pos + headerSize, atomEnd);
                     break;
                 case "trak":
                 case "mdia":
@@ -402,75 +388,84 @@ public sealed class Mp4Stream : IMediaContainer
                 case "stbl":
                 case "edts":
                 case "dinf":
-                    WalkContainer(pos + headerSize, atomEnd, depth + 1);
+                    stream.Position = pos + headerSize;
+                    WalkContainer(stream, atomEnd, depth + 1);
                     break;
             }
 
-            pos = atomEnd;
+            stream.Position = atomEnd;
         }
     }
 
-    private void AbsorbMvhd(int start, int end)
+    private void AbsorbMvhd(Stream stream, long start, long end)
     {
-        if (end - start < 4)
+        var len = end - start;
+        if (len < 4)
         {
             return;
         }
 
-        var version = _originalBytes[start];
-        var pos = start + 4;
+        stream.Position = start;
+        var version = (byte)stream.ReadByte();
+        stream.Position = start + 4;
+
+        Span<byte> buf = stackalloc byte[28];
 
         // mvhd v0: creation(4) modification(4) timescale(4) duration(4) ...
         // mvhd v1: creation(8) modification(8) timescale(4) duration(8) ...
         if (version == 1)
         {
-            if (end - pos < 28)
+            if (len < 32)
             {
                 return;
             }
 
-            pos += 16; // creation + modification
-            _movieTimescale = ReadBeU32(_originalBytes, pos);
-            pos += 4;
-            _movieDuration = ReadBeU64(_originalBytes, pos);
+            stream.ReadExactly(buf);
+            _movieTimescale = BinaryPrimitives.ReadUInt32BigEndian(buf[16..]);
+            _movieDuration = BinaryPrimitives.ReadUInt64BigEndian(buf[20..]);
         }
         else
         {
-            if (end - pos < 16)
+            if (len < 20)
             {
                 return;
             }
 
-            pos += 8; // creation + modification
-            _movieTimescale = ReadBeU32(_originalBytes, pos);
-            pos += 4;
-            _movieDuration = ReadBeU32(_originalBytes, pos);
+            stream.ReadExactly(buf[..16]);
+            _movieTimescale = BinaryPrimitives.ReadUInt32BigEndian(buf[8..]);
+            _movieDuration = BinaryPrimitives.ReadUInt32BigEndian(buf[12..]);
         }
     }
 
-    private static bool TryReadBoxHeader(byte[] buffer, int pos, int containerEnd, out string type, out long atomSize, out int headerSize)
+    private static bool TryReadBoxHeader(Stream stream, long containerEnd, out string type, out long atomSize, out int headerSize)
     {
         type = string.Empty;
         atomSize = 0;
         headerSize = 8;
-        if (pos + 8 > containerEnd)
+        var startPos = stream.Position;
+        if (startPos + 8 > containerEnd)
         {
             return false;
         }
 
-        var size32 = ReadBeU32(buffer, pos);
-        type = Latin1.GetString(buffer, pos + 4, 4);
+        Span<byte> hdr = stackalloc byte[16];
+        stream.ReadExactly(hdr[..8]);
+        var size32 = BinaryPrimitives.ReadUInt32BigEndian(hdr);
+        type = Latin1.GetString(hdr[4..8]);
 
         if (size32 == 1)
         {
-            if (pos + 16 > containerEnd)
+            if (startPos + 16 > containerEnd)
             {
+                stream.Position = startPos;
                 return false;
             }
 
-            var ext = ReadBeU64(buffer, pos + 8);
+            stream.ReadExactly(hdr[8..16]);
+            var ext = BinaryPrimitives.ReadUInt64BigEndian(hdr[8..16]);
             if (ext is < 16 or > long.MaxValue)
             {
+                stream.Position = startPos;
                 return false;
             }
 
@@ -480,14 +475,16 @@ public sealed class Mp4Stream : IMediaContainer
         else if (size32 == 0)
         {
             // "to end of container"
-            atomSize = containerEnd - pos;
+            atomSize = containerEnd - startPos;
             if (atomSize < 8)
             {
+                stream.Position = startPos;
                 return false;
             }
         }
         else if (size32 < 8)
         {
+            stream.Position = startPos;
             return false;
         }
         else
@@ -495,16 +492,19 @@ public sealed class Mp4Stream : IMediaContainer
             atomSize = size32;
         }
 
-        if (pos + atomSize > containerEnd)
+        if (startPos + atomSize > containerEnd)
         {
             // Truncated atom — clamp so the walker advances rather than spinning.
-            atomSize = containerEnd - pos;
+            atomSize = containerEnd - startPos;
             if (atomSize < headerSize)
             {
+                stream.Position = startPos;
                 return false;
             }
         }
 
+        // Leave the stream at the start of the atom payload.
+        stream.Position = startPos + headerSize;
         return true;
     }
 
@@ -524,7 +524,7 @@ public sealed class Mp4Stream : IMediaContainer
     {
         var size = 8 + payload.Length;
         var result = new byte[size];
-        WriteBeU32(result, 0, (uint)size);
+        BinaryPrimitives.WriteUInt32BigEndian(result, (uint)size);
         WriteAscii(result, 4, type);
         Array.Copy(payload, 0, result, 8, payload.Length);
         return result;
@@ -538,32 +538,9 @@ public sealed class Mp4Stream : IMediaContainer
         return result;
     }
 
-    private static uint ReadBeU32(byte[] b, int off) =>
-        ((uint)b[off] << 24) | ((uint)b[off + 1] << 16) | ((uint)b[off + 2] << 8) | b[off + 3];
-
-    private static ulong ReadBeU64(byte[] b, int off) =>
-        ((ulong)b[off] << 56) | ((ulong)b[off + 1] << 48) | ((ulong)b[off + 2] << 40) | ((ulong)b[off + 3] << 32)
-        | ((ulong)b[off + 4] << 24) | ((ulong)b[off + 5] << 16) | ((ulong)b[off + 6] << 8) | b[off + 7];
-
-    private static void WriteBeU32(byte[] b, int off, uint v)
-    {
-        b[off] = (byte)((v >> 24) & 0xFF);
-        b[off + 1] = (byte)((v >> 16) & 0xFF);
-        b[off + 2] = (byte)((v >> 8) & 0xFF);
-        b[off + 3] = (byte)(v & 0xFF);
-    }
-
     private static void WriteAscii(byte[] b, int off, string s)
     {
         var bytes = Latin1.GetBytes(s);
         Array.Copy(bytes, 0, b, off, Math.Min(4, bytes.Length));
-    }
-
-    private static void WriteBeU64(byte[] b, int off, ulong v)
-    {
-        for (var i = 0; i < 8; i++)
-        {
-            b[off + i] = (byte)((v >> (56 - (i * 8))) & 0xFF);
-        }
     }
 }

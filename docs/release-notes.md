@@ -5,12 +5,54 @@ Change categories follow [Keep a Changelog](https://keepachangelog.com/):
 
 | Version | Date | Highlights |
 |---|---|---|
+| [`0.7.0`](#070--2026-04-27) | 2026-04-27 | `Mp4Stream` and `AsfStream` complete the streaming refactor — every splice rewriter now operates without buffering the source file. |
 | [`0.6.0`](#060--2026-04-27) | 2026-04-27 | Large-file performance: streaming Matroska reader/writer (40 GB MKV is now viable); `ISourceReader` random-access abstraction; ID3v2 read-path allocation fixes. |
 | [`0.5.0`](#050--2026-04-27) | 2026-04-27 | `WriteTo(Stream)` is now the canonical serialisation primitive; `ToByteArray` becomes an extension-method convenience. |
 | [`0.4.0`](#040--2026-04-26) | 2026-04-26 | Streaming write API; magic-byte fast path; structured parse errors; async entry points; assorted API cleanup. |
 | [`0.3.0`](#030--2026-04-25) | 2026-04-25 | `IAudioStream` → `IMediaContainer` rename. |
 | [`0.2.0`](#020--2026-04-19) | 2026-04-19 | Nine new tag/container formats; non-fatal parse errors; per-field encoding for ID3v1. |
 | [`0.1.0`](#010--2026-04-17) | 2026-04-17 | Initial release. |
+
+---
+
+## 0.7.0 — 2026-04-27
+
+> Mechanical mirror of the 0.6.0 Matroska refactor applied to the
+> remaining splice rewriters. `Mp4Stream` and `AsfStream` now keep an
+> `ISourceReader` reference instead of buffering the source file, and
+> `WriteTo(Stream)` streams unchanged regions directly from source to
+> destination. All five splice rewriters are now large-file-friendly.
+
+### Changed
+
+- **`Mp4Stream` no longer buffers the input.** The walker reads
+  structurally from the live stream during `ReadStream` (mdat is
+  seeked past, never copied), and `WriteTo(Stream)` streams head + new
+  ilst + tail directly. The patches to ancestor box headers
+  (`moov` / `udta` / `meta`) are emitted segmentally, so even
+  non-faststart files (mdat first, moov last) write in bounded
+  memory regardless of file size. Internal offset fields widened from
+  `int` to `long` for proper 64-bit file support.
+- **`AsfStream` no longer buffers the entire file.** Only the small
+  Header Object is materialised in memory; the multi-GB Data Object +
+  Index Object that follows is streamed straight through to the
+  destination at write time. ASF parse helpers consume
+  `ReadOnlySpan<byte>` directly.
+
+### Breaking
+
+- **`Mp4Stream` and `AsfStream` lifetime contract:** the source
+  `Stream` passed to `ReadStream` must stay alive until `WriteTo` /
+  `ToByteArray` finishes — same change `MatroskaStream` got in 0.6.0.
+  Most callers wrap in a `using` block that already covers the full
+  lifetime.
+- **Both classes now implement `IDisposable`** to release their
+  `ISourceReader`. The user's source stream is **not** closed; it
+  remains caller-owned.
+
+> The remaining DSF and DFF walkers were already selective (they
+> capture chunk metadata at parse time, not the whole file) and don't
+> need the refactor.
 
 ---
 

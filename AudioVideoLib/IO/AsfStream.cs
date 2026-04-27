@@ -1,6 +1,7 @@
 namespace AudioVideoLib.IO;
 
 using System;
+using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.IO;
 
@@ -17,13 +18,27 @@ using AudioVideoLib.Tags;
 /// Extended Content Description, Metadata, Metadata Library — the last two nested inside the Header
 /// Extension Object) are parsed into <see cref="MetadataTag"/>. Unrecognised objects are recorded
 /// generically and skipped without failing the walk.
+/// <para />
+/// Only the (small) ASF Header Object is materialised in memory; the much larger Data Object and any
+/// Index Object that follow are kept reachable via an <see cref="ISourceReader"/> reference and
+/// streamed straight to the destination at write time. Editing metadata in a multi-GB WMV is
+/// bounded by the header size, not the file size.
+/// <para />
+/// Callers must keep the source <see cref="Stream"/> passed to <see cref="ReadStream(Stream)"/>
+/// alive until <see cref="WriteTo(Stream)"/> / <c>ToByteArray</c> finishes.
 /// </remarks>
-public sealed class AsfStream : IMediaContainer
+public sealed class AsfStream : IMediaContainer, IDisposable
 {
     private const int MaxObjectsToRecord = 4096;
 
     private readonly List<AsfObject> _objects = [];
-    private byte[] _originalBytes = [];
+
+    // The Header Object is fully materialised (it's the only thing the splice writer mutates,
+    // and it's typically tiny — KB to a few MB).
+    private byte[] _headerBytes = [];
+
+    // The full source is kept for streaming the post-header bytes (Data Object + Index Object).
+    private ISourceReader? _source;
 
     /// <inheritdoc/>
     public long StartOffset { get; private set; }
@@ -50,9 +65,6 @@ public sealed class AsfStream : IMediaContainer
     /// <summary>
     /// Gets the parsed ASF metadata tag — the union of the Content Description, Extended Content
     /// Description, Metadata, and Metadata Library objects discovered inside the Header Object.
-    /// Always non-<c>null</c> after a successful <see cref="ReadStream"/>; check the individual
-    /// collections (<see cref="AsfMetadataTag.HasContentDescription"/>, <c>ExtendedItems.Count</c>, …)
-    /// for emptiness.
     /// </summary>
     /// <remarks>
     /// Setter accepts <c>null</c> as shorthand for "clear all metadata"; the property
@@ -93,98 +105,81 @@ public sealed class AsfStream : IMediaContainer
             return false;
         }
 
-        // Capture the entire stream up-front so we can splice it back together in ToByteArray.
-        var totalLen = stream.Length - start;
-        _originalBytes = new byte[totalLen];
-        var read = 0;
-        while (read < totalLen)
-        {
-            var n = stream.Read(_originalBytes, read, (int)(totalLen - read));
-            if (n <= 0)
-            {
-                break;
-            }
+        // Peek the 24-byte Header Object preamble (GUID + size).
+        Span<byte> peek = stackalloc byte[AsfObject.HeaderSize];
+        stream.ReadExactly(peek);
+        stream.Position = start;
 
-            read += n;
-        }
-
-        if (read < AsfObject.HeaderSize)
-        {
-            return false;
-        }
-
-        // Validate and record the top-level Header Object.
-        var headerGuid = new Guid(_originalBytes.AsSpan(0, 16).ToArray());
+        var headerGuid = new Guid(peek[..16]);
         if (headerGuid != AsfMetadataTag.HeaderObjectGuid)
         {
             return false;
         }
 
-        var headerSize = ReadU64(_originalBytes, 16);
-        if (headerSize < (ulong)AsfObject.HeaderSize || headerSize > (ulong)read)
+        var headerSize = BinaryPrimitives.ReadUInt64LittleEndian(peek[16..]);
+        if (headerSize < (ulong)AsfObject.HeaderSize || (long)headerSize > stream.Length - start)
         {
             return false;
         }
 
         StartOffset = start;
-        EndOffset = start + read;
+        // Capture the source while the stream is still positioned at `start`, so reads via
+        // _source.Read(0, …) hit the beginning of the container regardless of subsequent
+        // seeks done by the walker.
+        _source?.Dispose();
+        _source = new StreamSourceReader(stream, leaveOpen: true);
+        EndOffset = start + _source.Length;
+
+        // Materialise the Header Object only — typically KB-MB range. The rest of the file
+        // (Data Object + optional Index Object — usually GB-scale) is left on disk.
+        _headerBytes = new byte[(int)headerSize];
+        _source.Read(0, _headerBytes);
+
         HeaderObjectSize = (long)headerSize;
+        HeaderObjectChildrenOffset = start + 30;
         _objects.Add(new AsfObject(AsfMetadataTag.HeaderObjectGuid, start, start + (long)headerSize));
 
-        // Header Object body shape: GUID(16) + size(8) + numChildren(4) + reserved(2) = 30 bytes.
-        // Children begin at offset 30.
         if (headerSize < 30)
         {
+            stream.Position = EndOffset;
             return false;
         }
 
-        HeaderObjectChildrenOffset = start + 30;
-        WalkChildren(_originalBytes, 30, (long)headerSize, recordTopLevel: true);
+        WalkChildren(_headerBytes, 30, (long)headerSize, recordTopLevel: true);
 
+        stream.Position = EndOffset;
         return true;
-    }
-
-    /// <summary>
-    /// Rebuilds the ASF file by splicing the current <see cref="MetadataTag"/> back into the original
-    /// Header Object: existing CDO / ECDO / MO / MLO objects are removed and replacements emitted by
-    /// <see cref="AsfMetadataTag.ToByteArrays"/> are inserted near the end of the Header Object's
-    /// child block. The Header Object size and child-count fields are recomputed.
-    /// </summary>
-    /// <returns>The rewritten file bytes, or an empty array if no source bytes were captured.</returns>
-    /// <inheritdoc/>
-    public void WriteTo(Stream destination)
-    {
-        ArgumentNullException.ThrowIfNull(destination);
-        var bytes = ToByteArray();
-        destination.Write(bytes, 0, bytes.Length);
     }
 
     /// <inheritdoc/>
     /// <remarks>
-    /// Buffer-shaped override: kept as the fast path for callers who want bytes in hand.
+    /// Streams the rebuilt Header Object directly to the destination, then streams the unchanged
+    /// Data + Index regions from the source via <see cref="ISourceReader"/>. Peak memory is bounded
+    /// by the Header Object size, not the file size.
     /// </remarks>
-    public byte[] ToByteArray()
+    public void WriteTo(Stream destination)
     {
-        if (_originalBytes.Length == 0 || HeaderObjectSize == 0)
+        ArgumentNullException.ThrowIfNull(destination);
+        if (_source is null || _headerBytes.Length == 0 || HeaderObjectSize == 0)
         {
-            return [];
+            return;
         }
 
         var headerEnd = (int)HeaderObjectSize;
-        if (headerEnd > _originalBytes.Length || headerEnd < 30)
+        if (headerEnd > _headerBytes.Length || headerEnd < 30)
         {
-            return [];
+            return;
         }
 
-        // Walk children inside the original Header Object and emit each one to a new buffer except
+        // Walk children inside the captured Header Object and emit each one to a new buffer except
         // those whose GUIDs we replace. We also count the surviving children and the new ones.
         using var newChildren = new MemoryStream();
         var surviving = 0;
         var pos = 30;
         while (pos + AsfObject.HeaderSize <= headerEnd)
         {
-            var guid = new Guid(_originalBytes.AsSpan(pos, 16).ToArray());
-            var size = ReadU64(_originalBytes, pos + 16);
+            var guid = new Guid(_headerBytes.AsSpan(pos, 16).ToArray());
+            var size = ReadU64(_headerBytes, pos + 16);
             if (size < (ulong)AsfObject.HeaderSize || pos + (long)size > headerEnd)
             {
                 break;
@@ -192,7 +187,7 @@ public sealed class AsfStream : IMediaContainer
 
             if (!IsReplaceableGuid(guid))
             {
-                newChildren.Write(_originalBytes, pos, (int)size);
+                newChildren.Write(_headerBytes, pos, (int)size);
                 surviving++;
             }
 
@@ -209,26 +204,36 @@ public sealed class AsfStream : IMediaContainer
         var newHeaderTotal = 30L + newChildBytes.Length;
         var newChildCount = surviving + newObjects.Length;
 
-        var afterHeader = _originalBytes.Length - headerEnd;
-        var output = new byte[newHeaderTotal + afterHeader];
-
-        // Copy existing Header Object GUID; overwrite size + child count + reserved bytes.
-        Buffer.BlockCopy(_originalBytes, 0, output, 0, 16);
-        var sizeBytes = AsfMetadataTag.U64Le((ulong)newHeaderTotal);
-        Buffer.BlockCopy(sizeBytes, 0, output, 16, 8);
-        var countBytes = AsfMetadataTag.U32Le((uint)newChildCount);
-        Buffer.BlockCopy(countBytes, 0, output, 24, 4);
+        // Write the rebuilt Header Object preamble (GUID + size + count + reserved).
+        Span<byte> preamble = stackalloc byte[30];
+        _headerBytes.AsSpan(0, 16).CopyTo(preamble);
+        BinaryPrimitives.WriteUInt64LittleEndian(preamble[16..], (ulong)newHeaderTotal);
+        BinaryPrimitives.WriteUInt32LittleEndian(preamble[24..], (uint)newChildCount);
         // 2-byte reserved field at offset 28 — preserve original bytes (typically 0x01 0x02).
-        output[28] = _originalBytes[28];
-        output[29] = _originalBytes[29];
+        preamble[28] = _headerBytes[28];
+        preamble[29] = _headerBytes[29];
+        destination.Write(preamble);
 
-        Buffer.BlockCopy(newChildBytes, 0, output, 30, newChildBytes.Length);
+        // New children.
+        destination.Write(newChildBytes, 0, newChildBytes.Length);
+
+        // Stream the rest of the file (Data Object + Index Object etc) directly from source —
+        // this is the multi-GB region we deliberately never load into memory.
+        var afterHeader = _source.Length - HeaderObjectSize;
         if (afterHeader > 0)
         {
-            Buffer.BlockCopy(_originalBytes, headerEnd, output, (int)newHeaderTotal, afterHeader);
+            _source.CopyTo(HeaderObjectSize, afterHeader, destination);
         }
+    }
 
-        return output;
+    /// <summary>
+    /// Releases the underlying <see cref="ISourceReader"/>. Does not close the user's source
+    /// <see cref="Stream"/>; the caller still owns that.
+    /// </summary>
+    public void Dispose()
+    {
+        _source?.Dispose();
+        _source = null;
     }
 
     private static bool IsReplaceableGuid(Guid g) =>
@@ -259,11 +264,11 @@ public sealed class AsfStream : IMediaContainer
 
             if (guid == AsfMetadataTag.ContentDescriptionObjectGuid)
             {
-                MetadataTag.ParseContentDescription(SliceCopy(data, payloadStart, payloadLen));
+                MetadataTag.ParseContentDescription(data.AsSpan(payloadStart, payloadLen));
             }
             else if (guid == AsfMetadataTag.ExtendedContentDescriptionObjectGuid)
             {
-                MetadataTag.ParseExtendedContentDescription(SliceCopy(data, payloadStart, payloadLen));
+                MetadataTag.ParseExtendedContentDescription(data.AsSpan(payloadStart, payloadLen));
             }
             else if (guid == AsfMetadataTag.FilePropertiesObjectGuid)
             {
@@ -280,19 +285,7 @@ public sealed class AsfStream : IMediaContainer
 
     private void ParseFileProperties(byte[] data, int offset, int length)
     {
-        // File Properties Object payload (after the 24-byte object header) layout per spec:
-        //   File ID                 (16 bytes)
-        //   File Size               (QWORD, 8)
-        //   Creation Date           (QWORD, 8)
-        //   Data Packets Count      (QWORD, 8)
-        //   Play Duration           (QWORD, 8)  <- this is what we want
-        //   Send Duration           (QWORD, 8)
-        //   Preroll                 (QWORD, 8)
-        //   Flags                   (DWORD, 4)
-        //   Min Data Packet Size    (DWORD, 4)
-        //   Max Data Packet Size    (DWORD, 4)
-        //   Max Bitrate             (DWORD, 4)
-        // Play Duration sits at offset 16 + 8 + 8 + 8 = 40.
+        // Play Duration sits at offset 16 + 8 + 8 + 8 = 40 inside the payload.
         const int PlayDurationOffset = 40;
         if (length < PlayDurationOffset + 8)
         {
@@ -300,17 +293,11 @@ public sealed class AsfStream : IMediaContainer
         }
 
         PlayDuration100Ns = ReadU64(data, offset + PlayDurationOffset);
-        // Convert 100-ns units to milliseconds.
         TotalDuration = (long)(PlayDuration100Ns / 10000UL);
     }
 
     private void ParseHeaderExtension(byte[] data, int offset, int length)
     {
-        // Header Extension Object payload (after 24-byte header):
-        //   Reserved Field 1   (GUID, 16 bytes)
-        //   Reserved Field 2   (WORD, 2 bytes)
-        //   Header Extension Data Size (DWORD, 4 bytes)
-        //   Header Extension Data      (variable)
         const int ExtensionDataHeaderSize = 16 + 2 + 4;
         if (length < ExtensionDataHeaderSize)
         {
@@ -339,40 +326,20 @@ public sealed class AsfStream : IMediaContainer
             var payloadLen = (int)((long)size - AsfObject.HeaderSize);
             if (guid == AsfMetadataTag.MetadataObjectGuid)
             {
-                MetadataTag.ParseMetadata(SliceCopy(data, payloadStart, payloadLen), library: false);
+                MetadataTag.ParseMetadata(data.AsSpan(payloadStart, payloadLen), library: false);
             }
             else if (guid == AsfMetadataTag.MetadataLibraryObjectGuid)
             {
-                MetadataTag.ParseMetadata(SliceCopy(data, payloadStart, payloadLen), library: true);
+                MetadataTag.ParseMetadata(data.AsSpan(payloadStart, payloadLen), library: true);
             }
 
             pos += (int)size;
         }
     }
 
-    private static byte[] SliceCopy(byte[] src, int offset, int length)
-    {
-        if (length <= 0)
-        {
-            return [];
-        }
-
-        var dst = new byte[length];
-        Buffer.BlockCopy(src, offset, dst, 0, length);
-        return dst;
-    }
-
-    private static ulong ReadU64(byte[] b, int off)
-    {
-        ulong v = 0;
-        for (var i = 7; i >= 0; i--)
-        {
-            v = (v << 8) | b[off + i];
-        }
-
-        return v;
-    }
+    private static ulong ReadU64(byte[] b, int off) =>
+        BinaryPrimitives.ReadUInt64LittleEndian(b.AsSpan(off, 8));
 
     private static uint ReadU32(byte[] b, int off) =>
-        (uint)(b[off] | (b[off + 1] << 8) | (b[off + 2] << 16) | (b[off + 3] << 24));
+        BinaryPrimitives.ReadUInt32LittleEndian(b.AsSpan(off, 4));
 }
