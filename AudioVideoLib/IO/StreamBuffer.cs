@@ -178,15 +178,24 @@ public sealed partial class StreamBuffer : Stream
     }
 
     /// <summary>
-    /// Switches the endianness of the value.
+    /// Reverses the byte order of an array in place (e.g. for big-endian / little-endian conversion).
     /// </summary>
-    /// <param name="bytes">An array of bytes to switch the endianness in.</param>
-    /// <returns>The value, in switched endianness.</returns>
+    /// <param name="bytes">An array of bytes to reverse.</param>
     public static void SwitchEndianness(byte[] bytes)
     {
         ArgumentNullException.ThrowIfNull(bytes);
         Array.Reverse(bytes);
     }
+
+    /// <summary>
+    /// Reverses the byte order of a span in place (e.g. for big-endian / little-endian conversion).
+    /// </summary>
+    /// <param name="bytes">A span of bytes to reverse.</param>
+    /// <remarks>
+    /// Span-based overload: lets callers operate on a stack-allocated buffer or a slice of an
+    /// existing array without allocating an intermediate <see cref="T:byte[]"/>.
+    /// </remarks>
+    public static void SwitchEndianness(Span<byte> bytes) => bytes.Reverse();
 
     /// <summary>
     /// Determines whether the specified arrays are equal by comparing the elements.
@@ -197,7 +206,20 @@ public sealed partial class StreamBuffer : Stream
     /// true if the specified arrays are equal; otherwise, false.
     /// </returns>
     public static bool SequenceEqual(byte[] array1, byte[] array2) =>
-        array1.AsSpan().SequenceEqual(array2.AsSpan());
+        SequenceEqual((ReadOnlySpan<byte>)array1, (ReadOnlySpan<byte>)array2);
+
+    /// <summary>
+    /// Determines whether two byte spans are equal.
+    /// </summary>
+    /// <param name="left">The first span.</param>
+    /// <param name="right">The second span.</param>
+    /// <returns><c>true</c> if the spans are byte-for-byte equal; otherwise, <c>false</c>.</returns>
+    /// <remarks>
+    /// Span-based overload: lets callers compare slices of existing buffers without
+    /// allocating intermediate arrays.
+    /// </remarks>
+    public static bool SequenceEqual(ReadOnlySpan<byte> left, ReadOnlySpan<byte> right) =>
+        left.SequenceEqual(right);
 
     /// <summary>
     /// Gets an encoded string using no more than the specified allowed bytes.

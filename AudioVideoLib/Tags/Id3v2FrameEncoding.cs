@@ -144,46 +144,41 @@ public partial class Id3v2Frame
         /// <returns>
         ///   <c>true</c> if the supplied byte order marker is valid; otherwise, <c>false</c>.
         /// </returns>
-        public static bool IsValidBom(byte[] bom)
+        public static bool IsValidBom(byte[] bom) =>
+            bom is not null && IsValidBom((ReadOnlySpan<byte>)bom);
+
+        /// <summary>
+        /// Determines whether the supplied byte order marker is valid.
+        /// </summary>
+        /// <param name="bom">The byte order marker.</param>
+        /// <returns><c>true</c> if the supplied BOM is recognised; otherwise, <c>false</c>.</returns>
+        /// <remarks>
+        /// Span-based overload: lets callers pass a stack-allocated buffer or a slice of an
+        /// existing array without allocating an intermediate <see cref="T:byte[]"/>.
+        /// </remarks>
+        public static bool IsValidBom(ReadOnlySpan<byte> bom)
         {
-            if (bom != null)
+            // UTF-16 LE / BE: 0xFF 0xFE  /  0xFE 0xFF
+            if (bom.Length >= 2
+                && ((bom[0] == 0xFF && bom[1] == 0xFE)
+                    || (bom[0] == 0xFE && bom[1] == 0xFF)))
             {
-                // UTF-16
-                // Little Endian
-                // 0xFF 0xFE
-                // - or -
-                // Big Endian
-                // 0xFE 0xFF
-                if ((bom.Length >= 2) && (((bom[0] == 0xFF) && (bom[1] == 0xFE)) || ((bom[0] == 0xFE) && (bom[1] == 0xFF))))
-                {
-                    return true;
-                }
-
-                // UTF-8
-                // 0xEF 0xBB 0xBF
-                // - or -
-                // UTF-7
-                // 0x2B 0x2F 0x76
-                if ((bom.Length >= 3)
-                    && (((bom[0] == 0xEF) && (bom[1] == 0xBB) && (bom[2] == 0xBF)) || ((bom[0] == 0x2B) && (bom[1] == 0x2F) && (bom[3] == 0x76))))
-                {
-                    return true;
-                }
-
-                // UTF-32
-                // Little Endian
-                // 0xFF 0xFE 0x00 0x00
-                // - or -
-                // Big Endian
-                // 0x00 0x00 0xFE 0xFF
-                if ((bom.Length >= 4)
-                    && (((bom[0] == 0xFF) && (bom[1] == 0xFE) && (bom[2] == 0x00) && (bom[3] == 0x00))
-                        || ((bom[0] == 0x00) && (bom[1] == 0x00) && (bom[2] == 0xFE) && (bom[3] == 0xFF))))
-                {
-                    return true;
-                }
+                return true;
             }
-            return false;
+
+            // UTF-8: 0xEF 0xBB 0xBF
+            // UTF-7: 0x2B 0x2F 0x76
+            if (bom.Length >= 3
+                && ((bom[0] == 0xEF && bom[1] == 0xBB && bom[2] == 0xBF)
+                    || (bom[0] == 0x2B && bom[1] == 0x2F && bom[2] == 0x76)))
+            {
+                return true;
+            }
+
+            // UTF-32 LE / BE: 0xFF 0xFE 0x00 0x00  /  0x00 0x00 0xFE 0xFF
+            return bom.Length >= 4
+                && ((bom[0] == 0xFF && bom[1] == 0xFE && bom[2] == 0x00 && bom[3] == 0x00)
+                    || (bom[0] == 0x00 && bom[1] == 0x00 && bom[2] == 0xFE && bom[3] == 0xFF));
         }
 
         /// <summary>

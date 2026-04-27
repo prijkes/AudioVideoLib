@@ -83,15 +83,30 @@ public sealed partial class Id3v2Tag
     public static long GetUnsynchedValue(byte[] synchsafeDataLsb, int startIndex, int count)
     {
         ArgumentNullException.ThrowIfNull(synchsafeDataLsb);
+        return GetUnsynchedValue((ReadOnlySpan<byte>)synchsafeDataLsb, startIndex, count);
+    }
 
-        if ((startIndex < 0) || (startIndex > synchsafeDataLsb.Length))
+    /// <summary>
+    /// Gets the unsynched value in LSB format.
+    /// </summary>
+    /// <param name="synchsafeDataLsb">The synchsafe data to unsynch, in LSB format.</param>
+    /// <param name="startIndex">The start index.</param>
+    /// <param name="count">The count.</param>
+    /// <returns>The unsynched value, in LSB format.</returns>
+    /// <remarks>
+    /// Span-based overload: lets callers pass a stack-allocated buffer or a slice of an
+    /// existing array without allocating an intermediate <see cref="T:byte[]"/>.
+    /// </remarks>
+    public static long GetUnsynchedValue(ReadOnlySpan<byte> synchsafeDataLsb, int startIndex, int count)
+    {
+        if (startIndex < 0 || startIndex > synchsafeDataLsb.Length)
         {
-            throw new ArgumentOutOfRangeException("startIndex");
+            throw new ArgumentOutOfRangeException(nameof(startIndex));
         }
 
-        if ((startIndex + count) > synchsafeDataLsb.Length)
+        if (startIndex + count > synchsafeDataLsb.Length)
         {
-            throw new ArgumentOutOfRangeException("count");
+            throw new ArgumentOutOfRangeException(nameof(count));
         }
 
         // Input is little-endian bytes of a synchsafe integer: index (startIndex+count-1)

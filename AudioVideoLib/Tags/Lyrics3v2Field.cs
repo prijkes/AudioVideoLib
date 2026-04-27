@@ -97,9 +97,34 @@ public partial class Lyrics3v2Field : IAudioTagFrame
     public static bool IsValidData(byte[] data)
     {
         ArgumentNullException.ThrowIfNull(data);
+        return IsValidData((ReadOnlySpan<byte>)data);
+    }
 
-        // All characters should be in the range of 0x01 to 0xFE; only the last character may be 0x00.
-        return !data.Where((c, i) => ((c <= 0x00) || (c >= 0xFF)) && ((c != 0x00) || (i != data.Length - 1))).Any();
+    /// <summary>
+    /// Determines whether the specified data is valid.
+    /// </summary>
+    /// <param name="data">The data.</param>
+    /// <returns>
+    ///   <c>true</c> if the specified data is valid; otherwise, <c>false</c>.
+    /// </returns>
+    /// <remarks>
+    /// Span-based overload: lets callers pass a stack-allocated buffer or a slice of an
+    /// existing array without allocating an intermediate <see cref="T:byte[]"/>.
+    /// All characters should be in the range of 0x01 to 0xFE; only the last character may be 0x00.
+    /// </remarks>
+    public static bool IsValidData(ReadOnlySpan<byte> data)
+    {
+        for (var i = 0; i < data.Length; i++)
+        {
+            var c = data[i];
+            // Trailing 0x00 is the only allowed null position; anything outside [0x01..0xFE] elsewhere fails.
+            if ((c is <= 0x00 or >= 0xFF) && (c != 0x00 || i != data.Length - 1))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /// <summary>
