@@ -13,6 +13,7 @@
       "disableDefaultFilter": false,
       "outputFormat": "mref",
       "filter": "filterConfig.yml",
+      "memberLayout": "SeparatePages",
       "properties": {
         "TargetFramework": "net10.0"
       }
