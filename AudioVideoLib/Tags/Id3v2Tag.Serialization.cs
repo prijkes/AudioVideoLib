@@ -2,6 +2,7 @@ namespace AudioVideoLib.Tags;
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.IO.Hashing;
 using System.Linq;
 
@@ -10,16 +11,18 @@ using AudioVideoLib.IO;
 public sealed partial class Id3v2Tag
 {
     /// <summary>
-    /// Places the <see cref="Id3v2Tag"/> into a byte array.
+    /// Writes the serialised <see cref="Id3v2Tag"/> to the supplied stream.
     /// </summary>
-    /// <returns>
-    /// A byte array that represents the <see cref="Id3v2Tag"/>.
-    /// </returns>
+    /// <param name="destination">The stream to write the tag bytes into.</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="destination"/> is <c>null</c>.</exception>
     /// <remarks>
-    /// Frames which have <see cref="Id3v2Frame.TagAlterPreservation"/> or <see cref="Id3v2Frame.FileAlterPreservation"/> set to false won't be written to the byte array.
+    /// Frames which have <see cref="Id3v2Frame.TagAlterPreservation"/> or
+    /// <see cref="Id3v2Frame.FileAlterPreservation"/> set to false won't be written.
     /// </remarks>
-    public byte[] ToByteArray()
+    public void WriteTo(Stream destination)
     {
+        ArgumentNullException.ThrowIfNull(destination);
+
         var data = new StreamBuffer();
         WriteExtendedHeader(data);
         WriteFrames(data);
@@ -30,7 +33,8 @@ public sealed partial class Id3v2Tag
         WriteTagBoundary(fullBuffer, HeaderIdentifierBytes, (int)data.Length, UseHeader);
         fullBuffer.Write(data.ToByteArray());
         WriteTagBoundary(fullBuffer, FooterIdentifierBytes, (int)data.Length, UseFooter);
-        return fullBuffer.ToByteArray();
+        var bytes = fullBuffer.ToByteArray();
+        destination.Write(bytes, 0, bytes.Length);
     }
 
     /// <summary>

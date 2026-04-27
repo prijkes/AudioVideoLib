@@ -105,8 +105,9 @@ public sealed class Lyrics3Tag : IAudioTag
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <inheritdoc/>
-    public byte[] ToByteArray()
+    public void WriteTo(Stream destination)
     {
+        ArgumentNullException.ThrowIfNull(destination);
         var buffer = new StreamBuffer();
         buffer.Write(HeaderIdentifierBytes);
         if (Lyrics != null)
@@ -115,7 +116,8 @@ public sealed class Lyrics3Tag : IAudioTag
         }
 
         buffer.Write(FooterIdentifierBytes);
-        return buffer.ToByteArray();
+        var bytes = buffer.ToByteArray();
+        destination.Write(bytes, 0, bytes.Length);
     }
 
     /// <inheritdoc/>

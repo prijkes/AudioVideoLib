@@ -5,10 +5,55 @@ Change categories follow [Keep a Changelog](https://keepachangelog.com/):
 
 | Version | Date | Highlights |
 |---|---|---|
+| [`0.5.0`](#050--2026-04-27) | 2026-04-27 | `WriteTo(Stream)` is now the canonical serialisation primitive; `ToByteArray` becomes an extension-method convenience. |
 | [`0.4.0`](#040--2026-04-26) | 2026-04-26 | Streaming write API; magic-byte fast path; structured parse errors; async entry points; assorted API cleanup. |
 | [`0.3.0`](#030--2026-04-25) | 2026-04-25 | `IAudioStream` → `IMediaContainer` rename. |
 | [`0.2.0`](#020--2026-04-19) | 2026-04-19 | Nine new tag/container formats; non-fatal parse errors; per-field encoding for ID3v1. |
 | [`0.1.0`](#010--2026-04-17) | 2026-04-17 | Initial release. |
+
+---
+
+## 0.5.0 — 2026-04-27
+
+> The serialisation abstraction is flipped: `WriteTo(Stream)` is now
+> the canonical primitive every implementer must provide, and
+> `ToByteArray` / `GetSerializedSize` / `TryWriteTo` /
+> `WriteTo(IBufferWriter<byte>)` are extension-method convenience
+> wrappers. The streaming method is no longer a default-impl that
+> secretly allocates a full byte array first.
+
+### Breaking
+
+- **`IAudioTag.ToByteArray()` is no longer a member** of the
+  interface. The buffer-shaped helper now lives on
+  `IAudioTagExtensions.ToByteArray(this IAudioTag)`. Call sites that
+  do `tag.ToByteArray()` continue to work because extension-method
+  binding picks up the static type. **Implementers** must now provide
+  `void WriteTo(Stream destination)` instead of
+  `byte[] ToByteArray()`. Concrete classes that want a faster direct
+  buffer path may also expose their own `byte[] ToByteArray()`
+  instance method, which shadows the extension method for
+  concrete-typed call sites.
+- **`IMediaContainer.ToByteArray()`** moves to
+  `IMediaContainerExtensions.ToByteArray(this IMediaContainer)`. Same
+  rules.
+
+### Changed
+
+- All bundled implementers (`Id3v1Tag`, `Id3v2Tag`, `ApeTag`,
+  `Lyrics3Tag`, `Lyrics3v2Tag`, `MusicMatchTag`, every
+  `IMediaContainer` walker) converted to override `WriteTo(Stream)`.
+  The splice rewriters (`Mp4Stream`, `AsfStream`, `MatroskaStream`,
+  `DsfStream`, `DffStream`) keep an instance-method
+  `byte[] ToByteArray()` as the buffer fast path.
+
+> **Migration:** the only call-site change is for *implementers* of
+> `IAudioTag` / `IMediaContainer`. Rename your
+> `byte[] ToByteArray()` to `void WriteTo(Stream destination)` and
+> replace the final `return bytes;` with
+> `destination.Write(bytes, 0, bytes.Length);`. Consumers that just
+> *call* `tag.ToByteArray()` need no change — the extension method
+> matches the existing call shape.
 
 ---
 

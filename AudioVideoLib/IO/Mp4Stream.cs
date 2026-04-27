@@ -136,6 +136,12 @@ public sealed class Mp4Stream : IMediaContainer
     /// If the original container has no <c>moov.udta.meta.ilst</c> chain, a fresh chain is built and inserted
     /// inside the existing <c>moov</c> (or appended to the file if no <c>moov</c> exists).
     /// </remarks>
+    /// <inheritdoc/>
+    /// <remarks>
+    /// Buffer-shaped override: kept as the fast path for callers who want bytes in hand.
+    /// Equivalent to <see cref="WriteTo(Stream)"/> into a <see cref="MemoryStream"/> but
+    /// returns the assembled byte array directly without an intermediate copy.
+    /// </remarks>
     public byte[] ToByteArray()
     {
         if (_originalBytes.Length == 0)

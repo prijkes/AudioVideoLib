@@ -151,6 +151,18 @@ public sealed class AsfStream : IMediaContainer
     /// child block. The Header Object size and child-count fields are recomputed.
     /// </summary>
     /// <returns>The rewritten file bytes, or an empty array if no source bytes were captured.</returns>
+    /// <inheritdoc/>
+    public void WriteTo(Stream destination)
+    {
+        ArgumentNullException.ThrowIfNull(destination);
+        var bytes = ToByteArray();
+        destination.Write(bytes, 0, bytes.Length);
+    }
+
+    /// <inheritdoc/>
+    /// <remarks>
+    /// Buffer-shaped override: kept as the fast path for callers who want bytes in hand.
+    /// </remarks>
     public byte[] ToByteArray()
     {
         if (_originalBytes.Length == 0 || HeaderObjectSize == 0)

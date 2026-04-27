@@ -217,6 +217,17 @@ public sealed class DffStream : IMediaContainer
     }
 
     /// <inheritdoc/>
+    public void WriteTo(Stream destination)
+    {
+        ArgumentNullException.ThrowIfNull(destination);
+        var bytes = ToByteArray();
+        destination.Write(bytes, 0, bytes.Length);
+    }
+
+    /// <inheritdoc/>
+    /// <remarks>
+    /// Buffer-shaped override: kept as the fast path for callers who want bytes in hand.
+    /// </remarks>
     public byte[] ToByteArray()
     {
         if (_chunks.Count == 0)

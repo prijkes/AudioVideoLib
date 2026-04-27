@@ -1,6 +1,7 @@
 namespace AudioVideoLib.Tags;
 
 using System;
+using System.IO;
 using System.Linq;
 
 using AudioVideoLib.IO;
@@ -170,8 +171,9 @@ public sealed partial class MusicMatchTag : IAudioTag
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <inheritdoc />
-    public byte[] ToByteArray()
+    public void WriteTo(Stream destination)
     {
+        ArgumentNullException.ThrowIfNull(destination);
         var buffer = new StreamBuffer();
         if (UseHeader)
         {
@@ -308,6 +310,7 @@ public sealed partial class MusicMatchTag : IAudioTag
         buffer.WriteString(Version[..4]);
         buffer.WritePadding(PaddingByte, 12);
 
-        return buffer.ToByteArray();
+        var bytes = buffer.ToByteArray();
+        destination.Write(bytes, 0, bytes.Length);
     }
 }

@@ -48,8 +48,10 @@ public sealed class ProcessedStamp : IAudioTag
         && s.Note == Note
         && s.TimestampUtc.ToUnixTimeMilliseconds() == TimestampUtc.ToUnixTimeMilliseconds();
 
-    public byte[] ToByteArray()
+    public void WriteTo(Stream destination)
     {
+        ArgumentNullException.ThrowIfNull(destination);
+
         var toolBytes = Encoding.UTF8.GetBytes(ToolName);
         var noteBytes = Encoding.UTF8.GetBytes(Note);
         if (toolBytes.Length > 255) throw new InvalidOperationException("ToolName too long");
@@ -70,10 +72,14 @@ public sealed class ProcessedStamp : IAudioTag
         pos += 8;
         BinaryPrimitives.WriteInt32BigEndian(buf.AsSpan(pos), totalSize);
 
-        return buf;
+        destination.Write(buf, 0, totalSize);
     }
 }
 ```
+
+The buffer-shaped helpers (`tag.ToByteArray()`, `tag.GetSerializedSize()`,
+`tag.TryWriteTo(span, out written)`) come for free as extension methods on
+`IAudioTag` — implement only `WriteTo(Stream)` and the rest works.
 
 ## The reader
 

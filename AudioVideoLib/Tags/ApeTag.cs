@@ -2,6 +2,7 @@ namespace AudioVideoLib.Tags;
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 using AudioVideoLib.Collections;
@@ -289,8 +290,9 @@ public sealed partial class ApeTag : IAudioTag
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <inheritdoc/>
-    public byte[] ToByteArray()
+    public void WriteTo(Stream destination)
     {
+        ArgumentNullException.ThrowIfNull(destination);
         var fullBuffer = new StreamBuffer();
         // Save flags so we can restore it later
         bool useHeader = UseHeader, isHeader = IsHeader, useFooter = UseFooter;
@@ -344,8 +346,8 @@ public sealed partial class ApeTag : IAudioTag
         IsHeader = isHeader;
         SetUseFooterFlag(useFooter, false);
 
-        // Return data
-        return fullBuffer.ToByteArray();
+        var bytes = fullBuffer.ToByteArray();
+        destination.Write(bytes, 0, bytes.Length);
     }
 
     /// <inheritdoc/>

@@ -256,7 +256,11 @@ public sealed class RiffStream : IMediaContainer
     }
 
     /// <inheritdoc/>
-    public byte[] ToByteArray() => [];
+    /// <remarks>
+    /// RIFF write-back is not implemented yet — the walker captures structure on read,
+    /// but emitting the modified file is a follow-up. This override is a no-op.
+    /// </remarks>
+    public void WriteTo(Stream destination) => ArgumentNullException.ThrowIfNull(destination);
 
     private static string ReadAscii(Stream s, int n)
     {

@@ -873,7 +873,7 @@ internal static class Program
 internal sealed class DemoTag : IAudioTag
 {
     public bool Equals(IAudioTag? other) => ReferenceEquals(this, other);
-    public byte[] ToByteArray() => [];
+    public void WriteTo(Stream destination) { }
 }
 
 internal sealed class DemoTagReader : IAudioTagReader
@@ -898,8 +898,10 @@ public sealed class ProcessedStamp : IAudioTag
         && s.Note == Note
         && s.TimestampUtc.ToUnixTimeMilliseconds() == TimestampUtc.ToUnixTimeMilliseconds();
 
-    public byte[] ToByteArray()
+    public void WriteTo(Stream destination)
     {
+        ArgumentNullException.ThrowIfNull(destination);
+
         var toolBytes = System.Text.Encoding.UTF8.GetBytes(ToolName);
         var noteBytes = System.Text.Encoding.UTF8.GetBytes(Note);
         if (toolBytes.Length > 255) throw new InvalidOperationException("ToolName too long");
@@ -920,7 +922,7 @@ public sealed class ProcessedStamp : IAudioTag
         pos += 8;
         System.Buffers.Binary.BinaryPrimitives.WriteInt32BigEndian(buf.AsSpan(pos), totalSize);
 
-        return buf;
+        destination.Write(buf, 0, totalSize);
     }
 }
 

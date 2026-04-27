@@ -1,6 +1,7 @@
 namespace AudioVideoLib.Tags;
 
 using System;
+using System.IO;
 
 using AudioVideoLib.IO;
 
@@ -119,8 +120,9 @@ public sealed partial class Id3v1Tag : IAudioTag
     /// <see cref="Encoding"/> chosen at parse (or set via <c>...Encoding</c> properties) round-trips
     /// faithfully.
     /// </remarks>
-    public byte[] ToByteArray()
+    public void WriteTo(Stream destination)
     {
+        ArgumentNullException.ThrowIfNull(destination);
         var buffer = new StreamBuffer();
 
         if (UseExtendedTag)
@@ -186,7 +188,8 @@ public sealed partial class Id3v1Tag : IAudioTag
         // Genre
         buffer.WriteByte((byte)Genre);
 
-        return buffer.ToByteArray();
+        var bytes = buffer.ToByteArray();
+        destination.Write(bytes, 0, bytes.Length);
     }
 
     private static void WriteFixedField(StreamBuffer buffer, byte[] bytes, int fixedLength)

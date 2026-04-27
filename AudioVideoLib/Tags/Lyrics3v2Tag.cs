@@ -3,6 +3,7 @@ namespace AudioVideoLib.Tags;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 
 using AudioVideoLib.Collections;
@@ -246,8 +247,9 @@ public sealed partial class Lyrics3v2Tag : IAudioTag
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <inheritdoc/>
-    public byte[] ToByteArray()
+    public void WriteTo(Stream destination)
     {
+        ArgumentNullException.ThrowIfNull(destination);
         var buffer = new StreamBuffer();
         buffer.Write(HeaderIdentifierBytes);
 
@@ -258,7 +260,8 @@ public sealed partial class Lyrics3v2Tag : IAudioTag
 
         buffer.WriteString(buffer.Length.ToString("D" + TagSizeLength, CultureInfo.InvariantCulture));
         buffer.Write(FooterIdentifierBytes);
-        return buffer.ToByteArray();
+        var bytes = buffer.ToByteArray();
+        destination.Write(bytes, 0, bytes.Length);
     }
 
     /// <inheritdoc/>
