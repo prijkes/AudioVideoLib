@@ -845,6 +845,58 @@ internal static class Program
         _ = channels;
     }
 
+    // S68 — tag-formats/lyrics3.md: read v1, walk v2 fields, build a v2 tag.
+    private static void S68_Lyrics3()
+    {
+        var tags = AudioTags.ReadStream(new MemoryStream([0]));
+
+        // Lyrics3 v1 read.
+        var v1 = tags.Select(o => o.AudioTag).OfType<Lyrics3Tag>().FirstOrDefault();
+        Console.WriteLine(v1?.Lyrics);
+
+        // Lyrics3 v2 read.
+        var v2 = tags.Select(o => o.AudioTag).OfType<Lyrics3v2Tag>().FirstOrDefault();
+        if (v2 is not null)
+        {
+            Console.WriteLine($"{v2.ExtendedTrackTitle?.Value} – {v2.ExtendedArtistName?.Value}");
+            foreach (var line in v2.Lyrics?.LyricLines ?? [])
+            {
+                var stamp = line.TimeStamps.FirstOrDefault();
+                Console.WriteLine($"  {stamp:hh\\:mm\\:ss}  {line.LyricLine}");
+            }
+        }
+
+        // Lyrics3 v2 build.
+        var built = new Lyrics3v2Tag
+        {
+            ExtendedTrackTitle = new Lyrics3v2TextField(Lyrics3v2TextFieldIdentifier.ExtendedTrackTitle)
+            {
+                Value = "A song with a title longer than the ID3v1 30-byte cap",
+            },
+            LyricsAuthorName = new Lyrics3v2TextField(Lyrics3v2TextFieldIdentifier.LyricsAuthorName)
+            {
+                Value = "Unknown",
+            },
+        };
+        var bytes = built.ToByteArray();
+        _ = bytes;
+    }
+
+    // S69 — tag-formats/musicmatch.md: read fields, edit Preference.
+    private static void S69_MusicMatch()
+    {
+        var tags = AudioTags.ReadStream(new MemoryStream([0]));
+
+        var mm = tags.Select(o => o.AudioTag).OfType<MusicMatchTag>().FirstOrDefault();
+        if (mm is not null)
+        {
+            Console.WriteLine($"{mm.SongTitle} – {mm.ArtistName} [{mm.AlbumTitle}]");
+            Console.WriteLine($"mood={mm.Mood} tempo={mm.Tempo} situation={mm.Situation}");
+            Console.WriteLine($"track {mm.TrackNumber}, plays {mm.PlayCounter}, duration {mm.SongDuration}");
+            mm.Preference = "Excellent";
+        }
+    }
+
     // S67 — examples.md: find files missing required tags.
     private static void S67_MissingTags()
     {
