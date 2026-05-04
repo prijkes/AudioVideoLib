@@ -71,7 +71,9 @@ The caller must keep the source `Stream` alive between `ReadStream` and `WriteTo
 
 ### 3.3 IMediaContainer interface change
 
-`IMediaContainer` extends `IDisposable`. All ten walkers (existing six plus four new) implement `Dispose()`. `MediaContainers` itself becomes `IDisposable` and disposes its walker collection.
+`IMediaContainer` extends `IDisposable`. All fourteen walkers (the ten that exist today — `AiffStream`, `AsfStream`, `DffStream`, `DsfStream`, `FlacStream`, `MatroskaStream`, `Mp4Stream`, `MpaStream`, `OggStream`, `RiffStream` — plus the four new ones) implement `Dispose()`. `MediaContainers` itself becomes `IDisposable` and disposes its walker collection.
+
+**Contract conformance for existing walkers.** Of the ten existing walkers, only three (`Mp4Stream`, `AsfStream`, `MatroskaStream`) currently implement `Dispose()`. The other seven (`AiffStream`, `DffStream`, `DsfStream`, `FlacStream`, `MpaStream`, `OggStream`, `RiffStream`) need stubs added in Phase 0. Additionally, `Mp4Stream.WriteTo` currently returns silently when `_source` is `null`; it must be changed to throw the `InvalidOperationException` from §3.1, bringing it in line with the new contract. The same source-null check is added to `AsfStream.WriteTo` and `MatroskaStream.WriteTo` (the other two walkers that already use this pattern but may currently behave differently on detached source).
 
 This is a pre-1.0 API change. All in-tree consumers (`AudioVideoLib.Cli`, `AudioVideoLib.Demo`, `AudioVideoLib.Samples`, `AudioVideoLib.Tests`, `_doc_snippets`) must be updated to dispose the walker (or the `MediaContainers` instance) when done.
 
@@ -93,10 +95,12 @@ All `Frame`/`Block`/`Header`/`SeekEntry` properties are read-only (no public set
 
 ### 4.1 Musepack (`MpcStream`)
 
+> **Naming note.** Musepack uses "frame" (SV7) and "packet" (SV8) at the bitstream level. We use `MpcPacket` as the unified model for both because SV8's keyed-packet shape generalizes more cleanly. The §4 generic file layout calls for `<Fmt>Frame.cs`; MPC's equivalent is `MpcPacket.cs`.
+
 | Aspect | Decision |
 |---|---|
 | Versions | Both SV7 and SV8 |
-| Magic (SV7) | `MP+` at offset 0 |
+| Magic (SV7) | First 4 bytes are `'M','P','+',0x?7` — i.e., the literal ASCII `MP+` followed by a stream-version byte whose low nibble is `7` (e.g., `0x17`). A 3-byte equality test on `MP+` is **not** sufficient and would false-match. |
 | Magic (SV8) | `MPCK` at offset 0 |
 | Files | `Formats/MpcStreamVersion.cs` (enum: `Sv7`, `Sv8`), `Formats/MpcStreamHeader.cs`, `Formats/MpcPacket.cs`, `IO/MpcStream.cs` |
 | Frame model | `MpcPacket { Key, StartOffset, Length, SampleCount }`. `Key` is a 2-character string for SV8 packets (e.g., `AP` for audio, `SH` for stream header, `RG` for replaygain); for SV7 frames `Key` is `null`. Callers branch on `MpcStream.Version` when packet keys matter. |
@@ -134,11 +138,11 @@ Simplest of the four — header + seek table fully describes the frame layout.
 | Aspect | Decision |
 |---|---|
 | Class name | `MacStream` (matches the upstream "MAC = Monkey's Audio Codec" SDK; avoids collision with `ApeTag`) |
-| Magic | `MAC ` at offset 0 |
-| Files | `Formats/MacDescriptor.cs`, `Formats/MacHeader.cs`, `Formats/MacSeekEntry.cs`, `IO/MacStream.cs` |
-| Frame model | `MacFrame { StartOffset, Length, BlockCount }`. Frame offsets derived from the seek table in `MAC_FORMAT_FLAG_CREATE_WAV_HEADER`-aware fashion. |
+| Magic | Two-valued: `MAC ` (integer-format files) **or** `MACF` (float-format files) at offset 0. Per `3rdparty/MAC_1284_SDK/Source/MACLib/APECompressCreate.cpp` (~line 250), the descriptor's `cID` distinguishes the two. Both dispatch to `MacStream`; the walker exposes `MacFormat Format { get; }` returning `Integer` or `Float`. |
+| Files | `Formats/MacDescriptor.cs`, `Formats/MacHeader.cs`, `Formats/MacFrame.cs`, `Formats/MacSeekEntry.cs`, `Formats/MacFormat.cs` (enum: `Integer`, `Float`), `IO/MacStream.cs` |
+| Frame model | `MacFrame { StartOffset, Length, BlockCount }`. Frame offsets derived from the seek table; the `MAC_FORMAT_FLAG_CREATE_WAV_HEADER` flag in the descriptor determines whether a WAV header is prepended to the audio block, which the walker accounts for when computing per-frame offsets. |
 | Tags carried | APEv2 (footer), ID3v1 (footer) |
-| Reference | `3rdparty/MAC_1284_SDK/Source/MACLib/APEHeader.cpp`, `APEInfo.cpp` |
+| Reference | `3rdparty/MAC_1284_SDK/Source/MACLib/APEHeader.cpp`, `APEInfo.cpp`, `APECompressCreate.cpp` |
 
 The class name `MacStream` was chosen over `ApeAudioStream` and `MonkeysAudioStream` to keep clear separation from the existing `ApeTag` family.
 
@@ -146,12 +150,16 @@ The class name `MacStream` was chosen over `ApeAudioStream` and `MonkeysAudioStr
 
 ### 5.1 FlacStream
 
+> **Note on existing state.** Some FLAC subframe encoder methods (e.g., in `FlacFixedSubFrame.cs`, `FlacResidual.cs`) are already commented out — the existing FLAC audio-write path is incomplete and does not actually round-trip end-to-end. The retrofit replaces a half-working encoder with a bit-exact passthrough; in practice no working consumer relied on the encoder's output for unedited audio.
+
+> **Partial-class scope.** `FlacStream` is declared `partial` in `IO/FlacStream.cs` and `IO/FlacStreamMetadataBlocks.cs`. Both files are in scope for the retrofit (despite the file-prefix convention used in §8 — the metadata-block file lives under `IO/`, not `Formats/`).
+
 | Component | Change |
 |---|---|
 | `FlacMetadataBlock` and all subclasses (`FlacVorbisCommentsMetadataBlock`, `FlacPictureMetadataBlock`, `FlacStreamInfoMetadataBlock`, `FlacApplicationMetadataBlock`, `FlacPaddingMetadataBlock`, `FlacSeekTableMetadataBlock`, `FlacCueSheetMetadataBlock`) | **No change.** Tags live here. Stay mutable & encodable. |
 | `FlacFrame`, `FlacFrameHeader` | Properties become read-only. Add `StartOffset` and `Length`. Drop `ToByteArray()` and any `Write*` methods. |
-| `FlacSubFrame` and variants (`FlacConstantSubFrame`, `FlacVerbatimSubFrame`, `FlacFixedSubFrame`, `FlacLinearPredictorSubFrame`), `FlacSubFrameHeader`, `FlacResidual`, `FlacRicePartition` | Properties become read-only. Drop encoder paths. Decoded values (predictor coefficients, residual values, partition counts) remain accessible for inspection. |
-| `FlacStream.WriteTo()` | Emit `fLaC` magic, then each metadata block via its existing encoder, then per-frame `_source.CopyTo(frame.StartOffset, frame.Length, destination)`. |
+| `FlacSubFrame` and variants (`FlacConstantSubFrame`, `FlacVerbatimSubFrame`, `FlacFixedSubFrame`, `FlacLinearPredictorSubFrame`), `FlacSubFrameHeader`, `FlacResidual`, `FlacRicePartition` | Properties become read-only. Drop encoder paths (most already commented out). Decoded values (predictor coefficients, residual values, partition counts) remain accessible for inspection. |
+| `IO/FlacStream.cs` (frame writing) and `IO/FlacStreamMetadataBlocks.cs` (metadata-block writing) | `FlacStream.WriteTo()` emits `fLaC` magic, then each metadata block via its existing encoder (still in `FlacStreamMetadataBlocks.cs`), then per-frame `_source.CopyTo(frame.StartOffset, frame.Length, destination)`. |
 | `FlacStream` lifecycle | Add `_source`, `Dispose()`. |
 
 ### 5.2 MpaStream
@@ -185,7 +193,7 @@ Doc comment update: explain the source-stream lifetime contract.
 
 ### 6.2 `MediaContainers.cs`
 
-Dispatch dictionary (`MediaContainers.cs:20-29`) gains four entries:
+The walker-factory dictionary at the top of `MediaContainers.cs` gains four entries:
 
 ```csharp
 { typeof(MpcStream), () => new MpcStream() },
@@ -194,7 +202,20 @@ Dispatch dictionary (`MediaContainers.cs:20-29`) gains four entries:
 { typeof(MacStream), () => new MacStream() },
 ```
 
-Magic-byte probe block (`MediaContainers.cs:286-342`) gains five branches (MPC has two magic strings — both dispatch to `MpcStream`). `MediaContainers` itself becomes `IDisposable`, disposing each walker on dispose.
+The magic-byte probe block (the cascading `if`/`else if` chain in the probe dispatcher) gains **six** branches:
+
+| Branch | Magic | Dispatches to |
+|---|---|---|
+| MPC SV7 | `MP+` + version-7 nibble in 4th byte | `MpcStream` |
+| MPC SV8 | `MPCK` | `MpcStream` |
+| WavPack | `wvpk` | `WavPackStream` |
+| TrueAudio | `TTA1` | `TtaStream` |
+| MAC integer | `MAC ` | `MacStream` |
+| MAC float | `MACF` | `MacStream` |
+
+**Probe-after-ID3v2.** All four new formats commonly have an ID3v2 tag prepended (especially WavPack and TTA in the wild). The dispatcher's brute-force scan path (governed by `MaxStreamSpacingLength`) already handles offset shifts for MPEG, but for the new formats we want the same explicit "skip leading ID3v2 header, then probe at the first post-tag offset" fast-path that MPEG enjoys. The probe block adds an ID3v2-aware dispatch step alongside the offset-0 magic checks, so a typical `<id3v2><wvpk audio>` file dispatches in O(1) without a byte-by-byte rescan.
+
+`MediaContainers` itself becomes `IDisposable`, disposing each walker on dispose.
 
 ### 6.3 Documentation
 
@@ -222,7 +243,9 @@ S20 (`S20_FlacEditVorbisComment`) and S30 (`S30_MpaVbrAndLame`) are reviewed; if
 
 ### 7.1 Sample inputs
 
-Pre-encoded short samples (a few KB each), checked into `AudioVideoLib.Tests/TestFiles/` with provenance noted in `TestFiles.txt`. The `3rdparty/` encoders are not built as part of the .NET solution.
+Pre-encoded short samples (a few KB each), checked into `AudioVideoLib.Tests/TestFiles/`. The `3rdparty/` encoders are not built as part of the .NET solution.
+
+**`TestFiles.txt` provenance manifest.** The repo has a single shared `TestFiles.txt` at `src/TestFiles.txt`. To avoid four parallel agents conflicting on this one file, each Phase-1 agent (A1–A4) drops a per-format provenance fragment alongside its samples (e.g., `AudioVideoLib.Tests/TestFiles/mpc/PROVENANCE.md`). The shared `src/TestFiles.txt` is updated in **Phase 2** (single agent) to reference the four new fragments. A5 and A6 do not touch `TestFiles.txt`.
 
 ### 7.2 Per-format tests
 
@@ -248,9 +271,9 @@ Pre-encoded short samples (a few KB each), checked into `AudioVideoLib.Tests/Tes
 
 ### Phase 0 — foundational (1 agent, sequential, ~1 hour)
 
-- `AudioVideoLib/IO/IMediaContainer.cs` — extend `IDisposable`. Update doc comment.
-- Verify `Mp4Stream`, `AsfStream`, `MatroskaStream`, `DsfStream`, `DffStream` still compile (they already implement `Dispose()`).
-- `FlacStream`, `MpaStream` — add stub `Dispose() { }` so they compile. Real `_source` lifecycle comes in Phase 1.
+- `AudioVideoLib/IO/IMediaContainer.cs` — extend `IDisposable`. Update doc comment to capture the source-stream lifetime contract from §3.
+- **Add stub `Dispose() { }` to seven walkers** that don't currently implement it: `AiffStream`, `DffStream`, `DsfStream`, `FlacStream`, `MpaStream`, `OggStream`, `RiffStream`. (The other three — `Mp4Stream`, `AsfStream`, `MatroskaStream` — already implement `Dispose()` and need no changes here.) Real `_source` lifecycle for `FlacStream`/`MpaStream` comes in Phase 1; the other five get a permanent no-op stub since they don't hold a source reference.
+- **Bring existing splice-rewriter walkers in line with the §3.1 contract.** `Mp4Stream.WriteTo` currently silently `return`s when `_source is null`; change it to throw `InvalidOperationException` with the message from §3.1. Apply the same null-source check (throwing the same exception) to `AsfStream.WriteTo` and `MatroskaStream.WriteTo`.
 - `MediaContainers` — implement `IDisposable`, disposing each walker.
 - All in-tree callers (`AudioVideoLib.Cli`, `AudioVideoLib.Demo`, `AudioVideoLib.Samples`, `AudioVideoLib.Tests`, `_doc_snippets`) updated to dispose containers as needed.
 
@@ -263,11 +286,11 @@ Output: a green `dotnet build` and `dotnet test` on master with the new interfac
 | **A1: MpcStream** | `feat/mpc` | `Formats/Mpc{StreamVersion,StreamHeader,Packet}.cs`, `IO/MpcStream.cs`, `Tests/IO/MpcStreamTests.cs`, `docs/container-formats/mpc.md` | none |
 | **A2: WavPackStream** | `feat/wavpack` | `Formats/WavPack{BlockHeader,SubBlock}.cs`, `IO/WavPackStream.cs`, `Tests/IO/WavPackStreamTests.cs`, `docs/container-formats/wavpack.md` | none |
 | **A3: TtaStream** | `feat/tta` | `Formats/Tta{Header,SeekTable}.cs`, `IO/TtaStream.cs`, `Tests/IO/TtaStreamTests.cs`, `docs/container-formats/tta.md` | none |
-| **A4: MacStream** | `feat/mac` | `Formats/Mac{Descriptor,Header,SeekEntry}.cs`, `IO/MacStream.cs`, `Tests/IO/MacStreamTests.cs`, `docs/container-formats/mac.md` | none |
-| **A5: FlacStream retrofit** | `feat/flac-retrofit` | none | All `Formats/Flac*.cs` (drop encoder paths, properties become read-only, frames gain offset/length). `IO/FlacStream.cs` (new `_source` lifecycle, passthrough `WriteTo`). Update `Tests/IO/FlacStream*Tests.cs`. |
+| **A4: MacStream** | `feat/mac` | `Formats/Mac{Descriptor,Header,Frame,SeekEntry,Format}.cs`, `IO/MacStream.cs`, `Tests/IO/MacStreamTests.cs`, `docs/container-formats/mac.md` | none |
+| **A5: FlacStream retrofit** | `feat/flac-retrofit` | none | All `Formats/Flac*.cs` (drop encoder paths, properties become read-only, frames gain offset/length). Both partial-class files: `IO/FlacStream.cs` (new `_source` lifecycle, passthrough `WriteTo`) and `IO/FlacStreamMetadataBlocks.cs` (metadata-block writes — encoders preserved). Update `Tests/IO/FlacStream*Tests.cs`. |
 | **A6: MpaStream retrofit** | `feat/mpa-retrofit` | none | All `Formats/Mpa*.cs`. `IO/MpaStream.cs`. Update `Tests/IO/MpaStreamTests.cs`. |
 
-A1–A4 create only new files: zero conflict risk among them. A5 and A6 are scoped to disjoint file prefixes (`Flac*` vs. `Mpa*`): zero conflict against each other or against A1–A4. All six can run truly in parallel.
+A1–A4 create only new files: zero conflict risk among them. A5 is scoped to `Formats/Flac*.cs`, `IO/FlacStream.cs`, `IO/FlacStreamMetadataBlocks.cs`, and `Tests/IO/FlacStream*Tests.cs`. A6 is scoped to `Formats/Mpa*.cs`, `IO/MpaStream.cs`, and `Tests/IO/MpaStreamTests.cs`. A5 and A6 are disjoint from each other and from A1–A4. All six can run truly in parallel.
 
 Each agent's brief: this design doc, the relevant `3rdparty/` reference, the canonical pattern in `Mp4Stream.cs`, format file layout from §4 / §5, and §7 acceptance criteria.
 
@@ -275,10 +298,11 @@ Each agent's brief: this design doc, the relevant `3rdparty/` reference, the can
 
 Runs after all six worktrees merge.
 
-- `AudioVideoLib/IO/MediaContainers.cs` — 4 dispatch entries + 5 magic-byte probes.
+- `AudioVideoLib/IO/MediaContainers.cs` — 4 dispatch entries + 6 magic-byte probes (per §6.2) + ID3v2-aware probe path for the four new formats.
 - `_doc_snippets/Program.cs` — S33 (MPC), S34 (WavPack), S35 (TTA), S36 (MAC).
 - `docs/getting-started.md`, `docs/container-formats.md`, `docs/release-notes.md` — updates from §6.3.
-- `Tests/IO/MediaContainersTests.cs` — cross-format dispatch tests for the new probes.
+- `src/TestFiles.txt` — append entries pointing to the four per-format provenance fragments dropped by A1–A4.
+- `Tests/IO/MediaContainersTests.cs` — cross-format dispatch tests for the new probes (including ID3v2-prefixed inputs for each).
 
 ### Phase 3 — validation (1 agent, ~30 min)
 
@@ -296,9 +320,10 @@ All six worktrees merge into a single feature branch. The branch is squash-merge
 
 The work is done when, against master:
 
-- All ten `IMediaContainer` walkers (six existing + four new) implement `IDisposable` and the source-reference lifetime contract.
+- All fourteen `IMediaContainer` walkers (the ten existing — `AiffStream`, `AsfStream`, `DffStream`, `DsfStream`, `FlacStream`, `MatroskaStream`, `Mp4Stream`, `MpaStream`, `OggStream`, `RiffStream` — plus the four new — `MpcStream`, `WavPackStream`, `TtaStream`, `MacStream`) implement `IDisposable` and the source-reference lifetime contract from §3.
 - `FlacStream` and `MpaStream` no longer contain encoder code paths for audio frames; their `WriteTo` is byte-passthrough.
-- `MediaContainers.ReadStream` dispatches MPC (SV7 + SV8), WavPack, TTA, and MAC inputs to their walkers.
+- `MediaContainers.ReadStream` dispatches MPC (SV7 + SV8), WavPack, TTA, and MAC (integer + float) inputs to their walkers, including inputs prefixed by an ID3v2 tag.
+- `Mp4Stream.WriteTo`, `AsfStream.WriteTo`, `MatroskaStream.WriteTo` throw `InvalidOperationException` (with the §3.1 message) when called after `Dispose()` or before `ReadStream`.
 - For each new format and the two retrofitted ones, the round-trip identity test passes (read → write → byte-identical).
 - For each new format, the tag-edit round-trip test passes: modify APE/ID3 via `AudioTags`, save via the walker, then re-parse the saved bytes and assert the audio frame byte ranges in the saved output match the audio frame byte ranges of the original input (i.e., the splice preserved every audio byte exactly).
 - All in-tree projects build and all tests pass.
