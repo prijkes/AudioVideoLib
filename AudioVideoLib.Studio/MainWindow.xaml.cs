@@ -1180,18 +1180,24 @@ public partial class MainWindow : Window
 
     private void OpenFile_Click(object sender, RoutedEventArgs e) => OpenFile();
 
+    private const int RecentMenuMaxItems = 5;
+
+    private void FileMenu_SubmenuOpened(object sender, RoutedEventArgs e)
+    {
+        // Compute the parent state here, not in RecentMenu_SubmenuOpened —
+        // a disabled MenuItem never opens its submenu, so the inner handler
+        // wouldn't fire to compute it.
+        RecentMenu.IsEnabled = RecentFiles.Load().Count > 0;
+    }
+
     private void RecentMenu_SubmenuOpened(object sender, RoutedEventArgs e)
     {
         RecentMenu.Items.Clear();
 
         var recent = RecentFiles.Load();
-        if (recent.Count == 0)
-        {
-            RecentMenu.Items.Add(new MenuItem { Header = "(no recent files)", IsEnabled = false });
-            return;
-        }
+        var displayCount = Math.Min(recent.Count, RecentMenuMaxItems);
 
-        for (var i = 0; i < recent.Count; i++)
+        for (var i = 0; i < displayCount; i++)
         {
             var path = recent[i];
             var item = new MenuItem

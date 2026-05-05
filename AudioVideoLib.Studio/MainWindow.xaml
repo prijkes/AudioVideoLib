@@ -351,7 +351,7 @@
         <!-- ==================== menu ==================== -->
 
         <Menu DockPanel.Dock="Top">
-            <MenuItem Header="_File">
+            <MenuItem Header="_File" SubmenuOpened="FileMenu_SubmenuOpened">
                 <MenuItem Header="_Open..."      Click="OpenFile_Click"  InputGestureText="Ctrl+O" />
                 <MenuItem x:Name="RecentMenu" Header="Open _Recent" SubmenuOpened="RecentMenu_SubmenuOpened" />
                 <Separator />
