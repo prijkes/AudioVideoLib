@@ -24,6 +24,14 @@ public sealed partial class MpaFrame : IAudioFrame
     /// <inheritdoc/>
     public long EndOffset { get; private set; }
 
+    /// <summary>
+    /// Gets the total length of this frame in the source stream, in bytes
+    /// (header + audio data + optional CRC). Equivalent to
+    /// <see cref="EndOffset"/> - <see cref="StartOffset"/>; exposed as a property
+    /// so callers describing a byte-passthrough write don't have to subtract.
+    /// </summary>
+    public long Length => EndOffset - StartOffset;
+
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -172,18 +180,6 @@ public sealed partial class MpaFrame : IAudioFrame
 
         // Calculate the CRC on the buffer with the amount of bits (yes bits not bytes)
         return Crc16(buffer, protectedBits);
-    }
-
-    /// <summary>
-    /// Returns the frame in a byte array.
-    /// </summary>
-    /// <returns>The frame in a byte array.</returns>
-    public byte[] ToByteArray()
-    {
-        var buffer = new StreamBuffer();
-        buffer.Write(_header);
-        buffer.Write(AudioData);
-        return buffer.ToByteArray();
     }
 
     ////------------------------------------------------------------------------------------------------------------------------------

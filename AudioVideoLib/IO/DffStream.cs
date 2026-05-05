@@ -410,4 +410,13 @@ public sealed class DffStream : IMediaContainer
         s.WriteByte((byte)((value >> 8) & 0xFF));
         s.WriteByte((byte)(value & 0xFF));
     }
+
+    /// <summary>
+    /// No-op. <see cref="DffStream"/> does not hold an <see cref="ISourceReader"/>; the
+    /// implementation exists to satisfy <see cref="IMediaContainer"/>'s <see cref="IDisposable"/>
+    /// contract. See the source-stream lifetime contract on <see cref="IMediaContainer"/>.
+    /// </summary>
+    public void Dispose()
+    {
+    }
 }

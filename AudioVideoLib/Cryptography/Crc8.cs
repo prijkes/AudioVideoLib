@@ -7,7 +7,7 @@ using System;
 /// </summary>
 public static class Crc8
 {
-    private const byte Polynomial = 0xD5;
+    private const byte Polynomial = 0x07;
 
     private static readonly byte[] Crc8Table = new byte[256];
 

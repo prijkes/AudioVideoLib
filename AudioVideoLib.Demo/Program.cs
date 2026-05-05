@@ -253,14 +253,15 @@ public static class Program
         PrintSection("Audio streams");
 
         stream.Position = 0;
-        var streams = MediaContainers.ReadStream(stream).ToList();
-        if (streams.Count == 0)
+        using var streams = MediaContainers.ReadStream(stream);
+        var streamList = streams.ToList();
+        if (streamList.Count == 0)
         {
             Console.WriteLine("  (none detected)");
             return;
         }
 
-        foreach (var audioStream in streams)
+        foreach (var audioStream in streamList)
         {
             Console.WriteLine($"  [{audioStream.GetType().Name}] @ {audioStream.StartOffset:N0}..{audioStream.EndOffset:N0}");
             switch (audioStream)
@@ -337,7 +338,7 @@ public static class Program
     private static void DumpVorbisInsideFlac(Stream stream)
     {
         stream.Position = 0;
-        var audioStreams = MediaContainers.ReadStream(stream);
+        using var audioStreams = MediaContainers.ReadStream(stream);
         var flac = audioStreams.OfType<FlacStream>().FirstOrDefault();
         if (flac == null)
         {

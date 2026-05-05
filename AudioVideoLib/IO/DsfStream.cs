@@ -413,4 +413,13 @@ public sealed class DsfStream : IMediaContainer
         b[off + 6] = (byte)((value >> 48) & 0xFF);
         b[off + 7] = (byte)((value >> 56) & 0xFF);
     }
+
+    /// <summary>
+    /// No-op. <see cref="DsfStream"/> does not hold an <see cref="ISourceReader"/>; the
+    /// implementation exists to satisfy <see cref="IMediaContainer"/>'s <see cref="IDisposable"/>
+    /// contract. See the source-stream lifetime contract on <see cref="IMediaContainer"/>.
+    /// </summary>
+    public void Dispose()
+    {
+    }
 }

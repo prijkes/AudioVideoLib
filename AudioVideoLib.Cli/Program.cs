@@ -62,7 +62,9 @@ internal static class Program
         }
 
         var path = args[1];
-        var (offsets, audio, bytes) = Load(path);
+        var (offsets, containers, bytes) = Load(path);
+        using var _ = containers;
+        var audio = containers.FirstOrDefault();
 
         Console.WriteLine($"File:  {path}");
         Console.WriteLine($"Size:  {bytes.Length:N0} bytes");
@@ -130,7 +132,8 @@ internal static class Program
         }
 
         var path = args[1];
-        var (offsets, _, _) = Load(path);
+        var (offsets, containers, _) = Load(path);
+        using var _ = containers;
         var errors = 0;
         var warnings = 0;
 
@@ -184,7 +187,9 @@ internal static class Program
 
             try
             {
-                var (offsets, audio, bytes) = Load(file);
+                var (offsets, containers, bytes) = Load(file);
+                using var _ = containers;
+                var audio = containers.FirstOrDefault();
                 var tagList = string.Join("+", offsets.Select(o => o.AudioTag.GetType().Name.Replace("Tag", string.Empty)).Distinct());
                 var format = audio switch
                 {
@@ -218,7 +223,7 @@ internal static class Program
         return 0;
     }
 
-    private static (IReadOnlyList<IAudioTagOffset> Offsets, IMediaContainer? Audio, byte[] Bytes) Load(string path)
+    private static (IReadOnlyList<IAudioTagOffset> Offsets, MediaContainers Containers, byte[] Bytes) Load(string path)
     {
         var bytes = File.ReadAllBytes(path);
         using var ms = new MemoryStream(bytes);
@@ -229,8 +234,8 @@ internal static class Program
             .DefaultIfEmpty(0L)
             .Max();
         ms.Position = startTagEnd;
-        var audio = MediaContainers.ReadStream(ms).FirstOrDefault();
-        return (offsets, audio, bytes);
+        var containers = MediaContainers.ReadStream(ms);
+        return (offsets, containers, bytes);
     }
 
     private sealed record CliIssue(string Severity, string Message);

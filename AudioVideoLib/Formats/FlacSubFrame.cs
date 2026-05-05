@@ -50,18 +50,6 @@ public partial class FlacSubFrame
     }
 
     /// <summary>
-    /// Returns the frame in a byte array.
-    /// </summary>
-    /// <returns>The frame in a byte array.</returns>
-    public virtual byte[] ToByteArray()
-    {
-        var sb = new StreamBuffer();
-        sb.WriteBigEndianInt32(Header);
-        sb.WriteUnaryInt(WastedBits);
-        return sb.ToByteArray();
-    }
-
-    /// <summary>
     /// Reads the specified stream buffer.
     /// </summary>
     /// <param name="sb">The stream buffer.</param>

@@ -26,16 +26,4 @@ public sealed class FlacResidual
 
         return residual;
     }
-
-    ////public byte[] ToByteArray()
-    ////{
-    ////    using (StreamBuffer sb = new StreamBuffer())
-    ////    {
-    ////        sb.WriteByte((byte)_values);
-    ////        foreach (byte[] data in RicePartitions.Select(r => r.ToByteArrray()))
-    ////            sb.Write(data);
-
-    ////        return sb.ToByteArray();
-    ////    }
-    ////}
 }

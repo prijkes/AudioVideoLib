@@ -10,13 +10,13 @@ public sealed partial class MpaFrame
     private sealed class SubbandQuantization
     {
         /// <summary>
-        /// Gets or sets the sub band limit.
+        /// Gets the sub band limit.
         /// </summary>
-        public int SubbandLimit { get; set; }
+        public int SubbandLimit { get; init; }
 
         /// <summary>
-        /// Gets or sets the offsets.
+        /// Gets the offsets.
         /// </summary>
-        public int[] Offsets { get; set; } = new int[30];
+        public int[] Offsets { get; init; } = new int[30];
     }
 }

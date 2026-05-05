@@ -160,7 +160,12 @@ public sealed class AsfStream : IMediaContainer, IDisposable
     public void WriteTo(Stream destination)
     {
         ArgumentNullException.ThrowIfNull(destination);
-        if (_source is null || _headerBytes.Length == 0 || HeaderObjectSize == 0)
+        if (_source is null)
+        {
+            throw new InvalidOperationException(
+                "Source stream was detached or never read. WriteTo requires a live source.");
+        }
+        if (_headerBytes.Length == 0 || HeaderObjectSize == 0)
         {
             return;
         }

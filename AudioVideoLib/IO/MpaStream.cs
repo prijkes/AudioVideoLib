@@ -13,6 +13,8 @@ using AudioVideoLib.Formats;
 public sealed class MpaStream : IMediaContainer
 {
     private readonly List<MpaFrame> _frames = [];
+    private ISourceReader? _source;
+    private long _containerStart;
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
@@ -167,6 +169,10 @@ public sealed class MpaStream : IMediaContainer
     {
         ArgumentNullException.ThrowIfNull(stream);
 
+        _source?.Dispose();
+        _containerStart = stream.Position;
+        _source = new StreamSourceReader(stream, leaveOpen: true);
+
         var streamLength = stream.Length;
         var startPosition = stream.Position;
         long spacing = 0;
@@ -206,22 +212,34 @@ public sealed class MpaStream : IMediaContainer
 
     /// <inheritdoc />
     /// <remarks>
-    /// Each frame is written directly to <paramref name="destination"/> without building an
-    /// intermediate byte array. For multi-MB MP3 files this avoids a peak allocation roughly
-    /// equal to the total audio size.
+    /// Each frame is streamed verbatim from the live source via
+    /// <see cref="ISourceReader.CopyTo(long, long, Stream)"/>; no audio re-encoding happens.
+    /// The walker requires the source <see cref="Stream"/> passed to
+    /// <see cref="ReadStream(Stream)"/> to still be alive — see the source-stream lifetime
+    /// contract on <see cref="IMediaContainer"/>.
     /// </remarks>
+    /// <exception cref="ArgumentNullException">If <paramref name="destination"/> is <c>null</c>.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// If the underlying source has been disposed or was never populated.
+    /// </exception>
     public void WriteTo(Stream destination)
     {
         ArgumentNullException.ThrowIfNull(destination);
-        foreach (var frame in Frames)
+        if (_source is null)
         {
-            if (frame.AudioData is null)
-            {
-                continue;
-            }
+            throw new InvalidOperationException(
+                "Source stream was detached or never read. WriteTo requires a live source.");
+        }
 
-            var bytes = frame.ToByteArray();
-            destination.Write(bytes, 0, bytes.Length);
+        // MpaFrame.StartOffset is captured from stream.Position at parse time, so it is
+        // file-absolute. _source's offset 0 == _containerStart (the position the source
+        // stream was at when ReadStream ran), so we translate by subtracting
+        // _containerStart. This matters when the caller hands us a stream positioned past
+        // a leading ID3v2 tag — without the shift, CopyTo would re-read the tag bytes.
+        foreach (var frame in _frames)
+        {
+            var offsetInSource = frame.StartOffset - _containerStart;
+            _source.CopyTo(offsetInSource, frame.Length, destination);
         }
     }
 
@@ -248,5 +266,15 @@ public sealed class MpaStream : IMediaContainer
             && secondFrame.SamplingRate == firstFrame.SamplingRate
             && secondFrame.IsMono == firstFrame.IsMono
             && secondFrame.Emphasis == firstFrame.Emphasis;
+    }
+
+    /// <summary>
+    /// Releases the underlying <see cref="ISourceReader"/>. Does not close the user's source
+    /// <see cref="Stream"/>; the caller still owns that.
+    /// </summary>
+    public void Dispose()
+    {
+        _source?.Dispose();
+        _source = null;
     }
 }

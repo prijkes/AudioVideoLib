@@ -18,6 +18,20 @@ public sealed partial class FlacStream : IMediaContainer
 
     private readonly List<FlacMetadataBlock> _metadataBlocks = [];
 
+    /// <summary>
+    /// Live source reader populated by <see cref="ReadStream"/>; consumed by
+    /// <see cref="WriteTo"/> for byte-passthrough of audio frames. Disposed by
+    /// <see cref="Dispose"/>. <c>null</c> until <see cref="ReadStream"/> succeeds.
+    /// </summary>
+    private ISourceReader? _source;
+
+    /// <summary>
+    /// File-absolute offset of the <c>fLaC</c> magic captured during <see cref="ReadStream"/>.
+    /// Used by <see cref="WriteTo"/> to translate file-absolute frame offsets into
+    /// <see cref="ISourceReader"/>-relative offsets (offset 0 in the source view == start of magic).
+    /// </summary>
+    private long _containerStart;
+
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -112,6 +126,18 @@ public sealed partial class FlacStream : IMediaContainer
             return false;
         }
 
+        // Capture the live source for byte-passthrough WriteTo. We rewind the underlying
+        // stream to the FLAC start before constructing StreamSourceReader, so the reader's
+        // offset 0 == start of 'fLaC' magic. Then restore position so the existing parse
+        // path resumes immediately past the magic.
+        var flacStart = sb.Position - Identifier.Length;
+        _containerStart = flacStart;
+        var sourceBaseline = stream.Position;
+        stream.Position = flacStart;
+        _source?.Dispose();
+        _source = new StreamSourceReader(stream, leaveOpen: true);
+        stream.Position = sourceBaseline;
+
         long spacing = 0;
 
         // Read all metadata blocks.
@@ -158,10 +184,19 @@ public sealed partial class FlacStream : IMediaContainer
     public void WriteTo(Stream destination)
     {
         ArgumentNullException.ThrowIfNull(destination);
+        if (_source is null)
+        {
+            throw new InvalidOperationException(
+                "Source stream was detached or never read. WriteTo requires a live source.");
+        }
 
+        // 'fLaC' magic.
         var identifierBytes = System.Text.Encoding.ASCII.GetBytes(Identifier);
         destination.Write(identifierBytes, 0, identifierBytes.Length);
 
+        // Metadata blocks: encoded via their existing per-block ToByteArray() path
+        // (these stay encodable — tags live here). STREAMINFO is emitted first per
+        // the FLAC spec, then every other block in original order.
         var streamInfoMetadataBlock = StreamInfoMetadataBlocks.FirstOrDefault();
         if (streamInfoMetadataBlock is not null)
         {
@@ -175,10 +210,25 @@ public sealed partial class FlacStream : IMediaContainer
             destination.Write(bytes, 0, bytes.Length);
         }
 
+        // Audio frames: byte-passthrough from the captured source. No re-encode.
+        // FlacFrame.StartOffset is file-absolute (set in FlacFrame.ReadFrame from sb.Position).
+        // _source's offset 0 == _containerStart (the 'fLaC' magic), so we translate by
+        // subtracting _containerStart. Note: FlacStream.StartOffset is the FIRST FRAME's
+        // offset, not the container start, hence the dedicated _containerStart field.
         foreach (var frame in Frames)
         {
-            var bytes = frame.ToByteArray();
-            destination.Write(bytes, 0, bytes.Length);
+            var offsetInSource = frame.StartOffset - _containerStart;
+            _source.CopyTo(offsetInSource, frame.Length, destination);
         }
+    }
+
+    /// <summary>
+    /// Releases the underlying <see cref="ISourceReader"/>. Does not close the user's source
+    /// <see cref="Stream"/>; the caller still owns that. Idempotent.
+    /// </summary>
+    public void Dispose()
+    {
+        _source?.Dispose();
+        _source = null;
     }
 }

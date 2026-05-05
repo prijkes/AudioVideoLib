@@ -7,6 +7,7 @@ using System;
 using System.IO;
 using System.Linq;
 
+using AudioVideoLib.IO;
 using AudioVideoLib.Tags;
 
 using Xunit;
@@ -20,7 +21,7 @@ public class RiffEmbeddedId3v2Tests
         var wav = RiffInfoTagTests.BuildWavWithChunks(BuildId3Chunk("id3 ", id3Bytes));
 
         using var ms = new MemoryStream(wav);
-        var rs = new IO.RiffStream();
+        var rs = new RiffStream();
         Assert.True(rs.ReadStream(ms));
         Assert.NotNull(rs.EmbeddedId3v2);
 
@@ -37,7 +38,7 @@ public class RiffEmbeddedId3v2Tests
         var wav = RiffInfoTagTests.BuildWavWithChunks(BuildId3Chunk("ID3 ", id3Bytes));
 
         using var ms = new MemoryStream(wav);
-        var rs = new IO.RiffStream();
+        var rs = new RiffStream();
         Assert.True(rs.ReadStream(ms));
         Assert.NotNull(rs.EmbeddedId3v2);
 
@@ -54,7 +55,7 @@ public class RiffEmbeddedId3v2Tests
         var wav = RiffInfoTagTests.BuildWavWithChunks(BuildId3Chunk("id3 ", garbage));
 
         using var ms = new MemoryStream(wav);
-        var rs = new IO.RiffStream();
+        var rs = new RiffStream();
         Assert.True(rs.ReadStream(ms));
         Assert.Null(rs.EmbeddedId3v2);
     }
@@ -64,7 +65,7 @@ public class RiffEmbeddedId3v2Tests
     {
         var wav = RiffInfoTagTests.BuildWavWithChunks();
         using var ms = new MemoryStream(wav);
-        var rs = new IO.RiffStream();
+        var rs = new RiffStream();
         Assert.True(rs.ReadStream(ms));
         Assert.Null(rs.EmbeddedId3v2);
     }
@@ -82,7 +83,7 @@ public class RiffEmbeddedId3v2Tests
 
         var wav = RiffInfoTagTests.BuildWavWithChunks(chunk);
         using var ms = new MemoryStream(wav);
-        var rs = new IO.RiffStream();
+        var rs = new RiffStream();
         Assert.True(rs.ReadStream(ms));
         Assert.NotNull(rs.EmbeddedId3v2);
 
@@ -102,7 +103,7 @@ public class RiffEmbeddedId3v2Tests
 
         var wav = RiffInfoTagTests.BuildWavWithChunks(BuildId3Chunk("id3 ", id3Bytes));
         using var ms = new MemoryStream(wav);
-        var rs = new IO.RiffStream();
+        var rs = new RiffStream();
         Assert.True(rs.ReadStream(ms));
         Assert.NotNull(rs.EmbeddedId3v2);
 

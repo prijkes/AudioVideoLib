@@ -144,7 +144,8 @@ public sealed class Mp4Stream : IMediaContainer, IDisposable
         ArgumentNullException.ThrowIfNull(destination);
         if (_source is null)
         {
-            return;
+            throw new InvalidOperationException(
+                "Source stream was detached or never read. WriteTo requires a live source.");
         }
 
         var newIlstBody = Tag.ToByteArray();

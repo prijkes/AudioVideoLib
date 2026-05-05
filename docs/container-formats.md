@@ -15,6 +15,10 @@ below for its on-disk shape, the public API surface, and any quirks.
 | [AsfStream](container-formats/asfstream.md) | ASF / WMA / WMV | Header Object children + aggregated metadata tag |
 | [MatroskaStream](container-formats/matroskastream.md) | Matroska / WebM | EBML header + first Segment (Info, Tags) |
 | [DsfStream / DffStream](container-formats/dsf-dff-streams.md) | DSD audio (Sony DSF, Philips DFF) | DSD / fmt / data chunks + embedded ID3v2 |
+| [MpcStream](container-formats/mpcstream.md) | Musepack (`.mpc`, SV7 + SV8) | header + per-packet byte ranges |
+| [WavPackStream](container-formats/wavpackstream.md) | WavPack (`.wv` lossless / hybrid lossy) | per-block header + sub-block index |
+| [TtaStream](container-formats/ttastream.md) | TrueAudio (`.tta`) | fixed header + seek table + per-frame byte ranges |
+| [MacStream](container-formats/macstream.md) | Monkey's Audio (`.ape`, integer + float) | descriptor + header + seek table + per-frame byte ranges |
 
 Container-embedded metadata (MP4 ilst, ASF, Matroska tags, WAV side
 channels, AIFF text, DSF/DFF embedded ID3v2) is documented under

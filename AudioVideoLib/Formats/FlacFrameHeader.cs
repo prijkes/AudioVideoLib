@@ -24,8 +24,6 @@ public sealed partial class FlacFrame
 
     private static readonly int[] SampleRates = [0, 88200, 176400, 192000, 8000, 16000, 22050, 24000, 32000, 44100, 48000, 96000, 0, 0, 0, 0];
 
-    private byte[] _sampleFrameNumberBytes = null!;
-
     private int _crc8;
 
     private int _crc16;
@@ -201,7 +199,7 @@ public sealed partial class FlacFrame
                 -0 : fixed-block size stream; frame header encodes the frame number
                 -1 : variable-block size stream; frame header encodes the sample number
         */
-        var num = ReadBigEndianUtf8Int64(sb, out _sampleFrameNumberBytes);
+        var num = ReadBigEndianUtf8Int64(sb, out _);
         switch (BlockingStrategy)
         {
             case FlacBlockingStrategy.FixedBlocksize:
@@ -316,13 +314,17 @@ public sealed partial class FlacFrame
                                 : 0)
                          : SampleSizes[sampleSize];
 
+        // CRC-8 is computed over the frame-header bytes BEFORE the CRC byte itself
+        // (FLAC spec: "an 8-bit CRC of the frame header up to and including the byte
+        // before the CRC, initialized to 0"). Capture the header range first, then
+        // read the stored CRC byte and compare.
+        var headerEnd = sb.Position;
+        var headerLength = headerEnd - startPosition;
+        var crcBytes = new byte[headerLength];
+        sb.Position = startPosition;
+        sb.Read(crcBytes, (int)headerLength);
+        sb.Position = headerEnd;
         _crc8 = sb.ReadByte();
-
-        var endPosition = sb.Position;
-        var length = endPosition - startPosition;
-        var crcBytes = new byte[length];
-        sb.Position -= length;
-        sb.Read(crcBytes, (int)length);
         var crc8 = Crc8.Calculate(crcBytes);
         return _crc8 == crc8 ? true : throw new InvalidDataException("Corrupt CRC8.");
     }

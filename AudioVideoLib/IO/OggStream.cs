@@ -233,4 +233,13 @@ public sealed class OggStream : IMediaContainer
 
     private static int ReadLeI32(byte[] b, int off) =>
         b[off] | (b[off + 1] << 8) | (b[off + 2] << 16) | (b[off + 3] << 24);
+
+    /// <summary>
+    /// No-op. <see cref="OggStream"/> does not hold an <see cref="ISourceReader"/>; the
+    /// implementation exists to satisfy <see cref="IMediaContainer"/>'s <see cref="IDisposable"/>
+    /// contract. See the source-stream lifetime contract on <see cref="IMediaContainer"/>.
+    /// </summary>
+    public void Dispose()
+    {
+    }
 }

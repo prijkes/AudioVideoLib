@@ -22,28 +22,4 @@ public sealed class FlacFixedSubFrame(FlacFrame flacFrame) : FlacSubFrame(flacFr
     /// The residual.
     /// </value>
     public FlacResidual Residual { get; private set; } = null!;
-
-    ////------------------------------------------------------------------------------------------------------------------------------
-
-    //public override byte[] ToByteArray()
-    //{
-    //    using (StreamBuffer sb = new StreamBuffer())
-    //    {
-    //        sb.Write(base.ToByteArray());
-    //        for (int i = 0; i < Order; i ++)
-    //            sb.WriteBigEndianBytes(UnencodedWarmUpSamples[i], SampleSize / 8);
-
-    //        sb.Write(Residual.ToByteArray());
-    //        return sb.ToByteArray();
-    //    }
-    //}
-
-    //protected override void Read(StreamBuffer sb)
-    //{
-    //    UnencodedWarmUpSamples = new int[Order];
-    //    for (int i = 0; i < Order; i++)
-    //        UnencodedWarmUpSamples[i] = sb.ReadInt(SampleSize * 8);
-
-    //    Residual = FlacResidual.Read(sb, FlacFrame.BlockSize, Order);
-    //}
 }

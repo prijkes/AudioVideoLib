@@ -5,6 +5,7 @@ Change categories follow [Keep a Changelog](https://keepachangelog.com/):
 
 | Version | Date | Highlights |
 |---|---|---|
+| [`(next release)`](#next-release) | _unreleased_ | Format pack: Musepack / WavPack / TrueAudio / Monkey's Audio walkers; `IMediaContainer` now extends `IDisposable`; `FlacStream` / `MpaStream` switch to byte-passthrough on save. |
 | [`0.7.0`](#070--2026-04-27) | 2026-04-27 | `Mp4Stream` and `AsfStream` complete the streaming refactor — every splice rewriter now operates without buffering the source file. |
 | [`0.6.0`](#060--2026-04-27) | 2026-04-27 | Large-file performance: streaming Matroska reader/writer (40 GB MKV is now viable); `ISourceReader` random-access abstraction; ID3v2 read-path allocation fixes. |
 | [`0.5.0`](#050--2026-04-27) | 2026-04-27 | `WriteTo(Stream)` is now the canonical serialisation primitive; `ToByteArray` becomes an extension-method convenience. |
@@ -12,6 +13,27 @@ Change categories follow [Keep a Changelog](https://keepachangelog.com/):
 | [`0.3.0`](#030--2026-04-25) | 2026-04-25 | `IAudioStream` → `IMediaContainer` rename. |
 | [`0.2.0`](#020--2026-04-19) | 2026-04-19 | Nine new tag/container formats; non-fatal parse errors; per-field encoding for ID3v1. |
 | [`0.1.0`](#010--2026-04-17) | 2026-04-17 | Initial release. |
+
+---
+
+## (next release)
+
+### Added
+
+- `MpcStream` — Musepack walker (SV7 + SV8).
+- `WavPackStream` — WavPack walker (`.wv` + optional `.wvc` correction stream in same file).
+- `TtaStream` — TrueAudio walker.
+- `MacStream` — Monkey's Audio walker (integer + float). Note: separate from the existing `ApeTag` family (which handles APE *tags*, not the Monkey's Audio audio container).
+
+### Changed
+
+- `IMediaContainer` now extends `IDisposable`. Walkers that hold an `ISourceReader` throw `InvalidOperationException` from `WriteTo` if the source has been disposed or was never populated. See the "source-stream lifetime contract" docstring on `IMediaContainer`.
+- `FlacStream` and `MpaStream` now use offset-based byte-passthrough on save: per-frame audio bytes are spliced from the source stream rather than re-emitted from the parsed model. Audio is byte-identical on round-trip; no audio re-encoding occurs anywhere in the library.
+
+### Breaking
+
+- All `FlacFrame`, `FlacSubFrame`, `FlacResidual`, `FlacRicePartition`, `MpaFrame`, `MpaFrameHeader`, `MpaFrameData` properties are now read-only. Callers cannot mutate audio-frame data. (Tag editing — Vorbis comments, ID3 frames, etc. — remains fully supported via the metadata-block path.)
+- `IMediaContainer` consumers must dispose the walker (or the parent `MediaContainers`) when done. Wrap usage in `using`.
 
 ---
 

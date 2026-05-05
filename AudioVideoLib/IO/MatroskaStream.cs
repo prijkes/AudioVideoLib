@@ -68,6 +68,9 @@ public sealed class MatroskaStream : IMediaContainer, IDisposable
 
     private const int MaxRecursionDepth = 16;
 
+    private const string SourceDetachedMessage =
+        "Source stream was detached or never read. WriteTo requires a live source.";
+
     // Random-access source captured at ReadStream time. Offsets below are relative to the
     // start of the source (i.e. relative to the position the stream was at when ReadStream
     // was called).
@@ -174,7 +177,7 @@ public sealed class MatroskaStream : IMediaContainer, IDisposable
         ArgumentNullException.ThrowIfNull(destination);
         if (_source is null)
         {
-            return;
+            throw new InvalidOperationException(SourceDetachedMessage);
         }
 
         var newTagsBytes = Tag.Entries.Count > 0 ? Tag.ToByteArray() : [];
@@ -206,7 +209,7 @@ public sealed class MatroskaStream : IMediaContainer, IDisposable
     {
         if (_source is null)
         {
-            return [];
+            throw new InvalidOperationException(SourceDetachedMessage);
         }
 
         using var ms = new MemoryStream();

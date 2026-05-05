@@ -26,4 +26,12 @@
     <ProjectReference Include="..\AudioVideoLib\AudioVideoLib.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="TestFiles\mpc\*.mpc" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="TestFiles\wavpack\*.wv" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="TestFiles\tta\*.tta" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="TestFiles\mac\*.ape" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="TestFiles\flac\*.flac" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>

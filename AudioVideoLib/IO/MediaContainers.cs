@@ -13,7 +13,7 @@ using AudioVideoLib.Collections;
 /// <summary>
 /// Represents a collection of audio streams.
 /// </summary>
-public sealed class MediaContainers : IEnumerable<IMediaContainer>
+public sealed class MediaContainers : IEnumerable<IMediaContainer>, IDisposable
 {
     private readonly Dictionary<Type, Func<IMediaContainer>> _supportedStreams = new()
     {
@@ -27,9 +27,15 @@ public sealed class MediaContainers : IEnumerable<IMediaContainer>
         { typeof(Mp4Stream), () => new Mp4Stream() },
         { typeof(AsfStream), () => new AsfStream() },
         { typeof(MatroskaStream), () => new MatroskaStream() },
+        { typeof(MacStream), () => new MacStream() },
+        { typeof(MpcStream), () => new MpcStream() },
+        { typeof(TtaStream), () => new TtaStream() },
+        { typeof(WavPackStream), () => new WavPackStream() },
     };
 
     private readonly NotifyingList<IMediaContainer> _streams = [];
+
+    private bool _disposed;
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
@@ -229,7 +235,8 @@ public sealed class MediaContainers : IEnumerable<IMediaContainer>
         // we already know the format. Falls through to the brute-force scan below for
         // anything that doesn't match a known signature (e.g. MPEG audio, which can start
         // anywhere in the stream).
-        if (TryMatchMagic(stream, startPosition, out var preferred))
+        if (TryMatchMagic(stream, startPosition, out var preferred)
+            || TryProbeAfterId3v2(stream, startPosition, out preferred))
         {
             var walker = _supportedStreams[preferred]();
             var preferredArgs = new MediaContainerParseEventArgs(walker);
@@ -343,9 +350,130 @@ public sealed class MediaContainers : IEnumerable<IMediaContainer>
             return true;
         }
 
+        // MPC SV7: 4-byte magic — first 3 bytes are 'M','P','+', 4th byte's low nibble = 7.
+        if (buf[0] == 0x4D && buf[1] == 0x50 && buf[2] == 0x2B && (buf[3] & 0x0F) == 0x07)
+        {
+            walker = typeof(MpcStream);
+            return true;
+        }
+
+        // MPC SV8: "MPCK" at offset 0.
+        if (buf[0] == 0x4D && buf[1] == 0x50 && buf[2] == 0x43 && buf[3] == 0x4B)
+        {
+            walker = typeof(MpcStream);
+            return true;
+        }
+
+        // WavPack: "wvpk" at offset 0.
+        if (buf[0] == 0x77 && buf[1] == 0x76 && buf[2] == 0x70 && buf[3] == 0x6B)
+        {
+            walker = typeof(WavPackStream);
+            return true;
+        }
+
+        // TrueAudio: "TTA1" at offset 0.
+        if (buf[0] == 0x54 && buf[1] == 0x54 && buf[2] == 0x41 && buf[3] == 0x31)
+        {
+            walker = typeof(TtaStream);
+            return true;
+        }
+
+        // Monkey's Audio (MAC): "MAC " (integer) at offset 0.
+        if (buf[0] == 0x4D && buf[1] == 0x41 && buf[2] == 0x43 && buf[3] == 0x20)
+        {
+            walker = typeof(MacStream);
+            return true;
+        }
+
+        // Monkey's Audio (MAC): "MACF" (float) at offset 0.
+        if (buf[0] == 0x4D && buf[1] == 0x41 && buf[2] == 0x43 && buf[3] == 0x46)
+        {
+            walker = typeof(MacStream);
+            return true;
+        }
+
         // MPEG audio frames don't have a fixed header at offset 0 (they can start anywhere
         // after a tag block) — let the brute-force scan below find them. Same for any format
         // whose magic isn't recognised here.
         return false;
+    }
+
+    /// <summary>
+    /// ID3v2-aware fast path: if the input starts with an ID3v2 tag, computes the
+    /// offset of the first byte past the tag (header + syncsafe size + optional footer)
+    /// and re-runs the magic-byte probe at that offset. Lets <c>&lt;id3v2&gt;&lt;wvpk audio&gt;</c>
+    /// (and similar combos) dispatch in O(1) without a byte-by-byte rescan.
+    /// </summary>
+    /// <param name="stream">The seekable input stream.</param>
+    /// <param name="startPosition">Position of the candidate ID3v2 header.</param>
+    /// <param name="walker">When this method returns <c>true</c>, the walker type matched
+    /// after skipping the tag.</param>
+    /// <returns><c>true</c> if an ID3v2 header was found and a known walker matched at the
+    /// post-tag offset; <c>false</c> otherwise. The stream's position is restored on return.</returns>
+    private static bool TryProbeAfterId3v2(Stream stream, long startPosition, out Type walker)
+    {
+        walker = typeof(object);
+        if (!stream.CanSeek || stream.Length - startPosition < 10)
+        {
+            return false;
+        }
+
+        Span<byte> id3 = stackalloc byte[10];
+        stream.Position = startPosition;
+        var n = stream.Read(id3);
+        stream.Position = startPosition;
+        if (n < 10)
+        {
+            return false;
+        }
+
+        // "ID3" magic at bytes 0..2.
+        if (id3[0] != 0x49 || id3[1] != 0x44 || id3[2] != 0x33)
+        {
+            return false;
+        }
+
+        // Bytes 6..9 are the syncsafe tag-body size (28 bits, MSB of each byte ignored).
+        var size = ((id3[6] & 0x7F) << 21)
+                 | ((id3[7] & 0x7F) << 14)
+                 | ((id3[8] & 0x7F) << 7)
+                 | (id3[9] & 0x7F);
+
+        // Bit 4 of the flags byte (0x10) = footer present (adds another 10 bytes).
+        var footer = (id3[5] & 0x10) != 0 ? 10 : 0;
+        var afterTagOffset = startPosition + 10 + size + footer;
+
+        if (afterTagOffset >= stream.Length)
+        {
+            return false;
+        }
+
+        var savedPosition = stream.Position;
+        try
+        {
+            return TryMatchMagic(stream, afterTagOffset, out walker);
+        }
+        finally
+        {
+            stream.Position = savedPosition;
+        }
+    }
+
+    ////------------------------------------------------------------------------------------------------------------------------------
+
+    /// <summary>
+    /// Disposes every contained walker. Idempotent.
+    /// </summary>
+    public void Dispose()
+    {
+        if (_disposed)
+        {
+            return;
+        }
+        foreach (var walker in _streams)
+        {
+            walker.Dispose();
+        }
+        _disposed = true;
     }
 }

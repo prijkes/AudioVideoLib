@@ -276,4 +276,13 @@ public sealed class AiffStream : IMediaContainer
             _ => (double)sign * mantissa * Math.Pow(2, exponent - 16383 - 63),
         };
     }
+
+    /// <summary>
+    /// No-op. <see cref="AiffStream"/> does not hold an <see cref="ISourceReader"/>; the
+    /// implementation exists to satisfy <see cref="IMediaContainer"/>'s <see cref="IDisposable"/>
+    /// contract. See the source-stream lifetime contract on <see cref="IMediaContainer"/>.
+    /// </summary>
+    public void Dispose()
+    {
+    }
 }

@@ -102,8 +102,16 @@ public sealed class XingHeader : VbrHeader
 
         long offset = MpaFrame.FrameHeaderSize + firstFrame.SideInfoSize;
         var buffer = new StreamBuffer();
-        var data = firstFrame.ToByteArray();
-        buffer.Write(data);
+
+        // Reproduce the legacy `_header + AudioData` layout without going through
+        // MpaFrame.ToByteArray (dropped in Bundle A of the MPA retrofit). The header
+        // bytes are never read here — both FindHeader and the VbrHeader ctor seek
+        // straight past FrameHeaderSize — so a zero-padded prefix of the right length
+        // preserves every offset the downstream code depends on (including the public
+        // VbrHeader.Offset, which callers like InspectorTree treat as relative to
+        // MpaFrame.StartOffset).
+        buffer.Write(new byte[MpaFrame.FrameHeaderSize]);
+        buffer.Write(firstFrame.AudioData);
 
         buffer.Seek(offset, SeekOrigin.Begin);
         var tagName = buffer.PeekString(4);

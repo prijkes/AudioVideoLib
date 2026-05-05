@@ -9,13 +9,13 @@ public sealed partial class MpaFrame
     private sealed class BitAllocation
     {
         /// <summary>
-        /// Gets or sets the number of bits allocated.
+        /// Gets the number of bits allocated.
         /// </summary>
-        public short BitsAllocated { get; set; }
+        public short BitsAllocated { get; init; }
 
         /// <summary>
-        /// Gets or sets the offset of the bits.
+        /// Gets the offset of the bits.
         /// </summary>
-        public short Offset { get; set; }
+        public short Offset { get; init; }
     }
 }

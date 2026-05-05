@@ -289,4 +289,13 @@ public sealed class RiffStream : IMediaContainer
     private static int ReadBeU16(byte[] b, int off) => (b[off] << 8) | b[off + 1];
 
     private static int ReadBeU32(byte[] b, int off) => (b[off] << 24) | (b[off + 1] << 16) | (b[off + 2] << 8) | b[off + 3];
+
+    /// <summary>
+    /// No-op. <see cref="RiffStream"/> does not hold an <see cref="ISourceReader"/>; the
+    /// implementation exists to satisfy <see cref="IMediaContainer"/>'s <see cref="IDisposable"/>
+    /// contract. See the source-stream lifetime contract on <see cref="IMediaContainer"/>.
+    /// </summary>
+    public void Dispose()
+    {
+    }
 }

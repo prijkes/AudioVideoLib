@@ -3,6 +3,7 @@
  */
 namespace AudioVideoLib.Tests;
 
+using System;
 using System.IO;
 
 using AudioVideoLib.Formats;
@@ -282,9 +283,14 @@ public class MatroskaStreamTests
     }
 
     [Fact]
-    public void EmptyMatroskaStream_ToByteArray_IsEmpty()
+    public void EmptyMatroskaStream_ToByteArray_ThrowsWhenSourceIsNull()
     {
+        // Phase 0 contract: ToByteArray must surface the detached-source state
+        // rather than silently returning an empty array.
         var stream = new MatroskaStream();
-        Assert.Empty(stream.ToByteArray());
+        var ex = Assert.Throws<InvalidOperationException>(stream.ToByteArray);
+        Assert.Equal(
+            "Source stream was detached or never read. WriteTo requires a live source.",
+            ex.Message);
     }
 }

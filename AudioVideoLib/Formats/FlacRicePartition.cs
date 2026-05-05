@@ -48,22 +48,4 @@ public sealed class FlacRicePartition
         }
         return ricePartition;
     }
-
-    //public byte[] ToByteArrray()
-    //{
-    //    using (StreamBuffer sb = new StreamBuffer())
-    //    {
-    //        sb.WriteBigEndianInt32(_riceParameter);
-    //        int riceParameter = _riceParameter & ((_codingMethod == FlacResidualCodingMethod.PartitionedRice) ? 0x1F : 0xF);
-    //        if ((riceParameter < 0xF) || ((_codingMethod == FlacResidualCodingMethod.PartitionedRice2) && (riceParameter < 0x1F)))
-    //        {
-    //            for ()
-    //        }
-    //        else
-    //        {
-
-    //        }
-    //        return sb.ToByteArray();
-    //    }
-    //}
 }

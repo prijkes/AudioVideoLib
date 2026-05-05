@@ -1,1 +1,7 @@
 A lot of test files can be downloaded from: http://samples.mplayerhq.hu/
+
+Per-format provenance fragments under AudioVideoLib.Tests/TestFiles/:
+  mpc/PROVENANCE.md      — Musepack samples; see fragment for source + license.
+  wavpack/PROVENANCE.md  — WavPack samples; see fragment for source + license.
+  tta/PROVENANCE.md      — TrueAudio samples; see fragment for source + license.
+  mac/PROVENANCE.md      — Monkey's Audio samples; see fragment for source + license.

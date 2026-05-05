@@ -45,6 +45,13 @@ public sealed partial class FlacFrame : IAudioFrame
     public long EndOffset { get; private set; }
 
     /// <summary>
+    /// Gets the frame length, in source-stream bytes
+    /// (<see cref="EndOffset"/> &#x2212; <see cref="StartOffset"/>).
+    /// Used by <see cref="IO.FlacStream.WriteTo"/> for byte-passthrough.
+    /// </summary>
+    public long Length => EndOffset - StartOffset;
+
+    /// <summary>
     /// Gets the FLAC stream.
     /// </summary>
     /// <value>
@@ -78,52 +85,6 @@ public sealed partial class FlacFrame : IAudioFrame
 
         var frame = new FlacFrame(flacStream);
         return frame.ReadFrame(stream as StreamBuffer ?? new StreamBuffer(stream)) ? frame : null;
-    }
-
-    /// <summary>
-    /// Returns the frame in a byte array.
-    /// </summary>
-    /// <returns>The frame in a byte array.</returns>
-    public byte[] ToByteArray()
-    {
-        var sb = new StreamBuffer();
-        sb.WriteBigEndianInt32(_header);
-        sb.Write(_sampleFrameNumberBytes);
-        var blockSize = (_header >> 12) & 0xF;
-        switch (blockSize)
-        {
-            case 0x06:
-                sb.WriteByte((byte)(BlockSize - 1));
-                break;
-
-            case 0x07:
-                sb.WriteBigEndianInt16((short)(BlockSize - 1));
-                break;
-        }
-        var samplingRate = (_header >> 8) & 0xF;
-        switch (samplingRate)
-        {
-            case 0x0C:
-                sb.WriteByte((byte)(SamplingRate / 1000));
-                break;
-
-            case 0x0D:
-                sb.WriteBigEndianInt16((short)SamplingRate);
-                break;
-
-            case 0x0E:
-                sb.WriteBigEndianInt16((short)(SamplingRate / 10));
-                break;
-        }
-        sb.WriteByte((byte)_crc8);
-
-        foreach (var subFrame in SubFrames)
-        {
-            sb.Write(subFrame.ToByteArray());
-        }
-
-        sb.WriteBigEndianInt16((short)_crc16);
-        return sb.ToByteArray();
     }
 
     ////------------------------------------------------------------------------------------------------------------------------------

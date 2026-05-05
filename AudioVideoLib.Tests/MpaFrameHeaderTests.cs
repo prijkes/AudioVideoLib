@@ -448,15 +448,19 @@ public class MpaFrameHeaderTests
     }
 
     [Fact]
-    public void ToByteArrayRoundTripsHeaderAndAudioData()
+    public void ReadFrameCapturesStartOffsetAndLength()
     {
         var original = BuildFrame(Mp3Mpeg1Layer3128At44100Stereo);
         var frame = ReadFrame(original);
 
         Assert.NotNull(frame);
-        var roundTripped = frame!.ToByteArray();
-        Assert.Equal(original.Length, roundTripped.Length);
-        Assert.Equal(original, roundTripped);
+
+        // After the byte-passthrough retrofit (Bundle A), MpaFrame no longer encodes
+        // itself. It captures (StartOffset, Length); the round-trip identity guarantee
+        // moves to MpaStreamTests.WriteTo_RoundTripsBytesIdentically (Red until Bundle B).
+        Assert.Equal(0L, frame!.StartOffset);
+        Assert.Equal((long)original.Length, frame.Length);
+        Assert.Equal(original.Length, frame.FrameLength);
     }
 
     [Fact]

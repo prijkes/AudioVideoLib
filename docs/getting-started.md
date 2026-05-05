@@ -50,6 +50,10 @@ Probes for container formats and returns whatever walker matches:
 - ASF / WMA / WMV
 - Matroska / WebM
 - DSF (Sony), DFF (Philips)
+- Musepack (`.mpc`, SV7 + SV8)
+- WavPack (`.wv`, including hybrid `.wvc` correction stream when present)
+- TrueAudio (`.tta`)
+- Monkey's Audio (`.ape`, integer + float)
 
 ```csharp
 fs.Position = 0;
