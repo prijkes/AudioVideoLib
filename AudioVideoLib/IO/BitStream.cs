@@ -134,6 +134,75 @@ public sealed class BitStream : Stream
     public int ReadBytes(int bytes) => bytes <= 0 ? 0 : _sb.ReadBigEndianInt(bytes);
 
     /// <summary>
+    /// Reads a single bit (MSB-first within the current byte).
+    /// </summary>
+    /// <returns>The bit value, 0 or 1.</returns>
+    public int ReadBit() => ReadInt32(1);
+
+    /// <summary>
+    /// Reads a unary-coded non-negative integer: counts leading zero bits up to and
+    /// including the terminating 1 bit, returning the number of zeros consumed.
+    /// </summary>
+    /// <returns>The number of leading zero bits before the terminating 1.</returns>
+    /// <remarks>
+    /// MSB-first within the current byte. Bit-aligned (does not skip to a byte
+    /// boundary). Used by RFC 9639 §11.25 (wasted-bits) and §11.30 (Rice MSBs).
+    /// </remarks>
+    public int ReadUnaryInt()
+    {
+        var count = 0;
+        while (ReadInt32(1) == 0)
+        {
+            count++;
+        }
+
+        return count;
+    }
+
+    /// <summary>
+    /// Advances the bit cursor to the next byte boundary, if not already aligned.
+    /// </summary>
+    /// <remarks>
+    /// FLAC uses bit-packed subframe payloads that must be padded with zero bits
+    /// up to the next byte boundary before the byte-aligned frame footer; this
+    /// helper performs that alignment.
+    /// </remarks>
+    public void AlignToByteBoundary()
+    {
+        if (_bitPosition == 0)
+        {
+            return;
+        }
+
+        // Currently positioned on the byte that still has unread bits; advance past it.
+        Position++;
+        _bitPosition = 0;
+    }
+
+    /// <summary>
+    /// Reads a signed integer of the specified width, sign-extending from the MSB.
+    /// </summary>
+    /// <param name="width">The width in bits (1..32).</param>
+    /// <returns>A sign-extended 32-bit integer.</returns>
+    public int ReadSignedInt32(int width)
+    {
+        if (width <= 0)
+        {
+            return 0;
+        }
+
+        var value = ReadInt32(width);
+        if (width >= 32)
+        {
+            return value;
+        }
+
+        // Sign-extend: if the MSB of the width-bit value is set, OR-in the high bits.
+        var signBit = 1 << (width - 1);
+        return (value & signBit) != 0 ? value | (-1 << width) : value;
+    }
+
+    /// <summary>
     /// Reads a 32-bit signed integer.
     /// </summary>
     /// <param name="width">The width.</param>

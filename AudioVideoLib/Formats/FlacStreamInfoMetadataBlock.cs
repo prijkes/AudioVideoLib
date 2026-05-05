@@ -93,6 +93,7 @@ public sealed class FlacStreamInfoMetadataBlock : FlacMetadataBlock
     /// The maximum sample rate is limited by the structure of frame headers to 655350Hz.
     /// Also, a value of 0 is invalid.
     /// </remarks>
+    // Per RFC 9639 §8.2: 20-bit sample-rate field at bits 44..63 of the 64-bit word.
     public int SampleRate => (int)((_samplesChannelRate >> 44) & 0xFFFFF);
 
     /// <summary>
@@ -110,6 +111,7 @@ public sealed class FlacStreamInfoMetadataBlock : FlacMetadataBlock
     /// <value>
     /// The bits per sample.
     /// </value>
+    // Per RFC 9639 §8.2: 5-bit (bits-per-sample - 1) field at bits 36..40 of the 64-bit word.
     public int BitsPerSample => (int)((_samplesChannelRate >> 36) & 0x1F) + 1;
 
     /// <summary>

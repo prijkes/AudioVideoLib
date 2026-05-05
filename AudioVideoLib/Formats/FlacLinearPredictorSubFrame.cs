@@ -3,7 +3,7 @@ namespace AudioVideoLib.Formats;
 using AudioVideoLib.IO;
 
 /// <summary>
-/// Class for FLAC audio frames.
+/// Represents a linear-predictor (LPC) subframe.
 /// </summary>
 public sealed class FlacLinearPredictorSubFrame(FlacFrame flacFrame) : FlacSubFrame(flacFrame)
 {
@@ -49,34 +49,43 @@ public sealed class FlacLinearPredictorSubFrame(FlacFrame flacFrame) : FlacSubFr
     /// </value>
     public FlacResidual Residual { get; private set; } = null!;
 
+    // RFC 9639 §11.25 + §11.29: subframe types 0b100000..0b111111 are LPC, with
+    // predictor order encoded as (type bits 6..1 & 0x1F) + 1, range 1..32.
     private int Order => ((Header >> 1) & 0x1F) + 1;
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
-    /// <summary>
-    /// Reads the specified stream buffer.
-    /// </summary>
-    /// <param name="sb">The stream buffer.</param>
-    /// <param name="sampeSize">Size of the sample.</param>
-    /// <param name="blockSize">Size of the block.</param>
-    protected override void Read(StreamBuffer sb, int sampeSize, int blockSize)
+    /// <inheritdoc />
+    /// <remarks>
+    /// RFC 9639 §11.29: an LPC subframe is composed of:
+    ///   - <c>order</c> warm-up samples of <c>sampleSize</c> bits each (signed);
+    ///   - 4 bits of precision (stored value + 1 = real precision in bits);
+    ///   - 5 bits of qlp coefficient shift (signed, two's-complement);
+    ///   - <c>order</c> predictor coefficients of <c>precision</c> bits each (signed);
+    ///   - the residual block.
+    /// </remarks>
+    protected override void Read(BitStream bs, int sampleSize, int blockSize)
     {
-        UnencodedWarmUpSamples = new int[Order];
-        for (var i = 0; i < Order; i++)
+        var order = Order;
+        UnencodedWarmUpSamples = new int[order];
+        for (var i = 0; i < order; i++)
         {
-            UnencodedWarmUpSamples[i] = sb.ReadBigEndianInt32();
+            UnencodedWarmUpSamples[i] = bs.ReadSignedInt32(sampleSize);
         }
 
-        var other = sb.ReadBigEndianInt16();
-        QuantizedCoefficientsPrecision = (other & 0xF) + 1;
-        QuantizedCoefficientShift = (other >> 4) & 0x1F;
+        // RFC 9639 §11.29: 4-bit precision; stored value + 1 = real precision.
+        // (All-ones 0xF is reserved/invalid per spec.)
+        QuantizedCoefficientsPrecision = bs.ReadInt32(4) + 1;
 
-        UnencodedPredictorCoefficients = new int[Order];
-        for (var i = 0; i < Order; i++)
+        // RFC 9639 §11.29: 5-bit signed (two's-complement) qlp shift.
+        QuantizedCoefficientShift = bs.ReadSignedInt32(5);
+
+        UnencodedPredictorCoefficients = new int[order];
+        for (var i = 0; i < order; i++)
         {
-            UnencodedPredictorCoefficients[i] = sb.ReadBigEndianInt32();
+            UnencodedPredictorCoefficients[i] = bs.ReadSignedInt32(QuantizedCoefficientsPrecision);
         }
 
-        Residual = FlacResidual.Read(sb, blockSize, Order);
+        Residual = FlacResidual.Read(bs, blockSize, order);
     }
 }

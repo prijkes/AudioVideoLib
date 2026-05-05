@@ -1,7 +1,6 @@
 namespace AudioVideoLib.Formats;
 
 using System;
-using System.IO;
 
 using AudioVideoLib.IO;
 
@@ -33,62 +32,72 @@ public partial class FlacSubFrame
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Reads a <see cref="FlacSubFrame" /> from a <see cref="Stream" />.
+    /// Reads a <see cref="FlacSubFrame" /> from a bit-cursor over the source stream.
     /// </summary>
-    /// <param name="stream">The stream.</param>
+    /// <param name="bs">The bit cursor positioned at the subframe header.</param>
     /// <param name="channel">The channel.</param>
     /// <param name="flacFrame">The FLAC frame.</param>
     /// <returns>
-    /// true if found; otherwise, null.
+    /// The parsed sub-frame, or <c>null</c> if the subframe header carries a reserved
+    /// type per RFC 9639 §11.25 (spec §7 strict-rejection).
     /// </returns>
-    /// <exception cref="System.ArgumentNullException">Thrown if stream is null.</exception>
-    public static FlacSubFrame ReadFrame(Stream stream, int channel, FlacFrame flacFrame)
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="bs"/> is null.</exception>
+    public static FlacSubFrame? ReadFrame(BitStream bs, int channel, FlacFrame flacFrame)
     {
-        ArgumentNullException.ThrowIfNull(stream);
+        ArgumentNullException.ThrowIfNull(bs);
         ArgumentNullException.ThrowIfNull(flacFrame);
-        return ReadSubFrame(stream as StreamBuffer ?? new StreamBuffer(stream), channel, flacFrame);
+        return ReadSubFrame(bs, channel, flacFrame);
     }
 
     /// <summary>
-    /// Reads the specified stream buffer.
+    /// Reads the subframe payload from the bit-cursor.
     /// </summary>
-    /// <param name="sb">The stream buffer.</param>
-    /// <param name="sampeSize">Size of the sample.</param>
-    /// <param name="blockSize">Size of the block.</param>
-    protected virtual void Read(StreamBuffer sb, int sampeSize, int blockSize)
+    /// <param name="bs">The bit cursor.</param>
+    /// <param name="sampleSize">Size of the sample, in bits.</param>
+    /// <param name="blockSize">Size of the block (samples per subframe).</param>
+    protected virtual void Read(BitStream bs, int sampleSize, int blockSize)
     {
     }
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
-    private static FlacSubFrame ReadSubFrame(StreamBuffer sb, int channel, FlacFrame flacFrame)
+    // RFC 9639 §11.25: subframe types 0x02-0x07 and 0x0D-0x1F are reserved.
+    // Per spec §7 strict-rejection rule, decoders MUST reject reserved types
+    // outright rather than relying on a downstream CRC check (~1-in-65k collision risk).
+    private static bool IsReservedType(int type) =>
+        type is (>= 0x02 and <= 0x07) or (>= 0x0D and <= 0x1F);
+
+    private static FlacSubFrame? ReadSubFrame(BitStream bs, int channel, FlacFrame flacFrame)
     {
-        ArgumentNullException.ThrowIfNull(sb);
+        ArgumentNullException.ThrowIfNull(bs);
         ArgumentNullException.ThrowIfNull(flacFrame);
 
         // Subframe header byte (RFC 9639 §11.25): 1 zero-pad bit + 6-bit type + 1-bit wasted-bits flag.
-        // Peek the first byte (not 4) and extract bits 1..6.
-        var headerByte = sb.PeekByte();
+        // Read the byte once (bit-aligned), classify the type, and dispatch to the
+        // correct concrete subframe. The dispatched instance re-uses the captured
+        // header byte via FlacFrame-scoped state set in ReadHeader.
+        var headerByte = bs.ReadInt32(8);
         var type = (headerByte >> 1) & 0x3F;
 
-        // Reserved subframe types (RFC 9639 §11.25): 0x02-0x07, 0x0D-0x1F. We surface
-        // them as a plain FlacSubFrame whose Read is a no-op; the frame-level CRC-16
-        // check then rejects the frame per spec §7 strict-rejection.
-        var frame = type switch
+        if (IsReservedType(type))
+        {
+            return null;
+        }
+
+        FlacSubFrame frame = type switch
         {
             0x00 => new FlacConstantSubFrame(flacFrame),
             0x01 => new FlacVerbatimSubFrame(flacFrame),
-            _ => type is >= 0x08 and <= 0x0C
-                                ? new FlacFixedSubFrame(flacFrame)
-                                : type >= 0x20 ? new FlacLinearPredictorSubFrame(flacFrame) : new FlacSubFrame(flacFrame),
+            >= 0x08 and <= 0x0C => new FlacFixedSubFrame(flacFrame),
+            _ => new FlacLinearPredictorSubFrame(flacFrame), // type >= 0x20
         };
-        frame.ReadSubFrame(sb, channel);
+        frame.ReadSubFrame(bs, channel, headerByte);
         return frame;
     }
 
-    private void ReadSubFrame(StreamBuffer sb, int channel)
+    private void ReadSubFrame(BitStream bs, int channel, int headerByte)
     {
-        ArgumentNullException.ThrowIfNull(sb);
+        ArgumentNullException.ThrowIfNull(bs);
 
         var sampleSize = FlacFrame.SampleSize;
         if (((FlacFrame.ChannelAssignment is FlacChannelAssignment.LeftSide or FlacChannelAssignment.MidSide) && channel == 1) || (FlacFrame.ChannelAssignment == FlacChannelAssignment.RightSide && channel == 0))
@@ -96,8 +105,8 @@ public partial class FlacSubFrame
             sampleSize++;
         }
 
-        ReadHeader(sb);
+        ReadHeader(bs, headerByte);
         SampleSize = sampleSize - WastedBits;
-        Read(sb, SampleSize, FlacFrame.BlockSize);
+        Read(bs, SampleSize, FlacFrame.BlockSize);
     }
 }

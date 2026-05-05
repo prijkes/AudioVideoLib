@@ -37,6 +37,7 @@ public sealed partial class FlacFrame
     /// <value>
     /// The blocking strategy.
     /// </value>
+    // Per RFC 9639 §11.21-§11.22: blocking-strategy bit (bit 16 of the 32-bit header word).
     public FlacBlockingStrategy BlockingStrategy => (FlacBlockingStrategy)((_header >> 16) & 0x01);
 
     /// <summary>

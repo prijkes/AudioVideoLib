@@ -103,11 +103,25 @@ public sealed partial class FlacFrame : IAudioFrame
             return false;
         }
 
+        // RFC 9639 §11.1: subframes are bit-packed; only the frame header and frame
+        // footer are byte-aligned. Wrap the byte cursor in a BitStream for the
+        // subframe-decoding region, then realign back to a byte boundary before
+        // reading the trailing CRC-16. Position propagates through both wrappers.
+        var bs = new BitStream(sb);
         for (var channel = 0; channel < Channels; channel++)
         {
-            var subFrame = FlacSubFrame.ReadFrame(sb, channel, this);
+            var subFrame = FlacSubFrame.ReadFrame(bs, channel, this);
+            if (subFrame is null)
+            {
+                // RFC 9639 §11.25 strict-rejection: reserved subframe type encountered.
+                return false;
+            }
+
             _subFrames.Add(subFrame);
         }
+
+        // RFC 9639 §11.30: zero-padding bits up to the next byte boundary precede the frame footer.
+        bs.AlignToByteBoundary();
 
         // Capture the frame payload [StartOffset, currentPosition) and feed it to Crc16.Calculate.
         // The previous implementation passed an empty span, making CRC validation a no-op.

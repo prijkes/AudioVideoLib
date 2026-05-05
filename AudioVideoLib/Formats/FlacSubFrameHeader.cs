@@ -50,34 +50,36 @@ public partial class FlacSubFrame
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
-    private void ReadHeader(StreamBuffer sb)
+    private void ReadHeader(BitStream bs, int headerByte)
     {
-        ArgumentNullException.ThrowIfNull(sb);
+        ArgumentNullException.ThrowIfNull(bs);
 
-        // RFC 9639 §11.25: subframe header is a SINGLE BYTE
+        // RFC 9639 §11.25: subframe header is a SINGLE BYTE (already consumed by ReadSubFrame):
         //   bit 7 (MSB) = zero-pad (must be 0; ignored on read for compatibility)
         //   bits 6..1   = subframe type (6 bits)
         //   bit 0 (LSB) = wasted-bits-per-sample flag
-        // If the wasted-bits flag is set, a unary-coded count follows: zero bits
-        // terminated by a 1. WastedBitsPerSample = leading-zero-count + 1.
-        Header = sb.ReadByte();
+        // If the wasted-bits flag is set, a unary-coded count follows (bit-packed):
+        // zero bits terminated by a 1. WastedBitsPerSample = leading-zero-count + 1.
+        Header = headerByte;
 
+        // RFC 9639 §11.25: wasted-bits flag is bit 0 (LSB) of the subframe header byte.
         WastedBits = Header & 0x01;
         if (WastedBits > 0)
         {
-            // ReadUnaryInt returns the leading-zero-count; the wasted-bits-per-
-            // sample value is that count + 1 (the terminating 1 represents one).
-            WastedBits = sb.ReadUnaryInt() + 1;
+            // Bit-aligned unary read on the BitStream: count of leading zeros before
+            // the terminating 1, plus 1 for the terminator bit itself.
+            WastedBits = bs.ReadUnaryInt() + 1;
         }
 
+        // RFC 9639 §11.25: subframe type lives in bits 6..1 of the header byte.
         var type = (Header >> 1) & 0x3F;
         Type = type switch
         {
             0x00 => FlacSubFrameType.Constant,
             0x01 => FlacSubFrameType.Verbatim,
-            _ => type is >= 0x08 and <= 0x0C
-                                ? FlacSubFrameType.Fixed
-                                : type >= 0x20 ? FlacSubFrameType.LinearPredictor : FlacSubFrameType.Reserved,
+            >= 0x08 and <= 0x0C => FlacSubFrameType.Fixed,
+            >= 0x20 => FlacSubFrameType.LinearPredictor,
+            _ => FlacSubFrameType.Reserved,
         };
     }
 }
