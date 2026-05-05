@@ -44,6 +44,10 @@ public partial class MainWindow : Window
             _lastSelectedPerFile.Clear();
         };
         HexViewControl.ByteClicked += HexView_ByteClicked;
+
+        // Populate Open Recent eagerly so the submenu has its items + chevron from
+        // first paint. Refreshed after every file open / clear.
+        PopulateRecentMenu();
     }
 
     protected override void OnSourceInitialized(EventArgs e)
@@ -235,6 +239,7 @@ public partial class MainWindow : Window
         {
             var dossier = await FileDossier.CreateAsync(path).ConfigureAwait(true);
             RecentFiles.Add(path);
+            PopulateRecentMenu();
 
             // Snapshot previous tab so switching back restores it.
             if (CurrentDossier != null)
@@ -1184,17 +1189,24 @@ public partial class MainWindow : Window
 
     private void FileMenu_SubmenuOpened(object sender, RoutedEventArgs e)
     {
-        // Compute the parent state here, not in RecentMenu_SubmenuOpened —
-        // a disabled MenuItem never opens its submenu, so the inner handler
-        // wouldn't fire to compute it.
-        RecentMenu.IsEnabled = RecentFiles.Load().Count > 0;
+        // Defensive refresh — covers the case where the recent.txt file was
+        // mutated by another process while the app was running.
+        PopulateRecentMenu();
     }
 
-    private void RecentMenu_SubmenuOpened(object sender, RoutedEventArgs e)
+    private void PopulateRecentMenu()
     {
         RecentMenu.Items.Clear();
 
         var recent = RecentFiles.Load();
+        if (recent.Count == 0)
+        {
+            // Disable the parent menu item entirely. No "(no recent files)" stub.
+            RecentMenu.IsEnabled = false;
+            return;
+        }
+
+        RecentMenu.IsEnabled = true;
         var displayCount = Math.Min(recent.Count, RecentMenuMaxItems);
 
         for (var i = 0; i < displayCount; i++)
@@ -1212,7 +1224,11 @@ public partial class MainWindow : Window
 
         RecentMenu.Items.Add(new Separator());
         var clear = new MenuItem { Header = "_Clear recent files" };
-        clear.Click += (_, _) => RecentFiles.Clear();
+        clear.Click += (_, _) =>
+        {
+            RecentFiles.Clear();
+            PopulateRecentMenu();
+        };
         RecentMenu.Items.Add(clear);
     }
 
