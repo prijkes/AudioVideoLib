@@ -33,6 +33,16 @@ public partial class MainWindow : Window
         InputBindings.Add(new KeyBinding(new RelayCommand(_ => ShowShortcuts()),    Key.F1,    ModifierKeys.None));
 
         Closing += (_, _) => WindowLayout.Save(this);
+        Closed += (_, _) =>
+        {
+            foreach (var f in _openFiles)
+            {
+                f.Dispose();
+            }
+
+            _openFiles.Clear();
+            _lastSelectedPerFile.Clear();
+        };
         HexViewControl.ByteClicked += HexView_ByteClicked;
     }
 
@@ -190,6 +200,7 @@ public partial class MainWindow : Window
 
         _openFiles.RemoveAt(idx);
         _lastSelectedPerFile.Remove(dossier);
+        dossier.Dispose();
 
         if (ReferenceEquals(dossier, CurrentDossier))
         {
@@ -1359,6 +1370,7 @@ public partial class MainWindow : Window
             UpdateStatus($"Loading {Path.GetFileName(dlg.FileName)}…");
             var other = await FileDossier.CreateAsync(dlg.FileName).ConfigureAwait(true);
             var diff = new DiffWindow(CurrentDossier, other) { Owner = this };
+            diff.Closed += (_, _) => other.Dispose();
             diff.Show();
             UpdateStatus("Compare ready");
         }

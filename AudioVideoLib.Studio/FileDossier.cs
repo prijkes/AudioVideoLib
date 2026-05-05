@@ -23,13 +23,14 @@ public enum TagKind
     MusicMatch,
 }
 
-public sealed class FileDossier : INotifyPropertyChanged
+public sealed class FileDossier : INotifyPropertyChanged, IDisposable
 {
     private List<IAudioTagOffset> _offsets = [];
     private readonly HashSet<IAudioTag> _newTags = new(ReferenceEqualityComparer.Instance);
     private readonly HashSet<IAudioTag> _removedTags = new(ReferenceEqualityComparer.Instance);
     private readonly List<ValidationIssue> _parseWarnings = [];
     private FlacStream? _flacStream;
+    private MediaContainers? _containers;
 
     /// <summary>
     /// Non-fatal errors collected while parsing the file — e.g. a single ID3v2 frame with an
@@ -231,6 +232,12 @@ public sealed class FileDossier : INotifyPropertyChanged
         TagKind.MusicMatch => "MusicMatch (file end)",
         _                 => kind.ToString(),
     };
+
+    public void Dispose()
+    {
+        _containers?.Dispose();
+        _containers = null;
+    }
 
     public void Save() => SaveTo(FilePath);
 
@@ -564,7 +571,8 @@ public sealed class FileDossier : INotifyPropertyChanged
             .DefaultIfEmpty(0L)
             .Max();
         fs.Position = startTagEnd;
-        var audio = MediaContainers.ReadStream(fs).FirstOrDefault();
+        _containers = MediaContainers.ReadStream(fs);
+        var audio = _containers.FirstOrDefault();
         AudioStream = audio;
         _flacStream = audio as FlacStream;
         IsFlac = _flacStream != null;
