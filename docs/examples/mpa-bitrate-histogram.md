@@ -27,7 +27,7 @@ var channels = new SortedDictionary<MpaChannelMode, int>();
 foreach (var path in Directory.EnumerateFiles(args[0], "*.mp3", SearchOption.AllDirectories))
 {
     using var fs = File.OpenRead(path);
-    var streams = MediaContainers.ReadStream(fs);
+    using var streams = MediaContainers.ReadStream(fs);
     var first = streams.OfType<MpaStream>().FirstOrDefault()?.Frames.FirstOrDefault();
     if (first is null) continue;
 

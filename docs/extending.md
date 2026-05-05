@@ -19,7 +19,10 @@ public sealed class MyCustomTagReader : IAudioTagReader
 public sealed class MyCustomTag : IAudioTag
 {
     public bool Equals(IAudioTag? other) { /* ... */ }
-    public byte[] ToByteArray() { /* ... */ }
+
+    // Implementers override WriteTo(Stream); ToByteArray() is a free
+    // extension method (IAudioTagExtensions) that buffers the result.
+    public void WriteTo(Stream destination) { /* serialize self into destination */ }
 }
 ```
 
@@ -34,38 +37,69 @@ tags.ReadTags(stream);
 ## Add a new container walker
 
 For container formats where metadata lives inside the structure (MP4,
-ASF, Matroska-style), implement `IMediaContainer`:
+ASF, Matroska-style, FLAC/MPA, the format-pack walkers), implement
+`IMediaContainer`. The interface extends `IDisposable`. Splice-style
+walkers — `Mp4Stream`, `MatroskaStream`, `AsfStream`, the retrofitted
+`FlacStream` / `MpaStream`, and the format-pack additions `MpcStream`,
+`WavPackStream`, `TtaStream`, `MacStream` — hold an `ISourceReader`
+populated at `ReadStream` time and consumed at `WriteTo` time:
 
 ```csharp
-public sealed class MyContainerStream : IMediaContainer
+public sealed class FoobarStream : IMediaContainer, IDisposable
 {
+    private ISourceReader? _source;
+
     public long StartOffset { get; private set; }
     public long EndOffset { get; private set; }
-    public long TotalDuration { get; /* ms */ }
-    public long TotalMediaSize { get; /* bytes */ }
-    public int MaxFrameSpacingLength { get; set; } = 0;
+    public long TotalDuration { get; private set; }
+    public long TotalMediaSize => EndOffset - StartOffset;
+    public int MaxFrameSpacingLength { get; set; }
 
     public bool ReadStream(Stream stream)
     {
-        ArgumentNullException.ThrowIfNull(stream);
-        // Probe; return false if not our format.
-        // Otherwise walk the structure, populating your own properties.
+        // 1. Detect magic at stream.Position. Return false if not your format.
+        // 2. Capture stream position; build _source = new StreamSourceReader(stream, leaveOpen: true).
+        // 3. Walk the format, populating per-frame offset/length lists.
+        // 4. Set StartOffset, EndOffset, TotalDuration. Return true.
     }
 
-    public byte[] ToByteArray() => /* serialize */;
+    public void WriteTo(Stream destination)
+    {
+        ArgumentNullException.ThrowIfNull(destination);
+        if (_source is null)
+        {
+            throw new InvalidOperationException(
+                "Source stream was detached or never read. WriteTo requires a live source.");
+        }
+        // Splice unchanged byte ranges from _source to destination.
+        // For metadata edits, emit the modified region from the parsed model;
+        // for everything else, _source.CopyTo(offset, length, destination).
+    }
+
+    public void Dispose() { _source?.Dispose(); _source = null; }
 }
 ```
 
-Register with the `MediaContainers` factory — add your type to the
-dictionary in `AudioVideoLib/IO/MediaContainers.cs`:
+Key points:
 
-```csharp
-private readonly Dictionary<Type, Func<IMediaContainer>> _supportedStreams = new()
-{
-    // ...
-    { typeof(MyContainerStream), () => new MyContainerStream() },
-};
-```
+- The walker holds an `ISourceReader` populated at `ReadStream` time
+  and consumed at `WriteTo` time. The caller must keep the source
+  `Stream` alive between `ReadStream` and `WriteTo` — the walker reads
+  from it on demand to splice unchanged byte ranges. Wrap callers in a
+  `using` block that covers both calls.
+- `WriteTo` throws `InvalidOperationException` with the canonical
+  message `"Source stream was detached or never read. WriteTo requires
+  a live source."` if `_source` is null. This matches the
+  `IMediaContainer` xmldoc contract.
+- Audio is byte-passthrough: per-frame audio bytes are spliced
+  verbatim from the source. The library does not re-encode audio
+  anywhere; only the metadata region (tags, headers that need their
+  size/CRC/offset fields rewritten) is emitted from the parsed model.
+- Implementers override `void WriteTo(Stream destination)`. The
+  buffer-shaped helper `byte[] ToByteArray()` is an extension method on
+  `IMediaContainerExtensions` that callers get for free; concrete
+  classes may also expose an instance `ToByteArray()` for a faster
+  direct path (see the existing splice rewriters for examples).
 
 ## Add an ID3v2 frame type
 

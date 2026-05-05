@@ -25,7 +25,7 @@ foreach (var path in Directory.EnumerateFiles(args[0]).OrderBy(p => p))
 
     var tags = AudioTags.ReadStream(fs);
     fs.Position = 0;
-    var streams = MediaContainers.ReadStream(fs);
+    using var streams = MediaContainers.ReadStream(fs);
 
     var title  = TitleFromTags(tags) ?? TitleFromContainers(streams);
     var artist = ArtistFromTags(tags) ?? ArtistFromContainers(streams);

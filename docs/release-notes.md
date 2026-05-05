@@ -56,6 +56,13 @@ Change categories follow [Keep a Changelog](https://keepachangelog.com/):
 - **`FlacCueSheetMetadataBlock`** — reserved padding 256 → 258 bytes; TrackType/PreEmphasis flag bits at MSB (bits 7/6), not LSB; writer's `&` typo for flag combine corrected to `|`.
 - **`VorbisComments.ToByteArray`** — removed redundant outer length prefix; each `VorbisComment` already self-prefixes per the Vorbis comment spec.
 
+#### New walker bugs
+
+- **`MpcStream` SV8 `EncoderVersion` byte-shift** — major version is now emitted in bits 31-24 (was 23-16) per the reference decoder `streaminfo.c:228-230`. Decoded encoder versions are no longer scaled by 1/256 of the intended value.
+- **`WavPackSubBlock.UniqueId` mask widened from 5 bits to 6** — IDs ≥ `0x20` such as `ID_RIFF_HEADER` no longer collide with low IDs after the mask, so RIFF / channel-info / Wavpack-extra sub-blocks are now identified correctly.
+- **`MacSeekEntry.FileOffset` widened to `long` with C++-style wrap correction** — APE files larger than 4 GiB no longer have garbled frame offsets when the 32-bit seek-table entries wrap.
+- **`VorbisComments.ToByteArray`** — no longer writes a redundant outer length prefix (cross-listed under FLAC parser revival above; the same fix benefits standalone OGG-Vorbis comments and FLAC-embedded VORBIS_COMMENT blocks).
+
 ---
 
 ## 0.7.0 — 2026-04-27

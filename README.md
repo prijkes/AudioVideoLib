@@ -40,6 +40,10 @@ dotnet add package AudioVideoLib
 * ASF / WMA / WMV (Header Object walker)
 * Matroska / WebM (EBML walker)
 * DSF / DFF (DSD audio)
+* Musepack (`.mpc`, SV7 + SV8)
+* WavPack (`.wv`, including hybrid `.wvc` correction stream when present)
+* TrueAudio (`.tta`)
+* Monkey's Audio (`.ape`, integer + float)
 
 ### Metadata / tags
 * APE Tag (v1, v2)

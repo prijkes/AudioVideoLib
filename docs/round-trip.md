@@ -5,12 +5,24 @@ the guarantees and limitations per format.
 
 ## General rule
 
-Every tag / chunk / box type has a `ToByteArray()` (or a container-level
-writer). For a tag that is read and immediately written back with no
-changes, the bytes are byte-identical **unless a section below says
-otherwise**. When fields are edited, the library re-encodes only the
-changed field and rewrites the enclosing container's size / count /
-offset fields.
+All container walkers in this library use byte-passthrough save: audio
+frames are spliced verbatim from the source stream to the destination,
+not re-emitted from the parsed model. There is no audio re-encoding
+anywhere in the library. Tag edits flow through `AudioTags` (for flat,
+position-based tags like ID3 / APE / Lyrics3 / MusicMatch) or through
+the per-walker metadata model (for container-embedded tags like MP4
+ilst, ASF Content Description, Matroska Tags, FLAC Vorbis Comments),
+and the surrounding audio bytes are byte-identical.
+
+For a tag that is read and immediately written back with no changes,
+the bytes are byte-identical **unless a section below says otherwise**.
+When fields are edited, the library re-encodes only the changed field
+and rewrites the enclosing container's size / count / offset fields.
+
+Implementers override `void WriteTo(Stream destination)` — the
+canonical serialisation primitive on `IAudioTag` / `IMediaContainer`.
+Callers can use the consumer-facing `obj.ToByteArray()` extension
+method when they want the result as a `byte[]`.
 
 ## ID3v1
 
@@ -64,8 +76,10 @@ before the `LYRICS200` footer) is recomputed on write.
 
 ## MusicMatch
 
-Read-only in the Studio. Library exposes the model but no Save-friendly
-editor ships yet.
+The library supports both read and write — `MusicMatchTag` round-trips
+faithfully, and `info.Save(path)` persists edits. The Studio's GUI
+editor for MusicMatch fields hasn't shipped yet; callers must edit via
+the model directly.
 
 ## Vorbis Comments
 
@@ -85,7 +99,8 @@ editor ships yet.
 
 ```csharp
 // Splice an MP4 metadata change without touching the audio sample tables.
-var mp4 = MediaContainers.ReadStream(fs).OfType<Mp4Stream>().Single();
+using var streams = MediaContainers.ReadStream(fs);
+var mp4 = streams.OfType<Mp4Stream>().Single();
 mp4.Tag.Title = "Edited";
 File.WriteAllBytes("out.m4a", mp4.ToByteArray());  // entire file, with ilst rewritten
 ```

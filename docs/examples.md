@@ -19,6 +19,7 @@ the format pages — see [Tag formats](tag-formats.md) and
 | [Bulk-remove an ID3v2 frame](examples/bulk-remove-frame.md) | strip every `PRIV` / `GEOB` across a library; `RemoveFrames` + `AudioInfo.Save` |
 | [Set the ID3v2 padding budget](examples/edit-id3v2-padding.md) | `Id3v2Tag.PaddingSize` for in-place edits later |
 | [Inspect a file's layout](examples/inspect-layout.md) | print every tag + container offset / size as a layout map |
+| [Inspect a Musepack / WavPack / TrueAudio / Monkey's Audio file](examples/inspect-layout.md) | the layout-map example also covers `MpcStream`, `WavPackStream`, `TtaStream`, `MacStream` — `MediaContainers.ReadStream` returns the right walker for each |
 | [MP3 bitrate / channel-mode audit](examples/mpa-bitrate-histogram.md) | walk a library, histogram first-frame `Bitrate` / `ChannelMode` |
 | [Find files missing required tags](examples/find-missing-tags.md) | gate a release on Title / Artist / Album / Cover presence |
 | [Register a custom tag reader](examples/custom-tag-reader.md) | `IAudioTagReader` + `AudioTags.AddReader<TR, TT>()` |

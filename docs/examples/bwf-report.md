@@ -14,7 +14,7 @@ using AudioVideoLib.IO;
 foreach (var path in Directory.EnumerateFiles(args[0], "*.wav"))
 {
     using var fs = File.OpenRead(path);
-    var streams = MediaContainers.ReadStream(fs);
+    using var streams = MediaContainers.ReadStream(fs);
     var riff = streams.OfType<RiffStream>().FirstOrDefault();
     if (riff?.BextChunk is not { } bext)
     {

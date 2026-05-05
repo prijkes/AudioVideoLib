@@ -30,7 +30,7 @@ foreach (var offset in tags)
 }
 
 fs.Position = 0;
-var streams = MediaContainers.ReadStream(fs);
+using var streams = MediaContainers.ReadStream(fs);
 foreach (var stream in streams)
 {
     Console.WriteLine($"{stream.GetType().Name}: {stream.TotalDuration:N0} ms");

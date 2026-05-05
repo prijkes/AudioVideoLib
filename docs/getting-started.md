@@ -57,7 +57,7 @@ Probes for container formats and returns whatever walker matches:
 
 ```csharp
 fs.Position = 0;
-var streams = MediaContainers.ReadStream(fs);
+using var streams = MediaContainers.ReadStream(fs);
 
 foreach (var stream in streams)
 {
@@ -133,7 +133,7 @@ var title = id3v2?.TrackTitle?.Values.FirstOrDefault();
 var artist = id3v2?.Artist?.Values.FirstOrDefault();
 
 fs.Position = 0;
-var streams = MediaContainers.ReadStream(fs);
+using var streams = MediaContainers.ReadStream(fs);
 var totalMs = streams.Sum(s => s.TotalDuration);
 
 Console.WriteLine($"{Path.GetFileName(path)}  {artist} – {title}  ({totalMs} ms)");

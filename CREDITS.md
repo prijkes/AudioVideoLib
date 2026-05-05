@@ -78,10 +78,23 @@ The following references were used during the development of AudioVideoLib.
 - <http://xiph.org/flac/format.html#seekpoint>
 - <http://flac.sourceforge.net/format.html>
 - <http://py.thoulon.free.fr/>
+- Format spec authoritative since 2024: RFC 9639 (<https://datatracker.ietf.org/doc/rfc9639/>).
 
 ## Musepack
 
 - <http://forum.musepack.net/showthread.php?t=46>
+
+## WavPack
+
+- David Bryant; xiph project. Reference at <https://www.wavpack.com/>. License: BSD-3.
+
+## TrueAudio
+
+- Aleksander Djuric. Reference at <http://tausoft.org/>. License: LGPL.
+
+## Monkey's Audio (MAC)
+
+- Matthew Ashland. Reference at <https://www.monkeysaudio.com/>. License: closed-source freely-distributable (Monkey's Audio Source Code License — see the bundled SDK `License.txt` for the authoritative terms).
 
 ## CRC
 

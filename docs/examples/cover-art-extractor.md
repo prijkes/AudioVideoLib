@@ -24,7 +24,7 @@ Directory.CreateDirectory(outDir);
 using var fs = File.OpenRead(inputPath);
 var tags = AudioTags.ReadStream(fs);
 fs.Position = 0;
-var streams = MediaContainers.ReadStream(fs);
+using var streams = MediaContainers.ReadStream(fs);
 
 var stem = Path.GetFileNameWithoutExtension(inputPath);
 var written = 0;

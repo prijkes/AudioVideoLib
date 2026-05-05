@@ -14,7 +14,7 @@ using AudioVideoLib.IO;
 foreach (var path in Directory.EnumerateFiles(args[0], "*.mp3"))
 {
     using var fs = File.OpenRead(path);
-    var streams = MediaContainers.ReadStream(fs);
+    using var streams = MediaContainers.ReadStream(fs);
     var mpa = streams.OfType<MpaStream>().FirstOrDefault();
     if (mpa is null)
     {

@@ -23,7 +23,7 @@ using var fs = File.OpenRead(args[0]);
 var tags = AudioTags.ReadStream(fs);
 
 fs.Position = 0;
-var streams = MediaContainers.ReadStream(fs);
+using var streams = MediaContainers.ReadStream(fs);
 
 Console.WriteLine($"== {Path.GetFileName(args[0])} ({fs.Length:N0} bytes) ==");
 
