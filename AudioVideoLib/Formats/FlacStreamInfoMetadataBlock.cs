@@ -94,7 +94,7 @@ public sealed class FlacStreamInfoMetadataBlock : FlacMetadataBlock
     /// Also, a value of 0 is invalid.
     /// </remarks>
     // Per RFC 9639 §8.2: 20-bit sample-rate field at bits 44..63 of the 64-bit word.
-    public int SampleRate => (int)((_samplesChannelRate >> 44) & 0xFFFFF);
+    public int SampleRate => (int)((_samplesChannelRate >> 44) & 0xFFFFF); // RFC 9639 §8.2: 20-bit sample-rate field
 
     /// <summary>
     /// Gets the number of channels. FLAC supports from 1 to 8 channels.
@@ -103,7 +103,7 @@ public sealed class FlacStreamInfoMetadataBlock : FlacMetadataBlock
     /// The the number of channels. FLAC supports from 1 to 8 channels.
     /// </value>
     // Per RFC 9639 §8.2: 3-bit channels-1 field at bits 41..43 of the 64-bit word.
-    public int Channels => (int)(((_samplesChannelRate >> 41) & 0x07) + 1);
+    public int Channels => (int)(((_samplesChannelRate >> 41) & 0x07) + 1); // RFC 9639 §8.2: 3-bit (channels - 1) field
 
     /// <summary>
     /// Gets the bits per sample.
@@ -112,7 +112,7 @@ public sealed class FlacStreamInfoMetadataBlock : FlacMetadataBlock
     /// The bits per sample.
     /// </value>
     // Per RFC 9639 §8.2: 5-bit (bits-per-sample - 1) field at bits 36..40 of the 64-bit word.
-    public int BitsPerSample => (int)((_samplesChannelRate >> 36) & 0x1F) + 1;
+    public int BitsPerSample => (int)((_samplesChannelRate >> 36) & 0x1F) + 1; // RFC 9639 §8.2: 5-bit (bits-per-sample - 1) field
 
     /// <summary>
     /// Gets the total samples in the stream.

@@ -53,7 +53,7 @@ public sealed class FlacLinearPredictorSubFrame(FlacFrame flacFrame) : FlacSubFr
 
     // RFC 9639 §11.25 + §11.29: subframe types 0b100000..0b111111 are LPC, with
     // predictor order encoded as (type bits 6..1 & 0x1F) + 1, range 1..32.
-    private int Order => ((Header >> 1) & 0x1F) + 1;
+    private int Order => ((Header >> 1) & 0x1F) + 1; // RFC 9639 §11.29: LPC order = (subframe-type bits 6..1 & 0x1F) + 1
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

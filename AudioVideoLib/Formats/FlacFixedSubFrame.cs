@@ -27,7 +27,7 @@ public sealed class FlacFixedSubFrame(FlacFrame flacFrame) : FlacSubFrame(flacFr
 
     // RFC 9639 §11.25 + §11.28: subframe types 0b001000..0b001100 are FIXED, with
     // predictor order encoded as (type - 0b001000), i.e. type bits 6..1 minus 8.
-    private int Order => ((Header >> 1) & 0x3F) - 0x08;
+    private int Order => ((Header >> 1) & 0x3F) - 0x08; // RFC 9639 §11.28: fixed-predictor order = subframe-type bits 6..1 minus 8
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

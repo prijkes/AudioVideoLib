@@ -73,8 +73,8 @@ public sealed class FlacCueSheetMetadataBlock : FlacMetadataBlock
                 //   bit 7 = track-type (0 = audio, 1 = non-audio),
                 //   bit 6 = pre-emphasis flag,
                 //   bits 5..0 = reserved (must be zero, ignored on read).
-                var trackType = (FlacCueSheetTrackType)((flags >> 7) & 0x01);
-                var preEmphasis = (FlacCueSheetPreEmphasis)((flags >> 6) & 0x01);
+                var trackType = (FlacCueSheetTrackType)((flags >> 7) & 0x01); // RFC 9639 §8.7: track-type bit (0 = audio, 1 = non-audio)
+                var preEmphasis = (FlacCueSheetPreEmphasis)((flags >> 6) & 0x01); // RFC 9639 §8.7: pre-emphasis flag
                 var reserved = new byte[13];
                 stream.Read(reserved, 13);
                 var trackIndexCount = stream.ReadByte();

@@ -77,7 +77,7 @@ public partial class FlacSubFrame
         // correct concrete subframe. The dispatched instance re-uses the captured
         // header byte via FlacFrame-scoped state set in ReadHeader.
         var headerByte = bs.ReadInt32(8);
-        var type = (headerByte >> 1) & 0x3F;
+        var type = (headerByte >> 1) & 0x3F; // RFC 9639 §11.25: 6-bit subframe-type field (bits 6..1 of header byte)
 
         if (IsReservedType(type))
         {

@@ -72,7 +72,7 @@ public partial class FlacSubFrame
         }
 
         // RFC 9639 §11.25: subframe type lives in bits 6..1 of the header byte.
-        var type = (Header >> 1) & 0x3F;
+        var type = (Header >> 1) & 0x3F; // RFC 9639 §11.25: 6-bit subframe-type field (bits 6..1 of header byte)
         Type = type switch
         {
             0x00 => FlacSubFrameType.Constant,

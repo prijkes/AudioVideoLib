@@ -38,7 +38,7 @@ public sealed partial class FlacFrame
     /// The blocking strategy.
     /// </value>
     // Per RFC 9639 §11.21-§11.22: blocking-strategy bit (bit 16 of the 32-bit header word).
-    public FlacBlockingStrategy BlockingStrategy => (FlacBlockingStrategy)((_header >> 16) & 0x01);
+    public FlacBlockingStrategy BlockingStrategy => (FlacBlockingStrategy)((_header >> 16) & 0x01); // RFC 9639 §11.21: blocking-strategy bit
 
     /// <summary>
     /// Gets the size of the block in inter-channel samples.
@@ -192,14 +192,14 @@ public sealed partial class FlacFrame
         // FrameSync (0x3FFE) requires the LSB of those 14 bits to be 0,
         // rejecting illegal 0x3FFF and the EOF sentinel 0xFFFFFFFF.
         _header = sb.ReadBigEndianInt32();
-        if (((_header >> 18) & 0x3FFF) != FrameSync)
+        if (((_header >> 18) & 0x3FFF) != FrameSync) // RFC 9639 §11.21: 14-bit frame sync code
         {
             return false;
         }
 
         // RFC 9639 §11.21: reserved bit immediately after the 14-bit sync
         // (bit 17 of the 32-bit BE header word) MUST be 0.
-        if (((_header >> 17) & 0x01) != 0)
+        if (((_header >> 17) & 0x01) != 0) // RFC 9639 §11.21: reserved bit immediately after sync code (must be 0)
         {
             return false;
         }
@@ -236,7 +236,7 @@ public sealed partial class FlacFrame
                 -0111 : get 16 bit (block size - 1) from end of header
                 -1000-1111 : 256 * (2 ^ (n - 8)) samples, i.e. 256/512/1024/2048/4096/8192/16384/3276
         */
-        var blockSize = (_header >> 12) & 0xF;
+        var blockSize = (_header >> 12) & 0xF; // RFC 9639 §11.21: 4-bit block-size index
         BlockSize = blockSize switch
         {
             0x01 => 192,
@@ -265,7 +265,7 @@ public sealed partial class FlacFrame
                 -1110 : get 16 bit sample rate (in tens of Hz) from end of header
                 -1111 : invalid, to prevent sync-fooling string of 1s
         */
-        var samplingRate = (_header >> 8) & 0xF;
+        var samplingRate = (_header >> 8) & 0xF; // RFC 9639 §11.21: 4-bit sample-rate index
         SamplingRate = samplingRate == 0x00
             ? (FlacStream.StreamInfoMetadataBlocks.Any()
                    ? FlacStream.StreamInfoMetadataBlocks.First().SampleRate
@@ -288,7 +288,7 @@ public sealed partial class FlacFrame
                 -1010 : mid/side stereo: channel 0 is the mid(average) channel, channel 1 is the side(difference) channel
                 -1011-1111 : reserved
         */
-        var channelAssignment = (_header >> 4) & 0xF;
+        var channelAssignment = (_header >> 4) & 0xF; // RFC 9639 §11.21: 4-bit channel-assignment field
         if (channelAssignment < 0x08)
         {
             ChannelAssignment = FlacChannelAssignment.Independent;
@@ -317,7 +317,7 @@ public sealed partial class FlacFrame
                 -110 : 24 bits per sample
                 -111 : reserved
         */
-        var sampleSize = (_header >> 0x01) & 0x07;
+        var sampleSize = (_header >> 0x01) & 0x07; // RFC 9639 §11.21: 3-bit sample-size index
         SampleSize = sampleSize == 0x00
                          ? (FlacStream.StreamInfoMetadataBlocks.Any()
                                 ? FlacStream.StreamInfoMetadataBlocks.First().BitsPerSample
