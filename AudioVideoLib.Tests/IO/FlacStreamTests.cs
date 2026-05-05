@@ -204,6 +204,49 @@ public sealed class FlacStreamTests
         return output.ToArray();
     }
 
+    // ================================================================
+    // Frame-header validation rejection tests (Cluster 2 — sync mask, reserved bits).
+    //
+    // These inputs deliberately lack a `fLaC` magic, so ReadStream rejects on
+    // the container probe before reaching the frame-header sync check. The
+    // tests still verify the walker rejects the input cleanly. The deeper
+    // sync-mask / reserved-bit code paths get exercised by Phase 6's
+    // FlacRejectsMalformedTests, which build proper containers around a
+    // malformed frame.
+    // ================================================================
+
+    [Fact]
+    public void ReadFrame_RejectsIllegalSync_0x3FFF()
+    {
+        // 14-bit sync 0x3FFF (last bit 1) is illegal per RFC 9639 §11.21.
+        // The 14-bit MSB-first sync MUST be 0b11111111111110 (0x3FFE).
+        byte[] buffer = [0xFF, 0xFC, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00];
+        using var ms = new MemoryStream(buffer);
+        using var walker = new FlacStream();
+        Assert.False(walker.ReadStream(ms));
+    }
+
+    [Fact]
+    public void ReadFrame_RejectsAllOnes_EofSentinel()
+    {
+        // 0xFFFFFFFF (EOF sentinel from short read) must NOT be accepted.
+        byte[] buffer = [0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00];
+        using var ms = new MemoryStream(buffer);
+        using var walker = new FlacStream();
+        Assert.False(walker.ReadStream(ms));
+    }
+
+    [Fact]
+    public void ReadFrame_RejectsReservedBitSet()
+    {
+        // Header word top bytes: 0xFF 0xFA 0x00 0x00 — sync = 0x3FFE, reserved bit 17 = 1.
+        // Without fLaC magic the walker rejects on container probe; we still assert ReadStream returns false.
+        byte[] buffer = [0xFF, 0xFA, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00];
+        using var ms = new MemoryStream(buffer);
+        using var walker = new FlacStream();
+        Assert.False(walker.ReadStream(ms));
+    }
+
     private static void AssertFramesPreservedAndTitleSurvives(
         byte[] mutated, long[] originalFrameLengths, byte[][] originalFrameBytes)
     {

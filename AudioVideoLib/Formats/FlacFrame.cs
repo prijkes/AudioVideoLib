@@ -13,9 +13,12 @@ using AudioVideoLib.IO;
 public sealed partial class FlacFrame : IAudioFrame
 {
     /// <summary>
-    /// The frame sync.
+    /// The 14-bit frame sync code, per RFC 9639 §11.21:
+    /// <c>0b11111111111110</c> (= <c>0x3FFE</c>). The trailing zero is mandatory
+    /// — it disambiguates from a run of ones. Use mask <c>0x3FFF</c> when
+    /// extracting to verify the LSB really is zero.
     /// </summary>
-    private const int FrameSync = 0x7FFE;
+    private const int FrameSync = 0x3FFE;
 
     private readonly List<FlacSubFrame> _subFrames = [];
 

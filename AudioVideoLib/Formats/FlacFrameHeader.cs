@@ -1,7 +1,6 @@
 namespace AudioVideoLib.Formats;
 
 using System;
-using System.IO;
 using System.Linq;
 
 using AudioVideoLib.Cryptography;
@@ -187,9 +186,19 @@ public sealed partial class FlacFrame
 
         var startPosition = sb.Position;
 
-        // Sync code '11111111111110'
+        // Sync code '11111111111110' (14 bits) per RFC 9639 §11.21.
+        // The mask 0x3FFF extracts exactly 14 bits; the comparison against
+        // FrameSync (0x3FFE) requires the LSB of those 14 bits to be 0,
+        // rejecting illegal 0x3FFF and the EOF sentinel 0xFFFFFFFF.
         _header = sb.ReadBigEndianInt32();
-        if (((_header >> 18) & FrameSync) != FrameSync)
+        if (((_header >> 18) & 0x3FFF) != FrameSync)
+        {
+            return false;
+        }
+
+        // RFC 9639 §11.21: reserved bit immediately after the 14-bit sync
+        // (bit 17 of the 32-bit BE header word) MUST be 0.
+        if (((_header >> 17) & 0x01) != 0)
         {
             return false;
         }
@@ -314,6 +323,13 @@ public sealed partial class FlacFrame
                                 : 0)
                          : SampleSizes[sampleSize];
 
+        // RFC 9639 §11.21: trailing reserved bit (bit 0 of the 32-bit BE
+        // header word) MUST be 0.
+        if ((_header & 0x01) != 0)
+        {
+            return false;
+        }
+
         // CRC-8 is computed over the frame-header bytes BEFORE the CRC byte itself
         // (FLAC spec: "an 8-bit CRC of the frame header up to and including the byte
         // before the CRC, initialized to 0"). Capture the header range first, then
@@ -326,6 +342,10 @@ public sealed partial class FlacFrame
         sb.Position = headerEnd;
         _crc8 = sb.ReadByte();
         var crc8 = Crc8.Calculate(crcBytes);
-        return _crc8 == crc8 ? true : throw new InvalidDataException("Corrupt CRC8.");
+
+        // Strict-rejection rule (spec §7): CRC mismatch ⇒ header is invalid.
+        // Mirrors the CRC-16 strict-rejection conversion in Cluster 1's FlacFrame
+        // footer-CRC fix; walkers must return false rather than throw.
+        return _crc8 == crc8;
     }
 }
