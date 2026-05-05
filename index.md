@@ -49,4 +49,4 @@ foreach (var stream in streams)
 
 ## License
 
-MIT — see [LICENSE](https://github.com/prijkes/AudioVideoLib/blob/master/LICENSE).
+MIT — see [LICENSE](https://github.com/audiovideolib/AudioVideoLib/blob/master/LICENSE).

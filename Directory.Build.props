@@ -13,12 +13,12 @@
 
   <!-- Shared NuGet package metadata. -->
   <PropertyGroup>
-    <Authors>prijkes</Authors>
-    <Company>prijkes</Company>
-    <Copyright>Copyright © prijkes</Copyright>
+    <Authors>AudioVideoLib</Authors>
+    <Company>AudioVideoLib</Company>
+    <Copyright>Copyright © AudioVideoLib</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/prijkes/AudioVideoLib</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/prijkes/AudioVideoLib.git</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/audiovideolib/AudioVideoLib</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/audiovideolib/AudioVideoLib.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <IncludeSymbols>true</IncludeSymbols>

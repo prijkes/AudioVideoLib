@@ -42,7 +42,7 @@
       "_enableSearch": true,
       "_enableNewTab": true,
       "_gitContribute": {
-        "repo": "https://github.com/prijkes/AudioVideoLib",
+        "repo": "https://github.com/audiovideolib/AudioVideoLib",
         "branch": "master"
       }
     },
