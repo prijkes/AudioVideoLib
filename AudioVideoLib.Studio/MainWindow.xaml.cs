@@ -1465,14 +1465,7 @@ public partial class MainWindow : Window
 
     private void About_Click(object sender, RoutedEventArgs e)
     {
-        MessageBox.Show(
-            this,
-            "AudioVideoLib Studio\n\n" +
-            "Audio file inspector and tag editor for developers.\n" +
-            "Editable: ID3v1, ID3v2, APE, Lyrics3v2, Vorbis comments.",
-            "About",
-            MessageBoxButton.OK,
-            MessageBoxImage.Information);
+        new AboutDialog { Owner = this }.ShowDialog();
     }
 
     private void Window_DragOver(object sender, DragEventArgs e)

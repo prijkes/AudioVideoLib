@@ -1,0 +1,61 @@
+<Window x:Class="AudioVideoLib.Studio.AboutDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="About AudioVideoLib Studio"
+        Width="440"
+        SizeToContent="Height"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False">
+    <DockPanel Margin="20">
+        <Button DockPanel.Dock="Bottom"
+                Content="OK"
+                HorizontalAlignment="Right"
+                Padding="20,4"
+                Margin="0,16,0,0"
+                IsDefault="True"
+                IsCancel="True"
+                Click="Close_Click" />
+
+        <StackPanel>
+            <TextBlock Text="AudioVideoLib Studio"
+                       FontSize="18"
+                       FontWeight="SemiBold"
+                       Foreground="{DynamicResource TextPrimaryBrush}" />
+
+            <TextBlock x:Name="VersionText"
+                       FontSize="11"
+                       Margin="0,2,0,12"
+                       Foreground="{DynamicResource TextSecondaryBrush}" />
+
+            <TextBlock Text="Audio file inspector and tag editor for developers."
+                       TextWrapping="Wrap"
+                       Margin="0,0,0,8"
+                       Foreground="{DynamicResource TextPrimaryBrush}" />
+
+            <TextBlock TextWrapping="Wrap"
+                       Foreground="{DynamicResource TextPrimaryBrush}">
+                <Run Text="Editable tag formats:" FontWeight="SemiBold" />
+                <Run Text=" ID3v1, ID3v2, APE, Lyrics3v2, Vorbis comments." />
+            </TextBlock>
+
+            <TextBlock TextWrapping="Wrap"
+                       Margin="0,8,0,0"
+                       Foreground="{DynamicResource TextPrimaryBrush}">
+                <Run Text="Container formats:" FontWeight="SemiBold" />
+                <Run Text=" MPEG audio, FLAC, RIFF/WAV, AIFF, OGG, MP4/M4A, ASF/WMA/WMV, Matroska/WebM, DSF, DFF, Musepack, WavPack, TrueAudio, Monkey's Audio." />
+            </TextBlock>
+
+            <Separator Margin="0,16,0,12" />
+
+            <TextBlock TextWrapping="Wrap"
+                       FontSize="11"
+                       Foreground="{DynamicResource TextSecondaryBrush}">
+                <Run Text="MIT License — see " />
+                <Hyperlink NavigateUri="https://github.com/audiovideolib/AudioVideoLib"
+                           RequestNavigate="Hyperlink_RequestNavigate">github.com/audiovideolib/AudioVideoLib</Hyperlink>
+                <Run Text=" for source, issues, and contributions." />
+            </TextBlock>
+        </StackPanel>
+    </DockPanel>
+</Window>
