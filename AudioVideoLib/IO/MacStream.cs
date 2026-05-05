@@ -254,10 +254,22 @@ public sealed class MacStream : IMediaContainer, IDisposable
             return;
         }
 
+        // Port of Convert32BitSeekTable
+        // (3rdparty/MAC_1284_SDK/Source/MACLib/APEHeader.cpp:116-131): when a file exceeds
+        // 4 GiB, the on-disk 32-bit seek offsets wrap; each downward step adds another
+        // 4 GiB to the running 64-bit correction.
+        var seekAdd = 0L;
+        var prev = 0u;
         for (var i = 0; i < elementCount; i++)
         {
-            var offset = BinaryPrimitives.ReadUInt32LittleEndian(raw.AsSpan(i * 4, 4));
-            _seekEntries.Add(new MacSeekEntry(i, offset));
+            var current = BinaryPrimitives.ReadUInt32LittleEndian(raw.AsSpan(i * 4, 4));
+            if (i > 0 && current < prev)
+            {
+                seekAdd += 0x1_0000_0000L;
+            }
+
+            _seekEntries.Add(new MacSeekEntry(i, current + seekAdd));
+            prev = current;
         }
     }
 

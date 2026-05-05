@@ -457,7 +457,7 @@ public sealed class MpcStream : IMediaContainer, IDisposable
         }
 
         _eiProfile = (buf[0] >> 1) / 8.0f;
-        _eiEncoderVersion = ((uint)buf[1] << 16) | ((uint)buf[2] << 8) | buf[3];
+        _eiEncoderVersion = ((uint)buf[1] << 24) | ((uint)buf[2] << 16) | ((uint)buf[3] << 8);
         EnsureHeader();
     }
 

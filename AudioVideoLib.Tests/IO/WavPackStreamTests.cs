@@ -167,6 +167,59 @@ public sealed class WavPackStreamTests
     }
 
     // ================================================================
+    // UniqueId mask — per audit follow-up against wavpack.h:160-163,
+    // the unique ID occupies the lower 6 bits (mask 0x3F). Bit 0x20
+    // (ID_OPTIONAL_DATA) is part of the unique-ID space — e.g.,
+    // ID_RIFF_HEADER == 0x21, NOT a flag bit. The earlier mask of
+    // 0x1F silently dropped that bit and turned 0x21 into 0x01.
+    // ================================================================
+
+    [Fact]
+    public void SubBlock_UniqueId_IncludesOptionalDataBit()
+    {
+        // Build a synthetic block with two sub-blocks:
+        //   1. ID_RIFF_HEADER (raw 0x21 = ID_OPTIONAL_DATA | 0x01) with a 2-byte payload.
+        //   2. ID_DECORR_TERMS (raw 0x02) with a 4-byte payload (2 words).
+        var sub1 = new byte[] { 0x21, 0x01, 0xDE, 0xAD };               // word count = 1 -> 2 bytes
+        var sub2 = new byte[] { 0x02, 0x02, 0x11, 0x22, 0x33, 0x44 };   // word count = 2 -> 4 bytes
+
+        var subAll = new byte[sub1.Length + sub2.Length];
+        Buffer.BlockCopy(sub1, 0, subAll, 0, sub1.Length);
+        Buffer.BlockCopy(sub2, 0, subAll, sub1.Length, sub2.Length);
+
+        var block = new byte[WavPackBlockHeader.Size + subAll.Length];
+        block[0] = (byte)'w';
+        block[1] = (byte)'v';
+        block[2] = (byte)'p';
+        block[3] = (byte)'k';
+        BinaryPrimitives.WriteUInt32LittleEndian(block.AsSpan(4, 4), (uint)(block.Length - 8));
+        BinaryPrimitives.WriteUInt16LittleEndian(block.AsSpan(8, 2), 0x0410);
+        BinaryPrimitives.WriteUInt32LittleEndian(block.AsSpan(12, 4), 1024u);
+        BinaryPrimitives.WriteUInt32LittleEndian(block.AsSpan(20, 4), 1024u);
+        var flags = 0x1u | (9u << 23);
+        BinaryPrimitives.WriteUInt32LittleEndian(block.AsSpan(24, 4), flags);
+        Buffer.BlockCopy(subAll, 0, block, WavPackBlockHeader.Size, subAll.Length);
+
+        using var ms = new MemoryStream(block);
+        using var walker = new WavPackStream();
+        Assert.True(walker.ReadStream(ms));
+
+        var subs = walker.Blocks[0].SubBlocks;
+        Assert.Equal(2, subs.Count);
+
+        // Pre-fix mask was 0x1F, which would silently turn 0x21 into 0x01 — the
+        // same value as ID_DUMMY_NEW. The correct mask is 0x3F: ID_OPTIONAL_DATA
+        // (0x20) is part of the unique-id space, ID_LARGE/ID_ODD_SIZE are flags.
+        Assert.Equal(0x21, subs[0].RawId);
+        Assert.Equal((byte)0x21, subs[0].UniqueId);
+        Assert.True(subs[0].IsOptional);
+
+        Assert.Equal(0x02, subs[1].RawId);
+        Assert.Equal((byte)0x02, subs[1].UniqueId);
+        Assert.False(subs[1].IsOptional);
+    }
+
+    // ================================================================
     // Round-trip identity — synthetic block back through WriteTo verbatim.
     // ================================================================
 

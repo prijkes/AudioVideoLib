@@ -186,6 +186,90 @@ public class MpcStreamTests
     // walker-level write API would need an additional integration point.
     // ================================================================
 
+    // ================================================================
+    // SV8 EI packet — encoder-version byte ordering. Audit follow-up
+    // (streaminfo.c:228-230): the three encoder-version bytes shift by
+    // 24, 16, 8 (low byte 0). The earlier C# port shifted by 16, 8, 0
+    // and used the wrong final byte position.
+    // ================================================================
+
+    [Fact]
+    public void ReadStream_Sv8_ParsesEncoderVersionWithCorrectByteOrdering()
+    {
+        // Synthesize a minimal SV8 file: MPCK + SH + EI + SE.
+        var sh = BuildSv8Packet("SH", payload:
+        [
+            0x00, 0x00, 0x00, 0x00,    // crc32
+            0x08,                       // stream_version
+            0x00,                       // total_samples = varint(0)
+            0x00,                       // beg_silence   = varint(0)
+            0x00,                       // sample_freq_idx (0 => 44100), max_used_band
+            0x10,                       // (channels-1)<<4 | ms<<3 | block_pwr
+        ]);
+
+        // EI payload: profile byte, then major=0x01, minor=0x1E, build=0x00.
+        var ei = BuildSv8Packet("EI", payload:
+        [
+            0xA0,    // profile byte (7 bits profile + 1 bit pns)
+            0x01,    // encoder version major
+            0x1E,    // encoder version minor
+            0x00,    // encoder version build
+        ]);
+
+        var se = BuildSv8Packet("SE", payload: []);
+
+        var file = new byte[4 + sh.Length + ei.Length + se.Length];
+        var pos = 0;
+        file[pos++] = (byte)'M';
+        file[pos++] = (byte)'P';
+        file[pos++] = (byte)'C';
+        file[pos++] = (byte)'K';
+        Buffer.BlockCopy(sh, 0, file, pos, sh.Length);
+        pos += sh.Length;
+        Buffer.BlockCopy(ei, 0, file, pos, ei.Length);
+        pos += ei.Length;
+        Buffer.BlockCopy(se, 0, file, pos, se.Length);
+
+        using var ms = new MemoryStream(file);
+        using var walker = new MpcStream();
+        Assert.True(walker.ReadStream(ms));
+        Assert.NotNull(walker.Header);
+
+        // Per streaminfo.c:228-230, major=0x01, minor=0x1E, build=0x00 must combine
+        // as (0x01<<24) | (0x1E<<16) | (0x00<<8) = 0x011E_0000. The pre-fix code
+        // would have produced 0x0001_1E00 by shifting one byte position too low.
+        Assert.Equal(0x011E_0000u, walker.Header!.EncoderVersion);
+    }
+
+    /// <summary>
+    /// Builds an SV8 packet with the given two-character key and payload. The on-disk
+    /// layout is <c>key(2) sizeVarInt payload</c>; the size varint covers key + size + payload.
+    /// Payload sizes that keep the total under 128 bytes encode as a single-byte varint, which
+    /// is sufficient for these tests.
+    /// </summary>
+    private static byte[] BuildSv8Packet(string key, byte[] payload)
+    {
+        if (key is null || key.Length != 2)
+        {
+            throw new ArgumentException("Key must be exactly 2 ASCII characters.", nameof(key));
+        }
+
+        // Total packet size = key(2) + size(1) + payload, assuming the result fits in one
+        // varint byte. (2 + 1 + payload.Length) must be < 128.
+        var total = 2 + 1 + payload.Length;
+        if (total >= 128)
+        {
+            throw new InvalidOperationException("Test helper only handles single-byte size varints.");
+        }
+
+        var buf = new byte[total];
+        buf[0] = (byte)key[0];
+        buf[1] = (byte)key[1];
+        buf[2] = (byte)total; // single-byte varint
+        Buffer.BlockCopy(payload, 0, buf, 3, payload.Length);
+        return buf;
+    }
+
     [Fact(Skip = "AudioTags write API exposed in Phase 2")]
     public void TagEdit_PreservesAudioBytesByteForByte()
     {

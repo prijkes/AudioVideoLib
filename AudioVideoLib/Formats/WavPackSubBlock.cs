@@ -11,10 +11,11 @@ using AudioVideoLib.IO;
 /// </summary>
 /// <remarks>
 /// Sub-block IDs are documented in <c>3rdparty/WavPack/include/wavpack.h:158-193</c>.
-/// The unique ID is in the low bits of <see cref="RawId"/> after masking out
-/// <c>ID_LARGE (0x80)</c>, <c>ID_ODD_SIZE (0x40)</c>, and <c>ID_OPTIONAL_DATA (0x20)</c>;
-/// callers can also compare <see cref="RawId"/> directly against the named
-/// <c>ID_OPTIONAL_DATA | n</c> constants.
+/// <c>ID_LARGE (0x80)</c> and <c>ID_ODD_SIZE (0x40)</c> are flag bits; the unique ID
+/// occupies the lower 6 bits (mask <c>0x3F</c>). <c>ID_OPTIONAL_DATA (0x20)</c> is part
+/// of that unique-ID space — for example <c>ID_RIFF_HEADER = 0x21 = ID_OPTIONAL_DATA | 1</c>.
+/// Callers can compare <see cref="RawId"/> (or <see cref="UniqueId"/>) directly against
+/// the named constants.
 /// </remarks>
 public sealed class WavPackSubBlock
 {
@@ -28,11 +29,11 @@ public sealed class WavPackSubBlock
         PayloadLength = payloadLength;
     }
 
-    /// <summary>Gets the raw id byte (including the <c>ID_LARGE</c>, <c>ID_ODD_SIZE</c>, <c>ID_OPTIONAL_DATA</c> flag bits).</summary>
+    /// <summary>Gets the raw id byte (including the <c>ID_LARGE</c> and <c>ID_ODD_SIZE</c> flag bits).</summary>
     public byte RawId { get; }
 
-    /// <summary>Gets the unique id with the three flag bits cleared (bit 7, bit 6, bit 5).</summary>
-    public byte UniqueId => (byte)(RawId & 0x1F);
+    /// <summary>Gets the unique id with the two flag bits cleared (bit 7, bit 6). The <c>ID_OPTIONAL_DATA</c> bit (0x20) is part of the unique-id space and is preserved.</summary>
+    public byte UniqueId => (byte)(RawId & 0x3F);
 
     /// <summary>Gets a value indicating whether the <c>ID_OPTIONAL_DATA</c> band is set.</summary>
     public bool IsOptional => (RawId & 0x20) != 0;

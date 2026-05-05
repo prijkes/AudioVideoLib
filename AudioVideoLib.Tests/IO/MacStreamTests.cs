@@ -161,6 +161,73 @@ public sealed class MacStreamTests
     }
 
     // ================================================================
+    // 32-bit seek table wrap-correction — audit follow-up. For files
+    // larger than 4 GiB, the on-disk 32-bit seek offsets wrap; the C++
+    // reference (APEHeader.cpp:116-131, Convert32BitSeekTable) accumulates
+    // 0x1_0000_0000 each time a value decreases. The earlier C# port
+    // stored uint and silently rolled over.
+    // ================================================================
+
+    [Fact]
+    public void ReadStream_AppliesWrapCorrectionToSeekTable()
+    {
+        // Four seek entries: the fourth value wraps below the third, so the
+        // walker must add 0x1_0000_0000 to it.
+        var rawOffsets = new uint[] { 0x10_0000u, 0x20_0000u, 0x30_0000u, 0x00_0000u };
+        var expectedOffsets = new long[] { 0x10_0000L, 0x20_0000L, 0x30_0000L, 0x1_0000_0000L };
+
+        const uint totalFrames = 4;
+        const uint blocksPerFrame = 73728 * 4;
+        const uint finalFrameBlocks = 17_000;
+
+        var descSize = 52;
+        var hdrSize = 24;
+        var seekSize = (uint)(rawOffsets.Length * 4);
+
+        // ApeFrameDataBytesHigh = 1 — total frame bytes spans > 4 GiB so the wrap is
+        // physically meaningful. We don't allocate a 4 GiB buffer; only the seek-table
+        // bytes need to encode the wrap.
+        const uint apeFrameDataBytesLo = 0x4000_0000u;
+        const uint apeFrameDataBytesHi = 1u;
+
+        var bytes = new byte[descSize + hdrSize + seekSize];
+        Encoding.ASCII.GetBytes("MAC ", bytes.AsSpan(0, 4));
+        BinaryPrimitives.WriteUInt16LittleEndian(bytes.AsSpan(4, 2), 3990);
+        BinaryPrimitives.WriteUInt32LittleEndian(bytes.AsSpan(8, 4), (uint)descSize);
+        BinaryPrimitives.WriteUInt32LittleEndian(bytes.AsSpan(12, 4), (uint)hdrSize);
+        BinaryPrimitives.WriteUInt32LittleEndian(bytes.AsSpan(16, 4), seekSize);
+        BinaryPrimitives.WriteUInt32LittleEndian(bytes.AsSpan(20, 4), 0u);
+        BinaryPrimitives.WriteUInt32LittleEndian(bytes.AsSpan(24, 4), apeFrameDataBytesLo);
+        BinaryPrimitives.WriteUInt32LittleEndian(bytes.AsSpan(28, 4), apeFrameDataBytesHi);
+
+        var hdr = bytes.AsSpan(descSize);
+        BinaryPrimitives.WriteUInt16LittleEndian(hdr[0..2], 2000);
+        BinaryPrimitives.WriteUInt16LittleEndian(hdr[2..4], MacHeader.CreateWavHeaderFlag);
+        BinaryPrimitives.WriteUInt32LittleEndian(hdr[4..8], blocksPerFrame);
+        BinaryPrimitives.WriteUInt32LittleEndian(hdr[8..12], finalFrameBlocks);
+        BinaryPrimitives.WriteUInt32LittleEndian(hdr[12..16], totalFrames);
+        BinaryPrimitives.WriteUInt16LittleEndian(hdr[16..18], 16);
+        BinaryPrimitives.WriteUInt16LittleEndian(hdr[18..20], 2);
+        BinaryPrimitives.WriteUInt32LittleEndian(hdr[20..24], 44100);
+
+        var seek = bytes.AsSpan(descSize + hdrSize);
+        for (var i = 0; i < rawOffsets.Length; i++)
+        {
+            BinaryPrimitives.WriteUInt32LittleEndian(seek.Slice(i * 4, 4), rawOffsets[i]);
+        }
+
+        using var ms = new MemoryStream(bytes);
+        using var walker = new MacStream();
+        Assert.True(walker.ReadStream(ms));
+
+        Assert.Equal(rawOffsets.Length, walker.SeekEntries.Count);
+        for (var i = 0; i < expectedOffsets.Length; i++)
+        {
+            Assert.Equal(expectedOffsets[i], walker.SeekEntries[i].FileOffset);
+        }
+    }
+
+    // ================================================================
     // Real-sample frame enumeration — counts the upstream-encoded
     // .ape file's frames and confirms the per-frame length budget
     // matches the descriptor's total audio bytes.
