@@ -32,6 +32,8 @@
     <None Include="TestFiles\tta\*.tta" CopyToOutputDirectory="PreserveNewest" />
     <None Include="TestFiles\mac\*.ape" CopyToOutputDirectory="PreserveNewest" />
     <None Include="TestFiles\flac\*.flac" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="TestFiles\flac\synthetic\*.flac" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="TestFiles\flac\reference\*.flac" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>
