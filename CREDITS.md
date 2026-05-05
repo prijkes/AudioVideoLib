@@ -94,7 +94,7 @@ The following references were used during the development of AudioVideoLib.
 
 ## Monkey's Audio (MAC)
 
-- Matthew Ashland. Reference at <https://www.monkeysaudio.com/>. License: closed-source freely-distributable (Monkey's Audio Source Code License — see the bundled SDK `License.txt` for the authoritative terms).
+- Matthew Ashland. Reference at <https://www.monkeysaudio.com/>. License: BSD-3-Clause (see `3rdparty/MAC_1284_SDK/License.txt`).
 
 ## CRC
 
