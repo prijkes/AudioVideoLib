@@ -52,3 +52,18 @@ foreach (var pic in flac.PictureMetadataBlocks)
     File.WriteAllBytes($"flac-{pic.PictureType}.{ext}", pic.PictureData);
 }
 ```
+
+## Validation rules
+
+`FlacStream.ReadStream` rejects spec-noncompliant input rather than best-effort-parsing it. Specifically, the walker returns `false` for:
+
+- A frame sync 14 bits != `0x3FFE` (illegal `0x3FFF` or EOF sentinel).
+- Frame-header reserved bits 17 or 0 set (must be 0 per RFC 9639 §11.21).
+- Frame-header CRC-8 mismatch.
+- Frame-footer CRC-16 mismatch (rejects the frame; outer scanner continues looking for the next valid sync).
+- A metadata-block length running past the stream end.
+- A reserved subframe type (0x02-0x07, 0x0D-0x1F).
+- A reserved residual coding method (2 or 3).
+- A reserved LPC precision value (`0b1111`).
+
+The walker raises `MediaContainers.MediaContainerParse` events for callers that want to correlate rejections with byte offsets.

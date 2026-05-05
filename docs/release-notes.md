@@ -35,6 +35,27 @@ Change categories follow [Keep a Changelog](https://keepachangelog.com/):
 - All `FlacFrame`, `FlacSubFrame`, `FlacResidual`, `FlacRicePartition`, `MpaFrame`, `MpaFrameHeader`, `MpaFrameData` properties are now read-only. Callers cannot mutate audio-frame data. (Tag editing — Vorbis comments, ID3 frames, etc. — remains fully supported via the metadata-block path.)
 - `IMediaContainer` consumers must dispose the walker (or the parent `MediaContainers`) when done. Wrap usage in `using`.
 
+### Fixed
+
+#### FLAC parser revival
+
+- **CRC-16 polynomial wrong** — was `0xA001` (reflected/CRC-16-IBM-ARC), now `0x8005` MSB-first per RFC 9639 §11.1.
+- **`Crc16.Calculate([])`** at frame-CRC validation site replaced with the actual frame byte slice (was always computing CRC over an empty span).
+- **Frame sync mask** — was 15-bit `0x7FFE`, now 14-bit `0x3FFE`. Rejects illegal `0x3FFF` and EOF sentinel `0xFFFFFFFF`.
+- **Frame-header reserved bits** — bits 17 and 0 are now validated to be 0 per RFC 9639 §11.21.
+- **CRC-8 strict-rejection** — `FlacFrameHeader` returns false on CRC-8 mismatch instead of throwing `InvalidDataException`, matching the strict-rejection rule and the CRC-16 fix.
+- **Subframe payload `Read`** — uncommented; subframe contents are now consumed.
+- **Subframe-type extraction** — was reading byte 3 of a 32-bit BE peek, now reads byte 0 with mask `0x3F`.
+- **Subframe payload bit-stream migration** — Fixed/LPC/Verbatim/Constant subframe payloads, residual, and Rice partitions now read via `BitStream` (bit-packed) instead of byte-aligned `StreamBuffer`. Resolves position-drift that caused frame CRCs to mismatch.
+- **`FlacResidual`** — coding method and partition order bit positions corrected per RFC 9639 §11.30. Reserved coding methods (2, 3) now rejected.
+- **`FlacRicePartition`** — PartitionedRice (4-bit) and PartitionedRice2 (5-bit) Rice parameter widths un-swapped.
+- **`FlacLinearPredictorSubFrame`** — reserved precision value `0b1111` now rejected per RFC 9639 §11.29.
+- **`BitStream`** — `ReadSignedInt32(32)` no longer throws `OverflowException`; `ReadUnaryInt` has a defensive bound against malformed input.
+- **`FlacStreamInfoMetadataBlock.Channels`** — mask was 5-bit `0x1F`, now 3-bit `0x07` per RFC 9639 §8.2.
+- **`FlacMetadataBlock.ReadBlock`** — length check uses `stream.Position + length`, not just `length`.
+- **`FlacCueSheetMetadataBlock`** — reserved padding 256 → 258 bytes; TrackType/PreEmphasis flag bits at MSB (bits 7/6), not LSB; writer's `&` typo for flag combine corrected to `|`.
+- **`VorbisComments.ToByteArray`** — removed redundant outer length prefix; each `VorbisComment` already self-prefixes per the Vorbis comment spec.
+
 ---
 
 ## 0.7.0 — 2026-04-27
