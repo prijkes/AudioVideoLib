@@ -2,10 +2,12 @@ namespace AudioVideoLib.Studio.Batch;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 
 using Microsoft.Win32;
 
@@ -107,6 +109,78 @@ public partial class BatchDialog : Window
         {
             MessageBox.Show(this, $"Could not save:\n\n{ex.Message}", "Save report",
                 MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+    }
+
+    private BatchRow? SelectedRow => Grid.SelectedItem as BatchRow;
+
+    private void GridContextMenu_Opened(object sender, RoutedEventArgs e)
+    {
+        // Disable Open / Open-in-Explorer when no row is selected.
+        var hasSelection = SelectedRow is not null;
+        OpenMenuItem.IsEnabled = hasSelection;
+        OpenInExplorerMenuItem.IsEnabled = hasSelection;
+        CopyPathMenuItem.IsEnabled = hasSelection;
+    }
+
+    private void Grid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+    {
+        OpenRow_Click(sender, e);
+    }
+
+    private void OpenRow_Click(object sender, RoutedEventArgs e)
+    {
+        var row = SelectedRow;
+        if (row is null)
+        {
+            return;
+        }
+
+        if (Owner is MainWindow main)
+        {
+            main.OpenDossierFromPath(row.Path);
+            main.Activate();  // bring main window forward; BatchDialog stays open behind
+        }
+    }
+
+    private void OpenInExplorer_Click(object sender, RoutedEventArgs e)
+    {
+        var row = SelectedRow;
+        if (row is null)
+        {
+            return;
+        }
+
+        try
+        {
+            // /select, opens Explorer with the file highlighted in its parent folder.
+            Process.Start(new ProcessStartInfo("explorer.exe", $"/select,\"{row.Path}\"")
+            {
+                UseShellExecute = true,
+            });
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(this, $"Could not open Explorer:\n\n{ex.Message}", "Open in Explorer",
+                MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+    }
+
+    private void CopyPath_Click(object sender, RoutedEventArgs e)
+    {
+        var row = SelectedRow;
+        if (row is null)
+        {
+            return;
+        }
+
+        try
+        {
+            Clipboard.SetText(row.Path);
+        }
+        catch (Exception)
+        {
+            // Clipboard access can fail under Citrix / RDP / certain race conditions; ignore.
         }
     }
 }

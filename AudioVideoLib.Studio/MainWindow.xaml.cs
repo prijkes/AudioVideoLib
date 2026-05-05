@@ -222,7 +222,7 @@ public partial class MainWindow : Window
 
     private InspectorNode? _selectedNode;
 
-    private async void OpenDossierFromPath(string path)
+    internal async void OpenDossierFromPath(string path)
     {
         // If already open, just activate its tab.
         var existing = _openFiles.FirstOrDefault(f =>

@@ -26,7 +26,16 @@
                   GridLinesVisibility="Horizontal"
                   FontFamily="Consolas"
                   FontSize="11"
-                  RowHeight="20">
+                  RowHeight="20"
+                  MouseDoubleClick="Grid_MouseDoubleClick">
+            <DataGrid.ContextMenu>
+                <ContextMenu Opened="GridContextMenu_Opened">
+                    <MenuItem x:Name="OpenMenuItem"            Header="_Open"           Click="OpenRow_Click" />
+                    <MenuItem x:Name="OpenInExplorerMenuItem"  Header="Open in _Explorer" Click="OpenInExplorer_Click" />
+                    <Separator />
+                    <MenuItem x:Name="CopyPathMenuItem"        Header="_Copy file path"  Click="CopyPath_Click" />
+                </ContextMenu>
+            </DataGrid.ContextMenu>
             <DataGrid.Columns>
                 <DataGridTextColumn Header="File" Binding="{Binding Path}" Width="*" />
                 <DataGridTextColumn Header="Size" Binding="{Binding Size, StringFormat=N0}" Width="90" />
