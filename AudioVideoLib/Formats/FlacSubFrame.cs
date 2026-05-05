@@ -66,9 +66,14 @@ public partial class FlacSubFrame
         ArgumentNullException.ThrowIfNull(sb);
         ArgumentNullException.ThrowIfNull(flacFrame);
 
-        var header = sb.PeekBigEndianInt32();
-        var type = (header >> 1) & 0x7E;
+        // Subframe header byte (RFC 9639 §11.25): 1 zero-pad bit + 6-bit type + 1-bit wasted-bits flag.
+        // Peek the first byte (not 4) and extract bits 1..6.
+        var headerByte = sb.PeekByte();
+        var type = (headerByte >> 1) & 0x3F;
 
+        // Reserved subframe types (RFC 9639 §11.25): 0x02-0x07, 0x0D-0x1F. We surface
+        // them as a plain FlacSubFrame whose Read is a no-op; the frame-level CRC-16
+        // check then rejects the frame per spec §7 strict-rejection.
         var frame = type switch
         {
             0x00 => new FlacConstantSubFrame(flacFrame),
@@ -93,6 +98,6 @@ public partial class FlacSubFrame
 
         ReadHeader(sb);
         SampleSize = sampleSize - WastedBits;
-        ////Read(sb);
+        Read(sb, SampleSize, FlacFrame.BlockSize);
     }
 }

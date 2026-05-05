@@ -58,10 +58,14 @@ public sealed class FlacStreamTests
     // remove the Skip and the test should pass — the Bundle B WriteTo byte-
     // passthrough path is in place and verified by code inspection (it mirrors
     // MpcStream / Mp4Stream).
-    [Fact(Skip = "Pre-existing FlacFrame parser bugs (CRC-16 polynomial wrong, " +
-                 "Crc16 input range empty, FlacSubFrame payload not consumed). " +
-                 "Bundle B fixed CRC-8 only. See test-class comment for the " +
-                 "full inventory and fix sketch.")]
+    [Fact(Skip = "Cluster 3 landed the four structural fixes (subframe Read " +
+                 "reactivated; type/residual/Rice bit positions corrected), but " +
+                 "subframe payload consumption still drifts because the entire " +
+                 "subframe data path uses byte-aligned StreamBuffer reads " +
+                 "(ReadBigEndianInt32, byte-aligned ReadUnaryInt) for what RFC 9639 " +
+                 "specifies as bit-packed fields. A bit-level reader migration is " +
+                 "required to make Position correct after subframe parsing — that " +
+                 "is the BitStream-migration sweep deferred to Cluster 5.")]
     public void RoundTrip_UnmodifiedInput_ProducesByteIdenticalOutput()
     {
         var original = File.ReadAllBytes(SamplePath);
@@ -134,10 +138,14 @@ public sealed class FlacStreamTests
     // becomes runnable as soon as the three parser bugs above are fixed.
     // ================================================================
 
-    [Fact(Skip = "Pre-existing FlacFrame parser bugs (CRC-16 polynomial wrong, " +
-                 "Crc16 input range empty, FlacSubFrame payload not consumed). " +
-                 "Bundle B fixed CRC-8 only. See test-class comment for the " +
-                 "full inventory and fix sketch.")]
+    [Fact(Skip = "Cluster 3 landed the four structural fixes (subframe Read " +
+                 "reactivated; type/residual/Rice bit positions corrected), but " +
+                 "subframe payload consumption still drifts because the entire " +
+                 "subframe data path uses byte-aligned StreamBuffer reads " +
+                 "(ReadBigEndianInt32, byte-aligned ReadUnaryInt) for what RFC 9639 " +
+                 "specifies as bit-packed fields. A bit-level reader migration is " +
+                 "required to make Position correct after subframe parsing — that " +
+                 "is the BitStream-migration sweep deferred to Cluster 5.")]
     public void TagEdit_RoundTrip_PreservesAudioFrameBytes()
     {
         var original = File.ReadAllBytes(SamplePath);

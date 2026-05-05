@@ -54,15 +54,23 @@ public partial class FlacSubFrame
     {
         ArgumentNullException.ThrowIfNull(sb);
 
-        Header = sb.ReadBigEndianInt32();
+        // RFC 9639 §11.25: subframe header is a SINGLE BYTE
+        //   bit 7 (MSB) = zero-pad (must be 0; ignored on read for compatibility)
+        //   bits 6..1   = subframe type (6 bits)
+        //   bit 0 (LSB) = wasted-bits-per-sample flag
+        // If the wasted-bits flag is set, a unary-coded count follows: zero bits
+        // terminated by a 1. WastedBitsPerSample = leading-zero-count + 1.
+        Header = sb.ReadByte();
 
         WastedBits = Header & 0x01;
         if (WastedBits > 0)
         {
-            WastedBits = sb.ReadUnaryInt();
+            // ReadUnaryInt returns the leading-zero-count; the wasted-bits-per-
+            // sample value is that count + 1 (the terminating 1 represents one).
+            WastedBits = sb.ReadUnaryInt() + 1;
         }
 
-        var type = (Header >> 1) & 0x7E;
+        var type = (Header >> 1) & 0x3F;
         Type = type switch
         {
             0x00 => FlacSubFrameType.Constant,

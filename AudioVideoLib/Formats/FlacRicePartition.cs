@@ -20,13 +20,21 @@ public sealed class FlacRicePartition
     public static FlacRicePartition Read(StreamBuffer sb, int partitionNumber, int partitionOrder, int predictOrder, int blockSize, FlacResidualCodingMethod codingMethod)
     {
         var ricePartition = new FlacRicePartition { _riceParameter = sb.ReadBigEndianInt32() };
-        var riceParameter = ricePartition._riceParameter & (codingMethod == FlacResidualCodingMethod.PartitionedRice ? 0x1F : 0xF);
+
+        // RFC 9639 §11.30: PartitionedRice = 4-bit Rice parameter (mask 0x0F);
+        // PartitionedRice2 = 5-bit Rice parameter (mask 0x1F).
+        var paramMask = codingMethod == FlacResidualCodingMethod.PartitionedRice ? 0x0F : 0x1F;
+        var riceParameter = ricePartition._riceParameter & paramMask;
         ricePartition.Samples = partitionOrder == 0
             ? blockSize - predictOrder
             : partitionNumber == 0 ? (blockSize >> partitionOrder) - predictOrder : blockSize >> partitionOrder;
 
         ricePartition.Residuals = new int[ricePartition.Samples];
-        if (riceParameter < 0xF || (codingMethod == FlacResidualCodingMethod.PartitionedRice2 && riceParameter < 0x1F))
+
+        // Escape code: PartitionedRice signals "unencoded residuals follow" with parameter == 0xF (4-bit max);
+        // PartitionedRice2 signals it with parameter == 0x1F (5-bit max). Anything strictly less is a real Rice parameter.
+        var escapeCode = codingMethod == FlacResidualCodingMethod.PartitionedRice ? 0xF : 0x1F;
+        if (riceParameter < escapeCode)
         {
             for (var i = 0; i < ricePartition.Samples; i++)
             {

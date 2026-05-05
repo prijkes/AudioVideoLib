@@ -6,9 +6,11 @@ public sealed class FlacResidual
 {
     private int _values;
 
-    public FlacResidualCodingMethod CodingMethod => (FlacResidualCodingMethod)(_values & 0x03);
+    // RFC 9639 §11.30: 2-bit coding method (MSB) + 4-bit partition order (next),
+    // packed into the high 6 bits of the leading byte. Bits 1..0 belong to the next field.
+    public FlacResidualCodingMethod CodingMethod => (FlacResidualCodingMethod)((_values >> 6) & 0x03);
 
-    public int PartitionOrder => (_values >> 4) & 0x0F;
+    public int PartitionOrder => (_values >> 2) & 0x0F;
 
     public FlacRicePartition[] RicePartitions { get; private set; } = null!;
 
