@@ -119,7 +119,9 @@ public sealed class VorbisComments
         buf.WriteInt(Comments.Count);
         foreach (var data in Comments.Where(c => c != null).Select(c => c.ToByteArray()))
         {
-            buf.WriteInt(data.Length);
+            // VorbisComment.ToByteArray() already emits its own 4-byte LE length prefix
+            // followed by the UTF-8 payload. Per the Vorbis comment spec, exactly one
+            // length prefix is allowed per comment — do NOT double-prefix here.
             buf.Write(data);
         }
         return buf.ToByteArray();

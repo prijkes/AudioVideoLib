@@ -124,7 +124,9 @@ public partial class FlacMetadataBlock
 
         // Length
         var length = stream.ReadBigEndianInt(3);
-        if (length >= stream.Length)
+
+        // Bound the metadata block by the remaining stream, not the absolute total length.
+        if (stream.Position + length > stream.Length)
         {
             return null;
         }

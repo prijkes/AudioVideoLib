@@ -793,7 +793,7 @@ public class VorbisFlacTests
         Assert.Equal(raw, serialized);
     }
 
-    [Fact(Skip = "VorbisComments.ToByteArray writes a double length prefix per comment, breaking re-parse")]
+    [Fact]
     public void FlacMetadataBlock_ToByteArray_VorbisCommentBlockRoundTrips()
     {
         // Build valid Vorbis comments binary data

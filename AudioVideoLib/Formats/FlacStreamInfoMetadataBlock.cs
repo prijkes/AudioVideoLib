@@ -101,7 +101,8 @@ public sealed class FlacStreamInfoMetadataBlock : FlacMetadataBlock
     /// <value>
     /// The the number of channels. FLAC supports from 1 to 8 channels.
     /// </value>
-    public int Channels => (int)(((_samplesChannelRate >> 41) & 0x1F) + 1);
+    // Per RFC 9639 §8.2: 3-bit channels-1 field at bits 41..43 of the 64-bit word.
+    public int Channels => (int)(((_samplesChannelRate >> 41) & 0x07) + 1);
 
     /// <summary>
     /// Gets the bits per sample.

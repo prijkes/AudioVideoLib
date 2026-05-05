@@ -26,14 +26,19 @@ public sealed class FlacCueSheetMetadataBlock : FlacMetadataBlock
             stream.WriteString(MediaCatalogNumber);
             stream.WriteBigEndianInt64(LeadInSampleCount);
             stream.WriteByte(Convert.ToByte(IsCompactDisc));
-            stream.WritePadding(0x00, 256);
+
+            // Per RFC 9639 §8.7: 7 reserved bits (combined with IsCompactDisc into 1 byte)
+            // + 258 reserved bytes after IsCompactDisc.
+            stream.WritePadding(0x00, 258);
             stream.WriteByte((byte)TrackCount);
             foreach (var track in _tracks)
             {
                 stream.WriteBigEndianInt64(track.TrackOffset);
                 stream.WriteByte((byte)track.TrackNumber);
                 stream.WriteString(track.TrackIsrc);
-                stream.WriteByte((byte)(((byte)track.TrackType) & (((byte)track.PreEmphasis) << 1)));
+                // Per RFC 9639 §8.7: bit 7 = TrackType (0=audio, 1=non-audio), bit 6 = PreEmphasis,
+                // bits 0..5 reserved.
+                stream.WriteByte((byte)((((byte)track.TrackType) << 7) | (((byte)track.PreEmphasis) << 6)));
                 stream.WritePadding(0x00, 13);
                 stream.WriteByte((byte)track.TrackIndexCount);
                 foreach (var trackIndexPoint in track.TrackIndexPoints)
@@ -63,8 +68,8 @@ public sealed class FlacCueSheetMetadataBlock : FlacMetadataBlock
                 var trackNumber = stream.ReadByte();
                 var trackIsrc = stream.ReadString(12);
                 var flags = stream.ReadByte();
-                var trackType = (FlacCueSheetTrackType)(flags & 0x01);
-                var preEmphasis = (FlacCueSheetPreEmphasis)(flags & 0x02);
+                var trackType = (FlacCueSheetTrackType)((flags >> 7) & 0x01);
+                var preEmphasis = (FlacCueSheetPreEmphasis)((flags >> 6) & 0x01);
                 var reserved = new byte[13];
                 stream.Read(reserved, 13);
                 var trackIndexCount = stream.ReadByte();
