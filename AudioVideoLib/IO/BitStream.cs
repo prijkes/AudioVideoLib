@@ -154,6 +154,14 @@ public sealed class BitStream : Stream
         while (ReadInt32(1) == 0)
         {
             count++;
+
+            // Defensive bound: a malformed stream of all-zero bits (or a stream that has
+            // run out and returns 0 from ReadByte()) would otherwise loop forever. 64 bits
+            // is far more than any FLAC-legal unary value needs.
+            if (count > 64)
+            {
+                throw new InvalidDataException("Unary count exceeds reasonable bound (>64).");
+            }
         }
 
         return count;
@@ -238,7 +246,10 @@ public sealed class BitStream : Stream
             Position--;
         }
 
-        return Convert.ToInt32(value);
+        // Preserve the bit pattern for the full 32-bit case (e.g., a 32-bit signed sample
+        // whose top bit is 1). Convert.ToInt32(long) range-checks and would throw on values
+        // >= 2^31, but for fixed-width bit reads we want pure bit-pattern preservation.
+        return unchecked((int)value);
     }
 
     ////------------------------------------------------------------------------------------------------------------------------------

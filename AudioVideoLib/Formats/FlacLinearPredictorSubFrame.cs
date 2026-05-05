@@ -1,5 +1,7 @@
 namespace AudioVideoLib.Formats;
 
+using System.IO;
+
 using AudioVideoLib.IO;
 
 /// <summary>
@@ -74,8 +76,15 @@ public sealed class FlacLinearPredictorSubFrame(FlacFrame flacFrame) : FlacSubFr
         }
 
         // RFC 9639 §11.29: 4-bit precision; stored value + 1 = real precision.
-        // (All-ones 0xF is reserved/invalid per spec.)
-        QuantizedCoefficientsPrecision = bs.ReadInt32(4) + 1;
+        // The all-ones raw value 0b1111 is reserved — per spec, decoders MUST stop
+        // decoding when they see it.
+        var precisionRaw = bs.ReadInt32(4);
+        if (precisionRaw == 0x0F)
+        {
+            throw new InvalidDataException("LPC predictor precision 0b1111 is reserved (RFC 9639 §11.29).");
+        }
+
+        QuantizedCoefficientsPrecision = precisionRaw + 1;
 
         // RFC 9639 §11.29: 5-bit signed (two's-complement) qlp shift.
         QuantizedCoefficientShift = bs.ReadSignedInt32(5);

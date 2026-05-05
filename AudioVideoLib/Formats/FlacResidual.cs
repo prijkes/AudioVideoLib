@@ -1,5 +1,7 @@
 namespace AudioVideoLib.Formats;
 
+using System.IO;
+
 using AudioVideoLib.IO;
 
 /// <summary>
@@ -31,10 +33,16 @@ public sealed class FlacResidual
     /// </remarks>
     public static FlacResidual Read(BitStream bs, int blockSize, int order)
     {
+        // RFC 9639 §11.30: 2-bit residual coding method (0=PartitionedRice, 1=PartitionedRice2, 2-3 reserved).
+        var codingMethod = bs.ReadInt32(2);
+        if (codingMethod >= 2)
+        {
+            throw new InvalidDataException($"Reserved residual coding method {codingMethod} (RFC 9639 §11.30).");
+        }
+
         var residual = new FlacResidual
         {
-            // RFC 9639 §11.30: 2-bit residual coding method (0=PartitionedRice, 1=PartitionedRice2, 2-3 reserved).
-            CodingMethod = (FlacResidualCodingMethod)bs.ReadInt32(2),
+            CodingMethod = (FlacResidualCodingMethod)codingMethod,
 
             // RFC 9639 §11.30: 4-bit partition order (number of partitions = 2^partitionOrder).
             PartitionOrder = bs.ReadInt32(4),
