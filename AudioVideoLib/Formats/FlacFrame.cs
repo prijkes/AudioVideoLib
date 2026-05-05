@@ -106,11 +106,28 @@ public sealed partial class FlacFrame : IAudioFrame
             _subFrames.Add(subFrame);
         }
 
+        // Capture the frame payload [StartOffset, currentPosition) and feed it to Crc16.Calculate.
+        // The previous implementation passed an empty span, making CRC validation a no-op.
+        // RFC 9639 §11.1: the 16-bit footer covers everything from the frame sync up to (but
+        // not including) the stored CRC itself.
+        var payloadEnd = sb.Position;
+        var payloadLength = payloadEnd - StartOffset;
+        var frameBytes = new byte[payloadLength];
+        sb.Position = StartOffset;
+        var bytesRead = sb.Read(frameBytes, 0, frameBytes.Length);
+        if (bytesRead != frameBytes.Length)
+        {
+            return false;
+        }
+
+        sb.Position = payloadEnd;
+
         _crc16 = sb.ReadBigEndianInt16();
-        var crc16 = Crc16.Calculate([]);
+        var crc16 = Crc16.Calculate(frameBytes);
         if (_crc16 != crc16)
         {
-            throw new InvalidDataException("Corrupt CRC16.");
+            // Strict-rejection rule (spec §7): CRC mismatch ⇒ frame is invalid.
+            return false;
         }
 
         EndOffset = sb.Position;
