@@ -5,7 +5,8 @@ Change categories follow [Keep a Changelog](https://keepachangelog.com/):
 
 | Version | Date | Highlights |
 |---|---|---|
-| [`(next release)`](#next-release) | _unreleased_ | Format pack: Musepack / WavPack / TrueAudio / Monkey's Audio walkers; `IMediaContainer` now extends `IDisposable`; `FlacStream` / `MpaStream` switch to byte-passthrough on save. |
+| [`(next release)`](#next-release) | _unreleased_ | _No changes yet._ |
+| [`0.8.0`](#080--2026-05-06) | 2026-05-06 | Format pack: Musepack / WavPack / TrueAudio / Monkey's Audio walkers; `IMediaContainer` now extends `IDisposable`; `FlacStream` / `MpaStream` switch to byte-passthrough on save; full FLAC parser revival closing 11 audited bugs. |
 | [`0.7.0`](#070--2026-04-27) | 2026-04-27 | `Mp4Stream` and `AsfStream` complete the streaming refactor — every splice rewriter now operates without buffering the source file. |
 | [`0.6.0`](#060--2026-04-27) | 2026-04-27 | Large-file performance: streaming Matroska reader/writer (40 GB MKV is now viable); `ISourceReader` random-access abstraction; ID3v2 read-path allocation fixes. |
 | [`0.5.0`](#050--2026-04-27) | 2026-04-27 | `WriteTo(Stream)` is now the canonical serialisation primitive; `ToByteArray` becomes an extension-method convenience. |
@@ -17,6 +18,12 @@ Change categories follow [Keep a Changelog](https://keepachangelog.com/):
 ---
 
 ## (next release)
+
+_No changes yet._
+
+---
+
+## 0.8.0 — 2026-05-06
 
 ### Added
 
