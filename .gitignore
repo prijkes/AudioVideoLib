@@ -404,3 +404,10 @@ _site/
 api/.manifest
 api/*.yml
 !api/index.md
+
+# _doc_snippets writes APIC / cover-art artifacts to its working directory
+# (e.g. S14_Id3v2ExtractApic emits cover-CoverFront.png).
+cover-*.png
+cover-*.jpg
+cover-*.jpeg
+cover.*
