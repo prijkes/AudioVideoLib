@@ -6,7 +6,17 @@ using System.Windows;
 
 using AudioVideoLib.Tags;
 
-public abstract class WrapperEditorBase<TFrame> : ITagItemEditor<TFrame>
+/// <summary>
+/// Marker interface that lets non-generic dispatch code (MainWindow,
+/// future automation) feed a wrapper editor its tag context BEFORE
+/// the dialog opens, without reflection or DataContext fishing.
+/// </summary>
+public interface IWrapperEditor
+{
+    void OnBeforeEdit(Id3v2Tag tag, Id3v2Frame self);
+}
+
+public abstract class WrapperEditorBase<TFrame> : ITagItemEditor<TFrame>, IWrapperEditor
     where TFrame : Id3v2Frame
 {
     public IReadOnlyList<Id3v2Frame> WrappableSnapshot { get; private set; } = [];
@@ -31,6 +41,8 @@ public abstract class WrapperEditorBase<TFrame> : ITagItemEditor<TFrame>
         }
         WrappableSnapshot = list;
     }
+
+    public virtual void OnBeforeEdit(Id3v2Tag tag, Id3v2Frame self) => TakeSnapshot(tag, (TFrame)self);
 
     public abstract TFrame CreateNew(object tag);
     public abstract bool Edit(Window owner, TFrame frame);

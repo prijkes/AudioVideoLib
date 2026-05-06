@@ -18,11 +18,7 @@ public sealed class CdmEditor : WrapperEditorBase<Id3v2CompressedDataMetaFrame>
 
     public override bool Edit(Window owner, Id3v2CompressedDataMetaFrame frame)
     {
-        if (owner?.DataContext is Id3v2Tag tag)
-        {
-            TakeSnapshot(tag, frame);
-        }
-
+        // Snapshot is populated by the dispatch caller via IWrapperEditor.OnBeforeEdit.
         var dialog = new CdmEditorDialog { Owner = owner, DataContext = this };
         return dialog.ShowDialog() == true;
     }

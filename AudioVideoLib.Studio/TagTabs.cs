@@ -118,6 +118,29 @@ public sealed class Id3v2TabViewModel : TagTabViewModel
         IsDirty = true;
     }
 
+    public Id3v2FrameRow AddFrame(Id3v2Frame frame)
+    {
+        ArgumentNullException.ThrowIfNull(frame);
+        Tag.SetFrame(frame);
+        var row = new Id3v2FrameRow(frame, () => IsDirty = true);
+        AdvancedFrames.Add(row);
+        IsDirty = true;
+        return row;
+    }
+
+    public Id3v2FrameRow? FindRow(Id3v2Frame frame)
+        => AdvancedFrames.FirstOrDefault(r => ReferenceEquals(r.Frame, frame));
+
+    public void RefreshFrameRow(Id3v2Frame frame)
+    {
+        var row = FindRow(frame);
+        if (row is not null)
+        {
+            RefreshRow(row);
+        }
+    }
+
+    [Obsolete("Use AddFrame(Id3v2Frame). Removed next release.")]
     public Id3v2FrameRow AddTextFrame(string identifier, string value = "")
     {
         var frame = new Id3v2TextFrame(Tag.Version, identifier)
@@ -129,13 +152,10 @@ public sealed class Id3v2TabViewModel : TagTabViewModel
             frame.Values.Add(value);
         }
 
-        Tag.SetFrame(frame);
-        var row = new Id3v2FrameRow(frame, () => IsDirty = true);
-        AdvancedFrames.Add(row);
-        IsDirty = true;
-        return row;
+        return AddFrame(frame);
     }
 
+    [Obsolete("Use AddFrame(Id3v2Frame). Removed next release.")]
     public Id3v2FrameRow AddUrlFrame(string identifier, string url = "")
     {
         var frame = new Id3v2UrlLinkFrame(Tag.Version, identifier);
@@ -144,13 +164,10 @@ public sealed class Id3v2TabViewModel : TagTabViewModel
             frame.Url = url;
         }
 
-        Tag.SetFrame(frame);
-        var row = new Id3v2FrameRow(frame, () => IsDirty = true);
-        AdvancedFrames.Add(row);
-        IsDirty = true;
-        return row;
+        return AddFrame(frame);
     }
 
+    [Obsolete("Use AddFrame(Id3v2Frame). Removed next release.")]
     public Id3v2FrameRow AddPictureFrame()
     {
         var frame = new Id3v2AttachedPictureFrame(Tag.Version)
@@ -161,13 +178,10 @@ public sealed class Id3v2TabViewModel : TagTabViewModel
             Description = string.Empty,
             PictureData = [],
         };
-        Tag.SetFrame(frame);
-        var row = new Id3v2FrameRow(frame, () => IsDirty = true);
-        AdvancedFrames.Add(row);
-        IsDirty = true;
-        return row;
+        return AddFrame(frame);
     }
 
+    [Obsolete("Use AddFrame(Id3v2Frame). Removed next release.")]
     public Id3v2FrameRow AddLyricsFrame()
     {
         var frame = new Id3v2UnsynchronizedLyricsFrame(Tag.Version)
@@ -177,13 +191,10 @@ public sealed class Id3v2TabViewModel : TagTabViewModel
             ContentDescriptor = string.Empty,
             Lyrics = string.Empty,
         };
-        Tag.SetFrame(frame);
-        var row = new Id3v2FrameRow(frame, () => IsDirty = true);
-        AdvancedFrames.Add(row);
-        IsDirty = true;
-        return row;
+        return AddFrame(frame);
     }
 
+    [Obsolete("Use AddFrame(Id3v2Frame). Removed next release.")]
     public Id3v2FrameRow AddPrivateFrame()
     {
         var frame = new Id3v2PrivateFrame(Tag.Version)
@@ -191,13 +202,10 @@ public sealed class Id3v2TabViewModel : TagTabViewModel
             OwnerIdentifier = string.Empty,
             PrivateData = [],
         };
-        Tag.SetFrame(frame);
-        var row = new Id3v2FrameRow(frame, () => IsDirty = true);
-        AdvancedFrames.Add(row);
-        IsDirty = true;
-        return row;
+        return AddFrame(frame);
     }
 
+    [Obsolete("Use AddFrame(Id3v2Frame). Removed next release.")]
     public Id3v2FrameRow AddUniqueFileIdentifierFrame()
     {
         var frame = new Id3v2UniqueFileIdentifierFrame(Tag.Version)
@@ -205,11 +213,7 @@ public sealed class Id3v2TabViewModel : TagTabViewModel
             OwnerIdentifier = string.Empty,
             IdentifierData = [],
         };
-        Tag.SetFrame(frame);
-        var row = new Id3v2FrameRow(frame, () => IsDirty = true);
-        AdvancedFrames.Add(row);
-        IsDirty = true;
-        return row;
+        return AddFrame(frame);
     }
 
     public void RefreshRow(Id3v2FrameRow row)
