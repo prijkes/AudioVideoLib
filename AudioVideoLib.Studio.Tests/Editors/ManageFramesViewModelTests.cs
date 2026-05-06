@@ -103,4 +103,28 @@ public class ManageFramesViewModelTests
         Assert.True(vm.All.Single(r => r.Identifier == "TIT2").ExistsInTag);
         Assert.False(vm.All.Single(r => r.Identifier == "TPE1").ExistsInTag);
     }
+
+    [Theory]
+    [InlineData(Id3v2Version.Id3v220)]
+    [InlineData(Id3v2Version.Id3v221)]
+    [InlineData(Id3v2Version.Id3v230)]
+    [InlineData(Id3v2Version.Id3v240)]
+    public void Construct_ForEveryVersion_DoesNotThrow(Id3v2Version version)
+    {
+        // Regression for the RGAD lib quirk: RgadEditor declares SupportedVersions=V230,
+        // but the lib's Id3v2ReplayGainAdjustmentFrame(Id3v2Version) ctor throws on v2.3
+        // because IsVersionSupported is `version < Id3v230`. The ManageFramesViewModel
+        // uses Id3v2AddMenuBuilder.IdentifierFor to resolve identifiers; the resolver
+        // must bypass via KnownIdentifier or fall back to the parameterless ctor.
+        var tag = new Id3v2Tag(version);
+        _ = new ManageFramesViewModel(TagItemEditorRegistry.Shared, tag);
+    }
+
+    [Fact]
+    public void All_V230_IncludesRgad()
+    {
+        var tag = new Id3v2Tag(Id3v2Version.Id3v230);
+        var vm = new ManageFramesViewModel(TagItemEditorRegistry.Shared, tag);
+        Assert.Contains(vm.All, r => r.Identifier == "RGAD");
+    }
 }

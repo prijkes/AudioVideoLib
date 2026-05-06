@@ -79,17 +79,37 @@ public static class Id3v2AddMenuBuilder
         {
             return attr.KnownIdentifier;
         }
-        try
+
+        // Try the version-aware ctor first.
+        var versionCtor = attr.ItemType.GetConstructor([typeof(Id3v2Version)]);
+        if (versionCtor is not null)
         {
-            var ctor = attr.ItemType.GetConstructor([typeof(Id3v2Version)]);
-            return ctor is null
-                ? null
-                : ((Id3v2Frame)ctor.Invoke([version])).Identifier;
+            try
+            {
+                return ((Id3v2Frame)versionCtor.Invoke([version])).Identifier;
+            }
+            catch
+            {
+                // Fall through — some frames have a (Id3v2Version) ctor that throws on the
+                // active version even though the editor declares it supported (e.g. RGAD's
+                // IsVersionSupported is buggy in the lib). Try the parameterless ctor next.
+            }
         }
-        catch
+
+        var defaultCtor = attr.ItemType.GetConstructor(System.Type.EmptyTypes);
+        if (defaultCtor is not null)
         {
-            return null;
+            try
+            {
+                return ((Id3v2Frame)defaultCtor.Invoke([])).Identifier;
+            }
+            catch
+            {
+                return null;
+            }
         }
+
+        return null;
     }
 
     private static IEnumerable<Id3v2FrameCategory> CategoriesInDisplayOrder() =>

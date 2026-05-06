@@ -12,7 +12,12 @@ using AudioVideoLib.Tags;
     MenuLabel = "Replay gain (RGAD)",
     Order = 39,
     SupportedVersions = Id3v2VersionMask.V230,
-    IsUniqueInstance = true)]
+    IsUniqueInstance = true,
+    // Library quirk: Id3v2ReplayGainAdjustmentFrame.IsVersionSupported is `version < Id3v230`
+    // (contradicts its own "v2.3 and later" docstring), so the (Id3v2Version) ctor throws on
+    // v2.3 even though the parameterless ctor uses v2.3 internally. KnownIdentifier bypasses
+    // the reflection-based identifier resolution that would otherwise trigger that throw.
+    KnownIdentifier = "RGAD")]
 public sealed class RgadEditor : ITagItemEditor<Id3v2ReplayGainAdjustmentFrame>, INotifyPropertyChanged
 {
     public int PeakAmplitude { get => field; set => Set(ref field, value); }
