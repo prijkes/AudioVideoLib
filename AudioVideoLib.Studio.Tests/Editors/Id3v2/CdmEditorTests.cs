@@ -32,4 +32,29 @@ public class CdmEditorTests
         var f = new CdmEditor().CreateNew(tag);
         Assert.NotNull(f);
     }
+
+    [Fact]
+    public void Save_WritesChildBytesAndZlibMethod()
+    {
+        var child = new Id3v2TextFrame(Id3v2Version.Id3v221, "TT2");
+        child.Values.Add("hello");
+        var e = new CdmEditor { SelectedChild = child };
+        var f = new Id3v2CompressedDataMetaFrame();
+        e.Save(f);
+        Assert.Equal(Id3v2CompressionMethod.ZLib, f.CompressionMethod);
+        Assert.NotNull(f.CompressedFrame);
+        Assert.NotEmpty(f.CompressedFrame);
+        // Sanity: child's serialised bytes are non-empty.
+        Assert.Equal(child.Data, f.CompressedFrame);
+    }
+
+    [Fact]
+    public void Save_NullChild_LeavesFrameUntouched()
+    {
+        var e = new CdmEditor();
+        var f = new Id3v2CompressedDataMetaFrame();
+        var beforeBytes = f.CompressedFrame;
+        e.Save(f);
+        Assert.Same(beforeBytes, f.CompressedFrame);
+    }
 }

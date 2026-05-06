@@ -12,7 +12,8 @@
             <TextBlock Text="Identifier" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
             <TextBox Text="{Binding Identifier}" IsReadOnly="True" Padding="4,3" Margin="0,0,0,8" />
             <TextBlock Text="Encoding" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
-            <ComboBox SelectedValue="{Binding Encoding}" Margin="0,0,0,8" />
+            <ComboBox ItemsSource="{Binding Source={StaticResource Id3v2EncodingValues}}"
+                      SelectedValue="{Binding Encoding}" Margin="0,0,0,8" />
             <TextBlock Text="Value (newline = additional value)"
                        Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
             <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"

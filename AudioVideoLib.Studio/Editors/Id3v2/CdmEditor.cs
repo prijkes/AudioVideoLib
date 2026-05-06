@@ -18,9 +18,29 @@ public sealed class CdmEditor : WrapperEditorBase<Id3v2CompressedDataMetaFrame>
 
     public override bool Edit(Window owner, Id3v2CompressedDataMetaFrame frame)
     {
-        // Snapshot is populated by the dispatch caller via IWrapperEditor.OnBeforeEdit.
+        // Snapshot is populated by the dispatch caller via IWrapperEditor.OnBeforeEdit
+        // (which also resets SelectedChild on the base class).
         var dialog = new CdmEditorDialog { Owner = owner, DataContext = this };
-        return dialog.ShowDialog() == true;
+        if (dialog.ShowDialog() != true)
+        {
+            return false;
+        }
+        Save(frame);
+        return true;
+    }
+
+    public void Save(Id3v2CompressedDataMetaFrame f)
+    {
+        if (SelectedChild is null)
+        {
+            return;
+        }
+        // Wrap the child's data block. WrapperEditorBase.OnAfterEdit (called by
+        // MainWindow.DispatchEdit after this returns) removes SelectedChild from
+        // the tag so the wrapper is the sole carrier of those bytes.
+        // Per ID3v2.2.1 spec the only defined compression is ZLib.
+        f.CompressionMethod = Id3v2CompressionMethod.ZLib;
+        f.CompressedFrame = SelectedChild.Data ?? [];
     }
 
     public override bool Validate(out string? error)

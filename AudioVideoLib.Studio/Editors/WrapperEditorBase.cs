@@ -53,7 +53,11 @@ public abstract class WrapperEditorBase<TFrame> : ITagItemEditor<TFrame>, IWrapp
         WrappableSnapshot = list;
     }
 
-    public virtual void OnBeforeEdit(Id3v2Tag tag, Id3v2Frame self) => TakeSnapshot(tag, (TFrame)self);
+    public virtual void OnBeforeEdit(Id3v2Tag tag, Id3v2Frame self)
+    {
+        SelectedChild = null;       // reset stale state from any prior Edit call
+        TakeSnapshot(tag, (TFrame)self);
+    }
 
     public virtual void OnAfterEdit(Id3v2Tag tag, Id3v2Frame self)
     {
