@@ -9,6 +9,8 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
+using AudioVideoLib.Studio.Editors;
+using AudioVideoLib.Studio.Editors.Id3v2;
 using AudioVideoLib.Tags;
 
 using Microsoft.Win32;
@@ -553,212 +555,124 @@ public partial class MainWindow : Window
         return list;
     }
 
-    private static readonly (string Id, string Label)[] CommonTextFrames =
-    [
-        ("TIT2", "Title"),
-        ("TPE1", "Lead artist"),
-        ("TPE2", "Band / album artist"),
-        ("TPE3", "Conductor"),
-        ("TPE4", "Remixer"),
-        ("TALB", "Album"),
-        ("TCOM", "Composer"),
-        ("TCON", "Genre (TCON)"),
-        ("TRCK", "Track"),
-        ("TPOS", "Disc"),
-        ("TYER", "Year (v2.3)"),
-        ("TDRC", "Recording time (v2.4)"),
-        ("TLAN", "Language"),
-        ("TBPM", "BPM"),
-        ("TSRC", "ISRC"),
-        ("TKEY", "Initial key"),
-        ("TPUB", "Publisher"),
-        ("TCOP", "Copyright"),
-    ];
-
-    private static readonly (string Id, string Label)[] CommonUrlFrames =
-    [
-        ("WCOM", "Commercial information"),
-        ("WCOP", "Copyright / legal information"),
-        ("WOAF", "Official audio file webpage"),
-        ("WOAR", "Official artist webpage"),
-        ("WOAS", "Official source webpage"),
-        ("WORS", "Official internet radio station"),
-        ("WPAY", "Payment"),
-        ("WPUB", "Publisher's webpage"),
-    ];
-
     private Id3v2TabViewModel? CurrentId3v2Tab =>
         TagTabControl.SelectedItem as Id3v2TabViewModel;
 
     private void AddFrameButton_Click(object sender, RoutedEventArgs e)
     {
-        if (sender is not Button button)
+        if (sender is not Button button || button.ContextMenu is not { } menu)
+        {
+            return;
+        }
+        if (CurrentId3v2Tab is not { Tag: Id3v2Tag id3v2 } tab)
         {
             return;
         }
 
-        var menu = button.ContextMenu;
-        if (menu == null)
-        {
-            return;
-        }
-
-        menu.Items.Clear();
-
-        var textMenu = new MenuItem { Header = "Text frame" };
-        foreach (var (id, label) in CommonTextFrames)
-        {
-            var mi = new MenuItem
-            {
-                Header = $"{id} — {label}",
-                Tag = ("TEXT", id),
-            };
-            mi.Click += AddFrameMenuItem_Click;
-            textMenu.Items.Add(mi);
-        }
-
-        textMenu.Items.Add(new Separator());
-        var customText = new MenuItem
-        {
-            Header = "Custom identifier…",
-            Tag = ("TEXT", string.Empty),
-        };
-        customText.Click += AddFrameMenuItem_Click;
-        textMenu.Items.Add(customText);
-
-        var urlMenu = new MenuItem { Header = "URL frame" };
-        foreach (var (id, label) in CommonUrlFrames)
-        {
-            var mi = new MenuItem
-            {
-                Header = $"{id} — {label}",
-                Tag = ("URL", id),
-            };
-            mi.Click += AddFrameMenuItem_Click;
-            urlMenu.Items.Add(mi);
-        }
-
-        urlMenu.Items.Add(new Separator());
-        var customUrl = new MenuItem
-        {
-            Header = "Custom identifier…",
-            Tag = ("URL", string.Empty),
-        };
-        customUrl.Click += AddFrameMenuItem_Click;
-        urlMenu.Items.Add(customUrl);
-
-        menu.Items.Add(textMenu);
-        menu.Items.Add(urlMenu);
-
-        var pictureItem = new MenuItem
-        {
-            Header = "Picture (APIC)…",
-            Tag = ("PICTURE", "APIC"),
-        };
-        pictureItem.Click += AddFrameMenuItem_Click;
-        menu.Items.Add(pictureItem);
-
-        var lyricsItem = new MenuItem
-        {
-            Header = "Unsynchronized lyrics (USLT)…",
-            Tag = ("LYRICS", "USLT"),
-        };
-        lyricsItem.Click += AddFrameMenuItem_Click;
-        menu.Items.Add(lyricsItem);
-
-        var privItem = new MenuItem
-        {
-            Header = "Private (PRIV)…",
-            Tag = ("PRIVATE", "PRIV"),
-        };
-        privItem.Click += AddFrameMenuItem_Click;
-        menu.Items.Add(privItem);
-
-        var ufidItem = new MenuItem
-        {
-            Header = "Unique file identifier (UFID)…",
-            Tag = ("UFID", "UFID"),
-        };
-        ufidItem.Click += AddFrameMenuItem_Click;
-        menu.Items.Add(ufidItem);
+        var model = Id3v2AddMenuBuilder.BuildModel(TagItemEditorRegistry.Shared, id3v2);
+        Id3v2AddMenuBuilder.Populate(menu, model, entry => OnAddOrEditFrame(entry, tab, id3v2));
 
         menu.PlacementTarget = button;
         menu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
         menu.IsOpen = true;
     }
 
-    private void AddFrameMenuItem_Click(object sender, RoutedEventArgs e)
+    private void ManageFramesButton_Click(object sender, RoutedEventArgs e)
     {
-        if (sender is not MenuItem { Tag: ValueTuple<string, string> tag })
+        if (CurrentId3v2Tab is not { Tag: Id3v2Tag id3v2 } tab)
         {
             return;
         }
+        ManageFramesDialog.ShowFor(this, id3v2, entry => OnAddOrEditFrame(entry, tab, id3v2));
+    }
 
-        var tab = CurrentId3v2Tab;
-        if (tab == null)
-        {
-            return;
-        }
-
-        var (kind, identifier) = tag;
-
-        if (string.IsNullOrEmpty(identifier))
-        {
-            var kindLabel = kind == "TEXT" ? "text" : "URL";
-            var prompt = $"Enter a 4-character {kindLabel} frame identifier (e.g., {(kind == "TEXT" ? "TSST" : "WFED")}):";
-            var input = InputDialog.Ask(this, $"Custom {kindLabel} frame", prompt);
-            if (string.IsNullOrWhiteSpace(input))
-            {
-                return;
-            }
-
-            identifier = input.Trim().ToUpperInvariant();
-            if (identifier.Length != 4)
-            {
-                MessageBox.Show(this, "Frame identifier must be exactly 4 characters.", "Add frame",
-                    MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-        }
-
+    private void OnAddOrEditFrame(Id3v2MenuEntry entry, Id3v2TabViewModel tab, Id3v2Tag tag)
+    {
         try
         {
-            var row = kind switch
+            if (entry.IsEditExisting)
             {
-                "TEXT" => tab.AddTextFrame(identifier),
-                "URL" => tab.AddUrlFrame(identifier),
-                "PICTURE" => tab.AddPictureFrame(),
-                "LYRICS" => tab.AddLyricsFrame(),
-                "PRIVATE" => tab.AddPrivateFrame(),
-                "UFID" => tab.AddUniqueFileIdentifierFrame(),
-                _ => throw new InvalidOperationException($"Unknown frame kind {kind}"),
-            };
-
-            var edited = row.Frame switch
-            {
-                Id3v2AttachedPictureFrame apic => ApicEditorDialog.Edit(this, apic),
-                Id3v2UnsynchronizedLyricsFrame uslt => UsltEditorDialog.Edit(this, uslt),
-                Id3v2PrivateFrame priv => BinaryDataDialog.Edit(this, priv),
-                Id3v2UniqueFileIdentifierFrame ufid => BinaryDataDialog.Edit(this, ufid),
-                _ => false,
-            };
-
-            if (edited)
-            {
-                tab.RefreshRow(row);
+                var existing = tag.Frames.FirstOrDefault(f => f.Identifier == entry.FrameIdentifier);
+                if (existing is null)
+                {
+                    return;
+                }
+                if (DispatchEdit(existing, tag))
+                {
+                    tab.RefreshFrameRow(existing);
+                }
+                return;
             }
 
-            UpdateStatus($"Added {identifier}");
+            var newFrame = ConstructFrameFor(entry.FrameIdentifier, tag);
+            if (newFrame is null)
+            {
+                return;
+            }
+            if (DispatchEdit(newFrame, tag))
+            {
+                tab.AddFrame(newFrame);
+                UpdateStatus($"Added {entry.FrameIdentifier}");
+            }
         }
         catch (Exception ex)
         {
             MessageBox.Show(
                 this,
-                $"Could not add {identifier}:\n\n{ex.Message}",
+                $"Could not add {entry.FrameIdentifier}:\n\n{ex.Message}",
                 "Add frame",
                 MessageBoxButton.OK,
                 MessageBoxImage.Warning);
         }
+    }
+
+    private bool DispatchEdit(Id3v2Frame frame, Id3v2Tag tag)
+    {
+        if (!TagItemEditorRegistry.Shared.TryResolve(frame.GetType(), out var editor))
+        {
+            return false;
+        }
+        // Wrappers (CDM/CRM) need the tag-frames snapshot before the dialog opens
+        // and (after a successful commit) removal of the selected child — the
+        // wrapper has just absorbed its bytes, so the tag must drop the original.
+        var wrapper = editor.Inner as IWrapperEditor;
+        wrapper?.OnBeforeEdit(tag, frame);
+
+        if (!editor.Edit(this, frame))
+        {
+            return false;
+        }
+
+        wrapper?.OnAfterEdit(tag, frame);
+        return true;
+    }
+
+    private static Id3v2Frame? ConstructFrameFor(string identifier, Id3v2Tag tag)
+    {
+        if (Id3v2KnownTextFrameIds.All.Any(i => i.Identifier == identifier || i.V220Identifier == identifier))
+        {
+            return new Id3v2TextFrame(tag.Version, identifier)
+            {
+                TextEncoding = Id3v2FrameEncodingType.UTF8,
+            };
+        }
+        if (Id3v2KnownUrlFrameIds.All.Any(i => i.Identifier == identifier || i.V220Identifier == identifier))
+        {
+            return new Id3v2UrlLinkFrame(tag.Version, identifier);
+        }
+        foreach (var entry in TagItemEditorRegistry.Shared.Entries)
+        {
+            if (entry.Attribute is not Id3v2FrameEditorAttribute a)
+            {
+                continue;
+            }
+            var ident = Id3v2AddMenuBuilder.IdentifierFor(a, tag.Version);
+            if (ident == identifier)
+            {
+                return (Id3v2Frame)entry.Adapter.CreateNew(tag);
+            }
+        }
+        return null;
     }
 
     private void TabItem_PreviewMouseRightButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -1030,51 +944,19 @@ public partial class MainWindow : Window
         {
             return;
         }
-
-        var tab = CurrentId3v2Tab;
-        if (tab == null)
+        if (CurrentId3v2Tab is not { Tag: Id3v2Tag tag } tab)
         {
             return;
         }
-
-        switch (row.Frame)
+        if (!TagItemEditorRegistry.Shared.TryResolve(row.Frame.GetType(), out _))
         {
-            case Id3v2AttachedPictureFrame apic:
-                if (ApicEditorDialog.Edit(this, apic))
-                {
-                    tab.RefreshRow(row);
-                }
-
-                e.Handled = true;
-                break;
-
-            case Id3v2UnsynchronizedLyricsFrame uslt:
-                if (UsltEditorDialog.Edit(this, uslt))
-                {
-                    tab.RefreshRow(row);
-                }
-
-                e.Handled = true;
-                break;
-
-            case Id3v2PrivateFrame priv:
-                if (BinaryDataDialog.Edit(this, priv))
-                {
-                    tab.RefreshRow(row);
-                }
-
-                e.Handled = true;
-                break;
-
-            case Id3v2UniqueFileIdentifierFrame ufid:
-                if (BinaryDataDialog.Edit(this, ufid))
-                {
-                    tab.RefreshRow(row);
-                }
-
-                e.Handled = true;
-                break;
+            return;
         }
+        if (DispatchEdit(row.Frame, tag))
+        {
+            tab.RefreshRow(row);
+        }
+        e.Handled = true;
     }
 
     private void AdvancedFrameRow_PreviewMouseRightButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)

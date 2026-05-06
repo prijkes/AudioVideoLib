@@ -1,0 +1,107 @@
+<Window x:Class="AudioVideoLib.Studio.Editors.Id3v2.RevbEditorDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Width="500" SizeToContent="Height" WindowStartupLocation="CenterOwner"
+        Title="Reverb (REVB)">
+    <DockPanel Margin="14">
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,14,0,0">
+            <Button Content="OK"     Width="80"                  Click="Ok_Click"     IsDefault="True" />
+            <Button Content="Cancel" Width="80" Margin="8,0,0,0" Click="Cancel_Click" IsCancel="True" />
+        </StackPanel>
+        <StackPanel>
+            <GroupBox Header="Reverb time (ms)" Margin="0,0,0,8" Padding="6">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Left"
+                               Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
+                    <TextBlock Grid.Row="0" Grid.Column="1" Text="Right"
+                               Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
+                    <TextBox Grid.Row="1" Grid.Column="0" Margin="0,0,3,0" Padding="4,3"
+                             Text="{Binding ReverbLeftMilliseconds, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBox Grid.Row="1" Grid.Column="1" Margin="3,0,0,0" Padding="4,3"
+                             Text="{Binding ReverbRightMilliseconds, UpdateSourceTrigger=PropertyChanged}" />
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Header="Bounces (0-255; 0xFF = infinite)" Margin="0,0,0,8" Padding="6">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Left"
+                               Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
+                    <TextBlock Grid.Row="0" Grid.Column="1" Text="Right"
+                               Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
+                    <TextBox Grid.Row="1" Grid.Column="0" Margin="0,0,3,0" Padding="4,3"
+                             Text="{Binding ReverbBouncesLeft, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBox Grid.Row="1" Grid.Column="1" Margin="3,0,0,0" Padding="4,3"
+                             Text="{Binding ReverbBouncesRight, UpdateSourceTrigger=PropertyChanged}" />
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Header="Feedback (0-255)" Margin="0,0,0,8" Padding="6">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="L→L"
+                               Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
+                    <TextBlock Grid.Row="0" Grid.Column="1" Text="L→R"
+                               Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
+                    <TextBlock Grid.Row="0" Grid.Column="2" Text="R→R"
+                               Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
+                    <TextBlock Grid.Row="0" Grid.Column="3" Text="R→L"
+                               Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
+                    <TextBox Grid.Row="1" Grid.Column="0" Margin="0,0,3,0" Padding="4,3"
+                             Text="{Binding ReverbFeedbackLeftToLeft, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBox Grid.Row="1" Grid.Column="1" Margin="3,0,3,0" Padding="4,3"
+                             Text="{Binding ReverbFeedbackLeftToRight, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBox Grid.Row="1" Grid.Column="2" Margin="3,0,3,0" Padding="4,3"
+                             Text="{Binding ReverbFeedbackRightToRight, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBox Grid.Row="1" Grid.Column="3" Margin="3,0,0,0" Padding="4,3"
+                             Text="{Binding ReverbFeedbackRightToLeft, UpdateSourceTrigger=PropertyChanged}" />
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Header="Premix (0-255)" Padding="6">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="L→R"
+                               Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
+                    <TextBlock Grid.Row="0" Grid.Column="1" Text="R→L"
+                               Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
+                    <TextBox Grid.Row="1" Grid.Column="0" Margin="0,0,3,0" Padding="4,3"
+                             Text="{Binding PremixLeftToRight, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBox Grid.Row="1" Grid.Column="1" Margin="3,0,0,0" Padding="4,3"
+                             Text="{Binding PremixRightToLeft, UpdateSourceTrigger=PropertyChanged}" />
+                </Grid>
+            </GroupBox>
+        </StackPanel>
+    </DockPanel>
+</Window>

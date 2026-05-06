@@ -1,0 +1,29 @@
+<Window x:Class="AudioVideoLib.Studio.Editors.Id3v2.OwneEditorDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Width="500" SizeToContent="Height" WindowStartupLocation="CenterOwner"
+        Title="Ownership (OWNE)">
+    <DockPanel Margin="14">
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,14,0,0">
+            <Button Content="OK"     Width="80"                  Click="Ok_Click"     IsDefault="True" />
+            <Button Content="Cancel" Width="80" Margin="8,0,0,0" Click="Cancel_Click" IsCancel="True" />
+        </StackPanel>
+        <StackPanel>
+            <TextBlock Text="Encoding" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
+            <ComboBox ItemsSource="{Binding Source={StaticResource Id3v2EncodingValues}}"
+                      SelectedValue="{Binding Encoding}" Margin="0,0,0,8" />
+            <TextBlock Text="Price paid (e.g. USD10.99 — ISO-4217 + amount)"
+                       Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
+            <TextBox Text="{Binding PricePaid, UpdateSourceTrigger=PropertyChanged}"
+                     Padding="4,3" Margin="0,0,0,8" />
+            <TextBlock Text="Date of purchase (YYYYMMDD)"
+                       Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
+            <TextBox Text="{Binding DateOfPurchase, UpdateSourceTrigger=PropertyChanged}"
+                     MaxLength="8" Padding="4,3" Margin="0,0,0,8" />
+            <TextBlock Text="Seller"
+                       Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
+            <TextBox Text="{Binding Seller, UpdateSourceTrigger=PropertyChanged}"
+                     Padding="4,3" Margin="0,0,0,8" />
+        </StackPanel>
+    </DockPanel>
+</Window>

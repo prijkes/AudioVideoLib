@@ -101,6 +101,12 @@
                         <DockPanel LastChildFill="False">
                             <TextBlock Text="All frames" VerticalAlignment="Center" />
                             <Button DockPanel.Dock="Right"
+                                    Content="Manage frames…"
+                                    Margin="6,0,0,0"
+                                    Padding="8,1"
+                                    FontSize="11"
+                                    Click="ManageFramesButton_Click" />
+                            <Button DockPanel.Dock="Right"
                                     Content="+ Frame"
                                     Margin="12,0,0,0"
                                     Padding="8,1"

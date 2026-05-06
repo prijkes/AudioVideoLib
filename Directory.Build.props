@@ -13,7 +13,7 @@
 
   <!-- Shared NuGet package metadata. -->
   <PropertyGroup>
-    <Version>0.8.0</Version>
+    <Version>0.9.0</Version>
     <Authors>AudioVideoLib</Authors>
     <Company>AudioVideoLib</Company>
     <Copyright>Copyright © AudioVideoLib</Copyright>

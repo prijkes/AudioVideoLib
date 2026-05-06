@@ -1,0 +1,74 @@
+TextFrames | Text frame
+  TAL | TAL — Album
+  TP2 | TP2 — Band / orchestra
+  TBP | TBP — Beats per minute
+  TCM | TCM — Composer
+  TP3 | TP3 — Conductor
+  TT1 | TT1 — Content group description
+  TCR | TCR — Copyright message
+  TDA | TDA — Date (DDMM, deprecated v2.4)
+  TEN | TEN — Encoded by
+  TSS | TSS — Encoding software / hardware
+  TFT | TFT — File type
+  TCO | TCO — Genre
+  TKE | TKE — Initial key
+  TP4 | TP4 — Interpreted / remixed by
+  TRC | TRC — ISRC
+  TLA | TLA — Language(s)
+  TP1 | TP1 — Lead artist
+  TLE | TLE — Length
+  TXT | TXT — Lyricist / Text writer
+  TMT | TMT — Media type
+  TOT | TOT — Original album
+  TOA | TOA — Original artist
+  TOF | TOF — Original filename
+  TOL | TOL — Original lyricist
+  TOR | TOR — Original release year
+  TPA | TPA — Part of a set
+  TDY | TDY — Playlist delay
+  TPB | TPB — Publisher
+  TRD | TRD — Recording dates
+  TSI | TSI — Size
+  TT3 | TT3 — Subtitle / refinement
+  TIM | TIM — Time (HHMM, deprecated v2.4)
+  TT2 | TT2 — Title
+  TRK | TRK — Track number
+  TYE | TYE — Year
+UrlFrames | URL frame
+  WCM | WCM — Commercial information
+  WCP | WCP — Copyright / legal information
+  WAR | WAR — Official artist webpage
+  WAF | WAF — Official audio file webpage
+  WAS | WAS — Official audio source webpage
+  WPB | WPB — Publishers official webpage
+Identification | Identification
+  UFI | Add Unique file identifier (UFID)…
+  MCI | Add Music CD identifier (MCDI)…
+CommentsAndLyrics | Comments & lyrics
+  COM | Add Comment (COMM)…
+  ULT | Add Unsynchronized lyrics (USLT)…
+  SLT | Add Synchronized lyrics (SYLT)…
+TimingAndSync | Timing & sync
+  ETC | Add Event timing codes (ETCO)…
+  MLL | Add MPEG location lookup table (MLLT)…
+  STC | Add Synced tempo codes (SYTC)…
+   | Add Linked information (LINK)…
+People | People
+  IPL | Add Involved people list (IPLS)…
+AudioAdjustment | Audio adjustment
+  RVA | Add Relative volume adjustment (RVAD)…
+  EQU | Add Equalisation (EQUA)…
+  REV | Add Reverb (REVB)…
+CountersAndRatings | Counters & ratings
+  CNT | Add Play counter (PCNT)…
+  POP | Add Popularimeter (POPM)…
+Attachments | Attachments
+  PIC | Add Attached picture (APIC)…
+  GEO | Add General encapsulated object (GEOB)…
+EncryptionAndCompression | Encryption & compression
+  CRA | Add Audio encryption (AENC)…
+Containers | Containers
+  CDM | Add Compressed data meta (CDM)…
+  CRM | Add Encrypted meta (CRM)…
+System | System
+  BUF | Add Recommended buffer size (RBUF)…

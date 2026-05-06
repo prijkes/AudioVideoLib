@@ -1,0 +1,104 @@
+<Window x:Class="AudioVideoLib.Studio.Editors.Id3v2.RgadEditorDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:tags="clr-namespace:AudioVideoLib.Tags;assembly=AudioVideoLib"
+        Width="520" SizeToContent="Height" WindowStartupLocation="CenterOwner"
+        Title="Replay gain (RGAD)">
+    <Window.Resources>
+        <ObjectDataProvider x:Key="NameCodeValues"
+                            MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="tags:Id3v2NameCode" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <ObjectDataProvider x:Key="OriginatorCodeValues"
+                            MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="tags:Id3v2OriginatorCode" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <ObjectDataProvider x:Key="ReplayGainSignValues"
+                            MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="tags:Id3v2ReplayGainSign" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </Window.Resources>
+    <DockPanel Margin="14">
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,14,0,0">
+            <Button Content="OK"     Width="80"                  Click="Ok_Click"     IsDefault="True" />
+            <Button Content="Cancel" Width="80" Margin="8,0,0,0" Click="Cancel_Click" IsCancel="True" />
+        </StackPanel>
+        <StackPanel>
+            <TextBlock Text="Peak amplitude"
+                       Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
+            <TextBox Text="{Binding PeakAmplitude, UpdateSourceTrigger=PropertyChanged}"
+                     Padding="4,3" Margin="0,0,0,8" />
+
+            <GroupBox Header="Radio (track) gain" Margin="0,0,0,8" Padding="6">
+                <StackPanel>
+                    <TextBlock Text="Name code"
+                               Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
+                    <ComboBox ItemsSource="{Binding Source={StaticResource NameCodeValues}}"
+                              SelectedValue="{Binding RadioNameCode}" Margin="0,0,0,6" />
+                    <TextBlock Text="Originator code"
+                               Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
+                    <ComboBox ItemsSource="{Binding Source={StaticResource OriginatorCodeValues}}"
+                              SelectedValue="{Binding RadioOriginatorCode}" Margin="0,0,0,6" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Sign"
+                                   Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
+                        <TextBlock Grid.Row="0" Grid.Column="1" Text="Adjustment (0-511)"
+                                   Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
+                        <ComboBox Grid.Row="1" Grid.Column="0" Margin="0,0,3,0"
+                                  ItemsSource="{Binding Source={StaticResource ReplayGainSignValues}}"
+                                  SelectedValue="{Binding RadioSign}" />
+                        <TextBox Grid.Row="1" Grid.Column="1" Margin="3,0,0,0" Padding="4,3"
+                                 Text="{Binding RadioAdjustment, UpdateSourceTrigger=PropertyChanged}" />
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Header="Audiophile (album) gain" Padding="6">
+                <StackPanel>
+                    <TextBlock Text="Name code"
+                               Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
+                    <ComboBox ItemsSource="{Binding Source={StaticResource NameCodeValues}}"
+                              SelectedValue="{Binding AudiophileNameCode}" Margin="0,0,0,6" />
+                    <TextBlock Text="Originator code"
+                               Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
+                    <ComboBox ItemsSource="{Binding Source={StaticResource OriginatorCodeValues}}"
+                              SelectedValue="{Binding AudiophileOriginatorCode}" Margin="0,0,0,6" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Sign"
+                                   Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
+                        <TextBlock Grid.Row="0" Grid.Column="1" Text="Adjustment (0-511)"
+                                   Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
+                        <ComboBox Grid.Row="1" Grid.Column="0" Margin="0,0,3,0"
+                                  ItemsSource="{Binding Source={StaticResource ReplayGainSignValues}}"
+                                  SelectedValue="{Binding AudiophileSign}" />
+                        <TextBox Grid.Row="1" Grid.Column="1" Margin="3,0,0,0" Padding="4,3"
+                                 Text="{Binding AudiophileAdjustment, UpdateSourceTrigger=PropertyChanged}" />
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
+        </StackPanel>
+    </DockPanel>
+</Window>

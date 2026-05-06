@@ -3,6 +3,13 @@ namespace AudioVideoLib.Studio;
 using System.Text;
 using System.Windows;
 
+using AudioVideoLib.Studio.Editors;
+#if DEBUG
+using System;
+
+using AudioVideoLib.Studio.Editors.Id3v2;
+#endif
+
 public partial class App : Application
 {
     static App()
@@ -19,6 +26,42 @@ public partial class App : Application
             FrameworkElement.LoadedEvent,
             new RoutedEventHandler(OnAnyWindowLoaded));
     }
+
+    protected override void OnStartup(StartupEventArgs e)
+    {
+        base.OnStartup(e);
+        TagItemEditorRegistry.Shared.RegisterFromAssembly(typeof(MainWindow).Assembly);
+#if DEBUG
+        ValidateRegistry();
+#endif
+    }
+
+#if DEBUG
+    private static void ValidateRegistry()
+    {
+        foreach (var entry in TagItemEditorRegistry.Shared.Entries)
+        {
+            if (entry.Attribute is Id3v2FrameEditorAttribute a)
+            {
+                if (a.SupportedVersions == Id3v2VersionMask.None)
+                {
+                    throw new InvalidOperationException(
+                        $"Editor {entry.EditorType.Name} has SupportedVersions=None.");
+                }
+                if (string.IsNullOrEmpty(a.MenuLabel))
+                {
+                    throw new InvalidOperationException(
+                        $"Editor {entry.EditorType.Name} has empty MenuLabel.");
+                }
+                if (a.MenuLabel.Length > 60)
+                {
+                    throw new InvalidOperationException(
+                        $"Editor {entry.EditorType.Name} MenuLabel exceeds 60 chars: {a.MenuLabel.Length}.");
+                }
+            }
+        }
+    }
+#endif
 
     private static void OnAnyWindowLoaded(object sender, RoutedEventArgs e)
     {
