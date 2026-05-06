@@ -40,6 +40,27 @@
                     <x:Type TypeName="tags:Id3v2AudioDeliveryType" />
                 </ObjectDataProvider.MethodParameters>
             </ObjectDataProvider>
+
+            <ObjectDataProvider x:Key="Id3v2ContentTypeValues"
+                                MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="tags:Id3v2ContentType" />
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+
+            <ObjectDataProvider x:Key="Id3v2InterpolationMethodValues"
+                                MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="tags:Id3v2InterpolationMethod" />
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+
+            <ObjectDataProvider x:Key="Id3v2ChannelTypeValues"
+                                MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="tags:Id3v2ChannelType" />
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
