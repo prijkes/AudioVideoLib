@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
+using AudioVideoLib.Studio.Editors.Id3v2;
 using AudioVideoLib.Tags;
 
 using Microsoft.Win32;
@@ -736,11 +737,11 @@ public partial class MainWindow : Window
 
             var edited = row.Frame switch
             {
-                Id3v2AttachedPictureFrame apic => ApicEditorDialog.Edit(this, apic),
-                Id3v2UnsynchronizedLyricsFrame uslt => UsltEditorDialog.Edit(this, uslt),
-                Id3v2PrivateFrame priv => BinaryDataDialog.Edit(this, priv),
-                Id3v2UniqueFileIdentifierFrame ufid => BinaryDataDialog.Edit(this, ufid),
-                Id3v2MusicCdIdentifierFrame mcdi => BinaryDataDialog.Edit(this, mcdi),
+                Id3v2AttachedPictureFrame apic => ApicEditorDialog.EditCore(this, apic),
+                Id3v2UnsynchronizedLyricsFrame uslt => UsltEditorDialog.EditCore(this, uslt),
+                Id3v2PrivateFrame priv => BinaryDataDialog.EditPriv(this, priv),
+                Id3v2UniqueFileIdentifierFrame ufid => BinaryDataDialog.EditUfid(this, ufid),
+                Id3v2MusicCdIdentifierFrame mcdi => BinaryDataDialog.EditMcdi(this, mcdi),
                 _ => false,
             };
 
@@ -1041,7 +1042,7 @@ public partial class MainWindow : Window
         switch (row.Frame)
         {
             case Id3v2AttachedPictureFrame apic:
-                if (ApicEditorDialog.Edit(this, apic))
+                if (ApicEditorDialog.EditCore(this, apic))
                 {
                     tab.RefreshRow(row);
                 }
@@ -1050,7 +1051,7 @@ public partial class MainWindow : Window
                 break;
 
             case Id3v2UnsynchronizedLyricsFrame uslt:
-                if (UsltEditorDialog.Edit(this, uslt))
+                if (UsltEditorDialog.EditCore(this, uslt))
                 {
                     tab.RefreshRow(row);
                 }
@@ -1059,7 +1060,7 @@ public partial class MainWindow : Window
                 break;
 
             case Id3v2PrivateFrame priv:
-                if (BinaryDataDialog.Edit(this, priv))
+                if (BinaryDataDialog.EditPriv(this, priv))
                 {
                     tab.RefreshRow(row);
                 }
@@ -1068,7 +1069,7 @@ public partial class MainWindow : Window
                 break;
 
             case Id3v2UniqueFileIdentifierFrame ufid:
-                if (BinaryDataDialog.Edit(this, ufid))
+                if (BinaryDataDialog.EditUfid(this, ufid))
                 {
                     tab.RefreshRow(row);
                 }
@@ -1077,7 +1078,7 @@ public partial class MainWindow : Window
                 break;
 
             case Id3v2MusicCdIdentifierFrame mcdi:
-                if (BinaryDataDialog.Edit(this, mcdi))
+                if (BinaryDataDialog.EditMcdi(this, mcdi))
                 {
                     tab.RefreshRow(row);
                 }

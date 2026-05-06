@@ -1,9 +1,10 @@
-namespace AudioVideoLib.Studio;
+namespace AudioVideoLib.Studio.Editors.Id3v2;
 
 using System;
 using System.IO;
 using System.Windows;
 
+using AudioVideoLib.Studio;
 using AudioVideoLib.Tags;
 
 using Microsoft.Win32;
@@ -17,7 +18,7 @@ public partial class BinaryDataDialog : Window
         InitializeComponent();
     }
 
-    public static bool Edit(Window owner, Id3v2PrivateFrame frame)
+    internal static bool EditPriv(Window owner, Id3v2PrivateFrame frame)
     {
         var dlg = new BinaryDataDialog
         {
@@ -39,7 +40,7 @@ public partial class BinaryDataDialog : Window
         return true;
     }
 
-    public static bool Edit(Window owner, Id3v2UniqueFileIdentifierFrame frame)
+    internal static bool EditUfid(Window owner, Id3v2UniqueFileIdentifierFrame frame)
     {
         var dlg = new BinaryDataDialog
         {
@@ -61,7 +62,7 @@ public partial class BinaryDataDialog : Window
         return true;
     }
 
-    public static bool Edit(Window owner, Id3v2MusicCdIdentifierFrame frame)
+    internal static bool EditMcdi(Window owner, Id3v2MusicCdIdentifierFrame frame)
     {
         var dlg = new BinaryDataDialog
         {

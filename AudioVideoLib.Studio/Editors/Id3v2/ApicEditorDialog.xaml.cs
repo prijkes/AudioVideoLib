@@ -1,4 +1,4 @@
-namespace AudioVideoLib.Studio;
+namespace AudioVideoLib.Studio.Editors.Id3v2;
 
 using System;
 using System.IO;
@@ -26,7 +26,7 @@ public partial class ApicEditorDialog : Window
         PictureTypeCombo.SelectedItem = Id3v2AttachedPictureType.CoverFront;
     }
 
-    public static bool Edit(Window owner, Id3v2AttachedPictureFrame frame)
+    internal static bool EditCore(Window owner, Id3v2AttachedPictureFrame frame)
     {
         var dlg = new ApicEditorDialog { Owner = owner };
         dlg.LoadFromFrame(frame);

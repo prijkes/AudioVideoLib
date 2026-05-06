@@ -1,4 +1,4 @@
-namespace AudioVideoLib.Studio;
+namespace AudioVideoLib.Studio.Editors.Id3v2;
 
 using System.Windows;
 
@@ -11,7 +11,7 @@ public partial class UsltEditorDialog : Window
         InitializeComponent();
     }
 
-    public static bool Edit(Window owner, Id3v2UnsynchronizedLyricsFrame frame)
+    internal static bool EditCore(Window owner, Id3v2UnsynchronizedLyricsFrame frame)
     {
         var dlg = new UsltEditorDialog { Owner = owner };
         dlg.LanguageBox.Text = frame.Language ?? "eng";

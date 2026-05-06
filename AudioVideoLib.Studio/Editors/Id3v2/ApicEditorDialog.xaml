@@ -1,4 +1,4 @@
-<Window x:Class="AudioVideoLib.Studio.ApicEditorDialog"
+<Window x:Class="AudioVideoLib.Studio.Editors.Id3v2.ApicEditorDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Picture frame (APIC)"
