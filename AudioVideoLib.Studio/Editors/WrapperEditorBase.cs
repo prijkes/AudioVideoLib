@@ -9,11 +9,22 @@ using AudioVideoLib.Tags;
 /// <summary>
 /// Marker interface that lets non-generic dispatch code (MainWindow,
 /// future automation) feed a wrapper editor its tag context BEFORE
-/// the dialog opens, without reflection or DataContext fishing.
+/// the dialog opens (snapshot the wrappable frames) AND AFTER it
+/// commits (remove the selected child from the tag — the wrapper
+/// has just absorbed its bytes), without reflection or DataContext
+/// fishing.
 /// </summary>
 public interface IWrapperEditor
 {
     void OnBeforeEdit(Id3v2Tag tag, Id3v2Frame self);
+
+    /// <summary>
+    /// Called by the dispatch path after <see cref="ITagItemEditor{TItem}.Edit"/>
+    /// returns true. The wrapper has serialised the selected child's bytes into
+    /// its data block; the original child must now be removed so the tag doesn't
+    /// keep both copies.
+    /// </summary>
+    void OnAfterEdit(Id3v2Tag tag, Id3v2Frame self);
 }
 
 public abstract class WrapperEditorBase<TFrame> : ITagItemEditor<TFrame>, IWrapperEditor
@@ -43,6 +54,15 @@ public abstract class WrapperEditorBase<TFrame> : ITagItemEditor<TFrame>, IWrapp
     }
 
     public virtual void OnBeforeEdit(Id3v2Tag tag, Id3v2Frame self) => TakeSnapshot(tag, (TFrame)self);
+
+    public virtual void OnAfterEdit(Id3v2Tag tag, Id3v2Frame self)
+    {
+        ArgumentNullException.ThrowIfNull(tag);
+        if (SelectedChild is { } child)
+        {
+            tag.RemoveFrame(child);
+        }
+    }
 
     public abstract TFrame CreateNew(object tag);
     public abstract bool Edit(Window owner, TFrame frame);

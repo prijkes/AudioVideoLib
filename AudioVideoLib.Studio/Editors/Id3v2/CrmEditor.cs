@@ -58,8 +58,9 @@ public sealed class CrmEditor : WrapperEditorBase<Id3v2EncryptedMetaFrame>, INot
         f.ContentExplanation = ContentExplanation;
         if (SelectedChild is not null)
         {
-            // Wrap the child's data block; coordinator (MainWindow.OnAddOrEditFrame)
-            // is responsible for removing the original child from the tag.
+            // Wrap the child's data block. WrapperEditorBase.OnAfterEdit (called by
+            // MainWindow.DispatchEdit after this returns) removes SelectedChild from
+            // the tag so the wrapper is the sole carrier of those bytes.
             f.EncryptedDataBlock = SelectedChild.Data ?? [];
         }
         else

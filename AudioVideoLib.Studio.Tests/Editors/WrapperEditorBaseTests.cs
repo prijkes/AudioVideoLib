@@ -51,4 +51,32 @@ public class WrapperEditorBaseTests
         Assert.Single(d.WrappableSnapshot);
         Assert.Same(plain, d.WrappableSnapshot[0]);
     }
+
+    [Fact]
+    public void OnAfterEdit_RemovesSelectedChildFromTag()
+    {
+        var tag = new Id3v2Tag(Id3v2Version.Id3v221);
+        var self = new Id3v2CompressedDataMetaFrame();
+        var child = new Id3v2TextFrame(Id3v2Version.Id3v221, "TT2");
+        tag.SetFrame(child);
+
+        var d = new Dialog { SelectedChild = child };
+        d.OnAfterEdit(tag, self);
+
+        Assert.DoesNotContain(child, tag.Frames);
+    }
+
+    [Fact]
+    public void OnAfterEdit_NoChild_NoOp()
+    {
+        var tag = new Id3v2Tag(Id3v2Version.Id3v221);
+        var self = new Id3v2CompressedDataMetaFrame();
+        var sibling = new Id3v2TextFrame(Id3v2Version.Id3v221, "TT2");
+        tag.SetFrame(sibling);
+
+        var d = new Dialog();   // SelectedChild = null
+        d.OnAfterEdit(tag, self);
+
+        Assert.Contains(sibling, tag.Frames);
+    }
 }

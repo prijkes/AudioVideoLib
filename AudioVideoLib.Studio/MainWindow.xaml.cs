@@ -632,12 +632,19 @@ public partial class MainWindow : Window
         {
             return false;
         }
-        // Wrappers (CDM/CRM) need the tag-frames snapshot before the dialog opens.
-        if (editor.Inner is IWrapperEditor wrapper)
+        // Wrappers (CDM/CRM) need the tag-frames snapshot before the dialog opens
+        // and (after a successful commit) removal of the selected child — the
+        // wrapper has just absorbed its bytes, so the tag must drop the original.
+        var wrapper = editor.Inner as IWrapperEditor;
+        wrapper?.OnBeforeEdit(tag, frame);
+
+        if (!editor.Edit(this, frame))
         {
-            wrapper.OnBeforeEdit(tag, frame);
+            return false;
         }
-        return editor.Edit(this, frame);
+
+        wrapper?.OnAfterEdit(tag, frame);
+        return true;
     }
 
     private static Id3v2Frame? ConstructFrameFor(string identifier, Id3v2Tag tag)
