@@ -1,0 +1,23 @@
+<Window x:Class="AudioVideoLib.Studio.Editors.Id3v2.UserDefinedTextEditorDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Width="500" SizeToContent="Height" WindowStartupLocation="CenterOwner"
+        Title="User-defined text (TXXX)">
+    <DockPanel Margin="14">
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,14,0,0">
+            <Button Content="OK" Width="80" Click="Ok_Click" IsDefault="True" />
+            <Button Content="Cancel" Width="80" Margin="8,0,0,0" Click="Cancel_Click" IsCancel="True" />
+        </StackPanel>
+        <StackPanel>
+            <TextBlock Text="Encoding" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
+            <ComboBox SelectedValue="{Binding Encoding}" Margin="0,0,0,8" />
+            <TextBlock Text="Description" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
+            <TextBox Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
+                     Padding="4,3" Margin="0,0,0,8" />
+            <TextBlock Text="Value" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
+            <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"
+                     AcceptsReturn="True" MinHeight="120" TextWrapping="Wrap"
+                     VerticalScrollBarVisibility="Auto" />
+        </StackPanel>
+    </DockPanel>
+</Window>
