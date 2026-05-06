@@ -90,12 +90,15 @@ public interface ITagItemEditor<TItem>
     bool Edit(Window owner, TItem item);
 }
 
-// Non-generic facade for the registry's reflection layer
-internal interface ITagItemEditorAdapter
+// Non-generic facade for the registry's reflection layer.
+// Public because the dispatch path (MainWindow.DispatchEdit) needs `Inner` to
+// pattern-match against IWrapperEditor for wrapper-specific hooks (see §4.3).
+public interface ITagItemEditorAdapter
 {
     Type ItemType { get; }
     object CreateNew(object tag);
     bool Edit(Window owner, object item);
+    object Inner { get; }    // the underlying ITagItemEditor<TItem> instance
 }
 ```
 
@@ -461,14 +464,26 @@ private void MoveUp_Click(object s, RoutedEventArgs e)    { /* same pattern */ }
 private void MoveDown_Click(object s, RoutedEventArgs e)  { /* same pattern */ }
 ```
 
-### 4.3 Pattern 3 — Wrapper (CDM / CRM, both v2.2-only)
+### 4.3 Pattern 3 — Wrapper (CDM v2.2.1 / CRM v2.2.0)
 
-Two-class split. Editor inherits from `WrapperEditorBase<TFrame>` which manages the wrappable-frame snapshot.
+Two-class split. Editor inherits from `WrapperEditorBase<TFrame>` which manages the wrappable-frame snapshot AND the child-removal hook (the wrapper absorbs the child's bytes; the original child must drop out of the tag so two copies don't coexist).
 
-**Editor base class** (non-Window):
+The base class implements the non-generic **`IWrapperEditor`** marker interface, which the dispatch path (`MainWindow.DispatchEdit`) pattern-matches against to call the lifecycle hooks:
 
 ```csharp
-public abstract class WrapperEditorBase<TFrame> : ITagItemEditor<TFrame> where TFrame : Id3v2Frame
+/// <summary>
+/// Marker interface that lets the non-generic dispatch path feed a wrapper editor
+/// its tag context BEFORE the dialog opens (snapshot the wrappable frames) AND
+/// AFTER it commits (remove the selected child from the tag).
+/// </summary>
+public interface IWrapperEditor
+{
+    void OnBeforeEdit(Id3v2Tag tag, Id3v2Frame self);
+    void OnAfterEdit(Id3v2Tag tag, Id3v2Frame self);
+}
+
+public abstract class WrapperEditorBase<TFrame> : ITagItemEditor<TFrame>, IWrapperEditor
+    where TFrame : Id3v2Frame
 {
     public IReadOnlyList<Id3v2Frame> WrappableSnapshot { get; private set; } = Array.Empty<Id3v2Frame>();
     public Id3v2Frame? SelectedChild { get; set; }
@@ -476,18 +491,43 @@ public abstract class WrapperEditorBase<TFrame> : ITagItemEditor<TFrame> where T
     public void TakeSnapshot(Id3v2Tag tag, TFrame self)
     {
         var list = new List<Id3v2Frame>();
-        foreach (var f in tag.GetFrames())
+        foreach (var f in tag.Frames)
         {
             if (ReferenceEquals(f, self)) continue;
-            if (f is Id3v2CompressedDataMetaFrame || f is Id3v2EncryptedMetaFrame) continue;
+            if (f is Id3v2CompressedDataMetaFrame or Id3v2EncryptedMetaFrame) continue;
             list.Add(f);
         }
         WrappableSnapshot = list;
     }
 
+    public virtual void OnBeforeEdit(Id3v2Tag tag, Id3v2Frame self)
+    {
+        SelectedChild = null;            // reset stale state from any prior Edit call
+        TakeSnapshot(tag, (TFrame)self);
+    }
+
+    public virtual void OnAfterEdit(Id3v2Tag tag, Id3v2Frame self)
+    {
+        if (SelectedChild is { } child) tag.RemoveFrame(child);
+    }
+
     public abstract TFrame CreateNew(object tag);
     public abstract bool Edit(Window owner, TFrame frame);
     public abstract bool Validate(out string? error);
+}
+```
+
+**MainWindow dispatch (§3.6) calls the hooks around `editor.Edit`:**
+
+```csharp
+private bool DispatchEdit(Id3v2Frame frame, Id3v2Tag tag)
+{
+    if (!TagItemEditorRegistry.Shared.TryResolve(frame.GetType(), out var editor)) return false;
+    var wrapper = editor.Inner as IWrapperEditor;
+    wrapper?.OnBeforeEdit(tag, frame);
+    if (!editor.Edit(this, frame)) return false;
+    wrapper?.OnAfterEdit(tag, frame);
+    return true;
 }
 ```
 
@@ -512,7 +552,7 @@ public abstract class WrapperEditorBase<TFrame> : ITagItemEditor<TFrame> where T
 </Window>
 ```
 
-The editor's `Edit(owner, frame)` calls `TakeSnapshot(tag, self)` to populate the wrappable list, constructs the dialog with `DataContext = this`, and on OK transfers the chosen child into the wrapper's child slot. Removal of the child from the tag is the caller's responsibility (handled in `MainWindow.OnAddOrEditFrame` after a successful save).
+The editor's `Edit(owner, frame)` constructs the dialog with `DataContext = this` and on OK serializes the chosen child's bytes into the wrapper's data block (`f.CompressedFrame` for CDM, `f.EncryptedDataBlock` for CRM). The dispatch path's `OnAfterEdit` hook then removes the original child from the tag — the editor itself never mutates the tag directly.
 
 ## 5. Frame catalog
 
@@ -538,10 +578,10 @@ All 39 frame classes; each gets a row in the registry. ✓ marks existing dialog
 | 4.16 | TimingAndSync | POSS | `Id3v2PositionSynchronizationFrame` | `PossEditorDialog` | Form | V230/V240 | Yes |
 | 4.17 | TimingAndSync | ASPI | `Id3v2AudioSeekPointIndexFrame` | `AspiEditorDialog` | Form + Grid | V240 | Yes |
 | 4.18 | TimingAndSync | LINK (LNK) | `Id3v2LinkedInformationFrame` | `LinkEditorDialog` | Form | All | No (per URL+id) |
-| 4.19 | People | IPLS (IPL) | `Id3v2InvolvedPeopleListFrame` | `IplsEditorDialog` | Form + Grid | V220/V230 | Yes |
-| 4.20 | AudioAdjustment | RVAD (RVA) | `Id3v2RelativeVolumeAdjustmentFrame` | `RvadEditorDialog` | Form | V220/V230 | Yes |
+| 4.19 | People | IPLS (IPL) | `Id3v2InvolvedPeopleListFrame` | `IplsEditorDialog` | Form + Grid | V220/V221/V230 | Yes |
+| 4.20 | AudioAdjustment | RVAD (RVA) | `Id3v2RelativeVolumeAdjustmentFrame` | `RvadEditorDialog` | Form | V220/V221/V230 | Yes |
 | 4.21 | AudioAdjustment | RVA2 | `Id3v2RelativeVolumeAdjustment2Frame` | `Rva2EditorDialog` | Form + Grid | V240 | No (one per identification string) |
-| 4.22 | AudioAdjustment | EQUA (EQU) | `Id3v2EqualisationFrame` | `EquaEditorDialog` | Form + Grid | V220/V230 | Yes |
+| 4.22 | AudioAdjustment | EQUA (EQU) | `Id3v2EqualisationFrame` | `EquaEditorDialog` | Form + Grid | V220/V221/V230 | Yes |
 | 4.23 | AudioAdjustment | EQU2 | `Id3v2Equalisation2Frame` | `Equ2EditorDialog` | Form + Grid | V240 | No (one per identification string) |
 | 4.24 | AudioAdjustment | REVB (REV)² | `Id3v2ReverbFrame` | `RevbEditorDialog` | Form | All | Yes |
 | 4.25 | CountersAndRatings | PCNT (CNT) | `Id3v2PlayCounterFrame` | `PcntEditorDialog` | Form | All | Yes |
@@ -552,7 +592,7 @@ All 39 frame classes; each gets a row in the registry. ✓ marks existing dialog
 | 4.30 | CommerceAndRights | COMR | `Id3v2CommercialFrame` | `ComrEditorDialog` | Form | V230/V240 | No |
 | 4.31 | EncryptionAndCompression | AENC (CRA) | `Id3v2AudioEncryptionFrame` | `AencEditorDialog` | Form | All | No (per owner) |
 | 4.32 | Containers | CDM | `Id3v2CompressedDataMetaFrame` | `CdmEditorDialog` | Wrapper | V221 only³ | No |
-| 4.33 | Containers | CRM | `Id3v2EncryptedMetaFrame` | `CrmEditorDialog` | Wrapper | V220 only³ | No |
+| 4.33 | Containers | CRM | `Id3v2EncryptedMetaFrame` | `CrmEditorDialog` | Wrapper | V220/V221³ | No |
 | 4.34 | System | PRIV ✓ | `Id3v2PrivateFrame` | `BinaryDataDialog` | Form | V230/V240 | No (per owner) |
 | 4.35 | System | RBUF (BUF) | `Id3v2RecommendedBufferSizeFrame` | `RbufEditorDialog` | Form | All | Yes |
 | 4.36 | System | SEEK | `Id3v2SeekFrame` | `SeekEditorDialog` | Form | V240 | Yes |
@@ -562,7 +602,7 @@ All 39 frame classes; each gets a row in the registry. ✓ marks existing dialog
 
 ¹ Text frame family expands to ~30 specific IDs (TIT2 Title, TPE1 Lead artist, TALB Album, TYER Year, TCON Genre, …). Shared editor; per-ID labels in a static lookup table.
 ² Lib uses `REVB`; spec says `RVRB`. Out of scope; flagged as separate library-level ticket.
-³ The library's `Id3v2CompressedDataMetaFrame` parameterless ctor pins version to `Id3v2v221`; `Id3v2EncryptedMetaFrame` parameterless ctor pins version to `Id3v2v220`. They cannot coexist in a single tag (SetFrame rejects version mismatch). The Containers category therefore shows only CDM on v2.2.1 tags and only CRM on v2.2.0 tags.
+³ The library's `Id3v2CompressedDataMetaFrame` parameterless ctor pins version to `Id3v2v221` (no version-aware ctor exists), so CDM is V221-only. `Id3v2EncryptedMetaFrame` exposes both a parameterless ctor (defaults v2.2.0) and an `(Id3v2Version)` ctor that accepts any version where `version < Id3v2.3` — i.e. v2.2.0 OR v2.2.1. CRM therefore supports V220|V221, with `CreateNew` passing the tag's actual version through. CDM and CRM still cannot coexist in a single tag because they pin different versions, and `Id3v2Tag.SetFrame` rejects version mismatches.
 
 **Tally:**
 - 5 existing editors (APIC / USLT / PRIV / UFID / MCDI) — attribute retrofit only
