@@ -1,0 +1,54 @@
+<Window x:Class="AudioVideoLib.Studio.Editors.Id3v2.ComrEditorDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Width="540" SizeToContent="Height" WindowStartupLocation="CenterOwner"
+        Title="Commercial (COMR)">
+    <DockPanel Margin="14">
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,14,0,0">
+            <Button Content="OK"     Width="80"                  Click="Ok_Click"     IsDefault="True" />
+            <Button Content="Cancel" Width="80" Margin="8,0,0,0" Click="Cancel_Click" IsCancel="True" />
+        </StackPanel>
+        <StackPanel>
+            <TextBlock Text="Encoding" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
+            <ComboBox ItemsSource="{Binding Source={StaticResource Id3v2EncodingValues}}"
+                      SelectedValue="{Binding Encoding}" Margin="0,0,0,8" />
+            <TextBlock Text="Price string (e.g. USD9.99 — slash-separated for multiple currencies)"
+                       Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
+            <TextBox Text="{Binding PriceString, UpdateSourceTrigger=PropertyChanged}"
+                     Padding="4,3" Margin="0,0,0,8" />
+            <TextBlock Text="Valid until (YYYYMMDD)"
+                       Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
+            <TextBox Text="{Binding ValidUntil, UpdateSourceTrigger=PropertyChanged}"
+                     MaxLength="8" Padding="4,3" Margin="0,0,0,8" />
+            <TextBlock Text="Contact URL"
+                       Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
+            <TextBox Text="{Binding ContactUrl, UpdateSourceTrigger=PropertyChanged}"
+                     Padding="4,3" Margin="0,0,0,8" />
+            <TextBlock Text="Received as"
+                       Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
+            <ComboBox ItemsSource="{Binding Source={StaticResource Id3v2AudioDeliveryTypeValues}}"
+                      SelectedValue="{Binding ReceivedAs}" Margin="0,0,0,8" />
+            <TextBlock Text="Name of seller"
+                       Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
+            <TextBox Text="{Binding NameOfSeller, UpdateSourceTrigger=PropertyChanged}"
+                     Padding="4,3" Margin="0,0,0,8" />
+            <TextBlock Text="Short description"
+                       Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
+            <TextBox Text="{Binding ShortDescription, UpdateSourceTrigger=PropertyChanged}"
+                     Padding="4,3" Margin="0,0,0,8" />
+            <TextBlock Text="Picture MIME type (image/png or image/jpeg)"
+                       Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
+            <TextBox Text="{Binding PictureMimeType, UpdateSourceTrigger=PropertyChanged}"
+                     Padding="4,3" Margin="0,0,0,8" />
+            <TextBlock Text="Seller logo"
+                       Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                <Button Content="Load from file…" Padding="10,3" Click="LoadFromFile_Click" />
+                <Button Content="Clear data"      Padding="10,3" Margin="8,0,0,0" Click="ClearData_Click" />
+                <TextBlock Text="{Binding DataInfo}" Margin="14,0,0,0"
+                           VerticalAlignment="Center"
+                           Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
+            </StackPanel>
+        </StackPanel>
+    </DockPanel>
+</Window>

@@ -33,6 +33,13 @@
                     <x:Type TypeName="tags:Id3v2TimeStampFormat" />
                 </ObjectDataProvider.MethodParameters>
             </ObjectDataProvider>
+
+            <ObjectDataProvider x:Key="Id3v2AudioDeliveryTypeValues"
+                                MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="tags:Id3v2AudioDeliveryType" />
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
