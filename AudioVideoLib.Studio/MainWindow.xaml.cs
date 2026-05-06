@@ -740,6 +740,7 @@ public partial class MainWindow : Window
                 Id3v2UnsynchronizedLyricsFrame uslt => UsltEditorDialog.Edit(this, uslt),
                 Id3v2PrivateFrame priv => BinaryDataDialog.Edit(this, priv),
                 Id3v2UniqueFileIdentifierFrame ufid => BinaryDataDialog.Edit(this, ufid),
+                Id3v2MusicCdIdentifierFrame mcdi => BinaryDataDialog.Edit(this, mcdi),
                 _ => false,
             };
 
@@ -1068,6 +1069,15 @@ public partial class MainWindow : Window
 
             case Id3v2UniqueFileIdentifierFrame ufid:
                 if (BinaryDataDialog.Edit(this, ufid))
+                {
+                    tab.RefreshRow(row);
+                }
+
+                e.Handled = true;
+                break;
+
+            case Id3v2MusicCdIdentifierFrame mcdi:
+                if (BinaryDataDialog.Edit(this, mcdi))
                 {
                     tab.RefreshRow(row);
                 }

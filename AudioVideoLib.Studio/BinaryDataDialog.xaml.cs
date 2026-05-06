@@ -61,6 +61,26 @@ public partial class BinaryDataDialog : Window
         return true;
     }
 
+    public static bool Edit(Window owner, Id3v2MusicCdIdentifierFrame frame)
+    {
+        var dlg = new BinaryDataDialog
+        {
+            Owner = owner,
+            Title = "Music CD identifier (MCDI)",
+        };
+        dlg.OwnerPanel.Visibility = Visibility.Collapsed;
+        dlg._data = frame.TableOfContents ?? [];
+        dlg.RefreshHex();
+
+        if (dlg.ShowDialog() != true)
+        {
+            return false;
+        }
+
+        frame.TableOfContents = dlg._data;
+        return true;
+    }
+
     private void LoadFromFile_Click(object sender, RoutedEventArgs e)
     {
         var dlg = new OpenFileDialog
