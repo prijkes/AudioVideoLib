@@ -21,4 +21,9 @@
     <ProjectReference Include="..\AudioVideoLib.Studio\AudioVideoLib.Studio.csproj" />
     <ProjectReference Include="..\AudioVideoLib\AudioVideoLib.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="Goldens\*.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>
