@@ -11,15 +11,17 @@ using Xunit.Abstractions;
 [Collection("Studio")]
 public class RegistryCompletenessTests(ITestOutputHelper output)
 {
-    /// <summary>Flipped to true in Phase 2.1 (after all wave editors are registered).</summary>
-    public static bool RegistrationComplete => false;
+    /// <summary>Flipped to true in Phase 2.1 once all wave editors are registered.</summary>
+    public static bool RegistrationComplete => true;
 
     [Fact]
     public void EveryConcreteId3v2Frame_HasRegisteredEditor()
     {
         var libAsm = typeof(Id3v2Frame).Assembly;
         var allFrames = libAsm.GetTypes()
-            .Where(t => !t.IsAbstract && typeof(Id3v2Frame).IsAssignableFrom(t))
+            .Where(t => !t.IsAbstract
+                        && t != typeof(Id3v2Frame)            // base class is concrete-but-virtual; exclude
+                        && typeof(Id3v2Frame).IsAssignableFrom(t))
             .ToArray();
 
         var missing = allFrames
