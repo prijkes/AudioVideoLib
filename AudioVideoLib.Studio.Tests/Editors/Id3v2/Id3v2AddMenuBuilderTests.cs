@@ -8,8 +8,38 @@ using AudioVideoLib.Tags;
 
 using Xunit;
 
+[Collection("Studio")]
 public class Id3v2AddMenuBuilderTests
 {
+    [Fact]
+    public void BuildModel_LiveRegistry_V240_HasAttachmentsCategory()
+    {
+        var tag = new Id3v2Tag(Id3v2Version.Id3v240);
+        var model = Id3v2AddMenuBuilder.BuildModel(TagItemEditorRegistry.Shared, tag);
+        Assert.Contains(
+            model.Categories,
+            c => c.Category == Id3v2FrameCategory.Attachments
+                 && c.Entries.Any(e => e.FrameIdentifier == "APIC"));
+    }
+
+    [Fact]
+    public void BuildModel_LiveRegistry_V230_DoesNotIncludeContainers()
+    {
+        var tag = new Id3v2Tag(Id3v2Version.Id3v230);
+        var model = Id3v2AddMenuBuilder.BuildModel(TagItemEditorRegistry.Shared, tag);
+        Assert.DoesNotContain(model.Categories, c => c.Category == Id3v2FrameCategory.Containers);
+    }
+
+    [Fact]
+    public void BuildModel_LiveRegistry_V221_IncludesCdmInContainers()
+    {
+        var tag = new Id3v2Tag(Id3v2Version.Id3v221);
+        var model = Id3v2AddMenuBuilder.BuildModel(TagItemEditorRegistry.Shared, tag);
+        var containers = model.Categories.FirstOrDefault(c => c.Category == Id3v2FrameCategory.Containers);
+        Assert.NotNull(containers);
+        Assert.Contains(containers.Entries, e => e.FrameIdentifier == "CDM");
+    }
+
     [Fact]
     public void BuildEntryLabel_NotInTag_ReturnsAdd()
     {
