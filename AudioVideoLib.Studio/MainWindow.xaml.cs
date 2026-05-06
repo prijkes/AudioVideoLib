@@ -577,6 +577,15 @@ public partial class MainWindow : Window
         menu.IsOpen = true;
     }
 
+    private void ManageFramesButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (CurrentId3v2Tab is not { Tag: Id3v2Tag id3v2 } tab)
+        {
+            return;
+        }
+        ManageFramesDialog.ShowFor(this, id3v2, entry => OnAddOrEditFrame(entry, tab, id3v2));
+    }
+
     private void OnAddOrEditFrame(Id3v2MenuEntry entry, Id3v2TabViewModel tab, Id3v2Tag tag)
     {
         try
