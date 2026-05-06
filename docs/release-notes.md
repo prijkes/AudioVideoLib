@@ -6,6 +6,7 @@ Change categories follow [Keep a Changelog](https://keepachangelog.com/):
 | Version | Date | Highlights |
 |---|---|---|
 | [`(next release)`](#next-release) | _unreleased_ | _No changes yet._ |
+| [`0.9.0`](#090--2026-05-06) | 2026-05-06 | Studio: full ID3v2 frame editor surface — every of the 39 frame classes is now Add / Edit-capable, plus a "Manage frames" power-user search dialog. New tag-format-agnostic editor framework (`Editors/`) ready for future APE / Vorbis / Lyrics3v2 / ID3v1 layers. |
 | [`0.8.0`](#080--2026-05-06) | 2026-05-06 | Format pack: Musepack / WavPack / TrueAudio / Monkey's Audio walkers; `IMediaContainer` now extends `IDisposable`; `FlacStream` / `MpaStream` switch to byte-passthrough on save; full FLAC parser revival closing 11 audited bugs. |
 | [`0.7.0`](#070--2026-04-27) | 2026-04-27 | `Mp4Stream` and `AsfStream` complete the streaming refactor — every splice rewriter now operates without buffering the source file. |
 | [`0.6.0`](#060--2026-04-27) | 2026-04-27 | Large-file performance: streaming Matroska reader/writer (40 GB MKV is now viable); `ISourceReader` random-access abstraction; ID3v2 read-path allocation fixes. |
@@ -20,6 +21,48 @@ Change categories follow [Keep a Changelog](https://keepachangelog.com/):
 ## (next release)
 
 _No changes yet._
+
+---
+
+## 0.9.0 — 2026-05-06
+
+### Added
+
+- **AudioVideoLib.Studio: complete ID3v2 frame editor surface.** Every of the 39 ID3v2 frame classes is now Add / Edit-capable through dedicated dialogs filtered by the active tag version:
+  - **Text frames** (TIT2 / TPE1 / TALB / TYER / TDRC / 50+ IDs across v2.2 / v2.3 / v2.4) and **URL frames** (WCOM / WOAR / WPUB / …) via family editors.
+  - **Identification:** UFID, MCDI, GRID, ENCR.
+  - **Comments & lyrics:** COMM, USER, USLT, SYLT.
+  - **Timing & sync:** ETCO, MLLT, SYTC, POSS, ASPI, LINK.
+  - **People:** IPLS.
+  - **Audio adjustment:** RVAD, RVA2, EQUA, EQU2, REVB.
+  - **Counters & ratings:** PCNT, POPM.
+  - **Attachments:** APIC, GEOB.
+  - **Commerce & rights:** OWNE, COMR.
+  - **Encryption & compression:** AENC.
+  - **Containers:** CDM (v2.2.1), CRM (v2.2.0).
+  - **System:** PRIV, RBUF, SEEK, SIGN.
+  - **Experimental:** XRVA, RGAD.
+- Cascading **Add Frame** menu groups frames by ID3v2 spec section, ordered by section number, filtered to versions valid for the active tag. Smart toggle: a unique-instance frame already in the tag shows as "Edit ..." instead of "Add ...".
+- **Manage frames** toolbar dialog — power-user flat searchable list of every editor, with case-insensitive ID/Name/Category filtering.
+- New tag-format-agnostic editor framework under `AudioVideoLib.Studio/Editors/`:
+  - `ITagItemEditor<TItem>` + `TagItemEditorAttribute` foundation (reflection-based registry, inheritance-chain dispatch).
+  - `Editors/Id3v2/` layer: `Id3v2VersionMask` (V220 / V221 / V230 / V240 flags), `Id3v2FrameCategory`, `Id3v2FrameEditorAttribute` with `KnownIdentifier`, `Id3v2KnownTextFrameIds[]` / `Id3v2KnownUrlFrameIds[]` lookup tables, `Id3v2AddMenuBuilder` (pure-data model + WPF projection + smart-toggle pure function).
+  - Future APE / Lyrics3v2 / Vorbis / ID3v1 editor surfaces plug in as sibling `Editors/Ape/`, `Editors/Vorbis/`, etc. directories without changing the foundation.
+- Two-class editor pattern: every editor is `XxxEditor` (non-Window class implementing `ITagItemEditor<TFrame>`, holds `Load` / `Save` / `Validate` logic) plus `XxxEditorDialog.xaml(.cs)` (pure UI Window, `DataContext = editor`). Editor logic is testable headlessly under default xUnit threading.
+- Cancellation-safe Add: a cancelled Add does not commit a frame to the tag.
+- Pattern base classes: `CollectionEditorBase<TFrame, TRow>` (Add/Remove/Up/Down primitives for grid editors); `WrapperEditorBase<TFrame>` (snapshot of wrappable frames, excludes self and other wrappers).
+
+### Changed
+
+- `MainWindow.xaml.cs` per-frame switches replaced with registry-driven dispatch (~190-line net deletion).
+- `Id3v2TabViewModel` exposes `AddFrame(Id3v2Frame)` / `FindRow(Id3v2Frame)` / `RefreshFrameRow(Id3v2Frame)`. Per-frame `AddTextFrame`, `AddUrlFrame`, `AddPictureFrame`, `AddLyricsFrame`, `AddPrivateFrame`, `AddUniqueFileIdentifierFrame` are now `[Obsolete]` thin wrappers (will be removed in the next release).
+- `App.xaml`: registers `BoolToInTagConverter` plus seven `ObjectDataProvider` enum-values resources for editor combos.
+- New `AudioVideoLib.Studio.Tests` project with 276 tests covering registry behaviour, version mask, known-id tables, menu builder, BuildEntryLabel smart toggle, all 39 editor Load / Save / Validate, ManageFramesViewModel, and golden snapshots of the menu structure per ID3v2 version.
+
+### Notes
+
+- Studio-only release. Library (`AudioVideoLib.dll`) is unchanged from 0.8.0 — same wire format, same file format support.
+- Existing files that already had editors (APIC, USLT, PRIV, UFID, MCDI) retain their existing UI and were retrofitted onto the registry via thin adapter classes.
 
 ---
 
