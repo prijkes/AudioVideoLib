@@ -1,11 +1,14 @@
 namespace AudioVideoLib.Studio;
 
-using System;
 using System.Text;
 using System.Windows;
 
 using AudioVideoLib.Studio.Editors;
+#if DEBUG
+using System;
+
 using AudioVideoLib.Studio.Editors.Id3v2;
+#endif
 
 public partial class App : Application
 {
