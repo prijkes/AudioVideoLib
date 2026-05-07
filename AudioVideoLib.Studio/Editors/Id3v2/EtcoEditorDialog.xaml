@@ -10,19 +10,23 @@
         </StackPanel>
         <StackPanel DockPanel.Dock="Top" Margin="0,0,0,8">
             <TextBlock Text="Time-stamp format" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
-            <ComboBox SelectedValue="{Binding TimeStampFormat}" Margin="0,0,0,8" />
+            <ComboBox ItemsSource="{Binding Source={StaticResource Id3v2TimeStampFormatValues}}"
+                      SelectedValue="{Binding TimeStampFormat}" Margin="0,0,0,8" />
         </StackPanel>
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,6">
             <Button Content="Add" Width="70" Click="Add_Click" />
             <Button Content="Remove" Width="70" Margin="6,0,0,0" Click="Remove_Click" />
-            <Button Content="Up" Width="50" Margin="6,0,0,0" Click="Up_Click" />
-            <Button Content="Down" Width="50" Margin="6,0,0,0" Click="Down_Click" />
+            <Button Content="Up" Width="70" Margin="6,0,0,0" Click="Up_Click" />
+            <Button Content="Down" Width="70" Margin="6,0,0,0" Click="Down_Click" />
         </StackPanel>
         <DataGrid x:Name="Grid" ItemsSource="{Binding Entries}"
                   AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
                   HeadersVisibility="Column" SelectionMode="Single" SelectionUnit="FullRow">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Event type" Binding="{Binding EventType}" Width="*" />
+                <DataGridComboBoxColumn Header="Event type"
+                                        ItemsSource="{Binding Source={StaticResource Id3v2KeyEventTypeValues}}"
+                                        SelectedValueBinding="{Binding EventType}"
+                                        Width="*" />
                 <DataGridTextColumn Header="Time stamp" Binding="{Binding TimeStamp}" Width="160" />
             </DataGrid.Columns>
         </DataGrid>
