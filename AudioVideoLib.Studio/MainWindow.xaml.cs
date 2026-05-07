@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -1441,9 +1442,14 @@ public partial class MainWindow : Window
         TrySaveDossier(CurrentDossier);
     }
 
-    /// <summary>Save a specific dossier; returns true on success, false if the save threw.</summary>
+    /// <summary>Save a specific dossier; returns true on success, false if the save threw or the user cancelled the empty-frame warning.</summary>
     private bool TrySaveDossier(FileDossier dossier)
     {
+        if (!ConfirmEmptyFramesIfAny(dossier))
+        {
+            return false;
+        }
+
         try
         {
             dossier.Save();
@@ -1461,6 +1467,68 @@ public partial class MainWindow : Window
                 MessageBoxImage.Warning);
             return false;
         }
+    }
+
+    /// <summary>
+    /// The library's Id3v2Tag.Serialization filter (Id3v2Tag.Serialization.cs:181-192) silently
+    /// drops any frame whose Data is null or zero-length. This affects URL link frames (W***) with
+    /// an empty Url and MCDI with an empty Table-of-Contents — they vanish from the file on save.
+    /// Surface a warning so the user knows what's about to disappear and can fix or cancel.
+    /// </summary>
+    /// <returns>true to proceed with the save; false if the user cancelled.</returns>
+    private bool ConfirmEmptyFramesIfAny(FileDossier dossier)
+    {
+        var droppedByTag = new List<(string TagLabel, List<string> Identifiers)>();
+        foreach (var tab in dossier.TagTabs.OfType<Id3v2TabViewModel>())
+        {
+            var dropped = new List<string>();
+            foreach (var frame in tab.Tag.Frames)
+            {
+                byte[]? data;
+                try
+                {
+                    data = frame.Data;
+                }
+                catch
+                {
+                    continue;     // a frame whose Data getter throws is its own problem; let the save bubble it up
+                }
+
+                if (data is null || data.Length == 0)
+                {
+                    dropped.Add(frame.Identifier ?? "?");
+                }
+            }
+            if (dropped.Count > 0)
+            {
+                droppedByTag.Add(($"ID3v2.{(int)tab.Tag.Version / 10}", dropped));
+            }
+        }
+
+        if (droppedByTag.Count == 0)
+        {
+            return true;
+        }
+
+        var sb = new StringBuilder();
+        sb.AppendLine("The following frames have empty content and will be dropped from the file on save:");
+        sb.AppendLine();
+        foreach (var (tagLabel, idents) in droppedByTag)
+        {
+            sb.Append("  ").Append(tagLabel).Append(":  ").AppendLine(string.Join(", ", idents));
+        }
+        sb.AppendLine();
+        sb.Append("Save anyway?");
+
+        var result = MessageBox.Show(
+            this,
+            sb.ToString(),
+            "Empty frames will be dropped",
+            MessageBoxButton.OKCancel,
+            MessageBoxImage.Warning,
+            MessageBoxResult.Cancel);
+
+        return result == MessageBoxResult.OK;
     }
 
     /// <summary>
