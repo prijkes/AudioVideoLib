@@ -147,6 +147,7 @@ public partial class MainWindow : Window
         if (CurrentDossier == null)
         {
             FilePathText.Text = "No file loaded. Use File > Open (Ctrl+O).";
+            CloseFileButton.IsEnabled = false;
             InspectorTreeView.ItemsSource = null;
             PropertiesGrid.ItemsSource = null;
             TagTabControl.DataContext = null;
@@ -163,6 +164,7 @@ public partial class MainWindow : Window
 
         FilePathText.Text = $"{CurrentDossier.FilePath}   ({CurrentDossier.FileSizeText})";
         FilePathText.ToolTip = CurrentDossier.FilePath;
+        CloseFileButton.IsEnabled = true;
 
         if (CurrentDossier.InspectorRoot != null)
         {
@@ -1152,6 +1154,8 @@ public partial class MainWindow : Window
     private void Save_Click(object sender, RoutedEventArgs e) => SaveCurrent();
     private void SaveAs_Click(object sender, RoutedEventArgs e) => SaveAsFile();
     private void CloseFile_Click(object sender, RoutedEventArgs e) => CloseCurrentFile();
+
+    private void CloseFileButton_Click(object sender, RoutedEventArgs e) => CloseCurrentFile();
     private void Refresh_Click(object sender, RoutedEventArgs e) => RefreshCurrent();
     private void GoToOffset_Click(object sender, RoutedEventArgs e) => GoToOffset();
     private void FlacIntegrity_Click(object sender, RoutedEventArgs e) => FlacIntegrityCheck();

@@ -462,19 +462,32 @@
                 BorderBrush="{DynamicResource BorderBrush}"
                 BorderThickness="0,0,0,1"
                 Padding="14,6">
-            <TextBox x:Name="FilePathText"
-                     Text="No file loaded. Use File > Open (Ctrl+O)."
-                     FontFamily="Consolas"
-                     FontSize="12"
-                     Foreground="{DynamicResource TextSecondaryBrush}"
-                     Background="Transparent"
-                     BorderThickness="0"
-                     Padding="0"
-                     IsReadOnly="True"
-                     IsReadOnlyCaretVisible="False"
-                     HorizontalScrollBarVisibility="Hidden"
-                     VerticalScrollBarVisibility="Disabled"
-                     TextWrapping="NoWrap" />
+            <DockPanel>
+                <Button x:Name="CloseFileButton"
+                        DockPanel.Dock="Right"
+                        Content="✕"
+                        ToolTip="Close current file (Ctrl+W)"
+                        Click="CloseFileButton_Click"
+                        Width="24" Height="20" Padding="0"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        FontSize="12"
+                        Foreground="{DynamicResource TextSecondaryBrush}"
+                        IsEnabled="False" />
+                <TextBox x:Name="FilePathText"
+                         Text="No file loaded. Use File > Open (Ctrl+O)."
+                         FontFamily="Consolas"
+                         FontSize="12"
+                         Foreground="{DynamicResource TextSecondaryBrush}"
+                         Background="Transparent"
+                         BorderThickness="0"
+                         Padding="0"
+                         IsReadOnly="True"
+                         IsReadOnlyCaretVisible="False"
+                         HorizontalScrollBarVisibility="Hidden"
+                         VerticalScrollBarVisibility="Disabled"
+                         TextWrapping="NoWrap" />
+            </DockPanel>
         </Border>
 
         <!-- ==================== playback bar ==================== -->
