@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              FocusVisualStyle="{x:Null}">
     <Border BorderBrush="{DynamicResource Surface3Brush}" BorderThickness="1"
-            Background="#111111">
+            Background="#111111"
+            MouseLeftButtonDown="Surface_MouseLeftButtonDown">
         <ScrollViewer x:Name="Scroll" VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Auto" Padding="8,6">
             <Grid>
