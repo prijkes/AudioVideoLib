@@ -11,7 +11,7 @@
         </StackPanel>
         <StackPanel>
             <TextBlock Text="Encoding" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
-            <ComboBox ItemsSource="{Binding Source={StaticResource Id3v2EncodingValues}}"
+            <ComboBox ItemsSource="{Binding Source={StaticResource Id3v2EncodingValues}}" ItemTemplate="{StaticResource EnumDisplayTemplate}"
                       SelectedValue="{Binding Encoding}" Margin="0,0,0,8" />
             <TextBlock Text="MIME type (e.g. application/octet-stream)"
                        Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />

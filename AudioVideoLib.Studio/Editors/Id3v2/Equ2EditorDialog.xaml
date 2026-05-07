@@ -11,7 +11,7 @@
         <StackPanel DockPanel.Dock="Top" Margin="0,0,0,8">
             <TextBlock Text="Interpolation method"
                        Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
-            <ComboBox ItemsSource="{Binding Source={StaticResource Id3v2InterpolationMethodValues}}"
+            <ComboBox ItemsSource="{Binding Source={StaticResource Id3v2InterpolationMethodValues}}" ItemTemplate="{StaticResource EnumDisplayTemplate}"
                       SelectedValue="{Binding InterpolationMethod}" Margin="0,0,0,8" />
             <TextBlock Text="Identification (uniqueness key)"
                        Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />

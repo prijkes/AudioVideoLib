@@ -10,7 +10,7 @@
         </StackPanel>
         <StackPanel DockPanel.Dock="Top" Margin="0,0,0,8">
             <TextBlock Text="Time-stamp format" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
-            <ComboBox ItemsSource="{Binding Source={StaticResource Id3v2TimeStampFormatValues}}"
+            <ComboBox ItemsSource="{Binding Source={StaticResource Id3v2TimeStampFormatValues}}" ItemTemplate="{StaticResource EnumDisplayTemplate}"
                       SelectedValue="{Binding TimeStampFormat}" Margin="0,0,0,8" />
         </StackPanel>
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,6">

@@ -10,17 +10,17 @@
         </StackPanel>
         <StackPanel DockPanel.Dock="Top" Margin="0,0,0,8">
             <TextBlock Text="Encoding" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
-            <ComboBox ItemsSource="{Binding Source={StaticResource Id3v2EncodingValues}}"
+            <ComboBox ItemsSource="{Binding Source={StaticResource Id3v2EncodingValues}}" ItemTemplate="{StaticResource EnumDisplayTemplate}"
                       SelectedValue="{Binding Encoding}" Margin="0,0,0,8" />
             <TextBlock Text="Language (ISO-639-2, e.g. &quot;eng&quot;)"
                        Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
             <TextBox Text="{Binding Language, UpdateSourceTrigger=PropertyChanged}"
                      Padding="4,3" Margin="0,0,0,8" MaxLength="3" />
             <TextBlock Text="Time-stamp format" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
-            <ComboBox ItemsSource="{Binding Source={StaticResource Id3v2TimeStampFormatValues}}"
+            <ComboBox ItemsSource="{Binding Source={StaticResource Id3v2TimeStampFormatValues}}" ItemTemplate="{StaticResource EnumDisplayTemplate}"
                       SelectedValue="{Binding TimeStampFormat}" Margin="0,0,0,8" />
             <TextBlock Text="Content type" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
-            <ComboBox ItemsSource="{Binding Source={StaticResource Id3v2ContentTypeValues}}"
+            <ComboBox ItemsSource="{Binding Source={StaticResource Id3v2ContentTypeValues}}" ItemTemplate="{StaticResource EnumDisplayTemplate}"
                       SelectedValue="{Binding ContentType}" Margin="0,0,0,8" />
             <TextBlock Text="Content descriptor"
                        Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />

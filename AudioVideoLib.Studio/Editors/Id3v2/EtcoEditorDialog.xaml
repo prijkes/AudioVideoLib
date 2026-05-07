@@ -10,7 +10,7 @@
         </StackPanel>
         <StackPanel DockPanel.Dock="Top" Margin="0,0,0,8">
             <TextBlock Text="Time-stamp format" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
-            <ComboBox ItemsSource="{Binding Source={StaticResource Id3v2TimeStampFormatValues}}"
+            <ComboBox ItemsSource="{Binding Source={StaticResource Id3v2TimeStampFormatValues}}" ItemTemplate="{StaticResource EnumDisplayTemplate}"
                       SelectedValue="{Binding TimeStampFormat}" Margin="0,0,0,8" />
         </StackPanel>
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,6">
@@ -23,10 +23,21 @@
                   AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
                   HeadersVisibility="Column" SelectionMode="Single" SelectionUnit="FullRow">
             <DataGrid.Columns>
-                <DataGridComboBoxColumn Header="Event type"
-                                        ItemsSource="{Binding Source={StaticResource Id3v2KeyEventTypeValues}}"
-                                        SelectedValueBinding="{Binding EventType}"
-                                        Width="*" />
+                <DataGridTemplateColumn Header="Event type" Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding EventType, Converter={StaticResource EnumDisplay}}"
+                                       Margin="6,0,0,0" VerticalAlignment="Center" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <ComboBox ItemsSource="{Binding Source={StaticResource Id3v2KeyEventTypeValues}}"
+                                      SelectedValue="{Binding EventType, UpdateSourceTrigger=PropertyChanged}"
+                                      ItemTemplate="{StaticResource EnumDisplayTemplate}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTextColumn Header="Time stamp" Binding="{Binding TimeStamp}" Width="160" />
             </DataGrid.Columns>
         </DataGrid>

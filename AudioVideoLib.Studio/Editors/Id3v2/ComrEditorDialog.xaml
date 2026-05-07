@@ -11,7 +11,7 @@
         </StackPanel>
         <StackPanel>
             <TextBlock Text="Encoding" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
-            <ComboBox ItemsSource="{Binding Source={StaticResource Id3v2EncodingValues}}"
+            <ComboBox ItemsSource="{Binding Source={StaticResource Id3v2EncodingValues}}" ItemTemplate="{StaticResource EnumDisplayTemplate}"
                       SelectedValue="{Binding Encoding}" Margin="0,0,0,8" />
             <TextBlock Text="Price string (e.g. USD9.99 — slash-separated for multiple currencies)"
                        Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
@@ -27,7 +27,7 @@
                      Padding="4,3" Margin="0,0,0,8" />
             <TextBlock Text="Received as"
                        Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
-            <ComboBox ItemsSource="{Binding Source={StaticResource Id3v2AudioDeliveryTypeValues}}"
+            <ComboBox ItemsSource="{Binding Source={StaticResource Id3v2AudioDeliveryTypeValues}}" ItemTemplate="{StaticResource EnumDisplayTemplate}"
                       SelectedValue="{Binding ReceivedAs}" Margin="0,0,0,8" />
             <TextBlock Text="Name of seller"
                        Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />

@@ -12,6 +12,14 @@
             </ResourceDictionary.MergedDictionaries>
 
             <conv:BoolToInTagConverter x:Key="BoolToInTagConverter" />
+            <conv:EnumDisplayConverter x:Key="EnumDisplay" />
+
+            <!-- Friendly display template for enum-bound ComboBoxes. Apply via
+                 ItemTemplate="{StaticResource EnumDisplayTemplate}". The TextBlock
+                 inherits the ComboBox's foreground so dark-theme styling stays. -->
+            <DataTemplate x:Key="EnumDisplayTemplate">
+                <TextBlock Text="{Binding Converter={StaticResource EnumDisplay}}" />
+            </DataTemplate>
 
             <ObjectDataProvider x:Key="Id3v2EncodingValues"
                                 MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
