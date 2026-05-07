@@ -92,7 +92,23 @@ public static class Id3v2AddMenuBuilder
             {
                 // Fall through — some frames have a (Id3v2Version) ctor that throws on the
                 // active version even though the editor declares it supported (e.g. RGAD's
-                // IsVersionSupported is buggy in the lib). Try the parameterless ctor next.
+                // IsVersionSupported is buggy in the lib).
+            }
+        }
+
+        // Some frames require an additional argument alongside Id3v2Version (e.g.
+        // Id3v2LinkedInformationFrame's only ctor is (Id3v2Version, string frameIdentifier);
+        // the Identifier getter is version-derived and doesn't depend on the second arg).
+        var versionStringCtor = attr.ItemType.GetConstructor([typeof(Id3v2Version), typeof(string)]);
+        if (versionStringCtor is not null)
+        {
+            try
+            {
+                return ((Id3v2Frame)versionStringCtor.Invoke([version, string.Empty])).Identifier;
+            }
+            catch
+            {
+                // Fall through.
             }
         }
 

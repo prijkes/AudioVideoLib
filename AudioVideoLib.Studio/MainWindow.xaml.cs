@@ -666,6 +666,13 @@ public partial class MainWindow : Window
             {
                 continue;
             }
+            // Family text/URL editors are handled by the early-return paths above; their
+            // base-class ItemType (Id3v2TextFrame / Id3v2UrlLinkFrame) doesn't have a
+            // canonical identifier so IdentifierFor would return something incoherent.
+            if (a.ItemType == typeof(Id3v2TextFrame) || a.ItemType == typeof(Id3v2UrlLinkFrame))
+            {
+                continue;
+            }
             // Skip editors whose frame can't construct against the active version —
             // their version-aware ctor would throw, which IdentifierFor catches but
             // the debugger surfaces as a first-chance break to the user.

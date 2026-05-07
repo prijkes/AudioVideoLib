@@ -25,8 +25,12 @@ public sealed class LinkEditor : ITagItemEditor<Id3v2LinkedInformationFrame>, IN
     public Id3v2LinkedInformationFrame CreateNew(object tag)
     {
         var version = ((Id3v2Tag)tag).Version;
-        var defaultId = version < Id3v2Version.Id3v230 ? "WCM" : "WCOM";
-        return new Id3v2LinkedInformationFrame(version, defaultId);
+        // The frameIdentifier ctor arg is the LINKED frame's identifier (the frame this
+        // LINK refers to). Default to a recognisable text-frame identifier so the user
+        // sees something sensible in the dialog and overwrites it. The user then edits
+        // the FrameIdentifier field to point at the actually-linked frame's id.
+        var defaultLinkedId = version < Id3v2Version.Id3v230 ? "TT2" : "TIT2";
+        return new Id3v2LinkedInformationFrame(version, defaultLinkedId);
     }
 
     public bool Edit(Window owner, Id3v2LinkedInformationFrame frame)
