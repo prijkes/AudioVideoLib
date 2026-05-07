@@ -1,6 +1,7 @@
 <Window x:Class="AudioVideoLib.Studio.Editors.Id3v2.AencEditorDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ctrl="clr-namespace:AudioVideoLib.Studio.Controls"
         Width="500" SizeToContent="Height" WindowStartupLocation="CenterOwner"
         Title="Audio encryption (AENC)">
     <DockPanel Margin="14">
@@ -21,8 +22,9 @@
                        Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
             <TextBox Text="{Binding PreviewLength, UpdateSourceTrigger=PropertyChanged}"
                      Padding="4,3" Margin="0,0,0,8" />
-            <TextBlock Text="Encryption info"
+            <TextBlock Text="Encryption info — hex / ASCII, both editable"
                        Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
+            <ctrl:HexEditor x:Name="HexEditor" Data="{Binding Data}" Height="220" Margin="0,0,0,4" />
             <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
                 <Button Content="Load from file…" Padding="10,3" Click="LoadFromFile_Click" />
                 <Button Content="Clear data"      Padding="10,3" Margin="8,0,0,0" Click="ClearData_Click" />

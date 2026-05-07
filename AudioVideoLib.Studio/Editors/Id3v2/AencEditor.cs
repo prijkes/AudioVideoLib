@@ -19,13 +19,12 @@ using Microsoft.Win32;
     IsUniqueInstance = false)]
 public sealed class AencEditor : ITagItemEditor<Id3v2AudioEncryptionFrame>, INotifyPropertyChanged
 {
-    private byte[] _encryptionInfo = [];
-
     public string OwnerIdentifier { get => field; set => Set(ref field, value); } = string.Empty;
     public short PreviewStart { get => field; set => Set(ref field, value); }
     public short PreviewLength { get => field; set => Set(ref field, value); }
+    public byte[] Data { get => field; set => Set(ref field, value ?? []); } = [];
 
-    public string DataInfo => _encryptionInfo.Length == 0 ? "(no data)" : $"{_encryptionInfo.Length:N0} bytes";
+    public string DataInfo => Data.Length == 0 ? "(no data)" : $"{Data.Length:N0} bytes";
 
     public Id3v2AudioEncryptionFrame CreateNew(object tag) => new(((Id3v2Tag)tag).Version);
 
@@ -46,8 +45,7 @@ public sealed class AencEditor : ITagItemEditor<Id3v2AudioEncryptionFrame>, INot
         OwnerIdentifier = f.OwnerIdentifier ?? string.Empty;
         PreviewStart = f.PreviewStart;
         PreviewLength = f.PreviewLength;
-        _encryptionInfo = f.EncryptionInfo ?? [];
-        OnPropertyChanged(nameof(DataInfo));
+        Data = f.EncryptionInfo ?? [];
     }
 
     public void Save(Id3v2AudioEncryptionFrame f)
@@ -55,7 +53,7 @@ public sealed class AencEditor : ITagItemEditor<Id3v2AudioEncryptionFrame>, INot
         f.OwnerIdentifier = OwnerIdentifier;
         f.PreviewStart = PreviewStart;
         f.PreviewLength = PreviewLength;
-        f.EncryptionInfo = _encryptionInfo;
+        f.EncryptionInfo = Data;
     }
 
     public bool Validate(out string? error)
@@ -79,17 +77,9 @@ public sealed class AencEditor : ITagItemEditor<Id3v2AudioEncryptionFrame>, INot
         return true;
     }
 
-    public void LoadDataFromFile(string path)
-    {
-        _encryptionInfo = File.ReadAllBytes(path);
-        OnPropertyChanged(nameof(DataInfo));
-    }
+    public void LoadDataFromFile(string path) => Data = File.ReadAllBytes(path);
 
-    public void ClearData()
-    {
-        _encryptionInfo = [];
-        OnPropertyChanged(nameof(DataInfo));
-    }
+    public void ClearData() => Data = [];
 
     internal void LoadDataFromFile(Window owner)
     {
@@ -115,9 +105,6 @@ public sealed class AencEditor : ITagItemEditor<Id3v2AudioEncryptionFrame>, INot
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void OnPropertyChanged(string prop)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-
     private void Set<T>(ref T storage, T value, [CallerMemberName] string? prop = null)
     {
         if (Equals(storage, value))
@@ -126,5 +113,9 @@ public sealed class AencEditor : ITagItemEditor<Id3v2AudioEncryptionFrame>, INot
         }
         storage = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        if (prop == nameof(Data))
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DataInfo)));
+        }
     }
 }
