@@ -2075,7 +2075,6 @@ public partial class MainWindow : Window
     private void UpdateDirtyState()
     {
         var isDirty = CurrentDossier?.HasUnsavedChanges == true;
-        UnsavedBanner.Visibility = isDirty ? Visibility.Visible : Visibility.Collapsed;
         var fileName = CurrentDossier != null ? Path.GetFileName(CurrentDossier.FilePath) : string.Empty;
         Title = isDirty ? $"AudioVideoLib Studio - {fileName} *" : "AudioVideoLib Studio";
 
