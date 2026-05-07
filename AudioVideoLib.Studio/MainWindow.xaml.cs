@@ -34,7 +34,7 @@ public partial class MainWindow : Window
         InputBindings.Add(new KeyBinding(new RelayCommand(_ => FindPrevious()),     Key.F3,    ModifierKeys.Shift));
         InputBindings.Add(new KeyBinding(new RelayCommand(_ => ShowShortcuts()),    Key.F1,    ModifierKeys.None));
 
-        Closing += (_, _) => WindowLayout.Save(this);
+        Closing += MainWindow_Closing;
         Closed += (_, _) =>
         {
             foreach (var f in _openFiles)
@@ -200,6 +200,11 @@ public partial class MainWindow : Window
     {
         var idx = _openFiles.IndexOf(dossier);
         if (idx < 0)
+        {
+            return;
+        }
+
+        if (!ConfirmDiscardOrSave(dossier))
         {
             return;
         }
@@ -1413,21 +1418,97 @@ public partial class MainWindow : Window
             return;
         }
 
+        TrySaveDossier(CurrentDossier);
+    }
+
+    /// <summary>Save a specific dossier; returns true on success, false if the save threw.</summary>
+    private bool TrySaveDossier(FileDossier dossier)
+    {
         try
         {
-            CurrentDossier.Save();
-            UpdateStatus($"Saved {Path.GetFileName(CurrentDossier.FilePath)}");
+            dossier.Save();
+            UpdateStatus($"Saved {Path.GetFileName(dossier.FilePath)}");
             UpdateDirtyState();
+            return true;
         }
         catch (Exception ex)
         {
             MessageBox.Show(
                 this,
-                $"Failed to save:\n\n{ex.Message}",
+                $"Failed to save {Path.GetFileName(dossier.FilePath)}:\n\n{ex.Message}",
                 "Save error",
                 MessageBoxButton.OK,
                 MessageBoxImage.Warning);
+            return false;
         }
+    }
+
+    /// <summary>
+    /// If the dossier has unsaved changes, prompt the user (Save / Don't save / Cancel).
+    /// Returns true if it's safe to proceed with closing (saved or user chose discard);
+    /// returns false if the user cancelled or a save attempt failed.
+    /// </summary>
+    private bool ConfirmDiscardOrSave(FileDossier dossier)
+    {
+        if (!dossier.HasUnsavedChanges)
+        {
+            return true;
+        }
+
+        var result = MessageBox.Show(
+            this,
+            $"Save changes to {Path.GetFileName(dossier.FilePath)} before closing?",
+            "Unsaved changes",
+            MessageBoxButton.YesNoCancel,
+            MessageBoxImage.Question,
+            MessageBoxResult.Yes);
+
+        return result switch
+        {
+            MessageBoxResult.Yes => TrySaveDossier(dossier),
+            MessageBoxResult.No => true,
+            _ => false,    // Cancel or window-close
+        };
+    }
+
+    private void MainWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
+    {
+        var dirty = _openFiles.Where(f => f.HasUnsavedChanges).ToList();
+        if (dirty.Count > 0)
+        {
+            var summary = dirty.Count == 1
+                ? $"Save changes to {Path.GetFileName(dirty[0].FilePath)} before closing?"
+                : $"{dirty.Count:N0} open files have unsaved changes. Save all before closing?";
+
+            var result = MessageBox.Show(
+                this,
+                summary,
+                "Unsaved changes",
+                MessageBoxButton.YesNoCancel,
+                MessageBoxImage.Question,
+                MessageBoxResult.Yes);
+
+            switch (result)
+            {
+                case MessageBoxResult.Yes:
+                    foreach (var f in dirty)
+                    {
+                        if (!TrySaveDossier(f))
+                        {
+                            e.Cancel = true;
+                            return;
+                        }
+                    }
+                    break;
+                case MessageBoxResult.No:
+                    break;     // discard all
+                default:
+                    e.Cancel = true;
+                    return;
+            }
+        }
+
+        WindowLayout.Save(this);
     }
 
     private void SaveAsFile()
