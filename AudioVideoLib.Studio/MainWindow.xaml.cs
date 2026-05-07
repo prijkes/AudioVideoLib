@@ -90,7 +90,8 @@ public partial class MainWindow : Window
     {
         public FileDossier Dossier { get; } = dossier;
 
-        public string DisplayName { get; } = Path.GetFileName(dossier.FilePath);
+        public string DisplayName { get; }
+            = Path.GetFileName(dossier.FilePath) + (dossier.HasUnsavedChanges ? " *" : string.Empty);
 
         public string FilePath { get; } = dossier.FilePath;
 
@@ -2071,6 +2072,10 @@ public partial class MainWindow : Window
         UnsavedBanner.Visibility = isDirty ? Visibility.Visible : Visibility.Collapsed;
         var fileName = CurrentDossier != null ? Path.GetFileName(CurrentDossier.FilePath) : string.Empty;
         Title = isDirty ? $"AudioVideoLib Studio - {fileName} *" : "AudioVideoLib Studio";
+
+        // Refresh the file-tabs strip so the per-tab " *" suffix follows dirty state.
+        // Cheap (rebuilds a small list of FileTabItem records); safe (no UI focus impact).
+        RebuildFileTabsList();
     }
 
     private void UpdateStatus(string left)
