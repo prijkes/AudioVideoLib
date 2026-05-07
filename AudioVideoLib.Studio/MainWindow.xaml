@@ -515,7 +515,7 @@
 
         <!-- ==================== main tabs ==================== -->
 
-        <TabControl x:Name="MainTabs">
+        <TabControl x:Name="MainTabs" Visibility="Collapsed">
 
             <!-- ==================== Inspector tab ==================== -->
 

@@ -148,6 +148,7 @@ public partial class MainWindow : Window
         {
             FilePathText.Text = "No file loaded. Use File > Open (Ctrl+O).";
             CloseFileButton.IsEnabled = false;
+            MainTabs.Visibility = Visibility.Collapsed;
             InspectorTreeView.ItemsSource = null;
             PropertiesGrid.ItemsSource = null;
             TagTabControl.DataContext = null;
@@ -165,6 +166,7 @@ public partial class MainWindow : Window
         FilePathText.Text = $"{CurrentDossier.FilePath}   ({CurrentDossier.FileSizeText})";
         FilePathText.ToolTip = CurrentDossier.FilePath;
         CloseFileButton.IsEnabled = true;
+        MainTabs.Visibility = Visibility.Visible;
 
         if (CurrentDossier.InspectorRoot != null)
         {
