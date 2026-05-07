@@ -23,8 +23,10 @@
                          Padding="0,0,16,0"
                          Cursor="Arrow" />
 
-                <!-- hex column: editable, hex-filtered -->
+                <!-- hex column: editable, hex-filtered. MinWidth keeps the caret target
+                     visible and clickable when the buffer is empty. -->
                 <TextBox Grid.Column="1" x:Name="HexBox"
+                         MinWidth="350"
                          Background="Transparent" BorderThickness="0"
                          Foreground="#DDDDDD" CaretBrush="White"
                          FontFamily="Consolas" FontSize="11"
@@ -34,8 +36,10 @@
                          PreviewKeyDown="HexBox_PreviewKeyDown"
                          SelectionChanged="HexBox_SelectionChanged" />
 
-                <!-- ascii column: editable, any byte -->
+                <!-- ascii column: editable, any byte. MinWidth keeps the caret target
+                     visible and clickable when the buffer is empty. -->
                 <TextBox Grid.Column="2" x:Name="AsciiBox"
+                         MinWidth="120"
                          Background="Transparent" BorderThickness="0"
                          Foreground="#DDDDDD" CaretBrush="White"
                          FontFamily="Consolas" FontSize="11"
