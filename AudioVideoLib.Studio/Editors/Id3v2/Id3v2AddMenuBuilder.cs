@@ -15,12 +15,31 @@ public static class Id3v2AddMenuBuilder
         ArgumentNullException.ThrowIfNull(attribute);
         ArgumentNullException.ThrowIfNull(tag);
 
-        var label = string.IsNullOrEmpty(attribute.MenuLabel)
-            ? IdentifierFor(attribute, tag.Version) ?? "?"
-            : attribute.MenuLabel;
+        var ident = IdentifierFor(attribute, tag.Version) ?? "?";
+        var name = StripTrailingIdentifier(attribute.MenuLabel, ident);
         var existing = attribute.IsUniqueInstance
             && tag.Frames.Any(f => f.GetType() == attribute.ItemType);
-        return $"{(existing ? "Edit" : "Add")} {label}…";
+        var verb = existing ? "Edit" : "Add";
+        return string.IsNullOrEmpty(name)
+            ? $"{verb} {ident}…"
+            : $"{verb} {ident} — {name}…";
+    }
+
+    /// <summary>
+    /// Editor MenuLabel attributes commonly include a trailing parenthetical of the
+    /// frame's identifier (e.g. "Comment (COMM)"). The unified menu-label format renders
+    /// the identifier separately, so strip that parenthetical to avoid duplication.
+    /// </summary>
+    private static string StripTrailingIdentifier(string menuLabel, string identifier)
+    {
+        if (string.IsNullOrEmpty(menuLabel))
+        {
+            return string.Empty;
+        }
+        var suffix = $" ({identifier})";
+        return menuLabel.EndsWith(suffix, StringComparison.Ordinal)
+            ? menuLabel[..^suffix.Length]
+            : menuLabel;
     }
 
     public static Id3v2MenuModel BuildModel(TagItemEditorRegistry registry, Id3v2Tag tag)
@@ -154,7 +173,7 @@ public static class Id3v2AddMenuBuilder
             .Select(i =>
             {
                 var ident = Id3v2KnownTextFrameIds.IdentifierFor(i, versionMask);
-                return new Id3v2MenuEntry($"{ident} — {i.FriendlyName}", ident, IsEditExisting: false);
+                return new Id3v2MenuEntry($"Add {ident} — {i.FriendlyName}…", ident, IsEditExisting: false);
             })];
     }
 
@@ -166,7 +185,7 @@ public static class Id3v2AddMenuBuilder
             .Select(i =>
             {
                 var ident = Id3v2KnownUrlFrameIds.IdentifierFor(i, versionMask);
-                return new Id3v2MenuEntry($"{ident} — {i.FriendlyName}", ident, IsEditExisting: false);
+                return new Id3v2MenuEntry($"Add {ident} — {i.FriendlyName}…", ident, IsEditExisting: false);
             })];
     }
 
