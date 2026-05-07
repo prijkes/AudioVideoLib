@@ -109,7 +109,7 @@ public partial class MainWindow : Window
         }
 
         FileTabsList.ItemsSource = items;
-        FileTabsStrip.Visibility = _openFiles.Count > 1 ? Visibility.Visible : Visibility.Collapsed;
+        FileTabsStrip.Visibility = _openFiles.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
     }
 
     private void SelectTab_Click(object sender, RoutedEventArgs e)
