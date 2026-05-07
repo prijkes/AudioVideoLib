@@ -21,11 +21,11 @@ public sealed class EncrEditor : ITagItemEditor<Id3v2EncryptionMethodRegistratio
 {
     public string OwnerIdentifier { get => field; set => Set(ref field, value); } = string.Empty;
     public int MethodSymbol { get => field; set => Set(ref field, value); } = 0x80;
-    public byte[] EncryptionData { get => field; set => Set(ref field, value); } = [];
+    public byte[] Data { get => field; set => Set(ref field, value ?? []); } = [];
 
-    public string DataInfo => EncryptionData.Length == 0
+    public string DataInfo => Data.Length == 0
         ? "No data."
-        : $"{EncryptionData.Length:N0} bytes";
+        : $"{Data.Length:N0} bytes";
 
     public Id3v2EncryptionMethodRegistrationFrame CreateNew(object tag)
         => new(((Id3v2Tag)tag).Version);
@@ -46,14 +46,14 @@ public sealed class EncrEditor : ITagItemEditor<Id3v2EncryptionMethodRegistratio
     {
         OwnerIdentifier = f.OwnerIdentifier ?? string.Empty;
         MethodSymbol = f.MethodSymbol;
-        EncryptionData = f.EncryptionData ?? [];
+        Data = f.EncryptionData ?? [];
     }
 
     public void Save(Id3v2EncryptionMethodRegistrationFrame f)
     {
         f.OwnerIdentifier = OwnerIdentifier;
         f.MethodSymbol = (byte)MethodSymbol;
-        f.EncryptionData = EncryptionData;
+        f.EncryptionData = Data;
     }
 
     public bool Validate(out string? error)
@@ -72,6 +72,10 @@ public sealed class EncrEditor : ITagItemEditor<Id3v2EncryptionMethodRegistratio
         return true;
     }
 
+    public void LoadDataFromFile(string path) => Data = File.ReadAllBytes(path);
+
+    public void ClearData() => Data = [];
+
     internal void LoadDataFromFile(Window owner)
     {
         var dlg = new OpenFileDialog
@@ -85,8 +89,7 @@ public sealed class EncrEditor : ITagItemEditor<Id3v2EncryptionMethodRegistratio
         }
         try
         {
-            EncryptionData = File.ReadAllBytes(dlg.FileName);
-            OnPropertyChanged(nameof(DataInfo));
+            LoadDataFromFile(dlg.FileName);
         }
         catch (Exception ex)
         {
@@ -95,16 +98,7 @@ public sealed class EncrEditor : ITagItemEditor<Id3v2EncryptionMethodRegistratio
         }
     }
 
-    internal void ClearData()
-    {
-        EncryptionData = [];
-        OnPropertyChanged(nameof(DataInfo));
-    }
-
     public event PropertyChangedEventHandler? PropertyChanged;
-
-    private void OnPropertyChanged(string prop)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
 
     private void Set<T>(ref T storage, T value, [CallerMemberName] string? prop = null)
     {
@@ -114,5 +108,9 @@ public sealed class EncrEditor : ITagItemEditor<Id3v2EncryptionMethodRegistratio
         }
         storage = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        if (prop == nameof(Data))
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DataInfo)));
+        }
     }
 }
