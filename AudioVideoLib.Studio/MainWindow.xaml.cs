@@ -666,6 +666,13 @@ public partial class MainWindow : Window
             {
                 continue;
             }
+            // Skip editors whose frame can't construct against the active version —
+            // their version-aware ctor would throw, which IdentifierFor catches but
+            // the debugger surfaces as a first-chance break to the user.
+            if (!a.SupportedVersions.Contains(tag.Version))
+            {
+                continue;
+            }
             var ident = Id3v2AddMenuBuilder.IdentifierFor(a, tag.Version);
             if (ident == identifier)
             {
