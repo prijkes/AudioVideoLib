@@ -19,13 +19,12 @@ using Microsoft.Win32;
     IsUniqueInstance = false)]
 public sealed class SignEditor : ITagItemEditor<Id3v2SignatureFrame>, INotifyPropertyChanged
 {
-    private byte[] _signatureData = [];
-
     public int GroupSymbol { get => field; set => Set(ref field, value); } = 0x80;
+    public byte[] Data { get => field; set => Set(ref field, value ?? []); } = [];
 
-    public string DataInfo => _signatureData.Length == 0
+    public string DataInfo => Data.Length == 0
         ? "(no data)"
-        : $"{_signatureData.Length:N0} bytes";
+        : $"{Data.Length:N0} bytes";
 
     public Id3v2SignatureFrame CreateNew(object tag) => new(((Id3v2Tag)tag).Version);
 
@@ -44,14 +43,13 @@ public sealed class SignEditor : ITagItemEditor<Id3v2SignatureFrame>, INotifyPro
     public void Load(Id3v2SignatureFrame f)
     {
         GroupSymbol = f.GroupSymbol;
-        _signatureData = f.SignatureData ?? [];
-        OnPropertyChanged(nameof(DataInfo));
+        Data = f.SignatureData ?? [];
     }
 
     public void Save(Id3v2SignatureFrame f)
     {
         f.GroupSymbol = (byte)GroupSymbol;
-        f.SignatureData = _signatureData;
+        f.SignatureData = Data;
     }
 
     public bool Validate(out string? error)
@@ -65,17 +63,9 @@ public sealed class SignEditor : ITagItemEditor<Id3v2SignatureFrame>, INotifyPro
         return true;
     }
 
-    public void LoadDataFromFile(string path)
-    {
-        _signatureData = File.ReadAllBytes(path);
-        OnPropertyChanged(nameof(DataInfo));
-    }
+    public void LoadDataFromFile(string path) => Data = File.ReadAllBytes(path);
 
-    public void ClearData()
-    {
-        _signatureData = [];
-        OnPropertyChanged(nameof(DataInfo));
-    }
+    public void ClearData() => Data = [];
 
     internal void LoadDataFromFile(Window owner)
     {
@@ -101,9 +91,6 @@ public sealed class SignEditor : ITagItemEditor<Id3v2SignatureFrame>, INotifyPro
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void OnPropertyChanged(string prop)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-
     private void Set<T>(ref T storage, T value, [CallerMemberName] string? prop = null)
     {
         if (Equals(storage, value))
@@ -112,5 +99,9 @@ public sealed class SignEditor : ITagItemEditor<Id3v2SignatureFrame>, INotifyPro
         }
         storage = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        if (prop == nameof(Data))
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DataInfo)));
+        }
     }
 }
