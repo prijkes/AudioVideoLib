@@ -284,11 +284,11 @@ public partial class HexEditor : UserControl
 
     // The hex/ASCII columns are sized to their content, so when the buffer is empty
     // they collapse to ~0 px and can't receive a mouse click. Forward clicks on the
-    // surrounding dark surface to the hex column so the user can start typing.
+    // surrounding dark surface to the ASCII column so the user can start typing.
     private void Surface_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
-        HexBox.Focus();
-        HexBox.CaretIndex = HexBox.Text.Length;
+        AsciiBox.Focus();
+        AsciiBox.CaretIndex = AsciiBox.Text.Length;
         e.Handled = true;
     }
 
