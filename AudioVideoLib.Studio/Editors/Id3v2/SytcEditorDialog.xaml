@@ -16,8 +16,8 @@
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,6">
             <Button Content="Add"    Width="70"                  Click="Add_Click" />
             <Button Content="Remove" Width="70" Margin="6,0,0,0" Click="Remove_Click" />
-            <Button Content="Up"     Width="50" Margin="6,0,0,0" Click="Up_Click" />
-            <Button Content="Down"   Width="50" Margin="6,0,0,0" Click="Down_Click" />
+            <Button Content="Up"     Width="70" Margin="6,0,0,0" Click="Up_Click" />
+            <Button Content="Down"   Width="70" Margin="6,0,0,0" Click="Down_Click" />
         </StackPanel>
         <DataGrid x:Name="Grid" ItemsSource="{Binding Entries}"
                   AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
