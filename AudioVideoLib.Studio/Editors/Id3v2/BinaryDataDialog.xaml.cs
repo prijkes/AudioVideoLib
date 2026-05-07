@@ -10,6 +10,11 @@ using Microsoft.Win32;
 
 public partial class BinaryDataDialog : Window
 {
+    // Runs on OK click before the dialog closes. If it throws InvalidDataException
+    // the dialog stays open and the user gets a chance to fix the input. Setters
+    // are ordered so the throwing one runs first, avoiding partial mutation on retry.
+    private Action? _commit;
+
     public BinaryDataDialog()
     {
         InitializeComponent();
@@ -31,15 +36,13 @@ public partial class BinaryDataDialog : Window
         dlg.OwnerBox.Text = frame.OwnerIdentifier ?? string.Empty;
         dlg.HexEditor.Data = frame.PrivateData ?? [];
         dlg.UpdateInfoText();
-
-        if (dlg.ShowDialog() != true)
+        dlg._commit = () =>
         {
-            return false;
-        }
+            frame.OwnerIdentifier = dlg.OwnerBox.Text ?? string.Empty;
+            frame.PrivateData = dlg.HexEditor.Data;
+        };
 
-        frame.OwnerIdentifier = dlg.OwnerBox.Text ?? string.Empty;
-        frame.PrivateData = dlg.HexEditor.Data;
-        return true;
+        return dlg.ShowDialog() == true;
     }
 
     internal static bool EditUfid(Window owner, Id3v2UniqueFileIdentifierFrame frame)
@@ -54,15 +57,13 @@ public partial class BinaryDataDialog : Window
         dlg.HexEditor.Data = frame.IdentifierData ?? [];
         dlg.HexEditor.MaxLength = 64;     // ID3v2 spec §4.1: max 64 bytes
         dlg.UpdateInfoText();
-
-        if (dlg.ShowDialog() != true)
+        dlg._commit = () =>
         {
-            return false;
-        }
+            frame.OwnerIdentifier = dlg.OwnerBox.Text ?? string.Empty;
+            frame.IdentifierData = dlg.HexEditor.Data;
+        };
 
-        frame.OwnerIdentifier = dlg.OwnerBox.Text ?? string.Empty;
-        frame.IdentifierData = dlg.HexEditor.Data;
-        return true;
+        return dlg.ShowDialog() == true;
     }
 
     internal static bool EditMcdi(Window owner, Id3v2MusicCdIdentifierFrame frame)
@@ -76,14 +77,9 @@ public partial class BinaryDataDialog : Window
         dlg.HexEditor.Data = frame.TableOfContents ?? [];
         dlg.HexEditor.MaxLength = 804;    // ID3v2 spec §4.5: 4-byte header + 8 bytes/track, max 804
         dlg.UpdateInfoText();
+        dlg._commit = () => frame.TableOfContents = dlg.HexEditor.Data;
 
-        if (dlg.ShowDialog() != true)
-        {
-            return false;
-        }
-
-        frame.TableOfContents = dlg.HexEditor.Data;
-        return true;
+        return dlg.ShowDialog() == true;
     }
 
     private void LoadFromFile_Click(object sender, RoutedEventArgs e)
@@ -116,7 +112,20 @@ public partial class BinaryDataDialog : Window
         UpdateInfoText();
     }
 
-    private void OkButton_Click(object sender, RoutedEventArgs e) => DialogResult = true;
+    private void OkButton_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            _commit?.Invoke();
+        }
+        catch (InvalidDataException ex)
+        {
+            MessageBox.Show(this, ex.Message, "Invalid input",
+                MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+        DialogResult = true;
+    }
 
     private void CancelButton_Click(object sender, RoutedEventArgs e) => DialogResult = false;
 
