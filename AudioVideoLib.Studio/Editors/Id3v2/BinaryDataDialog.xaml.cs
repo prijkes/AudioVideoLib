@@ -4,18 +4,20 @@ using System;
 using System.IO;
 using System.Windows;
 
-using AudioVideoLib.Studio;
 using AudioVideoLib.Tags;
 
 using Microsoft.Win32;
 
 public partial class BinaryDataDialog : Window
 {
-    private byte[] _data = [];
-
     public BinaryDataDialog()
     {
         InitializeComponent();
+        // Refresh the size readout whenever the underlying byte buffer changes
+        // (typing in hex/ASCII columns mutates HexEditor.Data via the DP).
+        var dpd = System.ComponentModel.DependencyPropertyDescriptor.FromProperty(
+            Controls.HexEditor.DataProperty, typeof(Controls.HexEditor));
+        dpd?.AddValueChanged(HexEditor, (_, _) => UpdateInfoText());
     }
 
     internal static bool EditPriv(Window owner, Id3v2PrivateFrame frame)
@@ -25,10 +27,10 @@ public partial class BinaryDataDialog : Window
             Owner = owner,
             Title = "Private frame (PRIV)",
         };
-        dlg.OwnerLabel.Text = "Owner identifier (URL or email)";
+        dlg.OwnerLabel.Text = "Owner identifier (URL)";
         dlg.OwnerBox.Text = frame.OwnerIdentifier ?? string.Empty;
-        dlg._data = frame.PrivateData ?? [];
-        dlg.RefreshHex();
+        dlg.HexEditor.Data = frame.PrivateData ?? [];
+        dlg.UpdateInfoText();
 
         if (dlg.ShowDialog() != true)
         {
@@ -36,7 +38,7 @@ public partial class BinaryDataDialog : Window
         }
 
         frame.OwnerIdentifier = dlg.OwnerBox.Text ?? string.Empty;
-        frame.PrivateData = dlg._data;
+        frame.PrivateData = dlg.HexEditor.Data;
         return true;
     }
 
@@ -49,8 +51,9 @@ public partial class BinaryDataDialog : Window
         };
         dlg.OwnerLabel.Text = "Owner identifier";
         dlg.OwnerBox.Text = frame.OwnerIdentifier ?? string.Empty;
-        dlg._data = frame.IdentifierData ?? [];
-        dlg.RefreshHex();
+        dlg.HexEditor.Data = frame.IdentifierData ?? [];
+        dlg.HexEditor.MaxLength = 64;     // ID3v2 spec §4.1: max 64 bytes
+        dlg.UpdateInfoText();
 
         if (dlg.ShowDialog() != true)
         {
@@ -58,7 +61,7 @@ public partial class BinaryDataDialog : Window
         }
 
         frame.OwnerIdentifier = dlg.OwnerBox.Text ?? string.Empty;
-        frame.IdentifierData = dlg._data;
+        frame.IdentifierData = dlg.HexEditor.Data;
         return true;
     }
 
@@ -70,15 +73,16 @@ public partial class BinaryDataDialog : Window
             Title = "Music CD identifier (MCDI)",
         };
         dlg.OwnerPanel.Visibility = Visibility.Collapsed;
-        dlg._data = frame.TableOfContents ?? [];
-        dlg.RefreshHex();
+        dlg.HexEditor.Data = frame.TableOfContents ?? [];
+        dlg.HexEditor.MaxLength = 804;    // ID3v2 spec §4.5: 4-byte header + 8 bytes/track, max 804
+        dlg.UpdateInfoText();
 
         if (dlg.ShowDialog() != true)
         {
             return false;
         }
 
-        frame.TableOfContents = dlg._data;
+        frame.TableOfContents = dlg.HexEditor.Data;
         return true;
     }
 
@@ -96,8 +100,8 @@ public partial class BinaryDataDialog : Window
 
         try
         {
-            _data = File.ReadAllBytes(dlg.FileName);
-            RefreshHex();
+            HexEditor.Data = File.ReadAllBytes(dlg.FileName);
+            UpdateInfoText();
         }
         catch (Exception ex)
         {
@@ -108,23 +112,20 @@ public partial class BinaryDataDialog : Window
 
     private void ClearData_Click(object sender, RoutedEventArgs e)
     {
-        _data = [];
-        RefreshHex();
+        HexEditor.Data = [];
+        UpdateInfoText();
     }
 
-    private void OkButton_Click(object sender, RoutedEventArgs e)
-    {
-        DialogResult = true;
-    }
+    private void OkButton_Click(object sender, RoutedEventArgs e) => DialogResult = true;
 
-    private void CancelButton_Click(object sender, RoutedEventArgs e)
-    {
-        DialogResult = false;
-    }
+    private void CancelButton_Click(object sender, RoutedEventArgs e) => DialogResult = false;
 
-    private void RefreshHex()
+    private void UpdateInfoText()
     {
-        HexBox.Text = HexDumper.Dump(_data);
-        InfoText.Text = _data.Length == 0 ? "No data." : $"{_data.Length:N0} bytes";
+        var len = HexEditor.Data.Length;
+        var max = HexEditor.MaxLength;
+        InfoText.Text = max is { } m
+            ? len == 0 ? $"No data (max {m:N0} bytes)" : $"{len:N0} / {m:N0} bytes"
+            : len == 0 ? "No data." : $"{len:N0} bytes";
     }
 }
