@@ -19,8 +19,6 @@ using Microsoft.Win32;
     IsUniqueInstance = false)]
 public sealed class ComrEditor : ITagItemEditor<Id3v2CommercialFrame>, INotifyPropertyChanged
 {
-    private byte[] _sellerLogo = [];
-
     public Id3v2FrameEncodingType Encoding { get => field; set => Set(ref field, value); }
     public string PriceString { get => field; set => Set(ref field, value); } = string.Empty;
     public string ValidUntil { get => field; set => Set(ref field, value); } = string.Empty;
@@ -29,8 +27,9 @@ public sealed class ComrEditor : ITagItemEditor<Id3v2CommercialFrame>, INotifyPr
     public string NameOfSeller { get => field; set => Set(ref field, value); } = string.Empty;
     public string ShortDescription { get => field; set => Set(ref field, value); } = string.Empty;
     public string PictureMimeType { get => field; set => Set(ref field, value); } = string.Empty;
+    public byte[] Data { get => field; set => Set(ref field, value ?? []); } = [];
 
-    public string DataInfo => _sellerLogo.Length == 0 ? "(no data)" : $"{_sellerLogo.Length:N0} bytes";
+    public string DataInfo => Data.Length == 0 ? "(no data)" : $"{Data.Length:N0} bytes";
 
     public Id3v2CommercialFrame CreateNew(object tag) => new(((Id3v2Tag)tag).Version);
 
@@ -56,8 +55,7 @@ public sealed class ComrEditor : ITagItemEditor<Id3v2CommercialFrame>, INotifyPr
         NameOfSeller = f.NameOfSeller ?? string.Empty;
         ShortDescription = f.ShortDescription ?? string.Empty;
         PictureMimeType = f.PictureMimeType ?? string.Empty;
-        _sellerLogo = f.SellerLogo ?? [];
-        OnPropertyChanged(nameof(DataInfo));
+        Data = f.SellerLogo ?? [];
     }
 
     public void Save(Id3v2CommercialFrame f)
@@ -70,7 +68,7 @@ public sealed class ComrEditor : ITagItemEditor<Id3v2CommercialFrame>, INotifyPr
         f.NameOfSeller = NameOfSeller;
         f.ShortDescription = ShortDescription;
         f.PictureMimeType = PictureMimeType;
-        f.SellerLogo = _sellerLogo;
+        f.SellerLogo = Data;
     }
 
     public bool Validate(out string? error)
@@ -89,17 +87,9 @@ public sealed class ComrEditor : ITagItemEditor<Id3v2CommercialFrame>, INotifyPr
         return true;
     }
 
-    public void LoadDataFromFile(string path)
-    {
-        _sellerLogo = File.ReadAllBytes(path);
-        OnPropertyChanged(nameof(DataInfo));
-    }
+    public void LoadDataFromFile(string path) => Data = File.ReadAllBytes(path);
 
-    public void ClearData()
-    {
-        _sellerLogo = [];
-        OnPropertyChanged(nameof(DataInfo));
-    }
+    public void ClearData() => Data = [];
 
     internal void LoadDataFromFile(Window owner)
     {
@@ -141,9 +131,6 @@ public sealed class ComrEditor : ITagItemEditor<Id3v2CommercialFrame>, INotifyPr
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void OnPropertyChanged(string prop)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-
     private void Set<T>(ref T storage, T value, [CallerMemberName] string? prop = null)
     {
         if (Equals(storage, value))
@@ -152,5 +139,9 @@ public sealed class ComrEditor : ITagItemEditor<Id3v2CommercialFrame>, INotifyPr
         }
         storage = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        if (prop == nameof(Data))
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DataInfo)));
+        }
     }
 }
