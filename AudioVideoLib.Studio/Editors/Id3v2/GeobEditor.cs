@@ -19,16 +19,15 @@ using Microsoft.Win32;
     IsUniqueInstance = false)]
 public sealed class GeobEditor : ITagItemEditor<Id3v2GeneralEncapsulatedObjectFrame>, INotifyPropertyChanged
 {
-    private byte[] _encapsulatedObject = [];
-
     public Id3v2FrameEncodingType Encoding { get => field; set => Set(ref field, value); }
     public string MimeType { get => field; set => Set(ref field, value); } = string.Empty;
     public string Filename { get => field; set => Set(ref field, value); } = string.Empty;
     public string ContentDescription { get => field; set => Set(ref field, value); } = string.Empty;
+    public byte[] Data { get => field; set => Set(ref field, value ?? []); } = [];
 
-    public string DataInfo => _encapsulatedObject.Length == 0
+    public string DataInfo => Data.Length == 0
         ? "(no data)"
-        : $"{_encapsulatedObject.Length:N0} bytes";
+        : $"{Data.Length:N0} bytes";
 
     public Id3v2GeneralEncapsulatedObjectFrame CreateNew(object tag)
         => new(((Id3v2Tag)tag).Version);
@@ -51,8 +50,7 @@ public sealed class GeobEditor : ITagItemEditor<Id3v2GeneralEncapsulatedObjectFr
         MimeType = f.MimeType ?? string.Empty;
         Filename = f.Filename ?? string.Empty;
         ContentDescription = f.ContentDescription ?? string.Empty;
-        _encapsulatedObject = f.EncapsulatedObject ?? [];
-        OnPropertyChanged(nameof(DataInfo));
+        Data = f.EncapsulatedObject ?? [];
     }
 
     public void Save(Id3v2GeneralEncapsulatedObjectFrame f)
@@ -61,7 +59,7 @@ public sealed class GeobEditor : ITagItemEditor<Id3v2GeneralEncapsulatedObjectFr
         f.MimeType = MimeType;
         f.Filename = Filename;
         f.ContentDescription = ContentDescription;
-        f.EncapsulatedObject = _encapsulatedObject;
+        f.EncapsulatedObject = Data;
     }
 
     public bool Validate(out string? error)
@@ -80,17 +78,9 @@ public sealed class GeobEditor : ITagItemEditor<Id3v2GeneralEncapsulatedObjectFr
         return true;
     }
 
-    public void LoadDataFromFile(string path)
-    {
-        _encapsulatedObject = File.ReadAllBytes(path);
-        OnPropertyChanged(nameof(DataInfo));
-    }
+    public void LoadDataFromFile(string path) => Data = File.ReadAllBytes(path);
 
-    public void ClearData()
-    {
-        _encapsulatedObject = [];
-        OnPropertyChanged(nameof(DataInfo));
-    }
+    public void ClearData() => Data = [];
 
     internal void LoadDataFromFile(Window owner)
     {
@@ -116,9 +106,6 @@ public sealed class GeobEditor : ITagItemEditor<Id3v2GeneralEncapsulatedObjectFr
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void OnPropertyChanged(string prop)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-
     private void Set<T>(ref T storage, T value, [CallerMemberName] string? prop = null)
     {
         if (Equals(storage, value))
@@ -127,5 +114,9 @@ public sealed class GeobEditor : ITagItemEditor<Id3v2GeneralEncapsulatedObjectFr
         }
         storage = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        if (prop == nameof(Data))
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DataInfo)));
+        }
     }
 }
