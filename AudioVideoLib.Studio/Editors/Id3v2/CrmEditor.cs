@@ -19,14 +19,13 @@ using Microsoft.Win32;
     KnownIdentifier = "CRM")]
 public sealed class CrmEditor : WrapperEditorBase<Id3v2EncryptedMetaFrame>, INotifyPropertyChanged
 {
-    private byte[] _encryptedDataBlock = [];
-
     public string OwnerIdentifier { get => field; set => Set(ref field, value); } = string.Empty;
     public string ContentExplanation { get => field; set => Set(ref field, value); } = string.Empty;
+    public byte[] Data { get => field; set => Set(ref field, value ?? []); } = [];
 
-    public string DataInfo => _encryptedDataBlock.Length == 0
+    public string DataInfo => Data.Length == 0
         ? "(no data)"
-        : $"{_encryptedDataBlock.Length:N0} bytes";
+        : $"{Data.Length:N0} bytes";
 
     public override Id3v2EncryptedMetaFrame CreateNew(object tag)
         => new(((Id3v2Tag)tag).Version);
@@ -48,8 +47,7 @@ public sealed class CrmEditor : WrapperEditorBase<Id3v2EncryptedMetaFrame>, INot
     {
         OwnerIdentifier = f.OwnerIdentifier ?? string.Empty;
         ContentExplanation = f.ContentExplanation ?? string.Empty;
-        _encryptedDataBlock = f.EncryptedDataBlock ?? [];
-        OnPropertyChanged(nameof(DataInfo));
+        Data = f.EncryptedDataBlock ?? [];
     }
 
     public void Save(Id3v2EncryptedMetaFrame f)
@@ -65,7 +63,7 @@ public sealed class CrmEditor : WrapperEditorBase<Id3v2EncryptedMetaFrame>, INot
         }
         else
         {
-            f.EncryptedDataBlock = _encryptedDataBlock;
+            f.EncryptedDataBlock = Data;
         }
     }
 
@@ -81,7 +79,7 @@ public sealed class CrmEditor : WrapperEditorBase<Id3v2EncryptedMetaFrame>, INot
             error = "Owner identifier must be a valid RFC 1738 URL (e.g. http://example.com).";
             return false;
         }
-        if (SelectedChild is null && _encryptedDataBlock.Length == 0)
+        if (SelectedChild is null && Data.Length == 0)
         {
             error = "Pick a frame to wrap or load an encrypted data blob from disk.";
             return false;
@@ -90,17 +88,9 @@ public sealed class CrmEditor : WrapperEditorBase<Id3v2EncryptedMetaFrame>, INot
         return true;
     }
 
-    public void LoadDataFromFile(string path)
-    {
-        _encryptedDataBlock = File.ReadAllBytes(path);
-        OnPropertyChanged(nameof(DataInfo));
-    }
+    public void LoadDataFromFile(string path) => Data = File.ReadAllBytes(path);
 
-    public void ClearData()
-    {
-        _encryptedDataBlock = [];
-        OnPropertyChanged(nameof(DataInfo));
-    }
+    public void ClearData() => Data = [];
 
     internal void LoadDataFromFile(Window owner)
     {
@@ -126,9 +116,6 @@ public sealed class CrmEditor : WrapperEditorBase<Id3v2EncryptedMetaFrame>, INot
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void OnPropertyChanged(string prop)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-
     private void Set<T>(ref T storage, T value, [CallerMemberName] string? prop = null)
     {
         if (Equals(storage, value))
@@ -137,5 +124,9 @@ public sealed class CrmEditor : WrapperEditorBase<Id3v2EncryptedMetaFrame>, INot
         }
         storage = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        if (prop == nameof(Data))
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DataInfo)));
+        }
     }
 }
