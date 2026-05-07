@@ -44,6 +44,7 @@ public partial class MainWindow : Window
 
             _openFiles.Clear();
             _lastSelectedPerFile.Clear();
+            _lastSelectedTagTabPerFile.Clear();
         };
         HexViewControl.ByteClicked += HexView_ByteClicked;
 
@@ -82,6 +83,7 @@ public partial class MainWindow : Window
 
     private readonly List<FileDossier> _openFiles = [];
     private readonly Dictionary<FileDossier, InspectorNode?> _lastSelectedPerFile = [];
+    private readonly Dictionary<FileDossier, TagTabViewModel?> _lastSelectedTagTabPerFile = [];
 
     public sealed class FileTabItem(FileDossier dossier, bool isActive)
     {
@@ -135,6 +137,7 @@ public partial class MainWindow : Window
         if (CurrentDossier != null)
         {
             _lastSelectedPerFile[CurrentDossier] = _selectedNode;
+            _lastSelectedTagTabPerFile[CurrentDossier] = TagTabControl.SelectedItem as TagTabViewModel;
         }
 
         CurrentDossier = dossier;
@@ -176,6 +179,16 @@ public partial class MainWindow : Window
         TagTabControl.DataContext = CurrentDossier;
         TagTabControl.ItemsSource = CurrentDossier.TagTabs;
 
+        // Restore the per-file last-selected tag tab. WPF's TabControl resets to index 0
+        // when ItemsSource changes; without this restore the user always lands back on
+        // the first tag tab when switching files.
+        if (_lastSelectedTagTabPerFile.TryGetValue(CurrentDossier, out var lastTab)
+            && lastTab is not null
+            && CurrentDossier.TagTabs.Contains(lastTab))
+        {
+            TagTabControl.SelectedItem = lastTab;
+        }
+
         AnalysisPanel.Load(CurrentDossier);
         var (frameCount, frameUnit) = CurrentDossier.AudioStream switch
         {
@@ -215,6 +228,7 @@ public partial class MainWindow : Window
 
         _openFiles.RemoveAt(idx);
         _lastSelectedPerFile.Remove(dossier);
+        _lastSelectedTagTabPerFile.Remove(dossier);
         dossier.Dispose();
 
         if (ReferenceEquals(dossier, CurrentDossier))
