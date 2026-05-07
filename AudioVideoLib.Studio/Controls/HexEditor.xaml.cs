@@ -67,6 +67,29 @@ public partial class HexEditor : UserControl
     {
         InitializeComponent();
         Loaded += (_, _) => Render();
+        // Override Copy so the rendered line breaks (every 16 bytes) don't end up
+        // on the clipboard — most apps paste them as a stray space-like character.
+        HexBox.CommandBindings.Add(new System.Windows.Input.CommandBinding(
+            System.Windows.Input.ApplicationCommands.Copy,
+            (s, e) => CopySelectionStripped(HexBox, e)));
+        AsciiBox.CommandBindings.Add(new System.Windows.Input.CommandBinding(
+            System.Windows.Input.ApplicationCommands.Copy,
+            (s, e) => CopySelectionStripped(AsciiBox, e)));
+    }
+
+    private static void CopySelectionStripped(TextBox box,
+        System.Windows.Input.ExecutedRoutedEventArgs e)
+    {
+        var text = box.SelectedText;
+        if (text.Length == 0)
+        {
+            return;
+        }
+        text = text.Replace("\r\n", string.Empty)
+                   .Replace("\n", string.Empty)
+                   .Replace("\r", string.Empty);
+        Clipboard.SetText(text);
+        e.Handled = true;
     }
 
     private static void OnDataChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
