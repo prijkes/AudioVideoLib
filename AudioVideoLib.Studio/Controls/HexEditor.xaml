@@ -34,7 +34,17 @@
                          AcceptsReturn="False" AcceptsTab="False"
                          PreviewTextInput="HexBox_PreviewTextInput"
                          PreviewKeyDown="HexBox_PreviewKeyDown"
-                         SelectionChanged="HexBox_SelectionChanged" />
+                         SelectionChanged="HexBox_SelectionChanged">
+                    <TextBox.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Command="ApplicationCommands.Copy"      Header="Copy" />
+                            <MenuItem Command="ApplicationCommands.Cut"       Header="Cut" />
+                            <MenuItem Command="ApplicationCommands.Paste"     Header="Paste" />
+                            <Separator />
+                            <MenuItem Command="ApplicationCommands.SelectAll" Header="Select all" />
+                        </ContextMenu>
+                    </TextBox.ContextMenu>
+                </TextBox>
 
                 <!-- ascii column: editable, any byte. MinWidth keeps the caret target
                      visible and clickable when the buffer is empty. -->
@@ -47,7 +57,17 @@
                          AcceptsReturn="False" AcceptsTab="False"
                          PreviewTextInput="AsciiBox_PreviewTextInput"
                          PreviewKeyDown="AsciiBox_PreviewKeyDown"
-                         SelectionChanged="AsciiBox_SelectionChanged" />
+                         SelectionChanged="AsciiBox_SelectionChanged">
+                    <TextBox.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Command="ApplicationCommands.Copy"      Header="Copy" />
+                            <MenuItem Command="ApplicationCommands.Cut"       Header="Cut" />
+                            <MenuItem Command="ApplicationCommands.Paste"     Header="Paste" />
+                            <Separator />
+                            <MenuItem Command="ApplicationCommands.SelectAll" Header="Select all" />
+                        </ContextMenu>
+                    </TextBox.ContextMenu>
+                </TextBox>
             </Grid>
         </ScrollViewer>
     </Border>
