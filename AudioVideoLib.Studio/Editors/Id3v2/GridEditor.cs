@@ -21,11 +21,11 @@ public sealed class GridEditor : ITagItemEditor<Id3v2GroupIdentificationRegistra
 {
     public string OwnerIdentifier { get => field; set => Set(ref field, value); } = string.Empty;
     public int GroupSymbol { get => field; set => Set(ref field, value); } = 0x80;
-    public byte[] GroupDependentData { get => field; set => Set(ref field, value); } = [];
+    public byte[] Data { get => field; set => Set(ref field, value ?? []); } = [];
 
-    public string DataInfo => GroupDependentData.Length == 0
+    public string DataInfo => Data.Length == 0
         ? "No data."
-        : $"{GroupDependentData.Length:N0} bytes";
+        : $"{Data.Length:N0} bytes";
 
     public Id3v2GroupIdentificationRegistrationFrame CreateNew(object tag)
         => new(((Id3v2Tag)tag).Version);
@@ -46,14 +46,14 @@ public sealed class GridEditor : ITagItemEditor<Id3v2GroupIdentificationRegistra
     {
         OwnerIdentifier = f.OwnerIdentifier ?? string.Empty;
         GroupSymbol = f.GroupSymbol;
-        GroupDependentData = f.GroupDependentData ?? [];
+        Data = f.GroupDependentData ?? [];
     }
 
     public void Save(Id3v2GroupIdentificationRegistrationFrame f)
     {
         f.OwnerIdentifier = OwnerIdentifier;
         f.GroupSymbol = (byte)GroupSymbol;
-        f.GroupDependentData = GroupDependentData;
+        f.GroupDependentData = Data;
     }
 
     public bool Validate(out string? error)
@@ -72,6 +72,10 @@ public sealed class GridEditor : ITagItemEditor<Id3v2GroupIdentificationRegistra
         return true;
     }
 
+    public void LoadDataFromFile(string path) => Data = File.ReadAllBytes(path);
+
+    public void ClearData() => Data = [];
+
     internal void LoadDataFromFile(Window owner)
     {
         var dlg = new OpenFileDialog
@@ -85,8 +89,7 @@ public sealed class GridEditor : ITagItemEditor<Id3v2GroupIdentificationRegistra
         }
         try
         {
-            GroupDependentData = File.ReadAllBytes(dlg.FileName);
-            OnPropertyChanged(nameof(DataInfo));
+            LoadDataFromFile(dlg.FileName);
         }
         catch (Exception ex)
         {
@@ -95,16 +98,7 @@ public sealed class GridEditor : ITagItemEditor<Id3v2GroupIdentificationRegistra
         }
     }
 
-    internal void ClearData()
-    {
-        GroupDependentData = [];
-        OnPropertyChanged(nameof(DataInfo));
-    }
-
     public event PropertyChangedEventHandler? PropertyChanged;
-
-    private void OnPropertyChanged(string prop)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
 
     private void Set<T>(ref T storage, T value, [CallerMemberName] string? prop = null)
     {
@@ -114,5 +108,9 @@ public sealed class GridEditor : ITagItemEditor<Id3v2GroupIdentificationRegistra
         }
         storage = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        if (prop == nameof(Data))
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DataInfo)));
+        }
     }
 }
