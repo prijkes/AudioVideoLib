@@ -149,6 +149,10 @@ public partial class MainWindow : Window
 
     private void BindUiToCurrent()
     {
+        // Drop any prior tab subscriptions before rebinding. The current dossier's
+        // tabs may have changed (Add/Remove tag) and stale handlers would leak.
+        UnsubscribeTabDirtyTracking();
+
         if (CurrentDossier == null)
         {
             FilePathText.Text = "No file loaded. Use File > Open (Ctrl+O).";
@@ -180,6 +184,8 @@ public partial class MainWindow : Window
 
         TagTabControl.DataContext = CurrentDossier;
         TagTabControl.ItemsSource = CurrentDossier.TagTabs;
+
+        SubscribeTabDirtyTracking(CurrentDossier);
 
         // Restore the per-file last-selected tag tab. WPF's TabControl resets to index 0
         // when ItemsSource changes; without this restore the user always lands back on
@@ -2076,6 +2082,36 @@ public partial class MainWindow : Window
         // Refresh the file-tabs strip so the per-tab " *" suffix follows dirty state.
         // Cheap (rebuilds a small list of FileTabItem records); safe (no UI focus impact).
         RebuildFileTabsList();
+    }
+
+    // ---- tab dirty-state tracking ---------------------------------------------------
+
+    private readonly List<TagTabViewModel> _trackedTabs = [];
+
+    private void SubscribeTabDirtyTracking(FileDossier dossier)
+    {
+        foreach (var tab in dossier.TagTabs)
+        {
+            tab.PropertyChanged += Tab_PropertyChanged;
+            _trackedTabs.Add(tab);
+        }
+    }
+
+    private void UnsubscribeTabDirtyTracking()
+    {
+        foreach (var tab in _trackedTabs)
+        {
+            tab.PropertyChanged -= Tab_PropertyChanged;
+        }
+        _trackedTabs.Clear();
+    }
+
+    private void Tab_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(TagTabViewModel.IsDirty))
+        {
+            UpdateDirtyState();
+        }
     }
 
     private void UpdateStatus(string left)
