@@ -101,17 +101,7 @@ public static class Id3v2KnownTextFrameIds
                     ? name
                     : throw new InvalidOperationException(
                         $"Missing FriendlyName for canonical text-frame identifier '{m.Identifier}'."),
-                ToMask(m.SupportedVersions)))];
-
-    private static Id3v2VersionMask ToMask(IReadOnlyList<Id3v2Version> versions)
-    {
-        var mask = Id3v2VersionMask.None;
-        foreach (var v in versions)
-        {
-            mask |= v.ToMask();
-        }
-        return mask;
-    }
+                Id3v2FrameIdCatalogHelpers.ToMask(m.SupportedVersions)))];
 
     public static string IdentifierFor(Id3v2KnownTextFrameId entry, Id3v2VersionMask versionMask)
         => (versionMask == Id3v2VersionMask.V220 || versionMask == Id3v2VersionMask.V221) && entry.V220Identifier is { } v220
@@ -122,26 +112,8 @@ public static class Id3v2KnownTextFrameIds
     /// Locates the catalog entry whose primary or v2.2 alternate identifier matches
     /// <paramref name="identifier"/> (case-insensitive). Returns <c>true</c> on hit.
     /// </summary>
-    /// <remarks>
-    /// Match is <see cref="StringComparison.OrdinalIgnoreCase"/> for resilience against
-    /// case-mismatched callers; ID3v2 identifiers are uppercase by spec.
-    /// </remarks>
     public static bool TryFind(string identifier, out Id3v2KnownTextFrameId entry)
-    {
-        ArgumentNullException.ThrowIfNull(identifier);
-        foreach (var e in All)
-        {
-            if (string.Equals(e.Identifier, identifier, StringComparison.OrdinalIgnoreCase)
-                || (e.V220Identifier is not null
-                    && string.Equals(e.V220Identifier, identifier, StringComparison.OrdinalIgnoreCase)))
-            {
-                entry = e;
-                return true;
-            }
-        }
-        entry = null!;
-        return false;
-    }
+        => Id3v2FrameIdCatalogHelpers.TryFind(All, identifier, e => e.Identifier, e => e.V220Identifier, out entry!);
 
     /// <summary>
     /// Resolves a canonical identifier to the version-correct identifier to write
