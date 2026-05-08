@@ -94,7 +94,7 @@ public sealed class Id3v2EqualisationFrame : Id3v2Frame
             var bytesEntry = (int)Math.Ceiling((double)AdjustmentBits / 8);
             foreach (var band in EqualisationBands)
             {
-                stream.WriteBigEndianInt16((short)(band.Frequency | (short)(band.Increment ? 0x8FFF : 0x0000)));
+                stream.WriteBigEndianInt16((short)(band.Frequency | (short)(band.Increment ? 0x8000 : 0x0000)));
                 stream.WriteBigEndianBytes(band.Adjustment, bytesEntry);
             }
             return stream.ToByteArray();

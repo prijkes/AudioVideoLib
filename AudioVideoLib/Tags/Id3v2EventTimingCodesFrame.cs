@@ -83,11 +83,11 @@ public sealed class Id3v2EventTimingCodesFrame : Id3v2Frame
         get
         {
             var stream = new StreamBuffer();
-            var length = 0;
             stream.WriteByte((byte)TimeStampFormat);
             foreach (var key in KeyEvents)
             {
                 // 0xFF - one more byte of events follows (all the following bytes with the value 0xFF have the same function)
+                var length = 0;
                 int b;
                 while ((b = ((int)key.EventType >> (length++ * 8)) & 0xFF) == 0xFF)
                 {

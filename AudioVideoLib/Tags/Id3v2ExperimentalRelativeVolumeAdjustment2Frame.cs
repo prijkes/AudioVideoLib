@@ -28,6 +28,7 @@ public sealed class Id3v2ExperimentalRelativeVolumeAdjustment2Frame : Id3v2Frame
     /// </summary>
     public Id3v2ExperimentalRelativeVolumeAdjustment2Frame() : base(Id3v2Version.Id3v240)
     {
+        BindChannelInformationListEvents();
     }
 
     /// <summary>
@@ -37,6 +38,7 @@ public sealed class Id3v2ExperimentalRelativeVolumeAdjustment2Frame : Id3v2Frame
     /// <exception cref="InvalidVersionException">Thrown if <paramref name="version"/> is not supported by this frame.</exception>
     public Id3v2ExperimentalRelativeVolumeAdjustment2Frame(Id3v2Version version) : base(version)
     {
+        BindChannelInformationListEvents();
     }
 
     ////------------------------------------------------------------------------------------------------------------------------------
@@ -100,7 +102,7 @@ public sealed class Id3v2ExperimentalRelativeVolumeAdjustment2Frame : Id3v2Frame
                 stream.WriteByte((byte)ci.ChannelType);
                 stream.WriteBigEndianInt16((short)(ci.VolumeAdjustment * 512));
                 stream.WriteByte(ci.BitsRepresentingPeak);
-                stream.WriteBytes(ci.PeakVolume, (int)Math.Ceiling((double)ci.BitsRepresentingPeak / 8));
+                stream.WriteBigEndianBytes(ci.PeakVolume, (int)Math.Ceiling((double)ci.BitsRepresentingPeak / 8));
             }
             return stream.ToByteArray();
         }
@@ -125,9 +127,8 @@ public sealed class Id3v2ExperimentalRelativeVolumeAdjustment2Frame : Id3v2Frame
                 long peakVolume = 0;
                 if (bitsRepresentingPeak > 0)
                 {
-                    peakVolume = (Math.Ceiling((double)bitsRepresentingPeak / 8) >= 8)
-                                     ? stream.ReadBigEndianInt64()
-                                     : stream.ReadBigEndianInt32();
+                    var peakVolumeBytes = (int)Math.Ceiling((double)bitsRepresentingPeak / 8);
+                    peakVolume = stream.ReadBigEndianInt(peakVolumeBytes);
                 }
                 _channelInformation.Add(new Id3v2ChannelInformation(channelType, volumeAdjustment, bitsRepresentingPeak, peakVolume));
             }

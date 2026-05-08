@@ -168,7 +168,7 @@ public sealed class Id3v2GroupIdentificationRegistrationFrame : Id3v2Frame
     public bool Equals(Id3v2GroupIdentificationRegistrationFrame? gir)
     {
         return gir is not null && (ReferenceEquals(this, gir) || ((gir.Version == Version)
-               && ((gir.GroupSymbol == GroupSymbol) || string.Equals(gir.OwnerIdentifier, OwnerIdentifier, StringComparison.OrdinalIgnoreCase))));
+               && (gir.GroupSymbol == GroupSymbol) && string.Equals(gir.OwnerIdentifier, OwnerIdentifier, StringComparison.OrdinalIgnoreCase)));
     }
 
     /// <summary>

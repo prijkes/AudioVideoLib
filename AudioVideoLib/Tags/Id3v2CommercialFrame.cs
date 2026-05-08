@@ -65,7 +65,7 @@ public sealed class Id3v2CommercialFrame : Id3v2Frame
                 throw new InvalidDataException("NameOfSeller contains one or more invalid characters for the specified frame encoding type.");
             }
 
-            if (!string.IsNullOrEmpty(ShortDescription) && !IsValidTextString(ShortDescription, TextEncoding, false))
+            if (!string.IsNullOrEmpty(ShortDescription) && !IsValidTextString(ShortDescription, value, false))
             {
                 throw new InvalidDataException("ShortDescription contains one or more invalid characters for the specified frame encoding type.");
             }
@@ -112,8 +112,7 @@ public sealed class Id3v2CommercialFrame : Id3v2Frame
                         throw new InvalidDataException("value can not contain multiple prices for the same currency.");
                     }
 
-                    float price;
-                    if (!float.TryParse(value[3..], out price))
+                    if (!float.TryParse(s[3..], out _))
                     {
                         throw new InvalidDataException("value contains one or more invalid price paid decimals.");
                     }
