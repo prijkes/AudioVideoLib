@@ -1,6 +1,10 @@
 namespace AudioVideoLib.Studio.Editors.Id3v2;
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using AudioVideoLib.Tags;
 
 public sealed record Id3v2KnownUrlFrameId(
     string Identifier,
@@ -11,19 +15,54 @@ public sealed record Id3v2KnownUrlFrameId(
 
 public static class Id3v2KnownUrlFrameIds
 {
-    // ID3v2 spec §4.3.1: each W* frame is unique per tag, except WOAR (WAR in v2.2)
-    // which may appear once per performer when the audio has multiple artists.
-    public static readonly Id3v2KnownUrlFrameId[] All =
-    [
-        new("WCOM", "WCM", "Commercial information",         Id3v2VersionMask.All),
-        new("WCOP", "WCP", "Copyright / legal information",  Id3v2VersionMask.All),
-        new("WOAF", "WAF", "Official audio file webpage",    Id3v2VersionMask.All),
-        new("WOAR", "WAR", "Official artist webpage",        Id3v2VersionMask.All, AllowMultiple: true),
-        new("WOAS", "WAS", "Official audio source webpage",  Id3v2VersionMask.All),
-        new("WORS", null,  "Official internet radio webpage", Id3v2VersionMask.V230 | Id3v2VersionMask.V240),
-        new("WPAY", null,  "Payment URL",                    Id3v2VersionMask.V230 | Id3v2VersionMask.V240),
-        new("WPUB", "WPB", "Publishers official webpage",    Id3v2VersionMask.All),
-    ];
+    /// <summary>
+    /// Studio-side UI metadata keyed by canonical (v2.3+) identifier:
+    /// FriendlyName plus AllowMultiple (per ID3v2 spec §4.3.1, only WOAR may
+    /// appear once per performer when the audio has multiple artists).
+    /// Declared before <see cref="All"/> so static init populates it first
+    /// (C# initializes static fields in textual order).
+    /// Missing entries cause <see cref="BuildAll"/> to throw at static init.
+    /// </summary>
+    private static readonly Dictionary<string, (string FriendlyName, bool AllowMultiple)> Metadata
+        = new(StringComparer.Ordinal)
+        {
+            { "WCOM", ("Commercial information",         false) },
+            { "WCOP", ("Copyright / legal information",  false) },
+            { "WOAF", ("Official audio file webpage",    false) },
+            { "WOAR", ("Official artist webpage",        true ) },
+            { "WOAS", ("Official audio source webpage",  false) },
+            { "WORS", ("Official internet radio webpage", false) },
+            { "WPAY", ("Payment URL",                    false) },
+            { "WPUB", ("Publishers official webpage",    false) },
+        };
+
+    /// <summary>
+    /// Catalog of every URL-link-frame identifier known to the library, derived
+    /// from <see cref="Id3v2UrlLinkFrame.EnumerateIdentifierMappings"/>.
+    /// </summary>
+    public static readonly Id3v2KnownUrlFrameId[] All = BuildAll();
+
+    private static Id3v2KnownUrlFrameId[] BuildAll()
+        => [.. Id3v2UrlLinkFrame.EnumerateIdentifierMappings()
+            .Select(m => Metadata.TryGetValue(m.Identifier, out var meta)
+                ? new Id3v2KnownUrlFrameId(
+                    m.Identifier,
+                    m.V220Identifier,
+                    meta.FriendlyName,
+                    ToMask(m.SupportedVersions),
+                    AllowMultiple: meta.AllowMultiple)
+                : throw new InvalidOperationException(
+                    $"Missing UI metadata for canonical URL-frame identifier '{m.Identifier}'."))];
+
+    private static Id3v2VersionMask ToMask(IReadOnlyList<Id3v2Version> versions)
+    {
+        var mask = Id3v2VersionMask.None;
+        foreach (var v in versions)
+        {
+            mask |= v.ToMask();
+        }
+        return mask;
+    }
 
     public static string IdentifierFor(Id3v2KnownUrlFrameId entry, Id3v2VersionMask versionMask)
         => (versionMask == Id3v2VersionMask.V220 || versionMask == Id3v2VersionMask.V221) && entry.V220Identifier is { } v220

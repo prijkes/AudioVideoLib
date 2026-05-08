@@ -1,6 +1,8 @@
 namespace AudioVideoLib.Tags;
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 /// <summary>
 /// Class for storing a text frame.
@@ -358,4 +360,41 @@ public sealed partial class Id3v2TextFrame
                         }
                 }
             };
+
+    /// <summary>
+    /// Enumerates every text-frame identifier mapping known to the library —
+    /// every <see cref="Id3v2TextFrameIdentifier"/> entry, paired with its
+    /// v2.3+ canonical identifier, optional v2.2 alternate, and union of
+    /// supported versions. Single source of truth for downstream consumers
+    /// (e.g. Studio menus).
+    /// </summary>
+    public static IEnumerable<Id3v2TextFrameIdentifierMapping> EnumerateIdentifierMappings()
+    {
+        foreach (var (_, dict) in Identifiers)
+        {
+            yield return BuildMapping(dict);
+        }
+    }
+
+    private static Id3v2TextFrameIdentifierMapping BuildMapping(
+        Dictionary<string, Id3v2Version[]> dict)
+    {
+        // SingleOrDefault (not FirstOrDefault) makes the invariant explicit:
+        // each logical field has at most one identifier covering v2.3+ and at
+        // most one covering v2.2/v2.2.1. The v2.3-or-v2.4 predicate treats
+        // them as one bucket; if a future edit ever introduced two distinct
+        // v2.3 + v2.4 keys, Single throws and surfaces the bad data.
+        var v23Plus = dict.SingleOrDefault(kv =>
+            kv.Value != null && (kv.Value.Contains(Id3v2Version.Id3v230) || kv.Value.Contains(Id3v2Version.Id3v240)));
+        var v22 = dict.SingleOrDefault(kv =>
+            kv.Value != null && (kv.Value.Contains(Id3v2Version.Id3v220) || kv.Value.Contains(Id3v2Version.Id3v221)));
+
+        var canonical = v23Plus.Key ?? v22.Key
+            ?? throw new InvalidOperationException(
+                "Identifier dictionary entry has no v2.3+ or v2.2 mapping.");
+        var alternate = (v22.Key != null && v22.Key != canonical) ? v22.Key : null;
+        var allVersions = dict.Values.Where(v => v != null).SelectMany(v => v).Distinct().OrderBy(v => v).ToArray();
+
+        return new Id3v2TextFrameIdentifierMapping(canonical, alternate, allVersions);
+    }
 }

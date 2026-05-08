@@ -1,6 +1,8 @@
 namespace AudioVideoLib.Studio.Editors.Id3v2;
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 using AudioVideoLib.Tags;
 
@@ -16,64 +18,100 @@ public sealed record Id3v2KnownTextFrameId(
 /// <see cref="Id3v2KnownTextFrameIds.Resolve(string, Id3v2Version)"/> and
 /// <see cref="Id3v2KnownTextFrameIds.ResolveYear(Id3v2Version)"/>.
 /// </summary>
-public sealed record Id3v2TextFrameResolution(string Write, System.Collections.Generic.IReadOnlyList<string> Read);
+public sealed record Id3v2TextFrameResolution(string Write, IReadOnlyList<string> Read);
 
 public static class Id3v2KnownTextFrameIds
 {
-    public static readonly Id3v2KnownTextFrameId[] All =
-    [
-        new("TALB", "TAL", "Album",                          Id3v2VersionMask.All),
-        new("TBPM", "TBP", "Beats per minute",               Id3v2VersionMask.All),
-        new("TCOM", "TCM", "Composer",                       Id3v2VersionMask.All),
-        new("TCON", "TCO", "Genre",                          Id3v2VersionMask.All),
-        new("TCOP", "TCR", "Copyright message",              Id3v2VersionMask.All),
-        new("TDEN", null,  "Encoding time",                  Id3v2VersionMask.V240),
-        new("TDLY", "TDY", "Playlist delay",                 Id3v2VersionMask.All),
-        new("TDOR", null,  "Original release time",          Id3v2VersionMask.V240),
-        new("TDRC", null,  "Recording time",                 Id3v2VersionMask.V240),
-        new("TDRL", null,  "Release time",                   Id3v2VersionMask.V240),
-        new("TDTG", null,  "Tagging time",                   Id3v2VersionMask.V240),
-        new("TENC", "TEN", "Encoded by",                     Id3v2VersionMask.All),
-        new("TEXT", "TXT", "Lyricist / Text writer",         Id3v2VersionMask.All),
-        new("TFLT", "TFT", "File type",                      Id3v2VersionMask.All),
-        new("TIPL", null,  "Involved people list",           Id3v2VersionMask.V240),
-        new("TIT1", "TT1", "Content group description",      Id3v2VersionMask.All),
-        new("TIT2", "TT2", "Title",                          Id3v2VersionMask.All),
-        new("TIT3", "TT3", "Subtitle / refinement",          Id3v2VersionMask.All),
-        new("TKEY", "TKE", "Initial key",                    Id3v2VersionMask.All),
-        new("TLAN", "TLA", "Language(s)",                    Id3v2VersionMask.All),
-        new("TLEN", "TLE", "Length",                         Id3v2VersionMask.All),
-        new("TMCL", null,  "Musician credits list",          Id3v2VersionMask.V240),
-        new("TMED", "TMT", "Media type",                     Id3v2VersionMask.All),
-        new("TMOO", null,  "Mood",                           Id3v2VersionMask.V240),
-        new("TOAL", "TOT", "Original album",                 Id3v2VersionMask.All),
-        new("TOFN", "TOF", "Original filename",              Id3v2VersionMask.All),
-        new("TOLY", "TOL", "Original lyricist",              Id3v2VersionMask.All),
-        new("TOPE", "TOA", "Original artist",                Id3v2VersionMask.All),
-        new("TOWN", null,  "File owner / licensee",          Id3v2VersionMask.V230 | Id3v2VersionMask.V240),
-        new("TPE1", "TP1", "Lead artist",                    Id3v2VersionMask.All),
-        new("TPE2", "TP2", "Band / orchestra",               Id3v2VersionMask.All),
-        new("TPE3", "TP3", "Conductor",                      Id3v2VersionMask.All),
-        new("TPE4", "TP4", "Interpreted / remixed by",       Id3v2VersionMask.All),
-        new("TPOS", "TPA", "Part of a set",                  Id3v2VersionMask.All),
-        new("TPRO", null,  "Produced notice",                Id3v2VersionMask.V240),
-        new("TPUB", "TPB", "Publisher",                      Id3v2VersionMask.All),
-        new("TRCK", "TRK", "Track number",                   Id3v2VersionMask.All),
-        new("TRSN", null,  "Internet radio station name",    Id3v2VersionMask.V230 | Id3v2VersionMask.V240),
-        new("TRSO", null,  "Internet radio station owner",   Id3v2VersionMask.V230 | Id3v2VersionMask.V240),
-        new("TSOA", null,  "Album sort order",               Id3v2VersionMask.V240),
-        new("TSOP", null,  "Performer sort order",           Id3v2VersionMask.V240),
-        new("TSOT", null,  "Title sort order",               Id3v2VersionMask.V240),
-        new("TSRC", "TRC", "ISRC",                           Id3v2VersionMask.All),
-        new("TSSE", "TSS", "Encoding software / hardware",   Id3v2VersionMask.All),
-        new("TSST", null,  "Set subtitle",                   Id3v2VersionMask.V240),
-        new("TDAT", "TDA", "Date (DDMM, deprecated v2.4)",   Id3v2VersionMask.V220 | Id3v2VersionMask.V221 | Id3v2VersionMask.V230),
-        new("TIME", "TIM", "Time (HHMM, deprecated v2.4)",   Id3v2VersionMask.V220 | Id3v2VersionMask.V221 | Id3v2VersionMask.V230),
-        new("TORY", "TOR", "Original release year",          Id3v2VersionMask.V220 | Id3v2VersionMask.V221 | Id3v2VersionMask.V230),
-        new("TRDA", "TRD", "Recording dates",                Id3v2VersionMask.V220 | Id3v2VersionMask.V221 | Id3v2VersionMask.V230),
-        new("TSIZ", "TSI", "Size",                           Id3v2VersionMask.V220 | Id3v2VersionMask.V221 | Id3v2VersionMask.V230),
-        new("TYER", "TYE", "Year",                           Id3v2VersionMask.V220 | Id3v2VersionMask.V221 | Id3v2VersionMask.V230),
-    ];
+    /// <summary>
+    /// Display names keyed by canonical (v2.3+) identifier. The only
+    /// Studio-side data that's NOT derived from the lib's identifier table.
+    /// Declared before <see cref="All"/> so static init populates it first
+    /// (C# initializes static fields in textual order).
+    /// Missing entries cause <see cref="BuildAll"/> to throw at static init.
+    /// </summary>
+    private static readonly Dictionary<string, string> FriendlyNames = new(StringComparer.Ordinal)
+    {
+        { "TALB", "Album" },
+        { "TBPM", "Beats per minute" },
+        { "TCOM", "Composer" },
+        { "TCON", "Genre" },
+        { "TCOP", "Copyright message" },
+        { "TDEN", "Encoding time" },
+        { "TDLY", "Playlist delay" },
+        { "TDOR", "Original release time" },
+        { "TDRC", "Recording time" },
+        { "TDRL", "Release time" },
+        { "TDTG", "Tagging time" },
+        { "TENC", "Encoded by" },
+        { "TEXT", "Lyricist / Text writer" },
+        { "TFLT", "File type" },
+        { "TIPL", "Involved people list" },
+        { "TIT1", "Content group description" },
+        { "TIT2", "Title" },
+        { "TIT3", "Subtitle / refinement" },
+        { "TKEY", "Initial key" },
+        { "TLAN", "Language(s)" },
+        { "TLEN", "Length" },
+        { "TMCL", "Musician credits list" },
+        { "TMED", "Media type" },
+        { "TMOO", "Mood" },
+        { "TOAL", "Original album" },
+        { "TOFN", "Original filename" },
+        { "TOLY", "Original lyricist" },
+        { "TOPE", "Original artist" },
+        { "TOWN", "File owner / licensee" },
+        { "TPE1", "Lead artist" },
+        { "TPE2", "Band / orchestra" },
+        { "TPE3", "Conductor" },
+        { "TPE4", "Interpreted / remixed by" },
+        { "TPOS", "Part of a set" },
+        { "TPRO", "Produced notice" },
+        { "TPUB", "Publisher" },
+        { "TRCK", "Track number" },
+        { "TRSN", "Internet radio station name" },
+        { "TRSO", "Internet radio station owner" },
+        { "TSOA", "Album sort order" },
+        { "TSOP", "Performer sort order" },
+        { "TSOT", "Title sort order" },
+        { "TSRC", "ISRC" },
+        { "TSSE", "Encoding software / hardware" },
+        { "TSST", "Set subtitle" },
+        { "TDAT", "Date (DDMM, deprecated v2.4)" },
+        { "TIME", "Time (HHMM, deprecated v2.4)" },
+        { "TORY", "Original release year" },
+        { "TRDA", "Recording dates" },
+        { "TSIZ", "Size" },
+        { "TYER", "Year" },
+    };
+
+    /// <summary>
+    /// Catalog of every text-frame identifier known to the library, derived
+    /// from <see cref="Id3v2TextFrame.EnumerateIdentifierMappings"/>. Adding
+    /// or removing an identifier in the lib's table flows through here
+    /// automatically; the only Studio-side data is <see cref="FriendlyNames"/>.
+    /// </summary>
+    public static readonly Id3v2KnownTextFrameId[] All = BuildAll();
+
+    private static Id3v2KnownTextFrameId[] BuildAll()
+        => [.. Id3v2TextFrame.EnumerateIdentifierMappings()
+            .Select(m => new Id3v2KnownTextFrameId(
+                m.Identifier,
+                m.V220Identifier,
+                FriendlyNames.TryGetValue(m.Identifier, out var name)
+                    ? name
+                    : throw new InvalidOperationException(
+                        $"Missing FriendlyName for canonical text-frame identifier '{m.Identifier}'."),
+                ToMask(m.SupportedVersions)))];
+
+    private static Id3v2VersionMask ToMask(IReadOnlyList<Id3v2Version> versions)
+    {
+        var mask = Id3v2VersionMask.None;
+        foreach (var v in versions)
+        {
+            mask |= v.ToMask();
+        }
+        return mask;
+    }
 
     public static string IdentifierFor(Id3v2KnownTextFrameId entry, Id3v2VersionMask versionMask)
         => (versionMask == Id3v2VersionMask.V220 || versionMask == Id3v2VersionMask.V221) && entry.V220Identifier is { } v220
