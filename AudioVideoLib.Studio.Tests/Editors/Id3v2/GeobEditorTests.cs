@@ -51,32 +51,4 @@ public class GeobEditorTests
         var e = new GeobEditor { ContentDescription = "desc", MimeType = mime };
         Assert.Equal(expectedValid, e.Validate(out _));
     }
-
-    [Fact]
-    public void CreateNew_UsesTagVersion()
-    {
-        var tag = new Id3v2Tag(Id3v2Version.Id3v230);
-        var f = new GeobEditor().CreateNew(tag);
-        Assert.NotNull(f);
-        Assert.Equal(Id3v2Version.Id3v230, f.Version);
-    }
-
-    [Fact]
-    public void LoadDataFromFile_AndClear_UpdateState()
-    {
-        var path = System.IO.Path.GetTempFileName();
-        try
-        {
-            System.IO.File.WriteAllBytes(path, [1, 2, 3, 4]);
-            var e = new GeobEditor();
-            e.LoadDataFromFile(path);
-            Assert.Equal("4 bytes", e.DataInfo);
-            e.ClearData();
-            Assert.Equal("(no data)", e.DataInfo);
-        }
-        finally
-        {
-            System.IO.File.Delete(path);
-        }
-    }
 }

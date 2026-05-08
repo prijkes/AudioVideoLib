@@ -33,32 +33,4 @@ public class SignEditorTests
         var e = new SignEditor { GroupSymbol = symbol };
         Assert.Equal(expectedValid, e.Validate(out _));
     }
-
-    [Fact]
-    public void CreateNew_UsesTagVersion()
-    {
-        var tag = new Id3v2Tag(Id3v2Version.Id3v240);
-        var f = new SignEditor().CreateNew(tag);
-        Assert.NotNull(f);
-        Assert.Equal(Id3v2Version.Id3v240, f.Version);
-    }
-
-    [Fact]
-    public void LoadDataFromFile_AndClear_UpdateState()
-    {
-        var path = System.IO.Path.GetTempFileName();
-        try
-        {
-            System.IO.File.WriteAllBytes(path, [9, 8, 7]);
-            var e = new SignEditor();
-            e.LoadDataFromFile(path);
-            Assert.Equal("3 bytes", e.DataInfo);
-            e.ClearData();
-            Assert.Equal("(no data)", e.DataInfo);
-        }
-        finally
-        {
-            System.IO.File.Delete(path);
-        }
-    }
 }

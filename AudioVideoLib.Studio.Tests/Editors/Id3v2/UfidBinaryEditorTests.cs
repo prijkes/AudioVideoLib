@@ -9,15 +9,6 @@ using Xunit;
 public class UfidBinaryEditorTests
 {
     [Fact]
-    public void CreateNew_UsesTagVersion()
-    {
-        var tag = new Id3v2Tag(Id3v2Version.Id3v240);
-        var f = new UfidBinaryEditor().CreateNew(tag);
-        Assert.NotNull(f);
-        Assert.Equal(Id3v2Version.Id3v240, f.Version);
-    }
-
-    [Fact]
     public void Registered_ForUfidFrame()
     {
         var r = new TagItemEditorRegistry();

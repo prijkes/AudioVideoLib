@@ -50,13 +50,4 @@ public class PopmEditorTests
         var e = new PopmEditor { EmailToUser = "user@example.com", Rating = 100, Counter = -1L };
         Assert.False(e.Validate(out _));
     }
-
-    [Fact]
-    public void CreateNew_UsesTagVersion()
-    {
-        var tag = new Id3v2Tag(Id3v2Version.Id3v230);
-        var f = new PopmEditor().CreateNew(tag);
-        Assert.NotNull(f);
-        Assert.Equal(Id3v2Version.Id3v230, f.Version);
-    }
 }

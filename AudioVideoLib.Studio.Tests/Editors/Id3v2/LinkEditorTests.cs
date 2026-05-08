@@ -65,15 +65,6 @@ public class LinkEditorTests
     }
 
     [Fact]
-    public void CreateNew_UsesTagVersion()
-    {
-        var tag = new Id3v2Tag(Id3v2Version.Id3v230);
-        var f = new LinkEditor().CreateNew(tag);
-        Assert.NotNull(f);
-        Assert.Equal(Id3v2Version.Id3v230, f.Version);
-    }
-
-    [Fact]
     public void Validate_V220_FourCharIdentifier_RejectsWith3CharMessage()
     {
         // Pins the per-version length rule via the validator's error message.

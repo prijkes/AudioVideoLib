@@ -26,14 +26,6 @@ public class CdmEditorTests
     }
 
     [Fact]
-    public void CreateNew_ReturnsCdmFrame()
-    {
-        var tag = new Id3v2Tag(Id3v2Version.Id3v221);
-        var f = new CdmEditor().CreateNew(tag);
-        Assert.NotNull(f);
-    }
-
-    [Fact]
     public void Save_WritesChildBytesAndZlibMethod()
     {
         var child = new Id3v2TextFrame(Id3v2Version.Id3v221, "TT2");

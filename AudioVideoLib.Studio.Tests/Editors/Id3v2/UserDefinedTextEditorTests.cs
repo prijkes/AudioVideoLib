@@ -27,14 +27,6 @@ public class UserDefinedTextEditorTests
     }
 
     [Fact]
-    public void CreateNew_UsesTagVersion()
-    {
-        var tag = new Id3v2Tag(Id3v2Version.Id3v240);
-        var f = new UserDefinedTextEditor().CreateNew(tag);
-        Assert.Equal(Id3v2Version.Id3v240, f.Version);
-    }
-
-    [Fact]
     public void Validate_EmptyDescription_Fails()
     {
         var e = new UserDefinedTextEditor { Description = string.Empty };

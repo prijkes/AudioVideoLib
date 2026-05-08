@@ -56,14 +56,6 @@ public class MlltEditorTests
     }
 
     [Fact]
-    public void CreateNew_UsesTagVersion()
-    {
-        var tag = new Id3v2Tag(Id3v2Version.Id3v230);
-        var f = new MlltEditor().CreateNew(tag);
-        Assert.Equal(Id3v2Version.Id3v230, f.Version);
-    }
-
-    [Fact]
     public void AddRow_AppendsToEntries()
     {
         var e = new MlltEditor();

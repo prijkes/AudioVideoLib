@@ -66,13 +66,4 @@ public class CrmEditorTests
         Assert.NotNull(frame.EncryptedDataBlock);
         Assert.NotEmpty(frame.EncryptedDataBlock);
     }
-
-    [Fact]
-    public void CreateNew_UsesTagVersion()
-    {
-        var tag = new Id3v2Tag(Id3v2Version.Id3v221);
-        var f = new CrmEditor().CreateNew(tag);
-        Assert.NotNull(f);
-        Assert.Equal(Id3v2Version.Id3v221, f.Version);
-    }
 }

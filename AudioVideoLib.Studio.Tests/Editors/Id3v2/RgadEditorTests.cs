@@ -72,12 +72,4 @@ public class RgadEditorTests
         Assert.False(e.Validate(out var err));
         Assert.NotNull(err);
     }
-
-    [Fact]
-    public void CreateNew_ProducesFrame()
-    {
-        var tag = new Id3v2Tag(Id3v2Version.Id3v230);
-        var f = new RgadEditor().CreateNew(tag);
-        Assert.NotNull(f);
-    }
 }

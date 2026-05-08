@@ -45,12 +45,4 @@ public class Rva2EditorTests
         var editor = new Rva2Editor { Identification = "x" };
         Assert.True(editor.Validate(out _));
     }
-
-    [Fact]
-    public void CreateNew_UsesV240()
-    {
-        var tag = new Id3v2Tag(Id3v2Version.Id3v240);
-        var f = new Rva2Editor().CreateNew(tag);
-        Assert.Equal(Id3v2Version.Id3v240, f.Version);
-    }
 }

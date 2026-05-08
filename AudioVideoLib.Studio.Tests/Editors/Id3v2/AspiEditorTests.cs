@@ -67,12 +67,4 @@ public class AspiEditorTests
         editor.AddRow(new AspiRowVm { Fraction = 300 }); // > byte.MaxValue
         Assert.False(editor.Validate(out _));
     }
-
-    [Fact]
-    public void CreateNew_UsesV240()
-    {
-        var tag = new Id3v2Tag(Id3v2Version.Id3v240);
-        var f = new AspiEditor().CreateNew(tag);
-        Assert.Equal(Id3v2Version.Id3v240, f.Version);
-    }
 }

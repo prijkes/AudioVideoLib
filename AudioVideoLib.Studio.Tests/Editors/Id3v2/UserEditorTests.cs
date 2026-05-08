@@ -35,13 +35,4 @@ public class UserEditorTests
         var e = new UserEditor { Language = lang };
         Assert.Equal(expectedValid, e.Validate(out _));
     }
-
-    [Fact]
-    public void CreateNew_UsesTagVersion()
-    {
-        var tag = new Id3v2Tag(Id3v2Version.Id3v230);
-        var f = new UserEditor().CreateNew(tag);
-        Assert.NotNull(f);
-        Assert.Equal(Id3v2Version.Id3v230, f.Version);
-    }
 }

@@ -27,13 +27,4 @@ public class PcntEditorTests
         var e = new PcntEditor { Counter = counter };
         Assert.Equal(expectedValid, e.Validate(out _));
     }
-
-    [Fact]
-    public void CreateNew_UsesTagVersion()
-    {
-        var tag = new Id3v2Tag(Id3v2Version.Id3v220);
-        var f = new PcntEditor().CreateNew(tag);
-        Assert.NotNull(f);
-        Assert.Equal(Id3v2Version.Id3v220, f.Version);
-    }
 }

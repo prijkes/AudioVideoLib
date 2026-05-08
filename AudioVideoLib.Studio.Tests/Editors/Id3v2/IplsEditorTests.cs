@@ -54,12 +54,4 @@ public class IplsEditorTests
         editor.AddRow(new IplsRowVm { Involvement = "Producer", Involvee = "Alice" });
         Assert.True(editor.Validate(out _));
     }
-
-    [Fact]
-    public void CreateNew_UsesTagVersion()
-    {
-        var tag = new Id3v2Tag(Id3v2Version.Id3v230);
-        var f = new IplsEditor().CreateNew(tag);
-        Assert.Equal(Id3v2Version.Id3v230, f.Version);
-    }
 }

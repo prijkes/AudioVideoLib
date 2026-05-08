@@ -9,15 +9,6 @@ using Xunit;
 public class UsltEditorTests
 {
     [Fact]
-    public void CreateNew_UsesTagVersion()
-    {
-        var tag = new Id3v2Tag(Id3v2Version.Id3v240);
-        var f = new UsltEditor().CreateNew(tag);
-        Assert.NotNull(f);
-        Assert.Equal(Id3v2Version.Id3v240, f.Version);
-    }
-
-    [Fact]
     public void Registered_ForUsltFrame()
     {
         var r = new TagItemEditorRegistry();

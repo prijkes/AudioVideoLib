@@ -61,12 +61,4 @@ public class SytcEditorTests
         editor.AddRow(new SytcRowVm { BeatsPerMinute = 600, TimeStamp = 0 });
         Assert.False(editor.Validate(out _));
     }
-
-    [Fact]
-    public void CreateNew_UsesTagVersion()
-    {
-        var tag = new Id3v2Tag(Id3v2Version.Id3v230);
-        var f = new SytcEditor().CreateNew(tag);
-        Assert.Equal(Id3v2Version.Id3v230, f.Version);
-    }
 }

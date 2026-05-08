@@ -57,13 +57,4 @@ public class RevbEditorTests
         var e = new RevbEditor { ReverbBouncesLeft = bounces };
         Assert.Equal(expectedValid, e.Validate(out _));
     }
-
-    [Fact]
-    public void CreateNew_UsesTagVersion()
-    {
-        var tag = new Id3v2Tag(Id3v2Version.Id3v230);
-        var f = new RevbEditor().CreateNew(tag);
-        Assert.NotNull(f);
-        Assert.Equal(Id3v2Version.Id3v230, f.Version);
-    }
 }

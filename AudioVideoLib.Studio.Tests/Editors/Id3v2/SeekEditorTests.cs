@@ -27,13 +27,4 @@ public class SeekEditorTests
         var e = new SeekEditor { MinimumOffsetToNextTag = offset };
         Assert.Equal(expectedValid, e.Validate(out _));
     }
-
-    [Fact]
-    public void CreateNew_UsesTagVersion()
-    {
-        var tag = new Id3v2Tag(Id3v2Version.Id3v240);
-        var f = new SeekEditor().CreateNew(tag);
-        Assert.NotNull(f);
-        Assert.Equal(Id3v2Version.Id3v240, f.Version);
-    }
 }

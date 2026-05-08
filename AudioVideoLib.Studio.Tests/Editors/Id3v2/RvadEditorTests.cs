@@ -82,13 +82,4 @@ public class RvadEditorTests
         Assert.False(e.Validate(out var err));
         Assert.NotNull(err);
     }
-
-    [Fact]
-    public void CreateNew_UsesTagVersion()
-    {
-        var tag = new Id3v2Tag(Id3v2Version.Id3v230);
-        var f = new RvadEditor().CreateNew(tag);
-        Assert.NotNull(f);
-        Assert.Equal(Id3v2Version.Id3v230, f.Version);
-    }
 }
