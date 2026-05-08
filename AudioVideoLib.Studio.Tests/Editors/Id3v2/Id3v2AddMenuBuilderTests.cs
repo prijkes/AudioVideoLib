@@ -117,4 +117,58 @@ public class Id3v2AddMenuBuilderTests
         var model = Id3v2AddMenuBuilder.BuildModel(new TagItemEditorRegistry(), tag);
         Assert.DoesNotContain(model.Categories, c => c.Category == Id3v2FrameCategory.Containers);
     }
+
+    [Fact]
+    public void BuildModel_TextFrameAlreadyInTag_VerbIsEdit()
+    {
+        var tag = new Id3v2Tag(Id3v2Version.Id3v240);
+        var tpe2 = new Id3v2TextFrame(Id3v2Version.Id3v240, "TPE2");
+        tpe2.Values.Add("Band");
+        tag.SetFrame(tpe2);
+        var model = Id3v2AddMenuBuilder.BuildModel(new TagItemEditorRegistry(), tag);
+        var entry = model.Categories
+            .Single(c => c.Category == Id3v2FrameCategory.TextFrames)
+            .Entries.Single(e => e.FrameIdentifier == "TPE2");
+        Assert.True(entry.IsEditExisting);
+        Assert.StartsWith("Edit ", entry.Label);
+    }
+
+    [Fact]
+    public void BuildModel_TextFrameNotInTag_VerbIsAdd()
+    {
+        var tag = new Id3v2Tag(Id3v2Version.Id3v240);
+        var model = Id3v2AddMenuBuilder.BuildModel(new TagItemEditorRegistry(), tag);
+        var entry = model.Categories
+            .Single(c => c.Category == Id3v2FrameCategory.TextFrames)
+            .Entries.Single(e => e.FrameIdentifier == "TPE2");
+        Assert.False(entry.IsEditExisting);
+        Assert.StartsWith("Add ", entry.Label);
+    }
+
+    [Fact]
+    public void BuildModel_WoarAlreadyInTag_VerbIsAdd()
+    {
+        // ID3v2 §4.3.1: WOAR may appear once per performer.
+        var tag = new Id3v2Tag(Id3v2Version.Id3v240);
+        tag.SetFrame(new Id3v2UrlLinkFrame(Id3v2Version.Id3v240, "WOAR") { Url = "http://artist1.example" });
+        var model = Id3v2AddMenuBuilder.BuildModel(new TagItemEditorRegistry(), tag);
+        var entry = model.Categories
+            .Single(c => c.Category == Id3v2FrameCategory.UrlFrames)
+            .Entries.Single(e => e.FrameIdentifier == "WOAR");
+        Assert.False(entry.IsEditExisting);
+        Assert.StartsWith("Add ", entry.Label);
+    }
+
+    [Fact]
+    public void BuildModel_WcomAlreadyInTag_VerbIsEdit()
+    {
+        var tag = new Id3v2Tag(Id3v2Version.Id3v240);
+        tag.SetFrame(new Id3v2UrlLinkFrame(Id3v2Version.Id3v240, "WCOM") { Url = "http://example.com" });
+        var model = Id3v2AddMenuBuilder.BuildModel(new TagItemEditorRegistry(), tag);
+        var entry = model.Categories
+            .Single(c => c.Category == Id3v2FrameCategory.UrlFrames)
+            .Entries.Single(e => e.FrameIdentifier == "WCOM");
+        Assert.True(entry.IsEditExisting);
+        Assert.StartsWith("Edit ", entry.Label);
+    }
 }
