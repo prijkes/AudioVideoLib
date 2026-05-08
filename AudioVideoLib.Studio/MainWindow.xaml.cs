@@ -1020,7 +1020,9 @@ public partial class MainWindow : Window
         row.IsSelected = true;
 
         var menu = new ContextMenu();
-        var attr = ResolveFrameEditorAttribute(frameRow.Frame.GetType());
+        var attr = TagItemEditorRegistry.Shared.TryFindEntry(frameRow.Frame.GetType(), out var entry)
+            ? entry.Attribute as Id3v2FrameEditorAttribute
+            : null;
         var hasEditor = attr is not null;
         // Suppress Add when the editor declares unique-instance OR when the spec
         // makes this identifier unique-per-tag (text frames §4.2; URL frames §4.3,
@@ -1094,23 +1096,6 @@ public partial class MainWindow : Window
         menu.PlacementTarget = row;
         menu.IsOpen = true;
         e.Handled = true;
-    }
-
-    private static Id3v2FrameEditorAttribute? ResolveFrameEditorAttribute(Type frameType)
-    {
-        // Walk the type hierarchy mirroring TagItemEditorRegistry.TryResolve so an
-        // Id3v2TextFrame with a specific identifier still resolves to TextFrameEditor.
-        for (var t = frameType; t is not null && t != typeof(object); t = t.BaseType)
-        {
-            foreach (var entry in TagItemEditorRegistry.Shared.Entries)
-            {
-                if (entry.Adapter.ItemType == t && entry.Attribute is Id3v2FrameEditorAttribute a)
-                {
-                    return a;
-                }
-            }
-        }
-        return null;
     }
 
     private void AddTagButton_Click(object sender, RoutedEventArgs e)

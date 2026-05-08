@@ -108,25 +108,12 @@ public static class TagValidator
     // True when the spec or the editor attribute says only one frame with this
     // identifier may live in a tag. Matches the rules used by the Frame menu,
     // Manage Frames, and the right-click context menu.
-    // TODO: replace the inline registry walk once TagItemEditorRegistry exposes a
-    // ResolveAttribute(Type) helper (planned in S4).
     private static bool IsUniquePerTag(string identifier, Id3v2Frame frame)
     {
-        if (Id3v2FrameUniqueness.IsUniqueTextOrUrlIdentifier(identifier))
-        {
-            return true;
-        }
-        for (var t = frame.GetType(); t is not null && t != typeof(object); t = t.BaseType)
-        {
-            foreach (var entry in TagItemEditorRegistry.Shared.Entries)
-            {
-                if (entry.Adapter.ItemType == t && entry.Attribute is Id3v2FrameEditorAttribute attr)
-                {
-                    return attr.IsUniqueInstance;
-                }
-            }
-        }
-        return false;
+        return Id3v2FrameUniqueness.IsUniqueTextOrUrlIdentifier(identifier)
+            || (TagItemEditorRegistry.Shared.TryFindEntry(frame.GetType(), out var entry)
+                && entry.Attribute is Id3v2FrameEditorAttribute attr
+                && attr.IsUniqueInstance);
     }
 
     private static IReadOnlyList<ValidationIssue> ValidateId3v1(Id3v1Tag tag)

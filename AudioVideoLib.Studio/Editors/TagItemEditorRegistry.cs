@@ -47,16 +47,38 @@ public sealed class TagItemEditorRegistry
         }
     }
 
-    public bool TryResolve(Type itemRuntimeType, out ITagItemEditorAdapter editor)
+    /// <summary>
+    /// Locates the registry entry for <paramref name="itemRuntimeType"/>, walking up
+    /// the type hierarchy so subclasses resolve to a base-type registration when no
+    /// exact match exists. Returns the first match (most-specific wins).
+    /// </summary>
+    /// <remarks>
+    /// Today the registry only contains <see cref="Id3v2.Id3v2FrameEditorAttribute"/>
+    /// entries; callers may safely cast <c>entry.Attribute</c> to that subtype. If a
+    /// future tag format adds its own attribute subclass, callers should add a type
+    /// check before casting — the walk does not filter by attribute subtype.
+    /// </remarks>
+    public bool TryFindEntry(Type itemRuntimeType, out RegistrationEntry entry)
     {
         ArgumentNullException.ThrowIfNull(itemRuntimeType);
         for (var t = itemRuntimeType; t is not null && t != typeof(object); t = t.BaseType)
         {
-            if (_byItemType.TryGetValue(t, out var entry))
+            if (_byItemType.TryGetValue(t, out var found))
             {
-                editor = entry.Adapter;
+                entry = found;
                 return true;
             }
+        }
+        entry = default;
+        return false;
+    }
+
+    public bool TryResolve(Type itemRuntimeType, out ITagItemEditorAdapter editor)
+    {
+        if (TryFindEntry(itemRuntimeType, out var entry))
+        {
+            editor = entry.Adapter;
+            return true;
         }
         editor = null!;
         return false;
