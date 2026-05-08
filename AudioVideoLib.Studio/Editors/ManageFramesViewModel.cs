@@ -35,6 +35,9 @@ public sealed class ManageFramesViewModel
             });
 
         // Family text frames — one row per known identifier (TIT2, TPE1, TALB, …).
+        // Each identifier is unique per tag (the lib's SetFrame replaces same-id frames),
+        // so rows are effectively unique-per-identifier even though the editor class is
+        // shared — that drives Edit-vs-Add: existing rows offer Edit, missing ones Add.
         var textFrameCategory = Id3v2FrameCategory.TextFrames.ToDisplay();
         var textRows = Id3v2KnownTextFrameIds.All
             .Where(t => (t.SupportedVersions & versionMask) != 0)
@@ -44,7 +47,7 @@ public sealed class ManageFramesViewModel
                 var exists = tag.Frames.Any(f =>
                     f is Id3v2TextFrame && string.Equals(f.Identifier, ident, StringComparison.Ordinal));
                 return new Row(ident, t.FriendlyName, textFrameCategory,
-                               exists, IsUniqueInstance: false, typeof(Id3v2TextFrame));
+                               exists, IsUniqueInstance: true, typeof(Id3v2TextFrame));
             });
 
         var urlFrameCategory = Id3v2FrameCategory.UrlFrames.ToDisplay();
@@ -56,7 +59,7 @@ public sealed class ManageFramesViewModel
                 var exists = tag.Frames.Any(f =>
                     f is Id3v2UrlLinkFrame && string.Equals(f.Identifier, ident, StringComparison.Ordinal));
                 return new Row(ident, u.FriendlyName, urlFrameCategory,
-                               exists, IsUniqueInstance: false, typeof(Id3v2UrlLinkFrame));
+                               exists, IsUniqueInstance: true, typeof(Id3v2UrlLinkFrame));
             });
 
         All = [.. registryRows

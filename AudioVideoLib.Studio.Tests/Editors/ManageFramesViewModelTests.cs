@@ -121,6 +121,29 @@ public class ManageFramesViewModelTests
     }
 
     [Fact]
+    public void GetActionLabel_TextFrameAlreadyInTag_ReturnsEdit()
+    {
+        // Each text-frame identifier (TIT2, TPE1, …) is unique per tag, so
+        // double-clicking an existing one in Manage Frames must edit, not add
+        // — appending a new frame would duplicate the row in the grid.
+        var tag = new Id3v2Tag(Id3v2Version.Id3v240);
+        var tpe1 = new Id3v2TextFrame(Id3v2Version.Id3v240, "TPE1");
+        tpe1.Values.Add("Artist");
+        tag.SetFrame(tpe1);
+        var vm = new ManageFramesViewModel(TagItemEditorRegistry.Shared, tag);
+        Assert.Equal("Edit", vm.GetActionLabel(vm.All.Single(r => r.Identifier == "TPE1")));
+    }
+
+    [Fact]
+    public void GetActionLabel_UrlFrameAlreadyInTag_ReturnsEdit()
+    {
+        var tag = new Id3v2Tag(Id3v2Version.Id3v240);
+        tag.SetFrame(new Id3v2UrlLinkFrame(Id3v2Version.Id3v240, "WCOM") { Url = "http://example.com" });
+        var vm = new ManageFramesViewModel(TagItemEditorRegistry.Shared, tag);
+        Assert.Equal("Edit", vm.GetActionLabel(vm.All.Single(r => r.Identifier == "WCOM")));
+    }
+
+    [Fact]
     public void All_V230_IncludesRgad()
     {
         var tag = new Id3v2Tag(Id3v2Version.Id3v230);
