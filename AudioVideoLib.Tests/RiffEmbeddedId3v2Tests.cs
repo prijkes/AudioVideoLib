@@ -114,13 +114,7 @@ public class RiffEmbeddedId3v2Tests
     }
 
     private static byte[] BuildId3v240Tag(string identifier, string value)
-    {
-        var tag = new Id3v2Tag(Id3v2Version.Id3v240);
-        var frame = new Id3v2TextFrame(Id3v2Version.Id3v240, identifier) { TextEncoding = Id3v2FrameEncodingType.UTF8 };
-        frame.Values.Add(value);
-        tag.SetFrame(frame);
-        return tag.ToByteArray();
-    }
+        => Id3v2TestBuilders.BuildSimpleTagBytes(Id3v2Version.Id3v240, identifier, value, Id3v2FrameEncodingType.UTF8);
 
     private static byte[] BuildId3Chunk(string fourCc, byte[] payload)
     {

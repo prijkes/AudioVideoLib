@@ -643,11 +643,7 @@ public class Id3v220Tests
     ////------------------------------------------------------------------------------------------------------------------------------
 
     private static Id3v2TextFrame MakeTextFrame(string identifier, string value, Id3v2FrameEncodingType encoding = Id3v2FrameEncodingType.Default)
-    {
-        var frame = new Id3v2TextFrame(Id3v2Version.Id3v220, identifier) { TextEncoding = encoding };
-        frame.Values.Add(value);
-        return frame;
-    }
+        => Id3v2TestBuilders.MakeTextFrame(Id3v2Version.Id3v220, identifier, value, encoding);
 
     private static byte[] BuildRawV220TagWithTt2(string text, byte encodingByte)
     {

@@ -32,11 +32,7 @@ public class Id3v230Tests
     }
 
     private static Id3v2TextFrame MakeTextFrame(string identifier, string value, Id3v2FrameEncodingType encoding = Id3v2FrameEncodingType.Default)
-    {
-        var frame = new Id3v2TextFrame(Version, identifier) { TextEncoding = encoding };
-        frame.Values.Add(value);
-        return frame;
-    }
+        => Id3v2TestBuilders.MakeTextFrame(Version, identifier, value, encoding);
 
     private static Id3v2CommentFrame MakeComment(string language, string description, string text, Id3v2FrameEncodingType encoding = Id3v2FrameEncodingType.Default)
     {

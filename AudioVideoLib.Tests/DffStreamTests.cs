@@ -156,13 +156,7 @@ public class DffStreamTests
     }
 
     private static byte[] BuildId3v2()
-    {
-        var tag = new Id3v2Tag(Id3v2Version.Id3v230);
-        var frame = new Id3v2TextFrame(Id3v2Version.Id3v230, "TIT2");
-        frame.Values.Add("DFF Title");
-        tag.SetFrame(frame);
-        return tag.ToByteArray();
-    }
+        => Id3v2TestBuilders.BuildSimpleTagBytes(Id3v2Version.Id3v230, "TIT2", "DFF Title");
 
     ////------------------------------------------------------------------------------------------------------------------------------
     // 1. Magic & rejection
