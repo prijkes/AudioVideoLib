@@ -13,10 +13,6 @@ using AudioVideoLib.Tags;
     Order = 39,
     SupportedVersions = Id3v2VersionMask.V230,
     IsUniqueInstance = true,
-    // Library quirk: Id3v2ReplayGainAdjustmentFrame.IsVersionSupported is `version < Id3v230`
-    // (contradicts its own "v2.3 and later" docstring), so the (Id3v2Version) ctor throws on
-    // v2.3 even though the parameterless ctor uses v2.3 internally. KnownIdentifier bypasses
-    // the reflection-based identifier resolution that would otherwise trigger that throw.
     KnownIdentifier = "RGAD")]
 public sealed class RgadEditor : ITagItemEditor<Id3v2ReplayGainAdjustmentFrame>, INotifyPropertyChanged
 {
@@ -32,11 +28,6 @@ public sealed class RgadEditor : ITagItemEditor<Id3v2ReplayGainAdjustmentFrame>,
     public Id3v2ReplayGainSign AudiophileSign { get => field; set => Set(ref field, value); }
     public int AudiophileAdjustment { get => field; set => Set(ref field, value); }
 
-    /// <summary>
-    /// Uses the parameterless constructor; the lib's `IsVersionSupported`
-    /// check on the (Id3v2Version) overload disagrees with the docstring,
-    /// but the parameterless ctor pins v2.3.0 which matches `SupportedVersions`.
-    /// </summary>
     public Id3v2ReplayGainAdjustmentFrame CreateNew(object tag) => new();
 
     public bool Edit(Window owner, Id3v2ReplayGainAdjustmentFrame frame)

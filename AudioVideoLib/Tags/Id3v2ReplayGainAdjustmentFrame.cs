@@ -37,10 +37,6 @@ public sealed class Id3v2ReplayGainAdjustmentFrame : Id3v2Frame
     /// <exception cref="InvalidVersionException">Thrown if <paramref name="version"/> is not supported by this frame.</exception>
     public Id3v2ReplayGainAdjustmentFrame(Id3v2Version version) : base(version)
     {
-        if (!IsVersionSupported(version))
-        {
-            throw new InvalidVersionException($"Version {version} not supported by this frame.");
-        }
     }
 
     ////------------------------------------------------------------------------------------------------------------------------------
@@ -185,6 +181,6 @@ public sealed class Id3v2ReplayGainAdjustmentFrame : Id3v2Frame
     /// </returns>
     public override bool IsVersionSupported(Id3v2Version version)
     {
-        return version < Id3v2Version.Id3v230;
+        return version >= Id3v2Version.Id3v230;
     }
 }
