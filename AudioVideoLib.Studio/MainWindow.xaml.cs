@@ -1022,12 +1022,11 @@ public partial class MainWindow : Window
         var menu = new ContextMenu();
         var attr = ResolveFrameEditorAttribute(frameRow.Frame.GetType());
         var hasEditor = attr is not null;
-        // Adding another frame with the same identifier would just replace the existing
-        // one for most base text/URL family frames (each ID is unique per tag), so
-        // suppress Add for those — but honour the spec exceptions (e.g. WOAR may appear
-        // once per performer per ID3v2 §4.3.1).
+        // Suppress Add when the editor declares unique-instance OR when the spec
+        // makes this identifier unique-per-tag (text frames §4.2; URL frames §4.3,
+        // except WOAR §4.3.1). Source of truth is Id3v2FrameUniqueness.
         var canAdd = attr is { IsUniqueInstance: false }
-                  && !IsUniquePerIdentifierFrame(frameRow.Frame, frameRow.Identifier);
+                  && !Id3v2FrameUniqueness.IsUniqueTextOrUrlIdentifier(frameRow.Identifier);
 
         if (hasEditor)
         {
@@ -1095,16 +1094,6 @@ public partial class MainWindow : Window
         menu.PlacementTarget = row;
         menu.IsOpen = true;
         e.Handled = true;
-    }
-
-    // True for text/URL family frames whose identifier is unique-per-tag by spec.
-    // WOAR/WAR is excluded — the spec allows one URL per performer.
-    private static bool IsUniquePerIdentifierFrame(Id3v2Frame frame, string identifier)
-    {
-        var type = frame.GetType();
-        return type == typeof(Id3v2TextFrame)
-            || (type == typeof(Id3v2UrlLinkFrame)
-                && !Id3v2KnownUrlFrameIds.AllowsMultiple(identifier));
     }
 
     private static Id3v2FrameEditorAttribute? ResolveFrameEditorAttribute(Type frameType)

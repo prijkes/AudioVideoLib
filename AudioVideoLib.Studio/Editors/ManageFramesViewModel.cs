@@ -34,10 +34,9 @@ public sealed class ManageFramesViewModel
                                exists, attr.IsUniqueInstance, attr.ItemType);
             });
 
-        // Family text frames — one row per known identifier (TIT2, TPE1, TALB, …).
-        // Each identifier is unique per tag (the lib's SetFrame replaces same-id frames),
-        // so rows are effectively unique-per-identifier even though the editor class is
-        // shared — that drives Edit-vs-Add: existing rows offer Edit, missing ones Add.
+        // Family text/URL frames — one row per known identifier. The per-identifier
+        // uniqueness rule (text always unique, URL unique except WOAR) lives in
+        // Id3v2FrameUniqueness so all three menu surfaces agree.
         var textFrameCategory = Id3v2FrameCategory.TextFrames.ToDisplay();
         var textRows = Id3v2KnownTextFrameIds.All
             .Where(t => (t.SupportedVersions & versionMask) != 0)
@@ -47,7 +46,7 @@ public sealed class ManageFramesViewModel
                 var exists = tag.Frames.Any(f =>
                     f is Id3v2TextFrame && string.Equals(f.Identifier, ident, StringComparison.Ordinal));
                 return new Row(ident, t.FriendlyName, textFrameCategory,
-                               exists, IsUniqueInstance: true, typeof(Id3v2TextFrame));
+                               exists, Id3v2FrameUniqueness.IsUniqueTextOrUrlIdentifier(ident), typeof(Id3v2TextFrame));
             });
 
         var urlFrameCategory = Id3v2FrameCategory.UrlFrames.ToDisplay();
@@ -59,7 +58,7 @@ public sealed class ManageFramesViewModel
                 var exists = tag.Frames.Any(f =>
                     f is Id3v2UrlLinkFrame && string.Equals(f.Identifier, ident, StringComparison.Ordinal));
                 return new Row(ident, u.FriendlyName, urlFrameCategory,
-                               exists, IsUniqueInstance: !u.AllowMultiple, typeof(Id3v2UrlLinkFrame));
+                               exists, Id3v2FrameUniqueness.IsUniqueTextOrUrlIdentifier(ident), typeof(Id3v2UrlLinkFrame));
             });
 
         All = [.. registryRows

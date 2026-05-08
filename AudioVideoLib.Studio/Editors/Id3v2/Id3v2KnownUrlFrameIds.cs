@@ -1,7 +1,5 @@
 namespace AudioVideoLib.Studio.Editors.Id3v2;
 
-using System;
-
 public sealed record Id3v2KnownUrlFrameId(
     string Identifier,
     string? V220Identifier,
@@ -29,22 +27,4 @@ public static class Id3v2KnownUrlFrameIds
         => (versionMask == Id3v2VersionMask.V220 || versionMask == Id3v2VersionMask.V221) && entry.V220Identifier is { } v220
             ? v220
             : entry.Identifier;
-
-    /// <summary>
-    /// True when an extra frame with this identifier may be added to a tag that
-    /// already contains one. Currently only WOAR (multiple performers, ID3v2 §4.3.1).
-    /// </summary>
-    public static bool AllowsMultiple(string identifier)
-    {
-        foreach (var entry in All)
-        {
-            if (entry.AllowMultiple
-                && (string.Equals(entry.Identifier, identifier, StringComparison.Ordinal)
-                 || string.Equals(entry.V220Identifier, identifier, StringComparison.Ordinal)))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
 }

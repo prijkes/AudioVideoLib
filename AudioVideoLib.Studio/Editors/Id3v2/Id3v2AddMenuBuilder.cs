@@ -167,36 +167,37 @@ public static class Id3v2AddMenuBuilder
 
     private static IReadOnlyList<Id3v2MenuEntry> BuildTextFamilyEntries(Id3v2VersionMask versionMask, Id3v2Tag tag)
     {
-        // All text frames in this list are unique-per-identifier (ID3v2 §4.2),
-        // so an existing one flips the verb to Edit and dispatches IsEditExisting.
         return [.. Id3v2KnownTextFrameIds.All
             .Where(i => (i.SupportedVersions & versionMask) != 0)
             .OrderBy(i => i.FriendlyName, StringComparer.OrdinalIgnoreCase)
-            .Select(i =>
-            {
-                var ident = Id3v2KnownTextFrameIds.IdentifierFor(i, versionMask);
-                var existing = tag.Frames.Any(f =>
-                    f is Id3v2TextFrame && string.Equals(f.Identifier, ident, StringComparison.Ordinal));
-                var verb = existing ? "Edit" : "Add";
-                return new Id3v2MenuEntry($"{verb} {ident} — {i.FriendlyName}…", ident, IsEditExisting: existing);
-            })];
+            .Select(i => BuildFamilyEntry(
+                Id3v2KnownTextFrameIds.IdentifierFor(i, versionMask),
+                i.FriendlyName,
+                tag,
+                f => f is Id3v2TextFrame))];
     }
 
     private static IReadOnlyList<Id3v2MenuEntry> BuildUrlFamilyEntries(Id3v2VersionMask versionMask, Id3v2Tag tag)
     {
-        // Every W* in this list is unique-per-identifier except WOAR, which may
-        // appear once per performer (ID3v2 §4.3.1). WOAR rows always say Add.
         return [.. Id3v2KnownUrlFrameIds.All
             .Where(i => (i.SupportedVersions & versionMask) != 0)
             .OrderBy(i => i.FriendlyName, StringComparer.OrdinalIgnoreCase)
-            .Select(i =>
-            {
-                var ident = Id3v2KnownUrlFrameIds.IdentifierFor(i, versionMask);
-                var existing = !i.AllowMultiple && tag.Frames.Any(f =>
-                    f is Id3v2UrlLinkFrame && string.Equals(f.Identifier, ident, StringComparison.Ordinal));
-                var verb = existing ? "Edit" : "Add";
-                return new Id3v2MenuEntry($"{verb} {ident} — {i.FriendlyName}…", ident, IsEditExisting: existing);
-            })];
+            .Select(i => BuildFamilyEntry(
+                Id3v2KnownUrlFrameIds.IdentifierFor(i, versionMask),
+                i.FriendlyName,
+                tag,
+                f => f is Id3v2UrlLinkFrame))];
+    }
+
+    private static Id3v2MenuEntry BuildFamilyEntry(
+        string identifier, string friendlyName, Id3v2Tag tag, Func<Id3v2Frame, bool> isFamilyMember)
+    {
+        // Text/URL family rules live in Id3v2FrameUniqueness so the Frame menu,
+        // Manage Frames, and the right-click context menu all stay in sync.
+        var existing = Id3v2FrameUniqueness.IsUniqueTextOrUrlIdentifier(identifier)
+            && tag.Frames.Any(f => isFamilyMember(f) && string.Equals(f.Identifier, identifier, StringComparison.Ordinal));
+        var verb = existing ? "Edit" : "Add";
+        return new Id3v2MenuEntry($"{verb} {identifier} — {friendlyName}…", identifier, IsEditExisting: existing);
     }
 
     private static IReadOnlyList<Id3v2MenuEntry> BuildRegistryEntries(
