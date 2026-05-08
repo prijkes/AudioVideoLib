@@ -221,6 +221,30 @@ public partial class Id3v2Frame
             : (version >= Id3v2Version.Id3v240) ? value.ToLowerInvariant() : value;
     }
 
+    /// <summary>
+    /// Validates a URL/owner-identifier value used by URL link, UFID, PRIV, AENC, ENCR,
+    /// GRID, CRM, LINK, and COMR frames. Empty/null is allowed (caller decides whether
+    /// emptiness is permitted at all). Non-empty must be a valid RFC 1738 URL composed
+    /// of <see cref="Id3v2FrameEncodingType.Default"/>-encoded characters.
+    /// </summary>
+    /// <param name="value">The URL value.</param>
+    /// <exception cref="InvalidDataException">Thrown when the value is non-empty and invalid.</exception>
+    public static void ValidateUrl(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            return;
+        }
+        if (!IsValidDefaultTextString(value, false))
+        {
+            throw new InvalidDataException("value contains one or more invalid characters.");
+        }
+        if (!IsValidUrl(value))
+        {
+            throw new InvalidDataException("value is not a valid RFC 1738 URL.");
+        }
+    }
+
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>

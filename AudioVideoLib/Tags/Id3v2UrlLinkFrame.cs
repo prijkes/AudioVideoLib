@@ -85,18 +85,7 @@ public sealed partial class Id3v2UrlLinkFrame : Id3v2Frame
 
         set
         {
-            if (!string.IsNullOrEmpty(value))
-            {
-                if (!IsValidDefaultTextString(value, false))
-                {
-                    throw new InvalidDataException("value contains one or more invalid characters.");
-                }
-
-                if (!IsValidUrl(value))
-                {
-                    throw new InvalidDataException("value is not a valid RFC 1738 URL.");
-                }
-            }
+            ValidateUrl(value);
             field = value;
         }
     } = null!;

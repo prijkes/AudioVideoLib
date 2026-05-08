@@ -1,7 +1,6 @@
 namespace AudioVideoLib.Tags;
 
 using System;
-using System.IO;
 
 using AudioVideoLib.IO;
 
@@ -68,18 +67,7 @@ public sealed class Id3v2AudioEncryptionFrame : Id3v2Frame
 
         set
         {
-            if (!string.IsNullOrEmpty(value))
-            {
-                if (!IsValidDefaultTextString(value, false))
-                {
-                    throw new InvalidDataException("value contains one or more invalid characters.");
-                }
-
-                if (!IsValidUrl(value))
-                {
-                    throw new InvalidDataException("value is not a valid RFC 1738 URL.");
-                }
-            }
+            ValidateUrl(value);
             _ownerIdentifier = value;
         }
     }
