@@ -3,6 +3,7 @@ namespace AudioVideoLib.Studio.Editors.Id3v2;
 using System.Windows;
 
 using AudioVideoLib.Studio.Editors;
+using AudioVideoLib.Studio.Mvvm;
 using AudioVideoLib.Tags;
 
 [Id3v2FrameEditor(typeof(Id3v2ReverbFrame),
@@ -11,7 +12,7 @@ using AudioVideoLib.Tags;
     Order = 24,
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = true)]
-public sealed class RevbEditor : EditorBase, ITagItemEditor<Id3v2ReverbFrame>
+public sealed class RevbEditor : ObservableObject, ITagItemEditor<Id3v2ReverbFrame>
 {
     public int ReverbLeftMilliseconds { get => field; set => Set(ref field, value); }
     public int ReverbRightMilliseconds { get => field; set => Set(ref field, value); }

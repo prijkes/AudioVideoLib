@@ -3,7 +3,9 @@ namespace AudioVideoLib.Studio.Editors;
 using System.Collections.ObjectModel;
 using System.Windows;
 
-public abstract class CollectionEditorBase<TFrame, TRow> : EditorBase, ITagItemEditor<TFrame>
+using AudioVideoLib.Studio.Mvvm;
+
+public abstract class CollectionEditorBase<TFrame, TRow> : ObservableObject, ITagItemEditor<TFrame>
 {
     public ObservableCollection<TRow> Entries { get; } = [];
 

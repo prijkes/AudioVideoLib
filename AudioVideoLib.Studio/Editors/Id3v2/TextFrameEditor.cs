@@ -4,6 +4,7 @@ using System;
 using System.Windows;
 
 using AudioVideoLib.Studio.Editors;
+using AudioVideoLib.Studio.Mvvm;
 using AudioVideoLib.Tags;
 
 [Id3v2FrameEditor(typeof(Id3v2TextFrame),
@@ -11,7 +12,7 @@ using AudioVideoLib.Tags;
     MenuLabel = "Text frame",
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = false)]
-public sealed class TextFrameEditor : EditorBase, ITagItemEditor<Id3v2TextFrame>
+public sealed class TextFrameEditor : ObservableObject, ITagItemEditor<Id3v2TextFrame>
 {
     public string Identifier { get => field; set => Set(ref field, value); } = "TIT2";
     public string Value { get => field; set => Set(ref field, value); } = string.Empty;

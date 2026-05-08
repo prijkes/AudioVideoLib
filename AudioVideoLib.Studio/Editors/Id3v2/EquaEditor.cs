@@ -5,9 +5,10 @@ using System.Linq;
 using System.Windows;
 
 using AudioVideoLib.Studio.Editors;
+using AudioVideoLib.Studio.Mvvm;
 using AudioVideoLib.Tags;
 
-public sealed class EquaRowVm : EditorBase
+public sealed class EquaRowVm : ObservableObject
 {
     public bool Increment { get => field; set => Set(ref field, value); }
     public short Frequency { get => field; set => Set(ref field, value); }

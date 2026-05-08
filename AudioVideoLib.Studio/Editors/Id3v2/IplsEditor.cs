@@ -3,9 +3,10 @@ namespace AudioVideoLib.Studio.Editors.Id3v2;
 using System.Windows;
 
 using AudioVideoLib.Studio.Editors;
+using AudioVideoLib.Studio.Mvvm;
 using AudioVideoLib.Tags;
 
-public sealed class IplsRowVm : EditorBase
+public sealed class IplsRowVm : ObservableObject
 {
     public string Involvement { get => field; set => Set(ref field, value); } = string.Empty;
     public string Involvee { get => field; set => Set(ref field, value); } = string.Empty;

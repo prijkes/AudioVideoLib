@@ -3,6 +3,7 @@ namespace AudioVideoLib.Studio.Editors.Id3v2;
 using System.Windows;
 
 using AudioVideoLib.Studio.Editors;
+using AudioVideoLib.Studio.Mvvm;
 using AudioVideoLib.Tags;
 
 [Id3v2FrameEditor(typeof(Id3v2UserDefinedUrlLinkFrame),
@@ -12,7 +13,7 @@ using AudioVideoLib.Tags;
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = false)]
 public sealed class UserDefinedUrlEditor
-    : EditorBase, ITagItemEditor<Id3v2UserDefinedUrlLinkFrame>
+    : ObservableObject, ITagItemEditor<Id3v2UserDefinedUrlLinkFrame>
 {
     public Id3v2FrameEncodingType Encoding { get => field; set => Set(ref field, value); }
     public string Description { get => field; set => Set(ref field, value); } = string.Empty;

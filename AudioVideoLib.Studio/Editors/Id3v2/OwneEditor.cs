@@ -3,6 +3,7 @@ namespace AudioVideoLib.Studio.Editors.Id3v2;
 using System.Windows;
 
 using AudioVideoLib.Studio.Editors;
+using AudioVideoLib.Studio.Mvvm;
 using AudioVideoLib.Tags;
 
 [Id3v2FrameEditor(typeof(Id3v2OwnershipFrame),
@@ -11,7 +12,7 @@ using AudioVideoLib.Tags;
     Order = 29,
     SupportedVersions = Id3v2VersionMask.V230 | Id3v2VersionMask.V240,
     IsUniqueInstance = true)]
-public sealed class OwneEditor : EditorBase, ITagItemEditor<Id3v2OwnershipFrame>
+public sealed class OwneEditor : ObservableObject, ITagItemEditor<Id3v2OwnershipFrame>
 {
     public Id3v2FrameEncodingType Encoding { get => field; set => Set(ref field, value); }
     public string PricePaid { get => field; set => Set(ref field, value); } = string.Empty;

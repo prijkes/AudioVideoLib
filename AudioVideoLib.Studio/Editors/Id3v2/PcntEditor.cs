@@ -3,6 +3,7 @@ namespace AudioVideoLib.Studio.Editors.Id3v2;
 using System.Windows;
 
 using AudioVideoLib.Studio.Editors;
+using AudioVideoLib.Studio.Mvvm;
 using AudioVideoLib.Tags;
 
 [Id3v2FrameEditor(typeof(Id3v2PlayCounterFrame),
@@ -11,7 +12,7 @@ using AudioVideoLib.Tags;
     Order = 25,
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = true)]
-public sealed class PcntEditor : EditorBase, ITagItemEditor<Id3v2PlayCounterFrame>
+public sealed class PcntEditor : ObservableObject, ITagItemEditor<Id3v2PlayCounterFrame>
 {
     public long Counter { get => field; set => Set(ref field, value); }
 

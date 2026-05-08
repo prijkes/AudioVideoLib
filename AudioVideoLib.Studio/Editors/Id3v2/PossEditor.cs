@@ -3,6 +3,7 @@ namespace AudioVideoLib.Studio.Editors.Id3v2;
 using System.Windows;
 
 using AudioVideoLib.Studio.Editors;
+using AudioVideoLib.Studio.Mvvm;
 using AudioVideoLib.Tags;
 
 [Id3v2FrameEditor(typeof(Id3v2PositionSynchronizationFrame),
@@ -11,7 +12,7 @@ using AudioVideoLib.Tags;
     Order = 16,
     SupportedVersions = Id3v2VersionMask.V230 | Id3v2VersionMask.V240,
     IsUniqueInstance = true)]
-public sealed class PossEditor : EditorBase, ITagItemEditor<Id3v2PositionSynchronizationFrame>
+public sealed class PossEditor : ObservableObject, ITagItemEditor<Id3v2PositionSynchronizationFrame>
 {
     public Id3v2TimeStampFormat TimeStampFormat { get => field; set => Set(ref field, value); }
         = Id3v2TimeStampFormat.AbsoluteTimeMilliseconds;

@@ -3,9 +3,10 @@ namespace AudioVideoLib.Studio.Editors.Id3v2;
 using System.Windows;
 
 using AudioVideoLib.Studio.Editors;
+using AudioVideoLib.Studio.Mvvm;
 using AudioVideoLib.Tags;
 
-public sealed class SyltRowVm : EditorBase
+public sealed class SyltRowVm : ObservableObject
 {
     public string Syllable { get => field; set => Set(ref field, value); } = string.Empty;
     public int TimeStamp { get => field; set => Set(ref field, value); }

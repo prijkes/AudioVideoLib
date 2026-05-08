@@ -3,6 +3,7 @@ namespace AudioVideoLib.Studio.Editors.Id3v2;
 using System.Windows;
 
 using AudioVideoLib.Studio.Editors;
+using AudioVideoLib.Studio.Mvvm;
 using AudioVideoLib.Tags;
 
 [Id3v2FrameEditor(typeof(Id3v2PopularimeterFrame),
@@ -11,7 +12,7 @@ using AudioVideoLib.Tags;
     Order = 26,
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = false)]
-public sealed class PopmEditor : EditorBase, ITagItemEditor<Id3v2PopularimeterFrame>
+public sealed class PopmEditor : ObservableObject, ITagItemEditor<Id3v2PopularimeterFrame>
 {
     public string EmailToUser { get => field; set => Set(ref field, value); } = string.Empty;
     public int Rating { get => field; set => Set(ref field, value); }

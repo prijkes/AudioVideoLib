@@ -4,9 +4,10 @@ using System.Linq;
 using System.Windows;
 
 using AudioVideoLib.Studio.Editors;
+using AudioVideoLib.Studio.Mvvm;
 using AudioVideoLib.Tags;
 
-public sealed class Equ2RowVm : EditorBase
+public sealed class Equ2RowVm : ObservableObject
 {
     public short Frequency { get => field; set => Set(ref field, value); }
     public short VolumeAdjustment { get => field; set => Set(ref field, value); }

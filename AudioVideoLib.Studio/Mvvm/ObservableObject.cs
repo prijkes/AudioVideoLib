@@ -1,12 +1,12 @@
-namespace AudioVideoLib.Studio.Editors;
+namespace AudioVideoLib.Studio.Mvvm;
 
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 /// <summary>
-/// Shared INotifyPropertyChanged plumbing for editor view-models.
+/// Shared INotifyPropertyChanged plumbing for view-models.
 /// </summary>
-public abstract class EditorBase : INotifyPropertyChanged
+public abstract class ObservableObject : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
 

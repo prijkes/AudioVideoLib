@@ -3,9 +3,10 @@ namespace AudioVideoLib.Studio.Editors.Id3v2;
 using System.Windows;
 
 using AudioVideoLib.Studio.Editors;
+using AudioVideoLib.Studio.Mvvm;
 using AudioVideoLib.Tags;
 
-public sealed class EtcoRowVm : EditorBase
+public sealed class EtcoRowVm : ObservableObject
 {
     public Id3v2KeyEventType EventType { get => field; set => Set(ref field, value); }
     public int TimeStamp { get => field; set => Set(ref field, value); }

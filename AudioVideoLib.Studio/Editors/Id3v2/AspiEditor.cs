@@ -3,9 +3,10 @@ namespace AudioVideoLib.Studio.Editors.Id3v2;
 using System.Windows;
 
 using AudioVideoLib.Studio.Editors;
+using AudioVideoLib.Studio.Mvvm;
 using AudioVideoLib.Tags;
 
-public sealed class AspiRowVm : EditorBase
+public sealed class AspiRowVm : ObservableObject
 {
     public short Fraction { get => field; set => Set(ref field, value); }
 

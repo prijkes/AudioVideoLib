@@ -4,6 +4,8 @@ using System;
 using System.IO;
 using System.Windows;
 
+using AudioVideoLib.Studio.Mvvm;
+
 using Microsoft.Win32;
 
 /// <summary>
@@ -11,7 +13,7 @@ using Microsoft.Win32;
 /// editor view-model. Derived classes specify the file dialog Title/Filter via
 /// abstract overrides.
 /// </summary>
-public abstract class BinaryDataEditorBase : EditorBase
+public abstract class BinaryDataEditorBase : ObservableObject
 {
     public byte[] Data { get => field; set => Set(ref field, value ?? []); } = [];
 

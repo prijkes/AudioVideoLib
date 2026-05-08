@@ -3,6 +3,7 @@ namespace AudioVideoLib.Studio.Editors.Id3v2;
 using System.Windows;
 
 using AudioVideoLib.Studio.Editors;
+using AudioVideoLib.Studio.Mvvm;
 using AudioVideoLib.Tags;
 
 [Id3v2FrameEditor(typeof(Id3v2ReplayGainAdjustmentFrame),
@@ -12,7 +13,7 @@ using AudioVideoLib.Tags;
     SupportedVersions = Id3v2VersionMask.V230,
     IsUniqueInstance = true,
     KnownIdentifier = "RGAD")]
-public sealed class RgadEditor : EditorBase, ITagItemEditor<Id3v2ReplayGainAdjustmentFrame>
+public sealed class RgadEditor : ObservableObject, ITagItemEditor<Id3v2ReplayGainAdjustmentFrame>
 {
     public int PeakAmplitude { get => field; set => Set(ref field, value); }
 

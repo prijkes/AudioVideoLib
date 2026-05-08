@@ -3,6 +3,7 @@ namespace AudioVideoLib.Studio.Editors.Id3v2;
 using System.Windows;
 
 using AudioVideoLib.Studio.Editors;
+using AudioVideoLib.Studio.Mvvm;
 using AudioVideoLib.Tags;
 
 [Id3v2FrameEditor(typeof(Id3v2LinkedInformationFrame),
@@ -11,7 +12,7 @@ using AudioVideoLib.Tags;
     Order = 18,
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = false)]
-public sealed class LinkEditor : EditorBase, ITagItemEditor<Id3v2LinkedInformationFrame>
+public sealed class LinkEditor : ObservableObject, ITagItemEditor<Id3v2LinkedInformationFrame>
 {
     private Id3v2Version _version = Id3v2Version.Id3v240;
 

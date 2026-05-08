@@ -4,6 +4,7 @@ using System;
 using System.Windows;
 
 using AudioVideoLib.Studio.Editors;
+using AudioVideoLib.Studio.Mvvm;
 using AudioVideoLib.Tags;
 
 [Id3v2FrameEditor(typeof(Id3v2UrlLinkFrame),
@@ -11,7 +12,7 @@ using AudioVideoLib.Tags;
     MenuLabel = "URL frame",
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = false)]
-public sealed class UrlFrameEditor : EditorBase, ITagItemEditor<Id3v2UrlLinkFrame>
+public sealed class UrlFrameEditor : ObservableObject, ITagItemEditor<Id3v2UrlLinkFrame>
 {
     public string Identifier { get => field; set => Set(ref field, value); } = "WCOM";
     public string Url { get => field; set => Set(ref field, value); } = string.Empty;

@@ -3,6 +3,7 @@ namespace AudioVideoLib.Studio.Editors.Id3v2;
 using System.Windows;
 
 using AudioVideoLib.Studio.Editors;
+using AudioVideoLib.Studio.Mvvm;
 using AudioVideoLib.Tags;
 
 [Id3v2FrameEditor(typeof(Id3v2RelativeVolumeAdjustmentFrame),
@@ -11,7 +12,7 @@ using AudioVideoLib.Tags;
     Order = 20,
     SupportedVersions = Id3v2VersionMask.V220 | Id3v2VersionMask.V221 | Id3v2VersionMask.V230,
     IsUniqueInstance = true)]
-public sealed class RvadEditor : EditorBase, ITagItemEditor<Id3v2RelativeVolumeAdjustmentFrame>
+public sealed class RvadEditor : ObservableObject, ITagItemEditor<Id3v2RelativeVolumeAdjustmentFrame>
 {
     public int IncrementDecrement { get => field; set => Set(ref field, value); }
     public int VolumeDescriptionBits { get => field; set => Set(ref field, value); } = 16;

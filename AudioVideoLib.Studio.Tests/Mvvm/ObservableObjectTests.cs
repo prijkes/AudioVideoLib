@@ -1,4 +1,4 @@
-namespace AudioVideoLib.Studio.Tests.Editors.Id3v2;
+namespace AudioVideoLib.Studio.Tests.Mvvm;
 
 using System.Collections.Generic;
 
@@ -7,11 +7,11 @@ using AudioVideoLib.Studio.Editors.Id3v2;
 using Xunit;
 
 /// <summary>
-/// D14 regression tests: PropertyChanged plumbing inherited from EditorBase
+/// D14 regression tests: PropertyChanged plumbing inherited from ObservableObject
 /// must still fire as expected, and the Data → DataInfo cascade through
 /// BinaryDataEditorBase must continue to work.
 /// </summary>
-public class EditorBaseTests
+public class ObservableObjectTests
 {
     // PropertyChanged fires for the property name when value changes.
     [Fact]

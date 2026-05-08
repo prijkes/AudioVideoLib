@@ -3,6 +3,7 @@ namespace AudioVideoLib.Studio.Editors.Id3v2;
 using System.Windows;
 
 using AudioVideoLib.Studio.Editors;
+using AudioVideoLib.Studio.Mvvm;
 using AudioVideoLib.Tags;
 
 [Id3v2FrameEditor(typeof(Id3v2CommentFrame),
@@ -11,7 +12,7 @@ using AudioVideoLib.Tags;
     Order = 9,
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = false)]
-public sealed class CommentEditor : EditorBase, ITagItemEditor<Id3v2CommentFrame>
+public sealed class CommentEditor : ObservableObject, ITagItemEditor<Id3v2CommentFrame>
 {
     public Id3v2FrameEncodingType Encoding { get => field; set => Set(ref field, value); }
     public string Language { get => field; set => Set(ref field, value); } = "eng";

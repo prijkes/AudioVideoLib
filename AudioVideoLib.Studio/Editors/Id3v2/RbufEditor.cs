@@ -3,6 +3,7 @@ namespace AudioVideoLib.Studio.Editors.Id3v2;
 using System.Windows;
 
 using AudioVideoLib.Studio.Editors;
+using AudioVideoLib.Studio.Mvvm;
 using AudioVideoLib.Tags;
 
 [Id3v2FrameEditor(typeof(Id3v2RecommendedBufferSizeFrame),
@@ -11,7 +12,7 @@ using AudioVideoLib.Tags;
     Order = 35,
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = true)]
-public sealed class RbufEditor : EditorBase, ITagItemEditor<Id3v2RecommendedBufferSizeFrame>
+public sealed class RbufEditor : ObservableObject, ITagItemEditor<Id3v2RecommendedBufferSizeFrame>
 {
     public int BufferSize { get => field; set => Set(ref field, value); }
     public bool UseEmbeddedInfo { get => field; set => Set(ref field, value); }
