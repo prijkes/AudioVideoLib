@@ -15,9 +15,11 @@ using System;
 public sealed class Id3v2MusicCdIdentifierFrame : Id3v2Frame
 {
     /// <summary>
-    /// The table of contents consists of a header of 4 bytes and then 8 bytes/track on a CD plus 8 bytes for the 'lead out' making a maximum of 804 bytes.
+    /// Maximum size of the <see cref="TableOfContents"/> field, in bytes (ID3v2 §4.5).
+    /// The table of contents is a 4-byte header plus 8 bytes per track, with one extra
+    /// 8-byte entry for the 'lead out', for a maximum of 804 bytes.
     /// </summary>
-    private const int MaxTableOfContentsSize = 804;
+    public const int MaxTableOfContentsSize = 804;
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

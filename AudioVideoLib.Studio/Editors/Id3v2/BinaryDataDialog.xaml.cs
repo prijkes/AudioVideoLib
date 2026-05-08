@@ -55,7 +55,7 @@ public partial class BinaryDataDialog : Window
         dlg.OwnerLabel.Text = "Owner identifier";
         dlg.OwnerBox.Text = frame.OwnerIdentifier ?? string.Empty;
         dlg.HexEditor.Data = frame.IdentifierData ?? [];
-        dlg.HexEditor.MaxLength = 64;     // ID3v2 spec §4.1: max 64 bytes
+        dlg.HexEditor.MaxLength = Id3v2UniqueFileIdentifierFrame.MaxIdentifierDataSize;
         dlg.UpdateInfoText();
         dlg._commit = () =>
         {
@@ -75,7 +75,7 @@ public partial class BinaryDataDialog : Window
         };
         dlg.OwnerPanel.Visibility = Visibility.Collapsed;
         dlg.HexEditor.Data = frame.TableOfContents ?? [];
-        dlg.HexEditor.MaxLength = 804;    // ID3v2 spec §4.5: 4-byte header + 8 bytes/track, max 804
+        dlg.HexEditor.MaxLength = Id3v2MusicCdIdentifierFrame.MaxTableOfContentsSize;
         dlg.UpdateInfoText();
         dlg._commit = () => frame.TableOfContents = dlg.HexEditor.Data;
 

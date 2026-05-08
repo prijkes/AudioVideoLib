@@ -74,10 +74,15 @@ public sealed class Id3v2UniqueFileIdentifierFrame : Id3v2Frame
     } = null!;
 
     /// <summary>
-    /// Gets or sets the identifier, which may be up to 64 bytes.
+    /// Maximum size of the <see cref="IdentifierData"/> field, in bytes (ID3v2 §4.1).
+    /// </summary>
+    public const int MaxIdentifierDataSize = 64;
+
+    /// <summary>
+    /// Gets or sets the identifier, which may be up to <see cref="MaxIdentifierDataSize"/> bytes.
     /// </summary>
     /// <remarks>
-    /// Only the first 64 bytes will be taken if there are more than 64 bytes in the new value.
+    /// Only the first <see cref="MaxIdentifierDataSize"/> bytes will be taken if the value is longer.
     /// </remarks>
     public byte[] IdentifierData
     {
@@ -85,7 +90,7 @@ public sealed class Id3v2UniqueFileIdentifierFrame : Id3v2Frame
 
         set
         {
-            field = (value != null) ? [.. value.Take(64)] : null!;
+            field = (value != null) ? [.. value.Take(MaxIdentifierDataSize)] : null!;
         }
     } = null!;
 
