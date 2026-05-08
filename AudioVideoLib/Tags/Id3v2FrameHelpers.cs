@@ -43,6 +43,11 @@ public partial class Id3v2Frame
     }
 
     /// <summary>
+    /// ISO-639-2 language code length, in characters. Used by COMM, SYLT, USLT, USER.
+    /// </summary>
+    public const int LanguageCodeLength = 3;
+
+    /// <summary>
     /// Determines whether the language code is a valid language code according to the ISO-639-2 list.
     /// </summary>
     /// <param name="languageCode">The language code.</param>
@@ -53,7 +58,7 @@ public partial class Id3v2Frame
     {
         return languageCode == null
             ? throw new ArgumentNullException("languageCode")
-            : (languageCode.Length == 3) && LanguageCodes.ContainsKey(languageCode);
+            : (languageCode.Length == LanguageCodeLength) && LanguageCodes.ContainsKey(languageCode);
     }
 
     /// <summary>

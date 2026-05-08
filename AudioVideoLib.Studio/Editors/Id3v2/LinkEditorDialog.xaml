@@ -11,8 +11,9 @@
         <StackPanel>
             <TextBlock Text="Frame identifier (3 chars on v2.2, 4 chars on v2.3+)"
                        Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
-            <TextBox Text="{Binding FrameIdentifier, UpdateSourceTrigger=PropertyChanged}"
-                     MaxLength="4" Padding="4,3" Margin="0,0,0,8" />
+            <TextBox x:Name="IdentifierBox"
+                     Text="{Binding FrameIdentifier, UpdateSourceTrigger=PropertyChanged}"
+                     Padding="4,3" Margin="0,0,0,8" />
             <TextBlock Text="URL"
                        Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
             <TextBox Text="{Binding Url, UpdateSourceTrigger=PropertyChanged}"

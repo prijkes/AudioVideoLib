@@ -1,6 +1,7 @@
 <Window x:Class="AudioVideoLib.Studio.Editors.Id3v2.UsltEditorDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:tags="clr-namespace:AudioVideoLib.Tags;assembly=AudioVideoLib"
         Title="Unsynchronized lyrics (USLT)"
         Width="560"
         Height="520"
@@ -17,7 +18,7 @@
 
         <StackPanel Grid.Row="0" Margin="0,0,0,10">
             <TextBlock Text="Language (ISO-639-2, 3 chars)" Foreground="#666666" FontSize="11" Margin="0,0,0,2" />
-            <TextBox x:Name="LanguageBox" Padding="4,3" MaxLength="3" Width="80" HorizontalAlignment="Left" />
+            <TextBox x:Name="LanguageBox" Padding="4,3" MaxLength="{x:Static tags:Id3v2Frame.LanguageCodeLength}" Width="80" HorizontalAlignment="Left" />
         </StackPanel>
 
         <StackPanel Grid.Row="1" Margin="0,0,0,10">

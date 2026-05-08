@@ -1,6 +1,7 @@
 <Window x:Class="AudioVideoLib.Studio.Editors.Id3v2.UserEditorDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:tags="clr-namespace:AudioVideoLib.Tags;assembly=AudioVideoLib"
         Width="500" SizeToContent="Height" WindowStartupLocation="CenterOwner"
         Title="Terms of use (USER)">
     <DockPanel Margin="14">
@@ -15,7 +16,7 @@
             <TextBlock Text="Language (ISO-639-2, e.g. &quot;eng&quot;)"
                        Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
             <TextBox Text="{Binding Language, UpdateSourceTrigger=PropertyChanged}"
-                     MaxLength="3" Padding="4,3" Margin="0,0,0,8" />
+                     MaxLength="{x:Static tags:Id3v2Frame.LanguageCodeLength}" Padding="4,3" Margin="0,0,0,8" />
             <TextBlock Text="Text" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" />
             <TextBox Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}"
                      AcceptsReturn="True" MinHeight="160" TextWrapping="Wrap"

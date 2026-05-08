@@ -72,4 +72,28 @@ public class LinkEditorTests
         Assert.NotNull(f);
         Assert.Equal(Id3v2Version.Id3v230, f.Version);
     }
+
+    [Fact]
+    public void Validate_V220_FourCharIdentifier_RejectsWith3CharMessage()
+    {
+        // Pins the per-version length rule via the validator's error message.
+        // Catches drift if anyone reverts Id3v2Frame.GetIdentifierFieldLength to a literal.
+        var e = new LinkEditor();
+        e.Load(new Id3v2LinkedInformationFrame(Id3v2Version.Id3v220, "WCM"));
+        e.FrameIdentifier = "ABCD";
+        Assert.False(e.Validate(out var error));
+        Assert.NotNull(error);
+        Assert.Contains("3", error);
+    }
+
+    [Fact]
+    public void Validate_V230_ThreeCharIdentifier_RejectsWith4CharMessage()
+    {
+        var e = new LinkEditor();
+        e.Load(new Id3v2LinkedInformationFrame(Id3v2Version.Id3v230, "WCOM"));
+        e.FrameIdentifier = "ABC";
+        Assert.False(e.Validate(out var error));
+        Assert.NotNull(error);
+        Assert.Contains("4", error);
+    }
 }

@@ -37,6 +37,7 @@ public sealed class LinkEditor : ITagItemEditor<Id3v2LinkedInformationFrame>, IN
     {
         Load(frame);
         var dialog = new LinkEditorDialog { Owner = owner, DataContext = this };
+        dialog.IdentifierBox.MaxLength = Id3v2Frame.GetIdentifierFieldLength(_version);
         if (dialog.ShowDialog() != true)
         {
             return false;
@@ -62,7 +63,7 @@ public sealed class LinkEditor : ITagItemEditor<Id3v2LinkedInformationFrame>, IN
 
     public bool Validate(out string? error)
     {
-        var expectedLength = _version < Id3v2Version.Id3v230 ? 3 : 4;
+        var expectedLength = Id3v2Frame.GetIdentifierFieldLength(_version);
         if (FrameIdentifier?.Length != expectedLength)
         {
             error = $"Frame identifier must be {expectedLength} characters for ID3v2.{(int)_version / 10}.";
