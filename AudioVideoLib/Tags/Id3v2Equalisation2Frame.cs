@@ -2,7 +2,6 @@ namespace AudioVideoLib.Tags;
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 
 using AudioVideoLib.Collections;
 using AudioVideoLib.IO;
@@ -84,11 +83,7 @@ public sealed class Id3v2Equalisation2Frame : Id3v2Frame
 
         set
         {
-            if (!string.IsNullOrEmpty(value) && !IsValidDefaultTextString(value, false))
-            {
-                throw new InvalidDataException("value contains one or more invalid characters.");
-            }
-
+            ValidateDefaultText(value);
             _identification = value;
         }
     }

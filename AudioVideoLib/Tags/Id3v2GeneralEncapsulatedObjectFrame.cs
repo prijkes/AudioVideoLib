@@ -86,11 +86,7 @@ public sealed class Id3v2GeneralEncapsulatedObjectFrame : Id3v2Frame
 
         set
         {
-            if (!string.IsNullOrEmpty(value) && !IsValidDefaultTextString(value, false))
-            {
-                throw new InvalidDataException("value contains one or more invalid characters.");
-            }
-
+            ValidateDefaultText(value);
             _mimeType = value;
         }
     }

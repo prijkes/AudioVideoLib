@@ -250,6 +250,22 @@ public partial class Id3v2Frame
         }
     }
 
+    /// <summary>
+    /// Validates a non-empty <paramref name="value"/> contains only characters
+    /// representable in <see cref="Id3v2FrameEncodingType.Default"/> (ISO-8859-1).
+    /// Null or empty values pass without inspection.
+    /// </summary>
+    /// <param name="value">The value to validate.</param>
+    /// <param name="newlineAllowed">Whether <c>\r</c> / <c>\n</c> are permitted.</param>
+    /// <exception cref="InvalidDataException">Thrown when the value is non-empty and contains invalid characters.</exception>
+    public static void ValidateDefaultText(string value, bool newlineAllowed = false)
+    {
+        if (!string.IsNullOrEmpty(value) && !IsValidDefaultTextString(value, newlineAllowed))
+        {
+            throw new InvalidDataException("value contains one or more invalid characters.");
+        }
+    }
+
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
