@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using AudioVideoLib.Collections;
+using AudioVideoLib.Tags;
 
 /// <summary>
 /// Represents a collection of audio streams.
@@ -427,8 +428,7 @@ public sealed class MediaContainers : IEnumerable<IMediaContainer>, IDisposable
             return false;
         }
 
-        // "ID3" magic at bytes 0..2.
-        if (id3[0] != 0x49 || id3[1] != 0x44 || id3[2] != 0x33)
+        if (!Id3v2Tag.LooksLikeId3v2Header(id3))
         {
             return false;
         }

@@ -32,6 +32,18 @@ public partial class Id3v2Tag
 
     private static readonly byte[] FooterIdentifierBytes = System.Text.Encoding.ASCII.GetBytes(FooterIdentifier);
 
+    /// <summary>
+    /// Returns <c>true</c> if <paramref name="bytes"/> begins with the "ID3" magic
+    /// that marks an ID3v2 tag header.
+    /// </summary>
+    public static bool LooksLikeId3v2Header(ReadOnlySpan<byte> bytes)
+    {
+        return bytes.Length >= HeaderIdentifierBytes.Length
+            && bytes[0] == HeaderIdentifierBytes[0]
+            && bytes[1] == HeaderIdentifierBytes[1]
+            && bytes[2] == HeaderIdentifierBytes[2];
+    }
+
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
