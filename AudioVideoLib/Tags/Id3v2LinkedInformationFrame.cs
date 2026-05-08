@@ -83,9 +83,8 @@ public sealed class Id3v2LinkedInformationFrame : Id3v2Frame
             // FrameIdentifier may not be null.
             ArgumentNullException.ThrowIfNull(value);
 
-            _frameIdentifier = (value.Length > ((Version < Id3v2Version.Id3v230) ? 3 : 4))
-                                   ? value[..((Version < Id3v2Version.Id3v230) ? 3 : 4)]
-                                   : value;
+            var maxLength = GetIdentifierFieldLength(Version);
+            _frameIdentifier = (value.Length > maxLength) ? value[..maxLength] : value;
         }
     }
 
@@ -180,7 +179,7 @@ public sealed class Id3v2LinkedInformationFrame : Id3v2Frame
 
             var defaultEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
             var stream = new StreamBuffer(value);
-            _frameIdentifier = stream.ReadString((Version < Id3v2Version.Id3v230) ? 3 : 4, defaultEncoding, true);
+            _frameIdentifier = stream.ReadString(GetIdentifierFieldLength(Version), defaultEncoding, true);
             _url = stream.ReadString(defaultEncoding, true);
             _additionalIdData = stream.ReadString(defaultEncoding);
         }
