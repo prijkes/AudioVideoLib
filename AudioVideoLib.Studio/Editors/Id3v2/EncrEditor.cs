@@ -27,16 +27,8 @@ public sealed class EncrEditor : BinaryDataEditorBase, ITagItemEditor<Id3v2Encry
         => new(((Id3v2Tag)tag).Version);
 
     public bool Edit(Window owner, Id3v2EncryptionMethodRegistrationFrame frame)
-    {
-        Load(frame);
-        var dialog = new EncrEditorDialog { Owner = owner, DataContext = this };
-        if (dialog.ShowDialog() != true)
-        {
-            return false;
-        }
-        Save(frame);
-        return true;
-    }
+        => EditorDialog.Run<EncrEditorDialog, Id3v2EncryptionMethodRegistrationFrame>(
+            owner, frame, this, Load, Save);
 
     public void Load(Id3v2EncryptionMethodRegistrationFrame f)
     {

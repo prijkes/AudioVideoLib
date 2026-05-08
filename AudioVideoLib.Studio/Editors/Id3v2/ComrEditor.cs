@@ -28,16 +28,8 @@ public sealed class ComrEditor : BinaryDataEditorBase, ITagItemEditor<Id3v2Comme
     public Id3v2CommercialFrame CreateNew(object tag) => new(((Id3v2Tag)tag).Version);
 
     public bool Edit(Window owner, Id3v2CommercialFrame frame)
-    {
-        Load(frame);
-        var dialog = new ComrEditorDialog { Owner = owner, DataContext = this };
-        if (dialog.ShowDialog() != true)
-        {
-            return false;
-        }
-        Save(frame);
-        return true;
-    }
+        => EditorDialog.Run<ComrEditorDialog, Id3v2CommercialFrame>(
+            owner, frame, this, Load, Save);
 
     public void Load(Id3v2CommercialFrame f)
     {

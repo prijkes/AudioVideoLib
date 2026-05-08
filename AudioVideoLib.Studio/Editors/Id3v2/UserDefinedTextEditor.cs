@@ -23,16 +23,8 @@ public sealed class UserDefinedTextEditor
         => new(((Id3v2Tag)tag).Version);
 
     public bool Edit(Window owner, Id3v2UserDefinedTextInformationFrame frame)
-    {
-        Load(frame);
-        var dialog = new UserDefinedTextEditorDialog { Owner = owner, DataContext = this };
-        if (dialog.ShowDialog() != true)
-        {
-            return false;
-        }
-        Save(frame);
-        return true;
-    }
+        => EditorDialog.Run<UserDefinedTextEditorDialog, Id3v2UserDefinedTextInformationFrame>(
+            owner, frame, this, Load, Save);
 
     public void Load(Id3v2UserDefinedTextInformationFrame frame)
     {

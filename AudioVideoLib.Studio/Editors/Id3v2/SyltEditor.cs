@@ -32,16 +32,8 @@ public sealed class SyltEditor
         => new(((Id3v2Tag)tag).Version);
 
     public override bool Edit(Window owner, Id3v2SynchronizedLyricsFrame frame)
-    {
-        Load(frame);
-        var dialog = new SyltEditorDialog { Owner = owner, DataContext = this };
-        if (dialog.ShowDialog() != true)
-        {
-            return false;
-        }
-        Save(frame);
-        return true;
-    }
+        => EditorDialog.Run<SyltEditorDialog, Id3v2SynchronizedLyricsFrame>(
+            owner, frame, this, Load, Save);
 
     public void Load(Id3v2SynchronizedLyricsFrame f)
     {

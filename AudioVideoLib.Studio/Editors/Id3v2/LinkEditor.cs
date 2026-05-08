@@ -32,17 +32,9 @@ public sealed class LinkEditor : ObservableObject, ITagItemEditor<Id3v2LinkedInf
     }
 
     public bool Edit(Window owner, Id3v2LinkedInformationFrame frame)
-    {
-        Load(frame);
-        var dialog = new LinkEditorDialog { Owner = owner, DataContext = this };
-        dialog.IdentifierBox.MaxLength = Id3v2Frame.GetIdentifierFieldLength(_version);
-        if (dialog.ShowDialog() != true)
-        {
-            return false;
-        }
-        Save(frame);
-        return true;
-    }
+        => EditorDialog.Run<LinkEditorDialog, Id3v2LinkedInformationFrame>(
+            owner, frame, this, Load, Save,
+            d => d.IdentifierBox.MaxLength = Id3v2Frame.GetIdentifierFieldLength(_version));
 
     public void Load(Id3v2LinkedInformationFrame f)
     {

@@ -28,16 +28,8 @@ public sealed class EtcoEditor
         => new(((Id3v2Tag)tag).Version);
 
     public override bool Edit(Window owner, Id3v2EventTimingCodesFrame frame)
-    {
-        Load(frame);
-        var dialog = new EtcoEditorDialog { Owner = owner, DataContext = this };
-        if (dialog.ShowDialog() != true)
-        {
-            return false;
-        }
-        Save(frame);
-        return true;
-    }
+        => EditorDialog.Run<EtcoEditorDialog, Id3v2EventTimingCodesFrame>(
+            owner, frame, this, Load, Save);
 
     public void Load(Id3v2EventTimingCodesFrame frame)
     {

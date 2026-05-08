@@ -21,16 +21,8 @@ public sealed class RbufEditor : ObservableObject, ITagItemEditor<Id3v2Recommend
     public Id3v2RecommendedBufferSizeFrame CreateNew(object tag) => new(((Id3v2Tag)tag).Version);
 
     public bool Edit(Window owner, Id3v2RecommendedBufferSizeFrame frame)
-    {
-        Load(frame);
-        var dialog = new RbufEditorDialog { Owner = owner, DataContext = this };
-        if (dialog.ShowDialog() != true)
-        {
-            return false;
-        }
-        Save(frame);
-        return true;
-    }
+        => EditorDialog.Run<RbufEditorDialog, Id3v2RecommendedBufferSizeFrame>(
+            owner, frame, this, Load, Save);
 
     public void Load(Id3v2RecommendedBufferSizeFrame f)
     {

@@ -28,16 +28,8 @@ public sealed class RevbEditor : ObservableObject, ITagItemEditor<Id3v2ReverbFra
     public Id3v2ReverbFrame CreateNew(object tag) => new(((Id3v2Tag)tag).Version);
 
     public bool Edit(Window owner, Id3v2ReverbFrame frame)
-    {
-        Load(frame);
-        var dialog = new RevbEditorDialog { Owner = owner, DataContext = this };
-        if (dialog.ShowDialog() != true)
-        {
-            return false;
-        }
-        Save(frame);
-        return true;
-    }
+        => EditorDialog.Run<RevbEditorDialog, Id3v2ReverbFrame>(
+            owner, frame, this, Load, Save);
 
     public void Load(Id3v2ReverbFrame f)
     {

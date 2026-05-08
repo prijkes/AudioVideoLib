@@ -21,16 +21,8 @@ public sealed class SignEditor : BinaryDataEditorBase, ITagItemEditor<Id3v2Signa
     public Id3v2SignatureFrame CreateNew(object tag) => new(((Id3v2Tag)tag).Version);
 
     public bool Edit(Window owner, Id3v2SignatureFrame frame)
-    {
-        Load(frame);
-        var dialog = new SignEditorDialog { Owner = owner, DataContext = this };
-        if (dialog.ShowDialog() != true)
-        {
-            return false;
-        }
-        Save(frame);
-        return true;
-    }
+        => EditorDialog.Run<SignEditorDialog, Id3v2SignatureFrame>(
+            owner, frame, this, Load, Save);
 
     public void Load(Id3v2SignatureFrame f)
     {

@@ -30,16 +30,8 @@ public sealed class Rva2Editor
         => new(((Id3v2Tag)tag).Version);
 
     public override bool Edit(Window owner, Id3v2RelativeVolumeAdjustment2Frame frame)
-    {
-        Load(frame);
-        var dialog = new Rva2EditorDialog { Owner = owner, DataContext = this };
-        if (dialog.ShowDialog() != true)
-        {
-            return false;
-        }
-        Save(frame);
-        return true;
-    }
+        => EditorDialog.Run<Rva2EditorDialog, Id3v2RelativeVolumeAdjustment2Frame>(
+            owner, frame, this, Load, Save);
 
     public void Load(Id3v2RelativeVolumeAdjustment2Frame f)
     {

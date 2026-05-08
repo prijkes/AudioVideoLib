@@ -25,16 +25,8 @@ public sealed class UrlFrameEditor : ObservableObject, ITagItemEditor<Id3v2UrlLi
         => new(((Id3v2Tag)tag).Version, identifier);
 
     public bool Edit(Window owner, Id3v2UrlLinkFrame frame)
-    {
-        Load(frame);
-        var dialog = new UrlFrameEditorDialog { Owner = owner, DataContext = this };
-        if (dialog.ShowDialog() != true)
-        {
-            return false;
-        }
-        Save(frame);
-        return true;
-    }
+        => EditorDialog.Run<UrlFrameEditorDialog, Id3v2UrlLinkFrame>(
+            owner, frame, this, Load, Save);
 
     public void Load(Id3v2UrlLinkFrame frame)
     {

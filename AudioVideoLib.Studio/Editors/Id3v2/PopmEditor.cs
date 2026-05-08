@@ -21,16 +21,8 @@ public sealed class PopmEditor : ObservableObject, ITagItemEditor<Id3v2Popularim
     public Id3v2PopularimeterFrame CreateNew(object tag) => new(((Id3v2Tag)tag).Version);
 
     public bool Edit(Window owner, Id3v2PopularimeterFrame frame)
-    {
-        Load(frame);
-        var dialog = new PopmEditorDialog { Owner = owner, DataContext = this };
-        if (dialog.ShowDialog() != true)
-        {
-            return false;
-        }
-        Save(frame);
-        return true;
-    }
+        => EditorDialog.Run<PopmEditorDialog, Id3v2PopularimeterFrame>(
+            owner, frame, this, Load, Save);
 
     public void Load(Id3v2PopularimeterFrame f)
     {

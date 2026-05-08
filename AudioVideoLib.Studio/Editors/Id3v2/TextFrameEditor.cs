@@ -26,16 +26,8 @@ public sealed class TextFrameEditor : ObservableObject, ITagItemEditor<Id3v2Text
         => new(((Id3v2Tag)tag).Version, identifier);
 
     public bool Edit(Window owner, Id3v2TextFrame frame)
-    {
-        Load(frame);
-        var dialog = new TextFrameEditorDialog { Owner = owner, DataContext = this };
-        if (dialog.ShowDialog() != true)
-        {
-            return false;
-        }
-        Save(frame);
-        return true;
-    }
+        => EditorDialog.Run<TextFrameEditorDialog, Id3v2TextFrame>(
+            owner, frame, this, Load, Save);
 
     public void Load(Id3v2TextFrame frame)
     {

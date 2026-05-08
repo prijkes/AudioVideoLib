@@ -23,16 +23,8 @@ public sealed class AencEditor : BinaryDataEditorBase, ITagItemEditor<Id3v2Audio
     public Id3v2AudioEncryptionFrame CreateNew(object tag) => new(((Id3v2Tag)tag).Version);
 
     public bool Edit(Window owner, Id3v2AudioEncryptionFrame frame)
-    {
-        Load(frame);
-        var dialog = new AencEditorDialog { Owner = owner, DataContext = this };
-        if (dialog.ShowDialog() != true)
-        {
-            return false;
-        }
-        Save(frame);
-        return true;
-    }
+        => EditorDialog.Run<AencEditorDialog, Id3v2AudioEncryptionFrame>(
+            owner, frame, this, Load, Save);
 
     public void Load(Id3v2AudioEncryptionFrame f)
     {

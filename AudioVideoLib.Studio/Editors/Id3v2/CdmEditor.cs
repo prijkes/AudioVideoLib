@@ -16,18 +16,12 @@ public sealed class CdmEditor : WrapperEditorBase<Id3v2CompressedDataMetaFrame>
 {
     public override Id3v2CompressedDataMetaFrame CreateNew(object tag) => new();
 
+    // Snapshot is populated by the dispatch caller via IWrapperEditor.OnBeforeEdit
+    // (which also resets SelectedChild on the base class). No Load step: this editor
+    // has no view-model state to seed from the frame.
     public override bool Edit(Window owner, Id3v2CompressedDataMetaFrame frame)
-    {
-        // Snapshot is populated by the dispatch caller via IWrapperEditor.OnBeforeEdit
-        // (which also resets SelectedChild on the base class).
-        var dialog = new CdmEditorDialog { Owner = owner, DataContext = this };
-        if (dialog.ShowDialog() != true)
-        {
-            return false;
-        }
-        Save(frame);
-        return true;
-    }
+        => EditorDialog.Run<CdmEditorDialog, Id3v2CompressedDataMetaFrame>(
+            owner, frame, this, static _ => { }, Save);
 
     public void Save(Id3v2CompressedDataMetaFrame f)
     {

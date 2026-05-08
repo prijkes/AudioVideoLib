@@ -27,16 +27,8 @@ public sealed class GridEditor : BinaryDataEditorBase, ITagItemEditor<Id3v2Group
         => new(((Id3v2Tag)tag).Version);
 
     public bool Edit(Window owner, Id3v2GroupIdentificationRegistrationFrame frame)
-    {
-        Load(frame);
-        var dialog = new GridEditorDialog { Owner = owner, DataContext = this };
-        if (dialog.ShowDialog() != true)
-        {
-            return false;
-        }
-        Save(frame);
-        return true;
-    }
+        => EditorDialog.Run<GridEditorDialog, Id3v2GroupIdentificationRegistrationFrame>(
+            owner, frame, this, Load, Save);
 
     public void Load(Id3v2GroupIdentificationRegistrationFrame f)
     {

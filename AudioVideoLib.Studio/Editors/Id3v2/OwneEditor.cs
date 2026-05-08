@@ -22,16 +22,8 @@ public sealed class OwneEditor : ObservableObject, ITagItemEditor<Id3v2Ownership
     public Id3v2OwnershipFrame CreateNew(object tag) => new(((Id3v2Tag)tag).Version);
 
     public bool Edit(Window owner, Id3v2OwnershipFrame frame)
-    {
-        Load(frame);
-        var dialog = new OwneEditorDialog { Owner = owner, DataContext = this };
-        if (dialog.ShowDialog() != true)
-        {
-            return false;
-        }
-        Save(frame);
-        return true;
-    }
+        => EditorDialog.Run<OwneEditorDialog, Id3v2OwnershipFrame>(
+            owner, frame, this, Load, Save);
 
     public void Load(Id3v2OwnershipFrame f)
     {

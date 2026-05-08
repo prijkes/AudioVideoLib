@@ -28,16 +28,8 @@ public sealed class SytcEditor
         => new(((Id3v2Tag)tag).Version);
 
     public override bool Edit(Window owner, Id3v2SyncedTempoCodesFrame frame)
-    {
-        Load(frame);
-        var dialog = new SytcEditorDialog { Owner = owner, DataContext = this };
-        if (dialog.ShowDialog() != true)
-        {
-            return false;
-        }
-        Save(frame);
-        return true;
-    }
+        => EditorDialog.Run<SytcEditorDialog, Id3v2SyncedTempoCodesFrame>(
+            owner, frame, this, Load, Save);
 
     public void Load(Id3v2SyncedTempoCodesFrame f)
     {

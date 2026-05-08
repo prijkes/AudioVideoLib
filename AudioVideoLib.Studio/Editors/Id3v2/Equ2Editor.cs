@@ -30,16 +30,8 @@ public sealed class Equ2Editor
         => new(((Id3v2Tag)tag).Version);
 
     public override bool Edit(Window owner, Id3v2Equalisation2Frame frame)
-    {
-        Load(frame);
-        var dialog = new Equ2EditorDialog { Owner = owner, DataContext = this };
-        if (dialog.ShowDialog() != true)
-        {
-            return false;
-        }
-        Save(frame);
-        return true;
-    }
+        => EditorDialog.Run<Equ2EditorDialog, Id3v2Equalisation2Frame>(
+            owner, frame, this, Load, Save);
 
     public void Load(Id3v2Equalisation2Frame f)
     {

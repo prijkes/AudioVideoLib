@@ -22,16 +22,8 @@ public sealed class CommentEditor : ObservableObject, ITagItemEditor<Id3v2Commen
     public Id3v2CommentFrame CreateNew(object tag) => new(((Id3v2Tag)tag).Version);
 
     public bool Edit(Window owner, Id3v2CommentFrame frame)
-    {
-        Load(frame);
-        var dialog = new CommentEditorDialog { Owner = owner, DataContext = this };
-        if (dialog.ShowDialog() != true)
-        {
-            return false;
-        }
-        Save(frame);
-        return true;
-    }
+        => EditorDialog.Run<CommentEditorDialog, Id3v2CommentFrame>(
+            owner, frame, this, Load, Save);
 
     public void Load(Id3v2CommentFrame f)
     {

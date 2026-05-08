@@ -25,16 +25,8 @@ public sealed class GeobEditor : BinaryDataEditorBase, ITagItemEditor<Id3v2Gener
         => new(((Id3v2Tag)tag).Version);
 
     public bool Edit(Window owner, Id3v2GeneralEncapsulatedObjectFrame frame)
-    {
-        Load(frame);
-        var dialog = new GeobEditorDialog { Owner = owner, DataContext = this };
-        if (dialog.ShowDialog() != true)
-        {
-            return false;
-        }
-        Save(frame);
-        return true;
-    }
+        => EditorDialog.Run<GeobEditorDialog, Id3v2GeneralEncapsulatedObjectFrame>(
+            owner, frame, this, Load, Save);
 
     public void Load(Id3v2GeneralEncapsulatedObjectFrame f)
     {

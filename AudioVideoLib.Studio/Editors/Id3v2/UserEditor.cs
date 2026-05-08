@@ -21,16 +21,8 @@ public sealed class UserEditor : ObservableObject, ITagItemEditor<Id3v2TermsOfUs
     public Id3v2TermsOfUseFrame CreateNew(object tag) => new(((Id3v2Tag)tag).Version);
 
     public bool Edit(Window owner, Id3v2TermsOfUseFrame frame)
-    {
-        Load(frame);
-        var dialog = new UserEditorDialog { Owner = owner, DataContext = this };
-        if (dialog.ShowDialog() != true)
-        {
-            return false;
-        }
-        Save(frame);
-        return true;
-    }
+        => EditorDialog.Run<UserEditorDialog, Id3v2TermsOfUseFrame>(
+            owner, frame, this, Load, Save);
 
     public void Load(Id3v2TermsOfUseFrame f)
     {

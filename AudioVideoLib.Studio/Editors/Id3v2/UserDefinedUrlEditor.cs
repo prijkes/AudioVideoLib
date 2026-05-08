@@ -23,16 +23,8 @@ public sealed class UserDefinedUrlEditor
         => new(((Id3v2Tag)tag).Version);
 
     public bool Edit(Window owner, Id3v2UserDefinedUrlLinkFrame frame)
-    {
-        Load(frame);
-        var dialog = new UserDefinedUrlEditorDialog { Owner = owner, DataContext = this };
-        if (dialog.ShowDialog() != true)
-        {
-            return false;
-        }
-        Save(frame);
-        return true;
-    }
+        => EditorDialog.Run<UserDefinedUrlEditorDialog, Id3v2UserDefinedUrlLinkFrame>(
+            owner, frame, this, Load, Save);
 
     public void Load(Id3v2UserDefinedUrlLinkFrame frame)
     {

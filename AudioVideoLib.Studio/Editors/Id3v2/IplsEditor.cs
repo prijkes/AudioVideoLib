@@ -28,16 +28,8 @@ public sealed class IplsEditor
         => new(((Id3v2Tag)tag).Version);
 
     public override bool Edit(Window owner, Id3v2InvolvedPeopleListFrame frame)
-    {
-        Load(frame);
-        var dialog = new IplsEditorDialog { Owner = owner, DataContext = this };
-        if (dialog.ShowDialog() != true)
-        {
-            return false;
-        }
-        Save(frame);
-        return true;
-    }
+        => EditorDialog.Run<IplsEditorDialog, Id3v2InvolvedPeopleListFrame>(
+            owner, frame, this, Load, Save);
 
     public void Load(Id3v2InvolvedPeopleListFrame f)
     {

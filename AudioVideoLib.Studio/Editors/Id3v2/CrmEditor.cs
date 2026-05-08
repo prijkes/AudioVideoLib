@@ -28,18 +28,10 @@ public sealed class CrmEditor : WrapperEditorBase<Id3v2EncryptedMetaFrame>
     public override Id3v2EncryptedMetaFrame CreateNew(object tag)
         => new(((Id3v2Tag)tag).Version);
 
+    // Snapshot is populated by the dispatch caller via IWrapperEditor.OnBeforeEdit.
     public override bool Edit(Window owner, Id3v2EncryptedMetaFrame frame)
-    {
-        // Snapshot is populated by the dispatch caller via IWrapperEditor.OnBeforeEdit.
-        Load(frame);
-        var dialog = new CrmEditorDialog { Owner = owner, DataContext = this };
-        if (dialog.ShowDialog() != true)
-        {
-            return false;
-        }
-        Save(frame);
-        return true;
-    }
+        => EditorDialog.Run<CrmEditorDialog, Id3v2EncryptedMetaFrame>(
+            owner, frame, this, Load, Save);
 
     public void Load(Id3v2EncryptedMetaFrame f)
     {

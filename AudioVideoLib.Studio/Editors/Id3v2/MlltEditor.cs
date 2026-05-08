@@ -30,16 +30,8 @@ public sealed class MlltEditor
         => new(((Id3v2Tag)tag).Version);
 
     public override bool Edit(Window owner, Id3v2MpegLocationLookupTableFrame frame)
-    {
-        Load(frame);
-        var dialog = new MlltEditorDialog { Owner = owner, DataContext = this };
-        if (dialog.ShowDialog() != true)
-        {
-            return false;
-        }
-        Save(frame);
-        return true;
-    }
+        => EditorDialog.Run<MlltEditorDialog, Id3v2MpegLocationLookupTableFrame>(
+            owner, frame, this, Load, Save);
 
     public void Load(Id3v2MpegLocationLookupTableFrame f)
     {

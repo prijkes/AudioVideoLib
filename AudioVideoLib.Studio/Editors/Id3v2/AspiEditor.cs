@@ -29,16 +29,8 @@ public sealed class AspiEditor
         => new(((Id3v2Tag)tag).Version);
 
     public override bool Edit(Window owner, Id3v2AudioSeekPointIndexFrame frame)
-    {
-        Load(frame);
-        var dialog = new AspiEditorDialog { Owner = owner, DataContext = this };
-        if (dialog.ShowDialog() != true)
-        {
-            return false;
-        }
-        Save(frame);
-        return true;
-    }
+        => EditorDialog.Run<AspiEditorDialog, Id3v2AudioSeekPointIndexFrame>(
+            owner, frame, this, Load, Save);
 
     public void Load(Id3v2AudioSeekPointIndexFrame f)
     {

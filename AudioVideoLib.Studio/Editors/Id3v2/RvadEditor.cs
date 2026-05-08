@@ -37,16 +37,8 @@ public sealed class RvadEditor : ObservableObject, ITagItemEditor<Id3v2RelativeV
         => new(((Id3v2Tag)tag).Version);
 
     public bool Edit(Window owner, Id3v2RelativeVolumeAdjustmentFrame frame)
-    {
-        Load(frame);
-        var dialog = new RvadEditorDialog { Owner = owner, DataContext = this };
-        if (dialog.ShowDialog() != true)
-        {
-            return false;
-        }
-        Save(frame);
-        return true;
-    }
+        => EditorDialog.Run<RvadEditorDialog, Id3v2RelativeVolumeAdjustmentFrame>(
+            owner, frame, this, Load, Save);
 
     public void Load(Id3v2RelativeVolumeAdjustmentFrame f)
     {
