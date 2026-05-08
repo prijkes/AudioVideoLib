@@ -89,17 +89,7 @@ public partial class Id3v2Tag
                 return;
             }
 
-            if ((value.Version < Id3v2Version.Id3v240) && (value.TextEncoding != Id3v2FrameEncodingType.Default))
-            {
-                throw new InvalidDataException("value.TextEncoding has to to be Id3v2FrameEncodingType.Default");
-            }
-
-            int i;
-            if (value.Values.Any(v => !int.TryParse(v, out i)))
-            {
-                throw new InvalidDataException("One or more entries in value.Informations are not valid integers.");
-            }
-
+            ValidateNumericTextFrame(value);
             SetFrame(value);
         }
     }
@@ -131,17 +121,7 @@ public partial class Id3v2Tag
                 return;
             }
 
-            if ((value.Version < Id3v2Version.Id3v240) && (value.TextEncoding != Id3v2FrameEncodingType.Default))
-            {
-                throw new InvalidDataException("value.TextEncoding has to to be Id3v2FrameEncodingType.Default");
-            }
-
-            int i;
-            if (value.Values.Any(v => !int.TryParse(v, out i)))
-            {
-                throw new InvalidDataException("One or more entries in value.Informations are not valid integers.");
-            }
-
+            ValidateNumericTextFrame(value);
             SetFrame(value);
         }
     }
@@ -427,17 +407,7 @@ public partial class Id3v2Tag
                 return;
             }
 
-            if ((value.Version < Id3v2Version.Id3v240) && (value.TextEncoding != Id3v2FrameEncodingType.Default))
-            {
-                throw new InvalidDataException("value.TextEncoding has to to be Id3v2FrameEncodingType.Default");
-            }
-
-            int i;
-            if (value.Values.Any(v => !int.TryParse(v, out i)))
-            {
-                throw new InvalidDataException("One or more entries in value.Informations are not valid integers.");
-            }
-
+            ValidateNumericTextFrame(value);
             SetFrame(value);
         }
     }

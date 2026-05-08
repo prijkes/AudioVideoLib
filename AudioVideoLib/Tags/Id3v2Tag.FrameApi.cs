@@ -2,6 +2,7 @@ namespace AudioVideoLib.Tags;
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 using AudioVideoLib.Collections;
@@ -191,6 +192,19 @@ public sealed partial class Id3v2Tag
     private Id3v2TextFrame? GetVersionedTextFrame(Id3v2TextFrameIdentifier identifier, Id3v2Version minVersion = Id3v2Version.Id3v220)
     {
         return Version >= minVersion ? GetTextFrame(identifier) : null;
+    }
+
+    private static void ValidateNumericTextFrame(Id3v2TextFrame value)
+    {
+        if ((value.Version < Id3v2Version.Id3v240) && (value.TextEncoding != Id3v2FrameEncodingType.Default))
+        {
+            throw new InvalidDataException("value.TextEncoding has to be Id3v2FrameEncodingType.Default");
+        }
+
+        if (value.Values.Any(v => !int.TryParse(v, out _)))
+        {
+            throw new InvalidDataException("One or more entries in value.Informations are not valid integers.");
+        }
     }
 
     private void SetVersionedTextFrame(Id3v2TextFrame? value, Id3v2TextFrameIdentifier identifier, Id3v2Version minVersion = Id3v2Version.Id3v220)
