@@ -1,10 +1,23 @@
 namespace AudioVideoLib.Studio.Editors.Id3v2;
 
+using System;
+using System.Linq;
+
+using AudioVideoLib.Tags;
+
 public sealed record Id3v2KnownTextFrameId(
     string Identifier,
     string? V220Identifier,
     string FriendlyName,
     Id3v2VersionMask SupportedVersions);
+
+/// <summary>
+/// The version-correct identifier to use when writing a text frame, plus the
+/// priority-ordered list of identifiers to try when reading. Returned by
+/// <see cref="Id3v2KnownTextFrameIds.Resolve(string, Id3v2Version)"/> and
+/// <see cref="Id3v2KnownTextFrameIds.ResolveYear(Id3v2Version)"/>.
+/// </summary>
+public sealed record Id3v2TextFrameResolution(string Write, System.Collections.Generic.IReadOnlyList<string> Read);
 
 public static class Id3v2KnownTextFrameIds
 {
@@ -67,4 +80,55 @@ public static class Id3v2KnownTextFrameIds
         => (versionMask == Id3v2VersionMask.V220 || versionMask == Id3v2VersionMask.V221) && entry.V220Identifier is { } v220
             ? v220
             : entry.Identifier;
+
+    /// <summary>
+    /// Resolves a canonical identifier to the version-correct identifier to write
+    /// and a priority-ordered list of identifiers to try when reading. The canonical
+    /// may be either the v2.3+ identifier or the v2.2 alternate (case-insensitive).
+    /// </summary>
+    /// <param name="canonicalIdentifier">An identifier known to <see cref="All"/>.</param>
+    /// <param name="version">The tag version.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="canonicalIdentifier"/> is null.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="canonicalIdentifier"/> is not in the catalog or its
+    /// owning entry does not support <paramref name="version"/>. For year, callers must
+    /// use <see cref="ResolveYear"/> — TDRC and TYER are separate entries; passing one
+    /// at a version that doesn't support it throws here.
+    /// </exception>
+    public static Id3v2TextFrameResolution Resolve(string canonicalIdentifier, Id3v2Version version)
+    {
+        ArgumentNullException.ThrowIfNull(canonicalIdentifier);
+        var entry = All.FirstOrDefault(e =>
+            string.Equals(e.Identifier, canonicalIdentifier, StringComparison.OrdinalIgnoreCase)
+            || (e.V220Identifier is not null
+                && string.Equals(e.V220Identifier, canonicalIdentifier, StringComparison.OrdinalIgnoreCase)))
+            ?? throw new ArgumentException(
+                $"'{canonicalIdentifier}' is not a known text-frame identifier.",
+                nameof(canonicalIdentifier));
+        var versionMask = version.ToMask();
+        if ((entry.SupportedVersions & versionMask) == 0)
+        {
+            throw new ArgumentException(
+                $"Text frame '{entry.Identifier}' is not supported in {version}; " +
+                "for year fields use ResolveYear.",
+                nameof(canonicalIdentifier));
+        }
+        var write = IdentifierFor(entry, versionMask);
+        var alternate = string.Equals(entry.Identifier, write, StringComparison.OrdinalIgnoreCase)
+            ? entry.V220Identifier
+            : entry.Identifier;
+        return new(write, alternate is null ? [write] : [write, alternate]);
+    }
+
+    /// <summary>
+    /// Resolves the recording-year field across the v2.3↔v2.4 identifier change.
+    /// Returns TDRC on v2.4+ (with TYER/TYE legacy reads), TYER on v2.3 (with TYE legacy),
+    /// TYE on v2.2/v2.2.1 (with TYER legacy).
+    /// </summary>
+    public static Id3v2TextFrameResolution ResolveYear(Id3v2Version version)
+    {
+        return version >= Id3v2Version.Id3v240
+            ? new("TDRC", ["TDRC", "TYER", "TYE"])
+            : Resolve("TYER", version);
+    }
 }

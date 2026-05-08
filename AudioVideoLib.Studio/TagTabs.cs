@@ -86,17 +86,17 @@ public sealed class Id3v2TabViewModel : TagTabViewModel
         };
         SourceBadge = Header;
 
-        var yearId = tag.Version >= Id3v2Version.Id3v240 ? "TDRC" : "TYER";
+        Id3v2TextFrameResolution Resolve(string canonical) => Id3v2KnownTextFrameIds.Resolve(canonical, tag.Version);
 
-        Title       = GetText(tag, "TIT2") ?? GetText(tag, "TT2");
-        Artist      = GetText(tag, "TPE1") ?? GetText(tag, "TP1");
-        Album       = GetText(tag, "TALB") ?? GetText(tag, "TAL");
-        AlbumArtist = GetText(tag, "TPE2") ?? GetText(tag, "TP2");
-        Year        = GetText(tag, yearId) ?? GetText(tag, "TYER") ?? GetText(tag, "TYE");
-        Track       = GetText(tag, "TRCK") ?? GetText(tag, "TRK");
-        Disc        = GetText(tag, "TPOS") ?? GetText(tag, "TPA");
-        Genre       = GetText(tag, "TCON") ?? GetText(tag, "TCO");
-        Composer    = GetText(tag, "TCOM") ?? GetText(tag, "TCM");
+        Title       = ReadFirst(tag, Resolve("TIT2"));
+        Artist      = ReadFirst(tag, Resolve("TPE1"));
+        Album       = ReadFirst(tag, Resolve("TALB"));
+        AlbumArtist = ReadFirst(tag, Resolve("TPE2"));
+        Year        = ReadFirst(tag, Id3v2KnownTextFrameIds.ResolveYear(tag.Version));
+        Track       = ReadFirst(tag, Resolve("TRCK"));
+        Disc        = ReadFirst(tag, Resolve("TPOS"));
+        Genre       = ReadFirst(tag, Resolve("TCON"));
+        Composer    = ReadFirst(tag, Resolve("TCOM"));
         Comment     = tag.GetFrame<Id3v2CommentFrame>()?.Text;
 
         foreach (var frame in tag.Frames)
@@ -268,22 +268,50 @@ public sealed class Id3v2TabViewModel : TagTabViewModel
 
     public void CommitToTag()
     {
-        var yearId = Tag.Version >= Id3v2Version.Id3v240 ? "TDRC" : "TYER";
-        SetOrRemoveText(Tag, "TIT2", Title);
-        SetOrRemoveText(Tag, "TPE1", Artist);
-        SetOrRemoveText(Tag, "TALB", Album);
-        SetOrRemoveText(Tag, "TPE2", AlbumArtist);
-        SetOrRemoveText(Tag, yearId, Year);
-        SetOrRemoveText(Tag, "TRCK", Track);
-        SetOrRemoveText(Tag, "TPOS", Disc);
-        SetOrRemoveText(Tag, "TCON", Genre);
-        SetOrRemoveText(Tag, "TCOM", Composer);
+        Id3v2TextFrameResolution Resolve(string canonical) => Id3v2KnownTextFrameIds.Resolve(canonical, Tag.Version);
+
+        WriteAndSweep(Tag, Resolve("TIT2"), Title);
+        WriteAndSweep(Tag, Resolve("TPE1"), Artist);
+        WriteAndSweep(Tag, Resolve("TALB"), Album);
+        WriteAndSweep(Tag, Resolve("TPE2"), AlbumArtist);
+        WriteAndSweep(Tag, Id3v2KnownTextFrameIds.ResolveYear(Tag.Version), Year);
+        WriteAndSweep(Tag, Resolve("TRCK"), Track);
+        WriteAndSweep(Tag, Resolve("TPOS"), Disc);
+        WriteAndSweep(Tag, Resolve("TCON"), Genre);
+        WriteAndSweep(Tag, Resolve("TCOM"), Composer);
         SetOrRemoveComment(Tag, Comment);
     }
 
-    private static string? GetText(Id3v2Tag tag, string identifier)
+    private static string? ReadFirst(Id3v2Tag tag, Id3v2TextFrameResolution res)
     {
-        return tag.GetFrame<Id3v2TextFrame>(identifier)?.Values.FirstOrDefault();
+        foreach (var id in res.Read)
+        {
+            var hit = tag.GetFrame<Id3v2TextFrame>(id)?.Values.FirstOrDefault();
+            if (hit is not null)
+            {
+                return hit;
+            }
+        }
+        return null;
+    }
+
+    private static void WriteAndSweep(Id3v2Tag tag, Id3v2TextFrameResolution res, string? value)
+    {
+        SetOrRemoveText(tag, res.Write, value);
+        // Sweep stale-version frames so a v2.2 tag previously upgraded to v2.3
+        // (or a mixed TT2+TIT2 tag) collapses to the single correct identifier.
+        foreach (var legacyId in res.Read)
+        {
+            if (string.Equals(legacyId, res.Write, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+            var stale = tag.GetFrame<Id3v2TextFrame>(legacyId);
+            if (stale is not null)
+            {
+                tag.RemoveFrame(stale);
+            }
+        }
     }
 
     private static void SetOrRemoveText(Id3v2Tag tag, string identifier, string? value)

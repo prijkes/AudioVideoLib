@@ -1,5 +1,6 @@
 namespace AudioVideoLib.Studio.Tests.Editors.Id3v2;
 
+using System;
 using System.Linq;
 using AudioVideoLib.Studio.Editors.Id3v2;
 using AudioVideoLib.Tags;
@@ -71,5 +72,109 @@ public class Id3v2KnownFrameIdsTests
         }
         var f = new Id3v2UrlLinkFrame(Id3v2Version.Id3v240, identifier);
         Assert.Equal(identifier, f.Identifier);
+    }
+
+    // ----- Resolve / ResolveYear -----
+
+    [Fact]
+    public void Resolve_TIT2_V220_ReturnsTT2WriteAndTT2TIT2Reads()
+    {
+        // The bug: writer must use TT2 on v2.2, not TIT2.
+        var r = Id3v2KnownTextFrameIds.Resolve("TIT2", Id3v2Version.Id3v220);
+        Assert.Equal("TT2", r.Write);
+        Assert.Equal(["TT2", "TIT2"], r.Read);
+    }
+
+    [Fact]
+    public void Resolve_TIT2_V221_ReturnsTT2Write()
+    {
+        var r = Id3v2KnownTextFrameIds.Resolve("TIT2", Id3v2Version.Id3v221);
+        Assert.Equal("TT2", r.Write);
+    }
+
+    [Fact]
+    public void Resolve_TIT2_V230_ReturnsTIT2WriteAndTT2Legacy()
+    {
+        var r = Id3v2KnownTextFrameIds.Resolve("TIT2", Id3v2Version.Id3v230);
+        Assert.Equal("TIT2", r.Write);
+        Assert.Equal(["TIT2", "TT2"], r.Read);
+    }
+
+    [Fact]
+    public void Resolve_TIT2_V240_SameAsV230()
+    {
+        var r = Id3v2KnownTextFrameIds.Resolve("TIT2", Id3v2Version.Id3v240);
+        Assert.Equal("TIT2", r.Write);
+        Assert.Equal(["TIT2", "TT2"], r.Read);
+    }
+
+    [Fact]
+    public void Resolve_TT2_V230_AcceptsCanonicalAsV220Identifier()
+    {
+        // Caller passes the V220 form; should resolve identically.
+        var r = Id3v2KnownTextFrameIds.Resolve("TT2", Id3v2Version.Id3v230);
+        Assert.Equal("TIT2", r.Write);
+    }
+
+    [Fact]
+    public void Resolve_LowerCase_AcceptsCaseInsensitive()
+    {
+        var r = Id3v2KnownTextFrameIds.Resolve("tit2", Id3v2Version.Id3v240);
+        Assert.Equal("TIT2", r.Write);
+    }
+
+    [Fact]
+    public void Resolve_UnknownIdentifier_Throws()
+    {
+        // Loud failure on programmer error, not silent passthrough.
+        Assert.Throws<ArgumentException>(
+            () => Id3v2KnownTextFrameIds.Resolve("XXXX", Id3v2Version.Id3v240));
+    }
+
+    [Fact]
+    public void Resolve_TDRC_V230_Throws()
+    {
+        // TDRC is V240-only; asking on v2.3 must throw rather than silently write TDRC.
+        Assert.Throws<ArgumentException>(
+            () => Id3v2KnownTextFrameIds.Resolve("TDRC", Id3v2Version.Id3v230));
+    }
+
+    [Fact]
+    public void Resolve_TYER_V240_Throws()
+    {
+        // TYER's mask is V220 | V221 | V230 — caller must use ResolveYear for v2.4.
+        Assert.Throws<ArgumentException>(
+            () => Id3v2KnownTextFrameIds.Resolve("TYER", Id3v2Version.Id3v240));
+    }
+
+    [Fact]
+    public void Resolve_Null_Throws()
+    {
+        Assert.Throws<ArgumentNullException>(
+            () => Id3v2KnownTextFrameIds.Resolve(null!, Id3v2Version.Id3v240));
+    }
+
+    [Fact]
+    public void ResolveYear_V240_ReturnsTDRCWithLegacyChain()
+    {
+        var r = Id3v2KnownTextFrameIds.ResolveYear(Id3v2Version.Id3v240);
+        Assert.Equal("TDRC", r.Write);
+        Assert.Equal(["TDRC", "TYER", "TYE"], r.Read);
+    }
+
+    [Fact]
+    public void ResolveYear_V230_ReturnsTYERWithTYELegacy()
+    {
+        var r = Id3v2KnownTextFrameIds.ResolveYear(Id3v2Version.Id3v230);
+        Assert.Equal("TYER", r.Write);
+        Assert.Equal(["TYER", "TYE"], r.Read);
+    }
+
+    [Fact]
+    public void ResolveYear_V220_ReturnsTYEWithTYERLegacy()
+    {
+        var r = Id3v2KnownTextFrameIds.ResolveYear(Id3v2Version.Id3v220);
+        Assert.Equal("TYE", r.Write);
+        Assert.Equal(["TYE", "TYER"], r.Read);
     }
 }
