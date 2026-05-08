@@ -1012,7 +1012,7 @@ public partial class MainWindow : Window
         }
 
         var tab = CurrentId3v2Tab;
-        if (tab == null)
+        if (tab?.Tag is not Id3v2Tag tag)
         {
             return;
         }
@@ -1020,6 +1020,70 @@ public partial class MainWindow : Window
         row.IsSelected = true;
 
         var menu = new ContextMenu();
+        var attr = ResolveFrameEditorAttribute(frameRow.Frame.GetType());
+        var hasEditor = attr is not null;
+        // Adding another frame with the same identifier would just replace the existing
+        // one for base text/URL family frames (each ID is unique per tag), so suppress
+        // Add for those even though their editor is registered IsUniqueInstance=false.
+        var isTextOrUrlBase = frameRow.Frame.GetType() == typeof(Id3v2TextFrame)
+                           || frameRow.Frame.GetType() == typeof(Id3v2UrlLinkFrame);
+        var canAdd = attr is { IsUniqueInstance: false } && !isTextOrUrlBase;
+
+        if (hasEditor)
+        {
+            var edit = new MenuItem { Header = $"Edit {frameRow.Identifier}" };
+            edit.Click += (_, _) =>
+            {
+                try
+                {
+                    if (DispatchEdit(frameRow.Frame, tag))
+                    {
+                        tab.RefreshRow(frameRow);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(this,
+                        $"Could not edit {frameRow.Identifier}:\n\n{ex.Message}",
+                        "Edit frame", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            };
+            menu.Items.Add(edit);
+        }
+
+        if (canAdd)
+        {
+            var add = new MenuItem { Header = $"Add {frameRow.Identifier}" };
+            add.Click += (_, _) =>
+            {
+                try
+                {
+                    var newFrame = ConstructFrameFor(frameRow.Identifier, tag);
+                    if (newFrame is null)
+                    {
+                        return;
+                    }
+                    if (DispatchEdit(newFrame, tag))
+                    {
+                        tab.AddFrame(newFrame);
+                        UpdateStatus($"Added {frameRow.Identifier}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(this,
+                        $"Could not add {frameRow.Identifier}:\n\n{ex.Message}",
+                        "Add frame", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            };
+            menu.Items.Add(add);
+        }
+
+        if (menu.Items.Count > 0)
+        {
+            menu.Items.Add(new Separator());
+        }
+
         var delete = new MenuItem { Header = $"Delete {frameRow.Identifier}" };
         delete.Click += (_, _) =>
         {
@@ -1031,6 +1095,23 @@ public partial class MainWindow : Window
         menu.PlacementTarget = row;
         menu.IsOpen = true;
         e.Handled = true;
+    }
+
+    private static Id3v2FrameEditorAttribute? ResolveFrameEditorAttribute(Type frameType)
+    {
+        // Walk the type hierarchy mirroring TagItemEditorRegistry.TryResolve so an
+        // Id3v2TextFrame with a specific identifier still resolves to TextFrameEditor.
+        for (var t = frameType; t is not null && t != typeof(object); t = t.BaseType)
+        {
+            foreach (var entry in TagItemEditorRegistry.Shared.Entries)
+            {
+                if (entry.Adapter.ItemType == t && entry.Attribute is Id3v2FrameEditorAttribute a)
+                {
+                    return a;
+                }
+            }
+        }
+        return null;
     }
 
     private void AddTagButton_Click(object sender, RoutedEventArgs e)
