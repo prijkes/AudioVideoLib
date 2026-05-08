@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using AudioVideoLib.Studio.Editors;
+using AudioVideoLib.Studio.Editors.Id3v2;
 using AudioVideoLib.Tags;
 
 public enum ValidationSeverity
@@ -36,7 +38,7 @@ public static class TagValidator
     {
         var issues = new List<ValidationIssue>();
         var framesList = tag.Frames.ToList();
-        var expectedIdLen = tag.Version < Id3v2Version.Id3v230 ? 3 : 4;
+        var expectedIdLen = Id3v2Frame.GetIdentifierFieldLength(tag.Version);
         var seenFrames = new HashSet<string>(StringComparer.Ordinal);
 
         foreach (var frame in framesList)
@@ -87,9 +89,9 @@ public static class TagValidator
                     break;
             }
 
-            // Duplicate detection: some frames may legitimately repeat (APIC with different types, TXXX, COMM, etc.)
-            var isRepeatable = id is "APIC" or "PIC" or "TXXX" or "TXX" or "COMM" or "COM" or "USLT" or "ULT" or "WXXX" or "WXX" or "UFID" or "UFI" or "PRIV" or "GEOB" or "GEO";
-            if (!isRepeatable && !seenFrames.Add(id))
+            // Duplicate detection: route through the same uniqueness rules the menus
+            // use, so the validator stays in sync if a spec carve-out (e.g. WOAR) lands.
+            if (IsUniquePerTag(id, frame) && !seenFrames.Add(id))
             {
                 issues.Add(new(ValidationSeverity.Warning, $"Frame '{id}' appears more than once."));
             }
@@ -101,6 +103,30 @@ public static class TagValidator
         }
 
         return issues;
+    }
+
+    // True when the spec or the editor attribute says only one frame with this
+    // identifier may live in a tag. Matches the rules used by the Frame menu,
+    // Manage Frames, and the right-click context menu.
+    // TODO: replace the inline registry walk once TagItemEditorRegistry exposes a
+    // ResolveAttribute(Type) helper (planned in S4).
+    private static bool IsUniquePerTag(string identifier, Id3v2Frame frame)
+    {
+        if (Id3v2FrameUniqueness.IsUniqueTextOrUrlIdentifier(identifier))
+        {
+            return true;
+        }
+        for (var t = frame.GetType(); t is not null && t != typeof(object); t = t.BaseType)
+        {
+            foreach (var entry in TagItemEditorRegistry.Shared.Entries)
+            {
+                if (entry.Adapter.ItemType == t && entry.Attribute is Id3v2FrameEditorAttribute attr)
+                {
+                    return attr.IsUniqueInstance;
+                }
+            }
+        }
+        return false;
     }
 
     private static IReadOnlyList<ValidationIssue> ValidateId3v1(Id3v1Tag tag)
