@@ -137,14 +137,9 @@
                             <DataGridTextColumn Header="ID"   Binding="{Binding Identifier}" Width="60"  IsReadOnly="True" />
                             <DataGridTextColumn Header="Type" Binding="{Binding FrameType}"  Width="130" IsReadOnly="True" />
                             <DataGridTextColumn Header="Value"
-                                                Binding="{Binding Value, UpdateSourceTrigger=LostFocus}"
-                                                Width="*">
-                                <DataGridTextColumn.EditingElementStyle>
-                                    <Style TargetType="TextBox">
-                                        <Setter Property="IsReadOnly" Value="{Binding IsReadOnlyInGrid}" />
-                                    </Style>
-                                </DataGridTextColumn.EditingElementStyle>
-                            </DataGridTextColumn>
+                                                Binding="{Binding Value}"
+                                                Width="*"
+                                                IsReadOnly="True" />
                             <DataGridTextColumn Header="Size" Binding="{Binding Size}" Width="80" IsReadOnly="True" />
                         </DataGrid.Columns>
                     </DataGrid>

@@ -100,7 +100,7 @@ public sealed class Id3v2TabViewModel : TagTabViewModel
 
         foreach (var frame in tag.Frames)
         {
-            AdvancedFrames.Add(new Id3v2FrameRow(frame, () => IsDirty = true));
+            AdvancedFrames.Add(new Id3v2FrameRow(frame));
         }
 
         ResetDirty();
@@ -122,7 +122,7 @@ public sealed class Id3v2TabViewModel : TagTabViewModel
     {
         ArgumentNullException.ThrowIfNull(frame);
         Tag.SetFrame(frame);
-        var row = new Id3v2FrameRow(frame, () => IsDirty = true);
+        var row = new Id3v2FrameRow(frame);
         AdvancedFrames.Add(row);
         IsDirty = true;
         return row;
@@ -231,7 +231,7 @@ public sealed class Id3v2TabViewModel : TagTabViewModel
 
         // Re-wrap so the row picks up the fresh Describe() summary after a per-type
         // editor mutates the underlying frame.
-        var replacement = new Id3v2FrameRow(row.Frame, () => IsDirty = true);
+        var replacement = new Id3v2FrameRow(row.Frame);
         AdvancedFrames[index] = replacement;
         IsDirty = true;
     }
@@ -352,10 +352,8 @@ public sealed class Id3v2TabViewModel : TagTabViewModel
     }
 }
 
-public sealed class Id3v2FrameRow(Id3v2Frame frame, Action markDirty) : INotifyPropertyChanged
+public sealed class Id3v2FrameRow(Id3v2Frame frame)
 {
-    public event PropertyChangedEventHandler? PropertyChanged;
-
     public Id3v2Frame Frame { get; } = frame;
 
     public string Identifier { get; } = frame.Identifier ?? string.Empty;
@@ -364,81 +362,7 @@ public sealed class Id3v2FrameRow(Id3v2Frame frame, Action markDirty) : INotifyP
 
     public int Size => Frame.Data?.Length ?? 0;
 
-    public bool IsEditable { get; } = frame is
-        Id3v2TextFrame or
-        Id3v2UrlLinkFrame or
-        Id3v2UserDefinedTextInformationFrame or
-        Id3v2UserDefinedUrlLinkFrame or
-        Id3v2CommentFrame;
-
-    public bool IsReadOnlyInGrid => !IsEditable;
-
-    public string Value
-    {
-        get;
-        set
-        {
-            if (field == value)
-            {
-                return;
-            }
-
-            if (!IsEditable)
-            {
-                return;
-            }
-
-            var applied = value ?? string.Empty;
-            try
-            {
-                ApplyValue(Frame, applied);
-            }
-            catch
-            {
-                return;
-            }
-
-            field = applied;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Value)));
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Size)));
-            markDirty();
-        }
-    } = Describe(frame);
-
-    private static void ApplyValue(Id3v2Frame frame, string value)
-    {
-        switch (frame)
-        {
-            case Id3v2TextFrame text:
-                text.TextEncoding = Id3v2FrameEncodingType.UTF8;
-                text.Values.Clear();
-                if (!string.IsNullOrEmpty(value))
-                {
-                    text.Values.Add(value);
-                }
-
-                break;
-            case Id3v2UrlLinkFrame url:
-                url.Url = value;
-                break;
-            case Id3v2UserDefinedTextInformationFrame u:
-                u.TextEncoding = Id3v2FrameEncodingType.UTF8;
-                u.Value = value;
-                break;
-            case Id3v2UserDefinedUrlLinkFrame uurl:
-                uurl.Url = value;
-                break;
-            case Id3v2CommentFrame comm:
-                comm.TextEncoding = Id3v2FrameEncodingType.UTF8;
-                if (string.IsNullOrEmpty(comm.Language))
-                {
-                    comm.Language = "eng";
-                }
-
-                comm.Text = value;
-                break;
-        }
-    }
+    public string Value { get; } = Describe(frame);
 
     private static string Describe(Id3v2Frame f)
     {
