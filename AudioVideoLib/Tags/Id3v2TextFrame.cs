@@ -23,7 +23,7 @@ public sealed partial class Id3v2TextFrame : Id3v2Frame
     {
             {
                 Id3v2FrameEncodingType.Default,
-                Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default).GetBytes([TextDelimiter])
+                Id3v2FrameEncoding.DefaultEncoding.GetBytes([TextDelimiter])
             },
             {
                 Id3v2FrameEncodingType.UTF16BigEndian,

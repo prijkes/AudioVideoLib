@@ -108,12 +108,11 @@ public sealed class Id3v2EncryptedMetaFrame : Id3v2Frame
     {
         get
         {
-            var defaultEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
             var stream = new StreamBuffer();
             // Owner Identifier
             if (OwnerIdentifier != null)
             {
-                stream.WriteString(OwnerIdentifier, defaultEncoding);
+                stream.WriteString(OwnerIdentifier, Id3v2FrameEncoding.DefaultEncoding);
             }
 
             // 0x00
@@ -122,7 +121,7 @@ public sealed class Id3v2EncryptedMetaFrame : Id3v2Frame
             // Content/explanation
             if (ContentExplanation != null)
             {
-                stream.WriteString(ContentExplanation, defaultEncoding);
+                stream.WriteString(ContentExplanation, Id3v2FrameEncoding.DefaultEncoding);
             }
 
             // 0x00
@@ -141,10 +140,9 @@ public sealed class Id3v2EncryptedMetaFrame : Id3v2Frame
         {
             ArgumentNullException.ThrowIfNull(value);
 
-            var defaultEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
             var stream = new StreamBuffer(value);
-            _ownerIdentifier = stream.ReadString(defaultEncoding);
-            _contentExplanation = stream.ReadString(defaultEncoding);
+            _ownerIdentifier = stream.ReadString(Id3v2FrameEncoding.DefaultEncoding);
+            _contentExplanation = stream.ReadString(Id3v2FrameEncoding.DefaultEncoding);
             EncryptedDataBlock = new byte[stream.Length - stream.Position];
             stream.Read(EncryptedDataBlock, EncryptedDataBlock.Length);
         }

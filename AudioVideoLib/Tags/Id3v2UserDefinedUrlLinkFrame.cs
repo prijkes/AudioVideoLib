@@ -110,7 +110,6 @@ public sealed class Id3v2UserDefinedUrlLinkFrame : Id3v2Frame
     {
         get
         {
-            var defaultEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
             var encoding = Id3v2FrameEncoding.GetEncoding(TextEncoding);
             var stream = new StreamBuffer();
             // Text Encoding
@@ -131,7 +130,7 @@ public sealed class Id3v2UserDefinedUrlLinkFrame : Id3v2Frame
             // URL (ISO-8859-1)
             if (Url != null)
             {
-                stream.WriteString(Url, defaultEncoding);
+                stream.WriteString(Url, Id3v2FrameEncoding.DefaultEncoding);
             }
 
             return stream.ToByteArray();
@@ -141,14 +140,13 @@ public sealed class Id3v2UserDefinedUrlLinkFrame : Id3v2Frame
         {
             ArgumentNullException.ThrowIfNull(value);
 
-            var defaultEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
             var stream = new StreamBuffer(value);
             TextEncoding = Id3v2FrameEncoding.ReadEncodingTypeFromStream(stream);
             var encoding = Id3v2FrameEncoding.GetEncoding(TextEncoding);
             Description = stream.ReadString(encoding);
 
             // Seems that some players like to add a BOM before the URL; even though the value is corrupt.
-            Url = stream.ReadString(defaultEncoding, true);
+            Url = stream.ReadString(Id3v2FrameEncoding.DefaultEncoding, true);
         }
     }
 

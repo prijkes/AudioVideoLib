@@ -147,8 +147,7 @@ public sealed class Id3v2GeneralEncapsulatedObjectFrame : Id3v2Frame
     {
         get
         {
-            var mimeTypeEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
-            var imageFormatTerminator = mimeTypeEncoding.GetBytes("\0");
+            var imageFormatTerminator = Id3v2FrameEncoding.DefaultEncoding.GetBytes("\0");
             var encoding = Id3v2FrameEncoding.GetEncoding(TextEncoding);
             var stringTerminator = encoding.GetBytes("\0");
             var stream = new StreamBuffer();
@@ -160,7 +159,7 @@ public sealed class Id3v2GeneralEncapsulatedObjectFrame : Id3v2Frame
             // ImageFormat / MIME Type
             if (MimeType != null)
             {
-                stream.WriteString(MimeType, mimeTypeEncoding);
+                stream.WriteString(MimeType, Id3v2FrameEncoding.DefaultEncoding);
             }
 
             // 0x00
@@ -203,11 +202,10 @@ public sealed class Id3v2GeneralEncapsulatedObjectFrame : Id3v2Frame
         {
             ArgumentNullException.ThrowIfNull(value);
 
-            var mimeTypeEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
             var stream = new StreamBuffer(value);
             _frameEncodingType = Id3v2FrameEncoding.ReadEncodingTypeFromStream(stream);
             var encoding = Id3v2FrameEncoding.GetEncoding(_frameEncodingType);
-            _mimeType = stream.ReadString(mimeTypeEncoding, true);
+            _mimeType = stream.ReadString(Id3v2FrameEncoding.DefaultEncoding, true);
             _filename = stream.ReadString(encoding);
             _contentDescription = stream.ReadString(encoding);
             EncapsulatedObject = new byte[stream.Length - stream.Position];

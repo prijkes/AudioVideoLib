@@ -111,7 +111,7 @@ public sealed class Id3v2TermsOfUseFrame : Id3v2Frame
             // Language (3 bytes, ISO-639-2 in ISO-8859-1)
             if (Language != null)
             {
-                stream.WriteString(Language, Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default));
+                stream.WriteString(Language, Id3v2FrameEncoding.DefaultEncoding);
             }
 
             // Text (according to text encoding — no BOM preamble per ID3v2 USER spec)
@@ -127,11 +127,10 @@ public sealed class Id3v2TermsOfUseFrame : Id3v2Frame
         {
             ArgumentNullException.ThrowIfNull(value);
 
-            var defaultEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
             var stream = new StreamBuffer(value);
             _frameEncodingType = Id3v2FrameEncoding.ReadEncodingTypeFromStream(stream);
             var encoding = Id3v2FrameEncoding.GetEncoding(_frameEncodingType);
-            _language = stream.ReadString(3, defaultEncoding);
+            _language = stream.ReadString(LanguageCodeLength, Id3v2FrameEncoding.DefaultEncoding);
             _text = stream.ReadString(encoding);
         }
     }

@@ -298,7 +298,6 @@ public sealed class Id3v2CommercialFrame : Id3v2Frame
     {
         get
         {
-            var defaultEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
             var stream = new StreamBuffer();
             var encoding = Id3v2FrameEncoding.GetEncoding(TextEncoding);
             var preamble = Id3v2FrameEncoding.GetEncodingPreamble(TextEncoding);
@@ -309,7 +308,7 @@ public sealed class Id3v2CommercialFrame : Id3v2Frame
             // Price string
             if (PriceString != null)
             {
-                stream.WriteString(PriceString, defaultEncoding);
+                stream.WriteString(PriceString, Id3v2FrameEncoding.DefaultEncoding);
             }
 
             // String terminator (0x00 in encoding)
@@ -318,13 +317,13 @@ public sealed class Id3v2CommercialFrame : Id3v2Frame
             // Valid until
             if (ValidUntil != null)
             {
-                stream.WriteString(ValidUntil, defaultEncoding);
+                stream.WriteString(ValidUntil, Id3v2FrameEncoding.DefaultEncoding);
             }
 
             // Contact URL
             if (ContactUrl != null)
             {
-                stream.WriteString(ContactUrl, defaultEncoding);
+                stream.WriteString(ContactUrl, Id3v2FrameEncoding.DefaultEncoding);
             }
 
             // String terminator (0x00 in encoding)
@@ -360,7 +359,7 @@ public sealed class Id3v2CommercialFrame : Id3v2Frame
             // Picture MIME type
             if (PictureMimeType != null)
             {
-                stream.WriteString(PictureMimeType, defaultEncoding);
+                stream.WriteString(PictureMimeType, Id3v2FrameEncoding.DefaultEncoding);
             }
 
             // String terminator (0x00 in encoding)
@@ -379,17 +378,16 @@ public sealed class Id3v2CommercialFrame : Id3v2Frame
         {
             ArgumentNullException.ThrowIfNull(value);
 
-            var defaultEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
             var stream = new StreamBuffer(value);
             _frameEncodingType = Id3v2FrameEncoding.ReadEncodingTypeFromStream(stream);
             var encoding = Id3v2FrameEncoding.GetEncoding(_frameEncodingType);
-            _priceString = stream.ReadString(defaultEncoding, true);
-            _validUntil = stream.ReadString(8, defaultEncoding, true);
-            _contactUrl = stream.ReadString(defaultEncoding, true);
+            _priceString = stream.ReadString(Id3v2FrameEncoding.DefaultEncoding, true);
+            _validUntil = stream.ReadString(8, Id3v2FrameEncoding.DefaultEncoding, true);
+            _contactUrl = stream.ReadString(Id3v2FrameEncoding.DefaultEncoding, true);
             _audioDeliveryType = (Id3v2AudioDeliveryType)stream.ReadByte();
             _nameOfSeller = stream.ReadString(encoding);
             _shortDescription = stream.ReadString(encoding);
-            _pictureMimeType = stream.ReadString(defaultEncoding);
+            _pictureMimeType = stream.ReadString(Id3v2FrameEncoding.DefaultEncoding);
             SellerLogo = new byte[stream.Length - stream.Position];
             stream.Read(SellerLogo, SellerLogo.Length);
         }

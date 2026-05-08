@@ -134,7 +134,6 @@ public sealed class Id3v2UnsynchronizedLyricsFrame : Id3v2Frame
     {
         get
         {
-            var defaultEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
             var encoding = Id3v2FrameEncoding.GetEncoding(TextEncoding);
             var stream = new StreamBuffer();
             // Text encoding
@@ -143,7 +142,7 @@ public sealed class Id3v2UnsynchronizedLyricsFrame : Id3v2Frame
             // Language
             if (Language != null)
             {
-                stream.WriteString(Language, defaultEncoding);
+                stream.WriteString(Language, Id3v2FrameEncoding.DefaultEncoding);
             }
 
             // Preamble
@@ -181,11 +180,10 @@ public sealed class Id3v2UnsynchronizedLyricsFrame : Id3v2Frame
         {
             ArgumentNullException.ThrowIfNull(value);
 
-            var defaultEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
             var stream = new StreamBuffer(value);
             TextEncoding = Id3v2FrameEncoding.ReadEncodingTypeFromStream(stream);
             var encoding = Id3v2FrameEncoding.GetEncoding(TextEncoding);
-            Language = stream.ReadString(3, defaultEncoding);
+            Language = stream.ReadString(LanguageCodeLength, Id3v2FrameEncoding.DefaultEncoding);
             ContentDescriptor = stream.ReadString(encoding);
             Lyrics = stream.ReadString(encoding);
         }

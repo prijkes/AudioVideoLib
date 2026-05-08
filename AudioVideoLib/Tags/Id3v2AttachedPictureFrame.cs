@@ -169,7 +169,6 @@ public sealed class Id3v2AttachedPictureFrame : Id3v2Frame
     {
         get
         {
-            var defaultEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
             var encoding = Id3v2FrameEncoding.GetEncoding(TextEncoding);
             var stream = new StreamBuffer();
             var preamble = Id3v2FrameEncoding.GetEncodingPreamble(TextEncoding);
@@ -182,11 +181,11 @@ public sealed class Id3v2AttachedPictureFrame : Id3v2Frame
             {
                 if (Version < Id3v2Version.Id3v230)
                 {
-                    stream.WriteString(ImageFormat, defaultEncoding, 3);
+                    stream.WriteString(ImageFormat, Id3v2FrameEncoding.DefaultEncoding, 3);
                 }
                 else
                 {
-                    stream.WriteString(ImageFormat, defaultEncoding);
+                    stream.WriteString(ImageFormat, Id3v2FrameEncoding.DefaultEncoding);
                 }
             }
 
@@ -224,11 +223,10 @@ public sealed class Id3v2AttachedPictureFrame : Id3v2Frame
         {
             ArgumentNullException.ThrowIfNull(value);
 
-            var imageFormatEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
             var stream = new StreamBuffer(value);
             TextEncoding = Id3v2FrameEncoding.ReadEncodingTypeFromStream(stream);
             var encoding = Id3v2FrameEncoding.GetEncoding(TextEncoding);
-            ImageFormat = (Version < Id3v2Version.Id3v230) ? stream.ReadString(3, true) : stream.ReadString(imageFormatEncoding, true);
+            ImageFormat = (Version < Id3v2Version.Id3v230) ? stream.ReadString(3, true) : stream.ReadString(Id3v2FrameEncoding.DefaultEncoding, true);
             PictureType = (Id3v2AttachedPictureType)stream.ReadByte();
 
             // Some badly written ID3v2 programs write ID3v2.2.0 PIC frames instead of APIC frames; find out here...

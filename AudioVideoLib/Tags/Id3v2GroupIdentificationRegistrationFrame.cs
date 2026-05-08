@@ -112,12 +112,11 @@ public sealed class Id3v2GroupIdentificationRegistrationFrame : Id3v2Frame
     {
         get
         {
-            var defaultEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
             var stream = new StreamBuffer();
             // Owner identifier
             if (OwnerIdentifier != null)
             {
-                stream.WriteString(OwnerIdentifier, defaultEncoding);
+                stream.WriteString(OwnerIdentifier, Id3v2FrameEncoding.DefaultEncoding);
             }
 
             // String terminator (0x00 in encoding)
@@ -137,9 +136,8 @@ public sealed class Id3v2GroupIdentificationRegistrationFrame : Id3v2Frame
 
         protected set
         {
-            var defaultEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
             var stream = new StreamBuffer(value);
-            _ownerIdentifier = stream.ReadString(defaultEncoding, true);
+            _ownerIdentifier = stream.ReadString(Id3v2FrameEncoding.DefaultEncoding, true);
             _groupSymbol = (byte)stream.ReadByte();
             GroupDependentData = new byte[stream.Length - stream.Position];
             stream.Read(GroupDependentData, GroupDependentData.Length);

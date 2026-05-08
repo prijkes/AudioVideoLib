@@ -108,7 +108,6 @@ public sealed class Id3v2Equalisation2Frame : Id3v2Frame
     {
         get
         {
-            var defaultEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
             var stream = new StreamBuffer();
             // Interpolation method
             stream.WriteByte((byte)InterpolationMethod);
@@ -116,7 +115,7 @@ public sealed class Id3v2Equalisation2Frame : Id3v2Frame
             // Identification
             if (Identification != null)
             {
-                stream.WriteString(Identification, defaultEncoding);
+                stream.WriteString(Identification, Id3v2FrameEncoding.DefaultEncoding);
             }
 
             // String terminator (0x00 in encoding)
@@ -135,10 +134,9 @@ public sealed class Id3v2Equalisation2Frame : Id3v2Frame
         {
             ArgumentNullException.ThrowIfNull(value);
 
-            var defaultEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
             var stream = new StreamBuffer(value);
             _interpolationMethod = (Id3v2InterpolationMethod)stream.ReadByte();
-            _identification = stream.ReadString(defaultEncoding, true);
+            _identification = stream.ReadString(Id3v2FrameEncoding.DefaultEncoding, true);
 
             // Read the adjustment points
             UnbindAdjustmentPointsListEvents();

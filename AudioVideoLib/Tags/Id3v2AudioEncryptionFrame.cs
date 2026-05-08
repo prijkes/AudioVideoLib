@@ -111,12 +111,11 @@ public sealed class Id3v2AudioEncryptionFrame : Id3v2Frame
     {
         get
         {
-            var defaultEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
             var stream = new StreamBuffer();
             // Owner Identifier
             if (OwnerIdentifier != null)
             {
-                stream.WriteString(OwnerIdentifier, defaultEncoding);
+                stream.WriteString(OwnerIdentifier, Id3v2FrameEncoding.DefaultEncoding);
             }
 
             // 0x00
@@ -141,9 +140,8 @@ public sealed class Id3v2AudioEncryptionFrame : Id3v2Frame
         {
             ArgumentNullException.ThrowIfNull(value);
 
-            var defaultEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
             var stream = new StreamBuffer(value);
-            _ownerIdentifier = stream.ReadString(defaultEncoding, true);
+            _ownerIdentifier = stream.ReadString(Id3v2FrameEncoding.DefaultEncoding, true);
             PreviewStart = (short)stream.ReadBigEndianInt16();
             PreviewLength = (short)stream.ReadBigEndianInt16();
             EncryptionInfo = new byte[stream.Length - stream.Position];

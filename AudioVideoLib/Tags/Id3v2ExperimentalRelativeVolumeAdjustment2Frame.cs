@@ -81,12 +81,11 @@ public sealed class Id3v2ExperimentalRelativeVolumeAdjustment2Frame : Id3v2Frame
     {
         get
         {
-            var defaultEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
             var stream = new StreamBuffer();
             // Identification
             if (Identification != null)
             {
-                stream.WriteString(Identification, defaultEncoding);
+                stream.WriteString(Identification, Id3v2FrameEncoding.DefaultEncoding);
             }
 
             // String terminator (0x00 in encoding)
@@ -107,9 +106,8 @@ public sealed class Id3v2ExperimentalRelativeVolumeAdjustment2Frame : Id3v2Frame
         {
             ArgumentNullException.ThrowIfNull(value);
 
-            var defaultEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
             var stream = new StreamBuffer(value);
-            _identification = stream.ReadString(defaultEncoding, true);
+            _identification = stream.ReadString(Id3v2FrameEncoding.DefaultEncoding, true);
 
             UnbindChannelInformationListEvents();
             _channelInformation.Clear();

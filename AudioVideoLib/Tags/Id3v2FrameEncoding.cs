@@ -13,6 +13,12 @@ public partial class Id3v2Frame
     protected static class Id3v2FrameEncoding
     {
         /// <summary>
+        /// Cached ISO-8859-1 encoding (the ID3v2 §4 default frame text encoding).
+        /// Equivalent to <c>GetEncoding(Id3v2FrameEncodingType.Default)</c>.
+        /// </summary>
+        public static readonly Encoding DefaultEncoding = Encoding.GetEncoding("ISO-8859-1");
+
+        /// <summary>
         /// The encoding values to use when writing the encoding type to a byte array.
         /// </summary>
         //// [_encodingType] -> ISO-8859-1, UTF16LE, UTF16BE, UTF16BEbomless, UTF8, UTF7

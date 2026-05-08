@@ -133,7 +133,6 @@ public sealed class Id3v2CommentFrame : Id3v2Frame
     {
         get
         {
-            var languageEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
             var encoding = Id3v2FrameEncoding.GetEncoding(TextEncoding);
             var stream = new StreamBuffer();
             var preamble = Id3v2FrameEncoding.GetEncodingPreamble(TextEncoding);
@@ -144,7 +143,7 @@ public sealed class Id3v2CommentFrame : Id3v2Frame
             // Language
             if (Language != null)
             {
-                stream.WriteString(Language, languageEncoding);
+                stream.WriteString(Language, Id3v2FrameEncoding.DefaultEncoding);
             }
 
             // Preamble
@@ -175,11 +174,10 @@ public sealed class Id3v2CommentFrame : Id3v2Frame
         {
             ArgumentNullException.ThrowIfNull(value);
 
-            var languageEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
             var stream = new StreamBuffer(value);
             TextEncoding = Id3v2FrameEncoding.ReadEncodingTypeFromStream(stream);
             var encoding = Id3v2FrameEncoding.GetEncoding(TextEncoding);
-            Language = stream.ReadString(3, languageEncoding);
+            Language = stream.ReadString(LanguageCodeLength, Id3v2FrameEncoding.DefaultEncoding);
             ShortContentDescription = stream.ReadString(encoding);
             Text = stream.ReadString(encoding);
         }

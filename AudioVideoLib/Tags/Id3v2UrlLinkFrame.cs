@@ -56,15 +56,14 @@ public sealed partial class Id3v2UrlLinkFrame : Id3v2Frame
     /// <inheritdoc />
     public override byte[] Data
     {
-        get => Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default).GetBytes(Url ?? string.Empty);
+        get => Id3v2FrameEncoding.DefaultEncoding.GetBytes(Url ?? string.Empty);
 
         protected set
         {
             ArgumentNullException.ThrowIfNull(value);
 
             var stream = new StreamBuffer(value);
-            var defaultEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
-            Url = stream.ReadString(defaultEncoding, true);
+            Url = stream.ReadString(Id3v2FrameEncoding.DefaultEncoding, true);
         }
     }
 

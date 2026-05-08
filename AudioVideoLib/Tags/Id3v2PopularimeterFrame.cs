@@ -77,12 +77,11 @@ public sealed class Id3v2PopularimeterFrame : Id3v2Frame
     {
         get
         {
-            var emailEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
             var stream = new StreamBuffer();
             // Email to user
             if (EmailToUser != null)
             {
-                stream.WriteString(EmailToUser, emailEncoding);
+                stream.WriteString(EmailToUser, Id3v2FrameEncoding.DefaultEncoding);
             }
 
             // 0x00
@@ -105,9 +104,8 @@ public sealed class Id3v2PopularimeterFrame : Id3v2Frame
         {
             ArgumentNullException.ThrowIfNull(value);
 
-            var defaultEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
             var stream = new StreamBuffer(value);
-            _emailToUser = stream.ReadString(defaultEncoding, true);
+            _emailToUser = stream.ReadString(Id3v2FrameEncoding.DefaultEncoding, true);
             Rating = (byte)stream.ReadByte();
 
             // If no personal counter is wanted it may be omitted.

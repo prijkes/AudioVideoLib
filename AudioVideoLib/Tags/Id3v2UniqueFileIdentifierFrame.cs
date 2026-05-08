@@ -97,13 +97,11 @@ public sealed class Id3v2UniqueFileIdentifierFrame : Id3v2Frame
     {
         get
         {
-            // Use Default as default encoding (according to spec).
-            var defaultEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
             var stream = new StreamBuffer();
             // Owner identifier
             if (OwnerIdentifier != null)
             {
-                stream.WriteString(OwnerIdentifier, defaultEncoding);
+                stream.WriteString(OwnerIdentifier, Id3v2FrameEncoding.DefaultEncoding);
             }
 
             // 0x00
@@ -122,9 +120,8 @@ public sealed class Id3v2UniqueFileIdentifierFrame : Id3v2Frame
         {
             ArgumentNullException.ThrowIfNull(value);
 
-            var defaultEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
             var stream = new StreamBuffer(value);
-            OwnerIdentifier = stream.ReadString(defaultEncoding, true);
+            OwnerIdentifier = stream.ReadString(Id3v2FrameEncoding.DefaultEncoding, true);
             IdentifierData = new byte[stream.Length - stream.Position];
             stream.Read(IdentifierData, IdentifierData.Length);
         }

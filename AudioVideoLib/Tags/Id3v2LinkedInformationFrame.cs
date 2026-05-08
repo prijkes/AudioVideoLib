@@ -126,7 +126,6 @@ public sealed class Id3v2LinkedInformationFrame : Id3v2Frame
     {
         get
         {
-            var defaultEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
             var stream = new StreamBuffer();
             // Frame Identifier
             stream.WriteString(FrameIdentifier);
@@ -134,7 +133,7 @@ public sealed class Id3v2LinkedInformationFrame : Id3v2Frame
             // URL
             if (Url != null)
             {
-                stream.WriteString(Url, defaultEncoding);
+                stream.WriteString(Url, Id3v2FrameEncoding.DefaultEncoding);
             }
 
             // 0x00
@@ -156,11 +155,10 @@ public sealed class Id3v2LinkedInformationFrame : Id3v2Frame
         {
             ArgumentNullException.ThrowIfNull(value);
 
-            var defaultEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
             var stream = new StreamBuffer(value);
-            _frameIdentifier = stream.ReadString(GetIdentifierFieldLength(Version), defaultEncoding, true);
-            _url = stream.ReadString(defaultEncoding, true);
-            _additionalIdData = stream.ReadString(defaultEncoding);
+            _frameIdentifier = stream.ReadString(GetIdentifierFieldLength(Version), Id3v2FrameEncoding.DefaultEncoding, true);
+            _url = stream.ReadString(Id3v2FrameEncoding.DefaultEncoding, true);
+            _additionalIdData = stream.ReadString(Id3v2FrameEncoding.DefaultEncoding);
         }
     }
 

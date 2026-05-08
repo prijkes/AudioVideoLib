@@ -183,7 +183,6 @@ public sealed class Id3v2SynchronizedLyricsFrame : Id3v2Frame
     {
         get
         {
-            var languageEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
             var encoding = Id3v2FrameEncoding.GetEncoding(TextEncoding);
             var stream = new StreamBuffer();
             // Text encoding
@@ -192,7 +191,7 @@ public sealed class Id3v2SynchronizedLyricsFrame : Id3v2Frame
             // Language
             if (Language != null)
             {
-                stream.WriteString(Language, languageEncoding);
+                stream.WriteString(Language, Id3v2FrameEncoding.DefaultEncoding);
             }
 
             // Timestamp format
@@ -242,11 +241,10 @@ public sealed class Id3v2SynchronizedLyricsFrame : Id3v2Frame
         {
             ArgumentNullException.ThrowIfNull(value);
 
-            var languageEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
             var stream = new StreamBuffer(value);
             _frameEncodingType = Id3v2FrameEncoding.ReadEncodingTypeFromStream(stream);
             var encoding = Id3v2FrameEncoding.GetEncoding(_frameEncodingType);
-            _language = stream.ReadString(3, languageEncoding);
+            _language = stream.ReadString(LanguageCodeLength, Id3v2FrameEncoding.DefaultEncoding);
             _timeStampFormat = (Id3v2TimeStampFormat)stream.ReadByte();
             _contentType = (Id3v2ContentType)stream.ReadByte();
             _contentDescriptor = stream.ReadString(encoding);
