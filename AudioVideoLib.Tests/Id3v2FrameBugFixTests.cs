@@ -176,6 +176,29 @@ public class Id3v2FrameBugFixTests
         Assert.True(bomCount >= 3, $"expected at least 3 UTF-16LE BOMs; got {bomCount}");
     }
 
+    // D5 — base GetHashCode must respect the equal-implies-same-hash contract.
+    [Fact]
+    public void HashCode_EqualFrames_SameHash()
+    {
+        var a = new Id3v2TextFrame(Id3v2Version.Id3v240, "TIT2");
+        var b = new Id3v2TextFrame(Id3v2Version.Id3v240, "TIT2");
+        Assert.True(a.Equals(b));
+        Assert.Equal(a.GetHashCode(), b.GetHashCode());
+
+        var c = new Id3v2GroupIdentificationRegistrationFrame
+        {
+            OwnerIdentifier = "http://example.com/grid",
+            GroupSymbol = 0x80,
+        };
+        var d = new Id3v2GroupIdentificationRegistrationFrame
+        {
+            OwnerIdentifier = "http://example.com/grid",
+            GroupSymbol = 0x80,
+        };
+        Assert.True(c.Equals(d));
+        Assert.Equal(c.GetHashCode(), d.GetHashCode());
+    }
+
     // B6 — COMR TextEncoding setter must validate dependent fields against the NEW value.
     [Fact]
     public void Comr_ShortDescriptionMustBeValidUnderCurrentEncoding()

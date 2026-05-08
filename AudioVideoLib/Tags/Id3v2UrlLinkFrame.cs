@@ -159,21 +159,6 @@ public sealed partial class Id3v2UrlLinkFrame : Id3v2Frame
     }
 
     /// <summary>
-    /// Serves as a hash function for a particular type.
-    /// </summary>
-    /// <returns>
-    /// A hash code for the current <see cref="T:System.Object"/>.
-    /// </returns>
-    /// <filterpriority>2</filterpriority>
-    public override int GetHashCode()
-    {
-        unchecked
-        {
-            return (Version.GetHashCode() * 397) ^ ((Identifier?.GetHashCode() ?? 0) * 397);
-        }
-    }
-
-    /// <summary>
     /// Determines whether the specified version is supported by the frame.
     /// </summary>
     /// <param name="version">The version.</param>

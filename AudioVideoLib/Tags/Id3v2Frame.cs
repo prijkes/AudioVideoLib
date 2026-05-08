@@ -168,18 +168,14 @@ public partial class Id3v2Frame : IAudioTagFrame, IEquatable<Id3v2Frame>
     /// <summary>
     /// Serves as a hash function for a particular type.
     /// </summary>
-    /// <returns>
-    /// A hash code for the current <see cref="T:System.Object"/>.
-    /// </returns>
-    /// <filterpriority>2</filterpriority>
-    /// The value should be calculated on immutable fields only.
-    public override int GetHashCode()
-    {
-        unchecked
-        {
-            return 397 ^ ((Identifier != null) ? Identifier.GetHashCode() * 397 : 0);
-        }
-    }
+    /// <remarks>
+    /// Combines <see cref="Identifier"/> and <see cref="Version"/> — every
+    /// derived <see cref="Equals(Id3v2Frame?)"/> requires equality on both,
+    /// so this is the strongest base hash that respects the contract.
+    /// Collisions on additional discriminator fields (Description, Language,
+    /// OwnerIdentifier, etc.) are allowed.
+    /// </remarks>
+    public override int GetHashCode() => HashCode.Combine(Identifier, Version);
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

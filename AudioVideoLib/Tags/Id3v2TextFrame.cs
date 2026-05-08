@@ -266,14 +266,6 @@ public sealed partial class Id3v2TextFrame : Id3v2Frame
         return textFrame is not null && (ReferenceEquals(this, textFrame) || ((textFrame.Version == Version) && string.Equals(textFrame.Identifier, Identifier, StringComparison.OrdinalIgnoreCase)));
     }
 
-    /// <inheritdoc/>
-    public override int GetHashCode()
-    {
-        unchecked
-        {
-            return (Version.GetHashCode() * 397) ^ (Identifier.GetHashCode() * 397) ^ (TextDelimiter.GetHashCode() * 397);
-        }
-    }
 
     /// <summary>
     /// Determines whether the specified version is supported by the frame.
