@@ -77,23 +77,7 @@ public sealed class Id3v2TermsOfUseFrame : Id3v2Frame
     {
         get => _language;
 
-        set
-        {
-            if (string.IsNullOrEmpty(value))
-            {
-                _language = value;
-                return;
-            }
-
-            // Id3v2.4.0 and later: If the language is not known the string "XXX" should be used.
-            if (!IsValidLanguageCode(value) && ((Version != Id3v2Version.Id3v240) || !string.Equals(value, "XXX", StringComparison.OrdinalIgnoreCase)))
-            {
-                throw new InvalidDataException($"Language code '{value}' is not a valid ISO-639-2 language code.");
-            }
-
-            // Id3v2.4.0 and later: The language should be represented in lower case.
-            _language = (Version >= Id3v2Version.Id3v240) && !string.IsNullOrEmpty(value) ? value.ToLower() : value;
-        }
+        set => _language = NormalizeLanguageCode(Version, value);
     }
 
     /// <summary>

@@ -1,6 +1,7 @@
 namespace AudioVideoLib.Tags;
 
 using System;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -195,6 +196,29 @@ public partial class Id3v2Frame
     public static int GetIdentifierFieldLength(Id3v2Version version)
     {
         return (version < Id3v2Version.Id3v230) ? 3 : 4;
+    }
+
+    /// <summary>
+    /// Normalizes a language code per ID3v2 §4.10 (COMM) / §4.11 (USLT/SYLT) / §4.23 (USER).
+    /// Empty input passes through unchanged. Otherwise the value must be a valid ISO-639-2
+    /// code, with one exception: in v2.4 and later the placeholder "XXX" is accepted to
+    /// indicate "unknown". Stored lower-case in v2.4+, as-is in earlier versions.
+    /// </summary>
+    /// <param name="version">The frame version.</param>
+    /// <param name="value">The language-code value.</param>
+    /// <returns>The normalized value (empty pass-through, original case for &lt; v2.4, lower-cased otherwise).</returns>
+    /// <exception cref="InvalidDataException">Thrown when the value is non-empty and not valid for the given version.</exception>
+    public static string NormalizeLanguageCode(Id3v2Version version, string value)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            return value;
+        }
+        var isV24Unknown = (version >= Id3v2Version.Id3v240)
+                           && string.Equals(value, "XXX", StringComparison.OrdinalIgnoreCase);
+        return !IsValidLanguageCode(value) && !isV24Unknown
+            ? throw new InvalidDataException($"Language code '{value}' is not a valid ISO-639-2 language code.")
+            : (version >= Id3v2Version.Id3v240) ? value.ToLowerInvariant() : value;
     }
 
     ////------------------------------------------------------------------------------------------------------------------------------

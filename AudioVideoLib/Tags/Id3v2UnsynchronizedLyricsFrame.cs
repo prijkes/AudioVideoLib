@@ -83,23 +83,7 @@ public sealed class Id3v2UnsynchronizedLyricsFrame : Id3v2Frame
     {
         get => field;
 
-        set
-        {
-            if (string.IsNullOrEmpty(value))
-            {
-                field = value;
-                return;
-            }
-
-            // Id3v2.4.0 and later: If the language is not known the string "XXX" should be used.
-            if (!IsValidLanguageCode(value) && ((Version != Id3v2Version.Id3v240) || !string.Equals(value, "XXX", StringComparison.OrdinalIgnoreCase)))
-            {
-                throw new InvalidDataException($"Language code '{value}' is not a valid ISO-639-2 language code.");
-            }
-
-            // Id3v2.4.0 and later: The language should be represented in lower case.
-            field = (Version >= Id3v2Version.Id3v240) && !string.IsNullOrEmpty(value) ? value.ToLower() : value;
-        }
+        set => field = NormalizeLanguageCode(Version, value);
     } = null!;
 
     /// <summary>
