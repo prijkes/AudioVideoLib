@@ -84,11 +84,7 @@ public sealed class ApeLocatorItem : ApeUtf8Item
     private static void ItemAdd(object? sender, ListItemAddEventArgs<string> e)
     {
         ArgumentNullException.ThrowIfNull(e);
-
-        if (e.Item == null)
-        {
-            throw new NullReferenceException("e.Item may not be null");
-        }
+        ArgumentNullException.ThrowIfNull(e.Item);
 
         if (!Uri.IsWellFormedUriString(e.Item, UriKind.RelativeOrAbsolute))
         {
@@ -99,11 +95,7 @@ public sealed class ApeLocatorItem : ApeUtf8Item
     private static void ItemReplace(object? sender, ListItemReplaceEventArgs<string> e)
     {
         ArgumentNullException.ThrowIfNull(e);
-
-        if (e.NewItem == null)
-        {
-            throw new NullReferenceException("e.NewItem may not be null");
-        }
+        ArgumentNullException.ThrowIfNull(e.NewItem);
 
         if (!Uri.IsWellFormedUriString(e.NewItem, UriKind.RelativeOrAbsolute))
         {

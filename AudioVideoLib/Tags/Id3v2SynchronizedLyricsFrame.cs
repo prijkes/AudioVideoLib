@@ -333,16 +333,8 @@ public sealed class Id3v2SynchronizedLyricsFrame : Id3v2Frame
     private void LyricSyncAdd(object? sender, ListItemAddEventArgs<Id3v2LyricSync> e)
     {
         ArgumentNullException.ThrowIfNull(e);
-
-        if (e.Item == null)
-        {
-            throw new NullReferenceException("e.Item may not be null");
-        }
-
-        if (e.Item.Syllable == null)
-        {
-            throw new NullReferenceException("e.Syllable may not be null");
-        }
+        ArgumentNullException.ThrowIfNull(e.Item);
+        ArgumentNullException.ThrowIfNull(e.Item.Syllable);
 
         if (!IsValidTextString(e.Item.Syllable, TextEncoding, false))
         {

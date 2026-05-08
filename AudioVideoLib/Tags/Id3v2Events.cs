@@ -30,11 +30,7 @@ public partial class Id3v2Tag
     private void FrameAdd(object? sender, ListItemAddEventArgs<Id3v2Frame> e)
     {
         ArgumentNullException.ThrowIfNull(e);
-
-        if (e.Item == null)
-        {
-            throw new NullReferenceException("e.Item may not be null");
-        }
+        ArgumentNullException.ThrowIfNull(e.Item);
 
         var identifier = Id3v2Frame.GetIdentifier<Id3v2MusicCdIdentifierFrame>(e.Item.Version);
         if ((e.Item is Id3v2MusicCdIdentifierFrame || string.Equals(e.Item.Identifier, identifier, StringComparison.OrdinalIgnoreCase))
@@ -60,11 +56,7 @@ public partial class Id3v2Tag
     private void FrameReplace(object? sender, ListItemReplaceEventArgs<Id3v2Frame> e)
     {
         ArgumentNullException.ThrowIfNull(e);
-
-        if (e.NewItem == null)
-        {
-            throw new NullReferenceException("e.NewItem may not be null");
-        }
+        ArgumentNullException.ThrowIfNull(e.NewItem);
 
         if (string.Equals(e.OldItem.Identifier, e.NewItem.Identifier) || (e.OldItem.GetType() == e.NewItem.GetType()))
         {

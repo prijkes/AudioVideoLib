@@ -18,10 +18,7 @@ public static class NotifyingListExtensions
     public static void HandleReplaceAsRemoveAndAdd<T>(this NotifyingList<T> list, ListItemReplaceEventArgs<T> e)
     {
         ArgumentNullException.ThrowIfNull(e);
-        if (e.NewItem == null)
-        {
-            throw new NullReferenceException("e.NewItem may not be null");
-        }
+        ArgumentNullException.ThrowIfNull(e.NewItem);
         list.RemoveAt(e.Index);
         e.Cancel = true;
         list.Add(e.NewItem);

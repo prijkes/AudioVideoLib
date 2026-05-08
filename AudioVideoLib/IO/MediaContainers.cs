@@ -179,11 +179,7 @@ public sealed class MediaContainers : IEnumerable<IMediaContainer>, IDisposable
     private void AudioStreamAdd(object? sender, ListItemAddEventArgs<IMediaContainer> e)
     {
         ArgumentNullException.ThrowIfNull(e);
-
-        if (e.Item is null)
-        {
-            throw new NullReferenceException("e.Item may not be null");
-        }
+        ArgumentNullException.ThrowIfNull(e.Item);
 
         for (var i = 0; i < _streams.Count; i++)
         {
@@ -199,11 +195,7 @@ public sealed class MediaContainers : IEnumerable<IMediaContainer>, IDisposable
     private void AudioStreamReplace(object? sender, ListItemReplaceEventArgs<IMediaContainer> e)
     {
         ArgumentNullException.ThrowIfNull(e);
-
-        if (e.NewItem is null)
-        {
-            throw new NullReferenceException("e.NewItem may not be null");
-        }
+        ArgumentNullException.ThrowIfNull(e.NewItem);
 
         _streams.RemoveAt(e.Index);
         e.Cancel = true;

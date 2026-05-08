@@ -313,11 +313,7 @@ public sealed partial class Id3v2Tag
     private void ItemAdd<T>(object? sender, ListItemAddEventArgs<T> e) where T : Id3v2Frame
     {
         ArgumentNullException.ThrowIfNull(e);
-
-        if (e.Item == null)
-        {
-            throw new NullReferenceException("e.Item may not be null");
-        }
+        ArgumentNullException.ThrowIfNull(e.Item);
 
         SetFrame(e.Item);
     }

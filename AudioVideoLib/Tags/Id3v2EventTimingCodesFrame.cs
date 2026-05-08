@@ -201,11 +201,7 @@ public sealed class Id3v2EventTimingCodesFrame : Id3v2Frame
     private void KeyEventAdd(object? sender, ListItemAddEventArgs<Id3v2KeyEvent> e)
     {
         ArgumentNullException.ThrowIfNull(e);
-
-        if (e.Item == null)
-        {
-            throw new NullReferenceException("e.Item may not be null");
-        }
+        ArgumentNullException.ThrowIfNull(e.Item);
 
         if (!IsValidKeyEventType(e.Item.EventType))
         {

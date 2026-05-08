@@ -171,11 +171,7 @@ public sealed class Id3v2EqualisationFrame : Id3v2Frame
     private void EqualisationBandAdd(object? sender, ListItemAddEventArgs<Id3v2EqualisationBand> e)
     {
         ArgumentNullException.ThrowIfNull(e);
-
-        if (e.Item == null)
-        {
-            throw new NullReferenceException("e.Item may not be null");
-        }
+        ArgumentNullException.ThrowIfNull(e.Item);
 
         for (var i = 0; i < _equalisationBands.Count; i++)
         {

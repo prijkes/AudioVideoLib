@@ -306,11 +306,7 @@ public sealed partial class Id3v2TextFrame : Id3v2Frame
     private void ValueAdd(object? sender, ListItemAddEventArgs<string> e)
     {
         ArgumentNullException.ThrowIfNull(e);
-
-        if (e.Item == null)
-        {
-            throw new NullReferenceException("e.Item may not be null");
-        }
+        ArgumentNullException.ThrowIfNull(e.Item);
 
         if (!IsValidTextString(e.Item, TextEncoding, false))
         {
@@ -321,11 +317,7 @@ public sealed partial class Id3v2TextFrame : Id3v2Frame
     private void ValueReplace(object? sender, ListItemReplaceEventArgs<string> e)
     {
         ArgumentNullException.ThrowIfNull(e);
-
-        if (e.NewItem == null)
-        {
-            throw new NullReferenceException("e.NewItem may not be null");
-        }
+        ArgumentNullException.ThrowIfNull(e.NewItem);
 
         if (!IsValidTextString(e.NewItem, TextEncoding, false))
         {

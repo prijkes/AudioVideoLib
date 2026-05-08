@@ -213,11 +213,7 @@ public sealed class Id3v2InvolvedPeopleListFrame : Id3v2Frame
     private void InvolvedPeopleAdd(object? sender, ListItemAddEventArgs<Id3v2InvolvedPeople> e)
     {
         ArgumentNullException.ThrowIfNull(e);
-
-        if (e.Item == null)
-        {
-            throw new NullReferenceException("e.Item may not be null");
-        }
+        ArgumentNullException.ThrowIfNull(e.Item);
 
         if (!string.IsNullOrEmpty(e.Item.Involvee) && !IsValidTextString(e.Item.Involvee, TextEncoding, false))
         {

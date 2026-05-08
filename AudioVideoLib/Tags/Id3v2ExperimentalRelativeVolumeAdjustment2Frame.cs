@@ -178,11 +178,7 @@ public sealed class Id3v2ExperimentalRelativeVolumeAdjustment2Frame : Id3v2Frame
     private static void ChannelInformationAdd(object? sender, ListItemAddEventArgs<Id3v2ChannelInformation> e)
     {
         ArgumentNullException.ThrowIfNull(e);
-
-        if (e.Item == null)
-        {
-            throw new NullReferenceException("e.Item may not be null");
-        }
+        ArgumentNullException.ThrowIfNull(e.Item);
 
         if (!IsValidChannelType(e.Item.ChannelType))
         {

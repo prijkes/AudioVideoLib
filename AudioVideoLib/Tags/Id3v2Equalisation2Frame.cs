@@ -214,11 +214,7 @@ public sealed class Id3v2Equalisation2Frame : Id3v2Frame
     private void AdjustmentPointAdd(object? sender, ListItemAddEventArgs<Id3v2AdjustmentPoint> e)
     {
         ArgumentNullException.ThrowIfNull(e);
-
-        if (e.Item == null)
-        {
-            throw new NullReferenceException("e.Item may not be null");
-        }
+        ArgumentNullException.ThrowIfNull(e.Item);
 
         for (var i = 0; i < _adjustmentPoints.Count; i++)
         {

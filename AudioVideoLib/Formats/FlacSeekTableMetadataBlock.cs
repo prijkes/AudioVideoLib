@@ -74,11 +74,7 @@ public sealed class FlacSeekTableMetadataBlock : FlacMetadataBlock
     private void SeekPointAdd(object? sender, ListItemAddEventArgs<FlacSeekPoint> e)
     {
         ArgumentNullException.ThrowIfNull(e);
-
-        if (e.Item is null)
-        {
-            throw new NullReferenceException("e.Item may not be null");
-        }
+        ArgumentNullException.ThrowIfNull(e.Item);
 
         // Seek points within a table must be unique by sample number, with the exception of placeholder points.
         for (var i = 0; i < _seekPoints.Count; i++)
@@ -97,11 +93,7 @@ public sealed class FlacSeekTableMetadataBlock : FlacMetadataBlock
     private void SeekPointReplace(object? sender, ListItemReplaceEventArgs<FlacSeekPoint> e)
     {
         ArgumentNullException.ThrowIfNull(e);
-
-        if (e.NewItem is null)
-        {
-            throw new NullReferenceException("e.NewItem may not be null");
-        }
+        ArgumentNullException.ThrowIfNull(e.NewItem);
 
         _seekPoints.RemoveAt(e.Index);
         e.Cancel = true;
