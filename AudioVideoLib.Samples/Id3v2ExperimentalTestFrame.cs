@@ -213,7 +213,7 @@ namespace AudioVideoLibExamples
                     var preamble = Id3v2FrameEncoding.GetEncodingPreamble(TextEncodingType);
 
                     // Write the given encoding type value as defined in the Id3v2 spec.
-                    stream.WriteByte(Id3v2FrameEncoding.GetEncodingTypeValue(TextEncodingType));
+                    Id3v2FrameEncoding.WriteHeader(stream, TextEncodingType);
 
                     // Write the preamble for the encoding specific string.
                     stream.Write(preamble);
@@ -223,7 +223,7 @@ namespace AudioVideoLibExamples
                         stream.WriteString(TaggingLibraryUsed, textEncoding);
 
                     // Write the string terminator in the given encoding.
-                    stream.Write(textEncoding.GetBytes("\0"));
+                    Id3v2FrameEncoding.WriteNullTerminator(stream, TextEncodingType);
 
                     // Write the preamble for the encoding specific string.
                     stream.Write(preamble);
@@ -233,14 +233,14 @@ namespace AudioVideoLibExamples
                         stream.WriteString(TaggingLibraryAuthor, textEncoding);
 
                     // Write the string terminator in the given encoding.
-                    stream.Write(textEncoding.GetBytes("\0"));
+                    Id3v2FrameEncoding.WriteNullTerminator(stream, TextEncodingType);
 
                     // Write the tagging library website in in the default encoding.
                     if (TaggingLibraryWebsite != null)
                         stream.WriteString(TaggingLibraryWebsite);
 
                     // Write the string terminator in the given encoding.
-                    stream.Write(defaultEncoding.GetBytes("\0"));
+                    Id3v2FrameEncoding.WriteNullTerminator(stream, Id3v2FrameEncodingType.Default);
 
                     // Write the date.
                     stream.WriteDouble(DateOfTag.ToOADate());

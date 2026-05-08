@@ -287,7 +287,7 @@ namespace AudioVideoLibExamples
                     var preamble = Id3v2FrameEncoding.GetEncodingPreamble(_frameEncodingType);
 
                     // Write the given encoding type value as defined in the Id3v2 spec.
-                    stream.WriteByte(Id3v2FrameEncoding.GetEncodingTypeValue(_frameEncodingType));
+                    Id3v2FrameEncoding.WriteHeader(stream, _frameEncodingType);
 
                     // Write the language string in the default encoding type.
                     stream.WriteString(_language, languageEncoding);
@@ -299,7 +299,7 @@ namespace AudioVideoLibExamples
                     stream.WriteString(_shortContentDescription, encoding);
 
                     // Write the string terminator in the given encoding.
-                    stream.Write(encoding.GetBytes("\0"));
+                    Id3v2FrameEncoding.WriteNullTerminator(stream, _frameEncodingType);
 
                     // Write the preamble for the frame specific values.
                     stream.Write(preamble);
