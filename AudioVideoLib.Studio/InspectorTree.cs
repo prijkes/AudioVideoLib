@@ -9,6 +9,7 @@ using System.Text;
 
 using AudioVideoLib.Formats;
 using AudioVideoLib.IO;
+using AudioVideoLib.Studio.Editors.Id3v2;
 using AudioVideoLib.Tags;
 
 public sealed class InspectorNode
@@ -1053,17 +1054,7 @@ public static class InspectorTreeBuilder
     }
 
     private static string DescribeFrame(Id3v2Frame? frame, long dataSize)
-    {
-        return frame switch
-        {
-            null => $"<{dataSize:N0} bytes>",
-            Id3v2TextFrame text => string.Join(" / ", text.Values),
-            Id3v2UrlLinkFrame url => url.Url ?? string.Empty,
-            Id3v2CommentFrame comm => comm.Text ?? string.Empty,
-            Id3v2AttachedPictureFrame pic => $"{pic.ImageFormat} {pic.PictureType} {pic.PictureData?.Length ?? 0:N0} bytes",
-            _ => $"<{dataSize:N0} bytes>",
-        };
-    }
+        => Id3v2FrameSummary.Describe(frame, dataSize);
 
     private static int ReadBE32(byte[] data, long offset)
     {

@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
+using AudioVideoLib.Studio.Editors.Id3v2;
 using AudioVideoLib.Tags;
 
 public abstract class TagTabViewModel : INotifyPropertyChanged
@@ -362,24 +363,7 @@ public sealed class Id3v2FrameRow(Id3v2Frame frame)
 
     public int Size => Frame.Data?.Length ?? 0;
 
-    public string Value { get; } = Describe(frame);
-
-    private static string Describe(Id3v2Frame f)
-    {
-        return f switch
-        {
-            Id3v2TextFrame text => string.Join(" / ", text.Values),
-            Id3v2UserDefinedTextInformationFrame u => u.Value ?? string.Empty,
-            Id3v2UrlLinkFrame url => url.Url ?? string.Empty,
-            Id3v2UserDefinedUrlLinkFrame uurl => uurl.Url ?? string.Empty,
-            Id3v2CommentFrame comm => comm.Text ?? string.Empty,
-            Id3v2UnsynchronizedLyricsFrame u => $"[{u.Language}:{u.ContentDescriptor}] {u.Lyrics}",
-            Id3v2AttachedPictureFrame p => $"{p.ImageFormat} {p.PictureType} {p.PictureData?.Length ?? 0:N0} bytes",
-            Id3v2PrivateFrame p => $"[{p.OwnerIdentifier}] {p.PrivateData?.Length ?? 0:N0} bytes",
-            Id3v2UniqueFileIdentifierFrame u => $"[{u.OwnerIdentifier}] {u.IdentifierData?.Length ?? 0:N0} bytes",
-            _ => $"<{f.Data?.Length ?? 0:N0} bytes>",
-        };
-    }
+    public string Value { get; } = Id3v2FrameSummary.Describe(frame, frame.Data?.Length ?? 0);
 }
 
 public sealed record EncodingChoice(string DisplayName, System.Text.Encoding Encoding)
