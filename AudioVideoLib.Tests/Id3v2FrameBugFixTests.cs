@@ -124,7 +124,7 @@ public class Id3v2FrameBugFixTests
     public void Xrva_ChannelInformationValidatorFiresOnDirectAdd()
     {
         var f = new Id3v2ExperimentalRelativeVolumeAdjustment2Frame(Id3v2Version.Id3v240);
-        Assert.Throws<NullReferenceException>(() => f.ChannelInformation.Add(null!));
+        Assert.Throws<ArgumentNullException>(() => f.ChannelInformation.Add(null!));
     }
 
     // B5 — XRVA peak read must support arbitrary bit widths.
@@ -176,14 +176,14 @@ public class Id3v2FrameBugFixTests
         Assert.True(bomCount >= 3, $"expected at least 3 UTF-16LE BOMs; got {bomCount}");
     }
 
-    // D13 — Replace handler delegates to NotifyingListExtensions and still throws
-    // NRE when NewItem is null (the indexer-set Replace path).
+    // D13 — Replace handler delegates to NotifyingListExtensions and rejects
+    // null NewItem (the indexer-set Replace path).
     [Fact]
-    public void Xrva_ChannelInformationReplaceWithNullThrowsNullReferenceException()
+    public void Xrva_ChannelInformationReplaceWithNullThrows()
     {
         var f = new Id3v2ExperimentalRelativeVolumeAdjustment2Frame(Id3v2Version.Id3v240);
         f.ChannelInformation.Add(new Id3v2ChannelInformation(Id3v2ChannelType.MasterVolume, 0, 0, 0));
-        Assert.Throws<NullReferenceException>(() => f.ChannelInformation[0] = null!);
+        Assert.Throws<ArgumentNullException>(() => f.ChannelInformation[0] = null!);
     }
 
     // D5 — base GetHashCode must respect the equal-implies-same-hash contract.
