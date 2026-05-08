@@ -12,7 +12,7 @@ using AudioVideoLib.Tags;
     Order = 29,
     SupportedVersions = Id3v2VersionMask.V230 | Id3v2VersionMask.V240,
     IsUniqueInstance = true)]
-public sealed class OwneEditor : ObservableObject, ITagItemEditor<Id3v2OwnershipFrame>
+public sealed class OwneEditor : ObservableObject, ITagItemEditor<Id3v2OwnershipFrame>, IValidatedEditor
 {
     public Id3v2FrameEncodingType Encoding { get => field; set => Set(ref field, value); }
     public string PricePaid { get => field; set => Set(ref field, value); } = string.Empty;

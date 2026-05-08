@@ -11,7 +11,7 @@ using AudioVideoLib.Tags;
     Order = 30,
     SupportedVersions = Id3v2VersionMask.V230 | Id3v2VersionMask.V240,
     IsUniqueInstance = false)]
-public sealed class ComrEditor : BinaryDataEditorBase, ITagItemEditor<Id3v2CommercialFrame>
+public sealed class ComrEditor : BinaryDataEditorBase, ITagItemEditor<Id3v2CommercialFrame>, IValidatedEditor
 {
     public Id3v2FrameEncodingType Encoding { get => field; set => Set(ref field, value); }
     public string PriceString { get => field; set => Set(ref field, value); } = string.Empty;

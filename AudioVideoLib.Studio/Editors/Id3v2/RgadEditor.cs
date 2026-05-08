@@ -13,7 +13,7 @@ using AudioVideoLib.Tags;
     SupportedVersions = Id3v2VersionMask.V230,
     IsUniqueInstance = true,
     KnownIdentifier = "RGAD")]
-public sealed class RgadEditor : ObservableObject, ITagItemEditor<Id3v2ReplayGainAdjustmentFrame>
+public sealed class RgadEditor : ObservableObject, ITagItemEditor<Id3v2ReplayGainAdjustmentFrame>, IValidatedEditor
 {
     public int PeakAmplitude { get => field; set => Set(ref field, value); }
 

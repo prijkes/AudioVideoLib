@@ -2,26 +2,14 @@ namespace AudioVideoLib.Studio.Editors.Id3v2;
 
 using System.Windows;
 
+using AudioVideoLib.Studio.Editors;
+
 public partial class GridEditorDialog : Window
 {
     public GridEditorDialog() => InitializeComponent();
 
-    private void Ok_Click(object sender, RoutedEventArgs e)
-    {
-        var editor = (GridEditor)DataContext;
-        if (!editor.Validate(out var error))
-        {
-            MessageBox.Show(this, error, "Invalid input", MessageBoxButton.OK, MessageBoxImage.Warning);
-            return;
-        }
-        DialogResult = true;
-    }
-
-    private void Cancel_Click(object sender, RoutedEventArgs e) => DialogResult = false;
-
-    private void LoadFromFile_Click(object sender, RoutedEventArgs e)
-        => ((GridEditor)DataContext).LoadDataFromFile(this);
-
-    private void ClearData_Click(object sender, RoutedEventArgs e)
-        => ((GridEditor)DataContext).ClearData();
+    private void Ok_Click(object sender, RoutedEventArgs e) => EditorDialogActions.Ok(this);
+    private void Cancel_Click(object sender, RoutedEventArgs e) => EditorDialogActions.Cancel(this);
+    private void LoadFromFile_Click(object sender, RoutedEventArgs e) => EditorDialogActions.LoadFromFile(this);
+    private void ClearData_Click(object sender, RoutedEventArgs e) => EditorDialogActions.ClearData(this);
 }

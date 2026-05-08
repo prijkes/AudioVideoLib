@@ -11,7 +11,7 @@ using AudioVideoLib.Tags;
     Order = 37,
     SupportedVersions = Id3v2VersionMask.V240,
     IsUniqueInstance = false)]
-public sealed class SignEditor : BinaryDataEditorBase, ITagItemEditor<Id3v2SignatureFrame>
+public sealed class SignEditor : BinaryDataEditorBase, ITagItemEditor<Id3v2SignatureFrame>, IValidatedEditor
 {
     public int GroupSymbol { get => field; set => Set(ref field, value); } = 0x80;
 

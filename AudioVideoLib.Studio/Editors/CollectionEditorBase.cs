@@ -5,7 +5,7 @@ using System.Windows;
 
 using AudioVideoLib.Studio.Mvvm;
 
-public abstract class CollectionEditorBase<TFrame, TRow> : ObservableObject, ITagItemEditor<TFrame>
+public abstract class CollectionEditorBase<TFrame, TRow> : ObservableObject, ITagItemEditor<TFrame>, IValidatedEditor
 {
     public ObservableCollection<TRow> Entries { get; } = [];
 

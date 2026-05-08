@@ -12,7 +12,7 @@ using AudioVideoLib.Tags;
     Order = 36,
     SupportedVersions = Id3v2VersionMask.V240,
     IsUniqueInstance = true)]
-public sealed class SeekEditor : ObservableObject, ITagItemEditor<Id3v2SeekFrame>
+public sealed class SeekEditor : ObservableObject, ITagItemEditor<Id3v2SeekFrame>, IValidatedEditor
 {
     public int MinimumOffsetToNextTag { get => field; set => Set(ref field, value); }
 

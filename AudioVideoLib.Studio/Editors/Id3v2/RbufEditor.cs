@@ -12,7 +12,7 @@ using AudioVideoLib.Tags;
     Order = 35,
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = true)]
-public sealed class RbufEditor : ObservableObject, ITagItemEditor<Id3v2RecommendedBufferSizeFrame>
+public sealed class RbufEditor : ObservableObject, ITagItemEditor<Id3v2RecommendedBufferSizeFrame>, IValidatedEditor
 {
     public int BufferSize { get => field; set => Set(ref field, value); }
     public bool UseEmbeddedInfo { get => field; set => Set(ref field, value); }

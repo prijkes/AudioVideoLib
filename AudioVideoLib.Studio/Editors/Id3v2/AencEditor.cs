@@ -11,7 +11,7 @@ using AudioVideoLib.Tags;
     Order = 31,
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = false)]
-public sealed class AencEditor : BinaryDataEditorBase, ITagItemEditor<Id3v2AudioEncryptionFrame>
+public sealed class AencEditor : BinaryDataEditorBase, ITagItemEditor<Id3v2AudioEncryptionFrame>, IValidatedEditor
 {
     public string OwnerIdentifier { get => field; set => Set(ref field, value); } = string.Empty;
     public short PreviewStart { get => field; set => Set(ref field, value); }

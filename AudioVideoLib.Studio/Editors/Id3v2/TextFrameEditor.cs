@@ -12,7 +12,7 @@ using AudioVideoLib.Tags;
     MenuLabel = "Text frame",
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = false)]
-public sealed class TextFrameEditor : ObservableObject, ITagItemEditor<Id3v2TextFrame>
+public sealed class TextFrameEditor : ObservableObject, ITagItemEditor<Id3v2TextFrame>, IValidatedEditor
 {
     public string Identifier { get => field; set => Set(ref field, value); } = "TIT2";
     public string Value { get => field; set => Set(ref field, value); } = string.Empty;

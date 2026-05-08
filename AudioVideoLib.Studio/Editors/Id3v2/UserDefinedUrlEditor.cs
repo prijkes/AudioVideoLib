@@ -13,7 +13,7 @@ using AudioVideoLib.Tags;
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = false)]
 public sealed class UserDefinedUrlEditor
-    : ObservableObject, ITagItemEditor<Id3v2UserDefinedUrlLinkFrame>
+    : ObservableObject, ITagItemEditor<Id3v2UserDefinedUrlLinkFrame>, IValidatedEditor
 {
     public Id3v2FrameEncodingType Encoding { get => field; set => Set(ref field, value); }
     public string Description { get => field; set => Set(ref field, value); } = string.Empty;

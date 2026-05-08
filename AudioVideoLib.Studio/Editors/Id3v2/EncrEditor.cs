@@ -11,7 +11,7 @@ using AudioVideoLib.Tags;
     Order = 8,
     SupportedVersions = Id3v2VersionMask.V230 | Id3v2VersionMask.V240,
     IsUniqueInstance = false)]
-public sealed class EncrEditor : BinaryDataEditorBase, ITagItemEditor<Id3v2EncryptionMethodRegistrationFrame>
+public sealed class EncrEditor : BinaryDataEditorBase, ITagItemEditor<Id3v2EncryptionMethodRegistrationFrame>, IValidatedEditor
 {
     public string OwnerIdentifier { get => field; set => Set(ref field, value); } = string.Empty;
     public int MethodSymbol { get => field; set => Set(ref field, value); } = 0x80;

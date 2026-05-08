@@ -12,7 +12,7 @@ using AudioVideoLib.Tags;
     Order = 25,
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = true)]
-public sealed class PcntEditor : ObservableObject, ITagItemEditor<Id3v2PlayCounterFrame>
+public sealed class PcntEditor : ObservableObject, ITagItemEditor<Id3v2PlayCounterFrame>, IValidatedEditor
 {
     public long Counter { get => field; set => Set(ref field, value); }
 

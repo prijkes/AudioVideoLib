@@ -11,7 +11,7 @@ using AudioVideoLib.Tags;
     Order = 7,
     SupportedVersions = Id3v2VersionMask.V230 | Id3v2VersionMask.V240,
     IsUniqueInstance = false)]
-public sealed class GridEditor : BinaryDataEditorBase, ITagItemEditor<Id3v2GroupIdentificationRegistrationFrame>
+public sealed class GridEditor : BinaryDataEditorBase, ITagItemEditor<Id3v2GroupIdentificationRegistrationFrame>, IValidatedEditor
 {
     public string OwnerIdentifier { get => field; set => Set(ref field, value); } = string.Empty;
     public int GroupSymbol { get => field; set => Set(ref field, value); } = 0x80;

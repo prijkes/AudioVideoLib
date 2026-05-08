@@ -12,7 +12,7 @@ using AudioVideoLib.Tags;
     Order = 26,
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = false)]
-public sealed class PopmEditor : ObservableObject, ITagItemEditor<Id3v2PopularimeterFrame>
+public sealed class PopmEditor : ObservableObject, ITagItemEditor<Id3v2PopularimeterFrame>, IValidatedEditor
 {
     public string EmailToUser { get => field; set => Set(ref field, value); } = string.Empty;
     public int Rating { get => field; set => Set(ref field, value); }

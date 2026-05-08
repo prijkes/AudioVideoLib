@@ -12,7 +12,7 @@ using AudioVideoLib.Tags;
     Order = 24,
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = true)]
-public sealed class RevbEditor : ObservableObject, ITagItemEditor<Id3v2ReverbFrame>
+public sealed class RevbEditor : ObservableObject, ITagItemEditor<Id3v2ReverbFrame>, IValidatedEditor
 {
     public int ReverbLeftMilliseconds { get => field; set => Set(ref field, value); }
     public int ReverbRightMilliseconds { get => field; set => Set(ref field, value); }

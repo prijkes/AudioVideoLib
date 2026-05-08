@@ -12,7 +12,7 @@ using AudioVideoLib.Tags;
     Order = 20,
     SupportedVersions = Id3v2VersionMask.V220 | Id3v2VersionMask.V221 | Id3v2VersionMask.V230,
     IsUniqueInstance = true)]
-public sealed class RvadEditor : ObservableObject, ITagItemEditor<Id3v2RelativeVolumeAdjustmentFrame>
+public sealed class RvadEditor : ObservableObject, ITagItemEditor<Id3v2RelativeVolumeAdjustmentFrame>, IValidatedEditor
 {
     public int IncrementDecrement { get => field; set => Set(ref field, value); }
     public int VolumeDescriptionBits { get => field; set => Set(ref field, value); } = 16;

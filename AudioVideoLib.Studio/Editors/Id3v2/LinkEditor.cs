@@ -12,7 +12,7 @@ using AudioVideoLib.Tags;
     Order = 18,
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = false)]
-public sealed class LinkEditor : ObservableObject, ITagItemEditor<Id3v2LinkedInformationFrame>
+public sealed class LinkEditor : ObservableObject, ITagItemEditor<Id3v2LinkedInformationFrame>, IValidatedEditor
 {
     private Id3v2Version _version = Id3v2Version.Id3v240;
 

@@ -12,7 +12,7 @@ using AudioVideoLib.Tags;
     Order = 16,
     SupportedVersions = Id3v2VersionMask.V230 | Id3v2VersionMask.V240,
     IsUniqueInstance = true)]
-public sealed class PossEditor : ObservableObject, ITagItemEditor<Id3v2PositionSynchronizationFrame>
+public sealed class PossEditor : ObservableObject, ITagItemEditor<Id3v2PositionSynchronizationFrame>, IValidatedEditor
 {
     public Id3v2TimeStampFormat TimeStampFormat { get => field; set => Set(ref field, value); }
         = Id3v2TimeStampFormat.AbsoluteTimeMilliseconds;

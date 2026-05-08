@@ -12,7 +12,7 @@ using AudioVideoLib.Tags;
     MenuLabel = "URL frame",
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = false)]
-public sealed class UrlFrameEditor : ObservableObject, ITagItemEditor<Id3v2UrlLinkFrame>
+public sealed class UrlFrameEditor : ObservableObject, ITagItemEditor<Id3v2UrlLinkFrame>, IValidatedEditor
 {
     public string Identifier { get => field; set => Set(ref field, value); } = "WCOM";
     public string Url { get => field; set => Set(ref field, value); } = string.Empty;

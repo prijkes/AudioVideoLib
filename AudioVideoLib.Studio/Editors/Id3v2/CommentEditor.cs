@@ -12,7 +12,7 @@ using AudioVideoLib.Tags;
     Order = 9,
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = false)]
-public sealed class CommentEditor : ObservableObject, ITagItemEditor<Id3v2CommentFrame>
+public sealed class CommentEditor : ObservableObject, ITagItemEditor<Id3v2CommentFrame>, IValidatedEditor
 {
     public Id3v2FrameEncodingType Encoding { get => field; set => Set(ref field, value); }
     public string Language { get => field; set => Set(ref field, value); } = "eng";

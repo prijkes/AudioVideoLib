@@ -11,7 +11,7 @@ using AudioVideoLib.Tags;
     Order = 28,
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = false)]
-public sealed class GeobEditor : BinaryDataEditorBase, ITagItemEditor<Id3v2GeneralEncapsulatedObjectFrame>
+public sealed class GeobEditor : BinaryDataEditorBase, ITagItemEditor<Id3v2GeneralEncapsulatedObjectFrame>, IValidatedEditor
 {
     public Id3v2FrameEncodingType Encoding { get => field; set => Set(ref field, value); }
     public string MimeType { get => field; set => Set(ref field, value); } = string.Empty;
