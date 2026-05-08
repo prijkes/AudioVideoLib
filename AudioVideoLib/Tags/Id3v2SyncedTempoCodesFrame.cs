@@ -187,16 +187,5 @@ public sealed class Id3v2SyncedTempoCodesFrame : Id3v2Frame
     }
 
     private void TempoCodeReplace(object? sender, ListItemReplaceEventArgs<Id3v2TempoCode> e)
-    {
-        ArgumentNullException.ThrowIfNull(e);
-
-        if (e.NewItem == null)
-        {
-            throw new NullReferenceException("e.NewItem may not be null");
-        }
-
-        _tempoCodes.RemoveAt(e.Index);
-        e.Cancel = true;
-        _tempoCodes.Add(e.NewItem);
-    }
+        => _tempoCodes.HandleReplaceAsRemoveAndAdd(e);
 }

@@ -232,16 +232,5 @@ public sealed class Id3v2Equalisation2Frame : Id3v2Frame
     }
 
     private void AdjustmentPointReplace(object? sender, ListItemReplaceEventArgs<Id3v2AdjustmentPoint> e)
-    {
-        ArgumentNullException.ThrowIfNull(e);
-
-        if (e.NewItem == null)
-        {
-            throw new NullReferenceException("e.NewItem may not be null");
-        }
-
-        _adjustmentPoints.RemoveAt(e.Index);
-        e.Cancel = true;
-        _adjustmentPoints.Add(e.NewItem);
-    }
+        => _adjustmentPoints.HandleReplaceAsRemoveAndAdd(e);
 }

@@ -223,16 +223,5 @@ public sealed class Id3v2EventTimingCodesFrame : Id3v2Frame
     }
 
     private void KeyEventReplace(object? sender, ListItemReplaceEventArgs<Id3v2KeyEvent> e)
-    {
-        ArgumentNullException.ThrowIfNull(e);
-
-        if (e.NewItem == null)
-        {
-            throw new NullReferenceException("e.NewItem may not be null");
-        }
-
-        _keyEvents.RemoveAt(e.Index);
-        e.Cancel = true;
-        _keyEvents.Add(e.NewItem);
-    }
+        => _keyEvents.HandleReplaceAsRemoveAndAdd(e);
 }

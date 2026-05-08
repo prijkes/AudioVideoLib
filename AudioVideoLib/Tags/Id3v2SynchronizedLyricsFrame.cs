@@ -361,16 +361,5 @@ public sealed class Id3v2SynchronizedLyricsFrame : Id3v2Frame
     }
 
     private void LyricSyncReplace(object? sender, ListItemReplaceEventArgs<Id3v2LyricSync> e)
-    {
-        ArgumentNullException.ThrowIfNull(e);
-
-        if (e.NewItem == null)
-        {
-            throw new NullReferenceException("e.NewItem may not be null");
-        }
-
-        _lyricSyncs.RemoveAt(e.Index);
-        e.Cancel = true;
-        _lyricSyncs.Add(e.NewItem);
-    }
+        => _lyricSyncs.HandleReplaceAsRemoveAndAdd(e);
 }

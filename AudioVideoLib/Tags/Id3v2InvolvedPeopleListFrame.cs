@@ -232,16 +232,5 @@ public sealed class Id3v2InvolvedPeopleListFrame : Id3v2Frame
     }
 
     private void InvolvedPeopleReplace(object? sender, ListItemReplaceEventArgs<Id3v2InvolvedPeople> e)
-    {
-        ArgumentNullException.ThrowIfNull(e);
-
-        if (e.NewItem == null)
-        {
-            throw new NullReferenceException("e.NewItem may not be null");
-        }
-
-        _involvedPeople.RemoveAt(e.Index);
-        e.Cancel = true;
-        _involvedPeople.Add(e.NewItem);
-    }
+        => _involvedPeople.HandleReplaceAsRemoveAndAdd(e);
 }

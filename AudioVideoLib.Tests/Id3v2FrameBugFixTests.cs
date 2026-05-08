@@ -176,6 +176,16 @@ public class Id3v2FrameBugFixTests
         Assert.True(bomCount >= 3, $"expected at least 3 UTF-16LE BOMs; got {bomCount}");
     }
 
+    // D13 — Replace handler delegates to NotifyingListExtensions and still throws
+    // NRE when NewItem is null (the indexer-set Replace path).
+    [Fact]
+    public void Xrva_ChannelInformationReplaceWithNullThrowsNullReferenceException()
+    {
+        var f = new Id3v2ExperimentalRelativeVolumeAdjustment2Frame(Id3v2Version.Id3v240);
+        f.ChannelInformation.Add(new Id3v2ChannelInformation(Id3v2ChannelType.MasterVolume, 0, 0, 0));
+        Assert.Throws<NullReferenceException>(() => f.ChannelInformation[0] = null!);
+    }
+
     // D5 — base GetHashCode must respect the equal-implies-same-hash contract.
     [Fact]
     public void HashCode_EqualFrames_SameHash()

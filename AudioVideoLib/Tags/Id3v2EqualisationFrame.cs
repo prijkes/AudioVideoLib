@@ -188,16 +188,5 @@ public sealed class Id3v2EqualisationFrame : Id3v2Frame
     }
 
     private void EqualisationBandReplace(object? sender, ListItemReplaceEventArgs<Id3v2EqualisationBand> e)
-    {
-        ArgumentNullException.ThrowIfNull(e);
-
-        if (e.NewItem == null)
-        {
-            throw new NullReferenceException("e.NewItem may not be null");
-        }
-
-        _equalisationBands.RemoveAt(e.Index);
-        e.Cancel = true;
-        _equalisationBands.Add(e.NewItem);
-    }
+        => _equalisationBands.HandleReplaceAsRemoveAndAdd(e);
 }

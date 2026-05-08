@@ -192,18 +192,7 @@ public sealed class Id3v2RelativeVolumeAdjustment2Frame : Id3v2Frame
     }
 
     private void ChannelInformationReplace(object? sender, ListItemReplaceEventArgs<Id3v2ChannelInformation> e)
-    {
-        ArgumentNullException.ThrowIfNull(e);
-
-        if (e.NewItem == null)
-        {
-            throw new NullReferenceException("e.NewItem may not be null");
-        }
-
-        ChannelInformation.RemoveAt(e.Index);
-        e.Cancel = true;
-        ChannelInformation.Add(e.NewItem);
-    }
+        => _channelInformation.HandleReplaceAsRemoveAndAdd(e);
 
     private void BindChannelInformationListEvents()
     {
