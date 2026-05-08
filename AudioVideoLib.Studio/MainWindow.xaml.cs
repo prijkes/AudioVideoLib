@@ -678,47 +678,29 @@ public partial class MainWindow : Window
         return true;
     }
 
+    // Family text frames need an explicit identifier in the ctor; their editor's
+    // CreateNew(tag) doesn't know which one. Same for URL frames. Other frames
+    // dispatch through the registry.
+#pragma warning disable IDE0046 // chained ternary loses the family-frame comments
     private static Id3v2Frame? ConstructFrameFor(string identifier, Id3v2Tag tag)
     {
-        if (Id3v2KnownTextFrameIds.All.Any(i => i.Identifier == identifier || i.V220Identifier == identifier))
+        if (Id3v2KnownTextFrameIds.TryFind(identifier, out _))
         {
             return new Id3v2TextFrame(tag.Version, identifier)
             {
                 TextEncoding = Id3v2FrameEncodingType.UTF8,
             };
         }
-        if (Id3v2KnownUrlFrameIds.All.Any(i => i.Identifier == identifier || i.V220Identifier == identifier))
+        if (Id3v2KnownUrlFrameIds.TryFind(identifier, out _))
         {
             return new Id3v2UrlLinkFrame(tag.Version, identifier);
         }
-        foreach (var entry in TagItemEditorRegistry.Shared.Entries)
-        {
-            if (entry.Attribute is not Id3v2FrameEditorAttribute a)
-            {
-                continue;
-            }
-            // Family text/URL editors are handled by the early-return paths above; their
-            // base-class ItemType (Id3v2TextFrame / Id3v2UrlLinkFrame) doesn't have a
-            // canonical identifier so IdentifierFor would return something incoherent.
-            if (a.ItemType == typeof(Id3v2TextFrame) || a.ItemType == typeof(Id3v2UrlLinkFrame))
-            {
-                continue;
-            }
-            // Skip editors whose frame can't construct against the active version —
-            // their version-aware ctor would throw, which IdentifierFor catches but
-            // the debugger surfaces as a first-chance break to the user.
-            if (!a.SupportedVersions.Contains(tag.Version))
-            {
-                continue;
-            }
-            var ident = Id3v2AddMenuBuilder.IdentifierFor(a, tag.Version);
-            if (ident == identifier)
-            {
-                return (Id3v2Frame)entry.Adapter.CreateNew(tag);
-            }
-        }
-        return null;
+        return Id3v2FrameLookup.TryFindEntryByIdentifier(
+            TagItemEditorRegistry.Shared, identifier, tag.Version, out var entry)
+            ? (Id3v2Frame)entry.Adapter.CreateNew(tag)
+            : null;
     }
+#pragma warning restore IDE0046
 
     private void TabItem_PreviewMouseRightButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
     {

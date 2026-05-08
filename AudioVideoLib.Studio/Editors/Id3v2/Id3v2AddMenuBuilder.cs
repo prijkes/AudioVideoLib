@@ -15,7 +15,7 @@ public static class Id3v2AddMenuBuilder
         ArgumentNullException.ThrowIfNull(attribute);
         ArgumentNullException.ThrowIfNull(tag);
 
-        var ident = IdentifierFor(attribute, tag.Version) ?? "?";
+        var ident = Id3v2FrameLookup.IdentifierFor(attribute, tag.Version) ?? "?";
         var name = StripTrailingIdentifier(attribute.MenuLabel, ident);
         var existing = attribute.IsUniqueInstance
             && tag.Frames.Any(f => f.GetType() == attribute.ItemType);
@@ -92,61 +92,6 @@ public static class Id3v2AddMenuBuilder
         }
     }
 
-    internal static string? IdentifierFor(Id3v2FrameEditorAttribute attr, Id3v2Version version)
-    {
-        if (!string.IsNullOrEmpty(attr.KnownIdentifier))
-        {
-            return attr.KnownIdentifier;
-        }
-
-        // Try the version-aware ctor first.
-        var versionCtor = attr.ItemType.GetConstructor([typeof(Id3v2Version)]);
-        if (versionCtor is not null)
-        {
-            try
-            {
-                return ((Id3v2Frame)versionCtor.Invoke([version])).Identifier;
-            }
-            catch
-            {
-                // Fall through — some frames have a (Id3v2Version) ctor that throws on the
-                // active version even though the editor declares it supported (e.g. RGAD's
-                // IsVersionSupported is buggy in the lib).
-            }
-        }
-
-        // Some frames require an additional argument alongside Id3v2Version (e.g.
-        // Id3v2LinkedInformationFrame's only ctor is (Id3v2Version, string frameIdentifier);
-        // the Identifier getter is version-derived and doesn't depend on the second arg).
-        var versionStringCtor = attr.ItemType.GetConstructor([typeof(Id3v2Version), typeof(string)]);
-        if (versionStringCtor is not null)
-        {
-            try
-            {
-                return ((Id3v2Frame)versionStringCtor.Invoke([version, string.Empty])).Identifier;
-            }
-            catch
-            {
-                // Fall through.
-            }
-        }
-
-        var defaultCtor = attr.ItemType.GetConstructor(System.Type.EmptyTypes);
-        if (defaultCtor is not null)
-        {
-            try
-            {
-                return ((Id3v2Frame)defaultCtor.Invoke([])).Identifier;
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        return null;
-    }
-
     private static IEnumerable<Id3v2FrameCategory> CategoriesInDisplayOrder() =>
     [
         Id3v2FrameCategory.TextFrames,
@@ -215,7 +160,7 @@ public static class Id3v2AddMenuBuilder
             {
                 var attr = (Id3v2FrameEditorAttribute)e.Attribute;
                 var label = BuildEntryLabel(attr, tag);
-                var ident = IdentifierFor(attr, version) ?? string.Empty;
+                var ident = Id3v2FrameLookup.IdentifierFor(attr, version) ?? string.Empty;
                 var existing = attr.IsUniqueInstance && tag.Frames.Any(f => f.GetType() == attr.ItemType);
                 return new Id3v2MenuEntry(label, ident, existing);
             })];

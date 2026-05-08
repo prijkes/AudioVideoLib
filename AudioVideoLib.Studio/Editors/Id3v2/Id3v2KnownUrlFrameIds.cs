@@ -1,5 +1,7 @@
 namespace AudioVideoLib.Studio.Editors.Id3v2;
 
+using System;
+
 public sealed record Id3v2KnownUrlFrameId(
     string Identifier,
     string? V220Identifier,
@@ -27,4 +29,25 @@ public static class Id3v2KnownUrlFrameIds
         => (versionMask == Id3v2VersionMask.V220 || versionMask == Id3v2VersionMask.V221) && entry.V220Identifier is { } v220
             ? v220
             : entry.Identifier;
+
+    /// <summary>
+    /// Locates the catalog entry whose primary or v2.2 alternate identifier matches
+    /// <paramref name="identifier"/> (case-insensitive). Returns <c>true</c> on hit.
+    /// </summary>
+    public static bool TryFind(string identifier, out Id3v2KnownUrlFrameId entry)
+    {
+        ArgumentNullException.ThrowIfNull(identifier);
+        foreach (var e in All)
+        {
+            if (string.Equals(e.Identifier, identifier, StringComparison.OrdinalIgnoreCase)
+                || (e.V220Identifier is not null
+                    && string.Equals(e.V220Identifier, identifier, StringComparison.OrdinalIgnoreCase)))
+            {
+                entry = e;
+                return true;
+            }
+        }
+        entry = null!;
+        return false;
+    }
 }

@@ -28,7 +28,7 @@ public sealed class ManageFramesViewModel
             .Select(e =>
             {
                 var attr = (Id3v2FrameEditorAttribute)e.Attribute;
-                var ident = Id3v2AddMenuBuilder.IdentifierFor(attr, tag.Version) ?? "?";
+                var ident = Id3v2FrameLookup.IdentifierFor(attr, tag.Version) ?? "?";
                 var exists = tag.Frames.Any(f => f.GetType() == attr.ItemType);
                 return new Row(ident, attr.MenuLabel, attr.Category.ToDisplay(),
                                exists, attr.IsUniqueInstance, attr.ItemType);

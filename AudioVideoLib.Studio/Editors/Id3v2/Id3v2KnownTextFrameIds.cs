@@ -1,7 +1,6 @@
 namespace AudioVideoLib.Studio.Editors.Id3v2;
 
 using System;
-using System.Linq;
 
 using AudioVideoLib.Tags;
 
@@ -82,6 +81,31 @@ public static class Id3v2KnownTextFrameIds
             : entry.Identifier;
 
     /// <summary>
+    /// Locates the catalog entry whose primary or v2.2 alternate identifier matches
+    /// <paramref name="identifier"/> (case-insensitive). Returns <c>true</c> on hit.
+    /// </summary>
+    /// <remarks>
+    /// Match is <see cref="StringComparison.OrdinalIgnoreCase"/> for resilience against
+    /// case-mismatched callers; ID3v2 identifiers are uppercase by spec.
+    /// </remarks>
+    public static bool TryFind(string identifier, out Id3v2KnownTextFrameId entry)
+    {
+        ArgumentNullException.ThrowIfNull(identifier);
+        foreach (var e in All)
+        {
+            if (string.Equals(e.Identifier, identifier, StringComparison.OrdinalIgnoreCase)
+                || (e.V220Identifier is not null
+                    && string.Equals(e.V220Identifier, identifier, StringComparison.OrdinalIgnoreCase)))
+            {
+                entry = e;
+                return true;
+            }
+        }
+        entry = null!;
+        return false;
+    }
+
+    /// <summary>
     /// Resolves a canonical identifier to the version-correct identifier to write
     /// and a priority-ordered list of identifiers to try when reading. The canonical
     /// may be either the v2.3+ identifier or the v2.2 alternate (case-insensitive).
@@ -97,14 +121,12 @@ public static class Id3v2KnownTextFrameIds
     /// </exception>
     public static Id3v2TextFrameResolution Resolve(string canonicalIdentifier, Id3v2Version version)
     {
-        ArgumentNullException.ThrowIfNull(canonicalIdentifier);
-        var entry = All.FirstOrDefault(e =>
-            string.Equals(e.Identifier, canonicalIdentifier, StringComparison.OrdinalIgnoreCase)
-            || (e.V220Identifier is not null
-                && string.Equals(e.V220Identifier, canonicalIdentifier, StringComparison.OrdinalIgnoreCase)))
-            ?? throw new ArgumentException(
+        if (!TryFind(canonicalIdentifier, out var entry))
+        {
+            throw new ArgumentException(
                 $"'{canonicalIdentifier}' is not a known text-frame identifier.",
                 nameof(canonicalIdentifier));
+        }
         var versionMask = version.ToMask();
         if ((entry.SupportedVersions & versionMask) == 0)
         {

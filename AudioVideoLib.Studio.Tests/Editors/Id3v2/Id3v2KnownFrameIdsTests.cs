@@ -177,4 +177,56 @@ public class Id3v2KnownFrameIdsTests
         Assert.Equal("TYE", r.Write);
         Assert.Equal(["TYE", "TYER"], r.Read);
     }
+
+    // ----- TryFind (catalog-side) -----
+
+    [Fact]
+    public void TryFind_PrimaryIdentifier_Text_ReturnsTrue()
+    {
+        Assert.True(Id3v2KnownTextFrameIds.TryFind("TIT2", out var entry));
+        Assert.Equal("TIT2", entry.Identifier);
+    }
+
+    [Fact]
+    public void TryFind_V220Identifier_Text_ReturnsTrue()
+    {
+        // Caller passes the V220 form; should still hit the entry.
+        Assert.True(Id3v2KnownTextFrameIds.TryFind("TT2", out var entry));
+        Assert.Equal("TIT2", entry.Identifier);
+    }
+
+    [Fact]
+    public void TryFind_LowerCase_Text_AcceptsCaseInsensitive()
+    {
+        Assert.True(Id3v2KnownTextFrameIds.TryFind("tit2", out var entry));
+        Assert.Equal("TIT2", entry.Identifier);
+    }
+
+    [Fact]
+    public void TryFind_UnknownIdentifier_Text_ReturnsFalse()
+    {
+        Assert.False(Id3v2KnownTextFrameIds.TryFind("XXXX", out _));
+    }
+
+    [Fact]
+    public void TryFind_Null_Text_Throws()
+    {
+        Assert.Throws<ArgumentNullException>(() => Id3v2KnownTextFrameIds.TryFind(null!, out _));
+    }
+
+    [Fact]
+    public void TryFind_PrimaryIdentifier_Url_ReturnsTrue()
+    {
+        Assert.True(Id3v2KnownUrlFrameIds.TryFind("WCOM", out var entry));
+        Assert.Equal("WCOM", entry.Identifier);
+    }
+
+    [Fact]
+    public void Resolve_AfterRefactor_StillThrowsOnUnknown()
+    {
+        // Pins that the Resolve-via-TryFind refactor preserves the existing
+        // throw contract rather than silently passing through unknown ids.
+        Assert.Throws<ArgumentException>(
+            () => Id3v2KnownTextFrameIds.Resolve("ZZZZ", Id3v2Version.Id3v240));
+    }
 }
