@@ -209,6 +209,68 @@ public partial class Id3v2Frame
                 : EncodingTypes[(byte)encodingType];
         }
 
+        // Cached terminator bytes — avoid per-call Encoding allocation. Read-only by
+        // convention (StreamBuffer.Write reads through; never mutates the array).
+        // UTF-7 terminator is the 5-byte modified-base64 escape "+AAA-" that
+        // UTF7Encoding emits for U+0000 (verified empirically against
+        // new UTF7Encoding().GetBytes("\0")).
+        private static readonly byte[] SingleByteTerminator = [0];
+        private static readonly byte[] DoubleByteTerminator = [0, 0];
+        private static readonly byte[] Utf7Terminator = [0x2B, 0x41, 0x41, 0x41, 0x2D];
+
+        /// <summary>
+        /// Writes the single byte that marks the text encoding of the rest of the
+        /// frame body (per ID3v2 §4 — first byte of every encoded-text frame).
+        /// </summary>
+        /// <param name="stream">The stream to write to.</param>
+        /// <param name="encodingType">Type of the encoding.</param>
+        public static void WriteHeader(StreamBuffer stream, Id3v2FrameEncodingType encodingType)
+        {
+            ArgumentNullException.ThrowIfNull(stream);
+            stream.WriteByte(GetEncodingTypeValue(encodingType));
+        }
+
+        /// <summary>
+        /// Writes the byte-order mark (BOM) preamble for <paramref name="encodingType"/>.
+        /// Empty for ISO-8859-1 / UTF-8 / UTF-16BE-without-BOM / UTF-7; FF FE / FE FF for
+        /// UTF-16LE / UTF-16BE. Per ID3v2 §4 spec, every UTF-16 string in a frame
+        /// body should begin with this preamble.
+        /// </summary>
+        /// <param name="stream">The stream to write to.</param>
+        /// <param name="encodingType">Type of the encoding.</param>
+        public static void WritePreamble(StreamBuffer stream, Id3v2FrameEncodingType encodingType)
+        {
+            ArgumentNullException.ThrowIfNull(stream);
+            stream.Write(GetEncodingPreamble(encodingType));
+        }
+
+        /// <summary>
+        /// Writes the null terminator used to separate text fields within a frame body.
+        /// One byte for ISO-8859-1 / UTF-8 (0x00); two bytes for UTF-16 variants
+        /// (0x00 0x00); five bytes for UTF-7 (the modified-base64 escape "+AAA-").
+        /// Backed by cached static arrays — no allocation per call.
+        /// </summary>
+        /// <param name="stream">The stream to write to.</param>
+        /// <param name="encodingType">Type of the encoding.</param>
+        public static void WriteNullTerminator(StreamBuffer stream, Id3v2FrameEncodingType encodingType)
+        {
+            ArgumentNullException.ThrowIfNull(stream);
+            stream.Write(GetTerminatorBytes(encodingType));
+        }
+
+        // Switch enumerates every Id3v2FrameEncodingType value explicitly and throws
+        // on unknown values to match GetEncodingPreamble's convention.
+        private static byte[] GetTerminatorBytes(Id3v2FrameEncodingType encodingType) => encodingType switch
+        {
+            Id3v2FrameEncodingType.Default
+                or Id3v2FrameEncodingType.UTF8 => SingleByteTerminator,
+            Id3v2FrameEncodingType.UTF16LittleEndian
+                or Id3v2FrameEncodingType.UTF16BigEndian
+                or Id3v2FrameEncodingType.UTF16BigEndianWithoutBom => DoubleByteTerminator,
+            Id3v2FrameEncodingType.UTF7 => Utf7Terminator,
+            _ => throw new ArgumentOutOfRangeException(nameof(encodingType)),
+        };
+
         // Valid values are byte 0 till 3, the others are values defined by this library and not part of the specs.
         private static bool IsValidEncodingType(int encodingType)
         {

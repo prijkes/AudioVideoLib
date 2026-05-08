@@ -170,7 +170,7 @@ public sealed class Id3v2OwnershipFrame : Id3v2Frame
             var defaultEncoding = Id3v2FrameEncoding.GetEncoding(Id3v2FrameEncodingType.Default);
 
             // Text encoding
-            stream.WriteByte(Id3v2FrameEncoding.GetEncodingTypeValue(TextEncoding));
+            Id3v2FrameEncoding.WriteHeader(stream, TextEncoding);
 
             // Price paid
             if (PricePaid != null)
@@ -179,7 +179,7 @@ public sealed class Id3v2OwnershipFrame : Id3v2Frame
             }
 
             // String terminator (0x00 in encoding)
-            stream.Write(defaultEncoding.GetBytes("\0"));
+            Id3v2FrameEncoding.WriteNullTerminator(stream, Id3v2FrameEncodingType.Default);
 
             // Date of purchase
             if (DateOfPurchase != null)
@@ -188,7 +188,7 @@ public sealed class Id3v2OwnershipFrame : Id3v2Frame
             }
 
             // Preamble
-            stream.Write(Id3v2FrameEncoding.GetEncodingPreamble(TextEncoding));
+            Id3v2FrameEncoding.WritePreamble(stream, TextEncoding);
 
             // Seller
             if (Seller != null)

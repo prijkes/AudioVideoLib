@@ -187,7 +187,7 @@ public sealed class Id3v2SynchronizedLyricsFrame : Id3v2Frame
             var encoding = Id3v2FrameEncoding.GetEncoding(TextEncoding);
             var stream = new StreamBuffer();
             // Text encoding
-            stream.WriteByte(Id3v2FrameEncoding.GetEncodingTypeValue(TextEncoding));
+            Id3v2FrameEncoding.WriteHeader(stream, TextEncoding);
 
             // Language
             if (Language != null)
@@ -202,7 +202,7 @@ public sealed class Id3v2SynchronizedLyricsFrame : Id3v2Frame
             stream.WriteByte((byte)ContentType);
 
             // Preamble
-            stream.Write(Id3v2FrameEncoding.GetEncodingPreamble(TextEncoding));
+            Id3v2FrameEncoding.WritePreamble(stream, TextEncoding);
 
             // Content descriptor
             if (ContentDescriptor != null)

@@ -121,7 +121,7 @@ public sealed class Id3v2GroupIdentificationRegistrationFrame : Id3v2Frame
             }
 
             // String terminator (0x00 in encoding)
-            stream.Write(defaultEncoding.GetBytes("\0"));
+            Id3v2FrameEncoding.WriteNullTerminator(stream, Id3v2FrameEncodingType.Default);
 
             // Group symbol
             stream.WriteByte(GroupSymbol);

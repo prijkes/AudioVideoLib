@@ -90,7 +90,7 @@ public sealed class Id3v2ExperimentalRelativeVolumeAdjustment2Frame : Id3v2Frame
             }
 
             // String terminator (0x00 in encoding)
-            stream.Write(defaultEncoding.GetBytes("\0"));
+            Id3v2FrameEncoding.WriteNullTerminator(stream, Id3v2FrameEncodingType.Default);
 
             // Channel informations
             foreach (var ci in ChannelInformation)

@@ -155,7 +155,7 @@ public sealed class Id3v2GeneralEncapsulatedObjectFrame : Id3v2Frame
             var preamble = Id3v2FrameEncoding.GetEncodingPreamble(TextEncoding);
 
             // Text encoding
-            stream.WriteByte(Id3v2FrameEncoding.GetEncodingTypeValue(TextEncoding));
+            Id3v2FrameEncoding.WriteHeader(stream, TextEncoding);
 
             // ImageFormat / MIME Type
             if (MimeType != null)

@@ -175,7 +175,7 @@ public sealed class Id3v2AttachedPictureFrame : Id3v2Frame
             var preamble = Id3v2FrameEncoding.GetEncodingPreamble(TextEncoding);
 
             // Text encoding
-            stream.WriteByte(Id3v2FrameEncoding.GetEncodingTypeValue(TextEncoding));
+            Id3v2FrameEncoding.WriteHeader(stream, TextEncoding);
 
             // ImageFormat / MIME Type
             if (ImageFormat != null)
@@ -193,7 +193,7 @@ public sealed class Id3v2AttachedPictureFrame : Id3v2Frame
             // 0x00
             if (Version >= Id3v2Version.Id3v230)
             {
-                stream.Write(defaultEncoding.GetBytes("\0"));
+                Id3v2FrameEncoding.WriteNullTerminator(stream, Id3v2FrameEncodingType.Default);
             }
 
             // Picture type
@@ -209,7 +209,7 @@ public sealed class Id3v2AttachedPictureFrame : Id3v2Frame
             }
 
             // String terminator (0x00 in encoding)
-            stream.Write(encoding.GetBytes("\0"));
+            Id3v2FrameEncoding.WriteNullTerminator(stream, TextEncoding);
 
             // Picture data
             if (PictureData != null)

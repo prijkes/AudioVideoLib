@@ -103,7 +103,7 @@ public sealed partial class Id3v2TextFrame : Id3v2Frame
             var preamble = Id3v2FrameEncoding.GetEncodingPreamble(TextEncoding);
 
             // Text Encoding
-            stream.WriteByte(Id3v2FrameEncoding.GetEncodingTypeValue(TextEncoding));
+            Id3v2FrameEncoding.WriteHeader(stream, TextEncoding);
 
             // Loop through all non-empty strings.
             // Writing empty strings will go wrong when reading them again...

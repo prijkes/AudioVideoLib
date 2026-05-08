@@ -104,7 +104,7 @@ public sealed class Id3v2InvolvedPeopleListFrame : Id3v2Frame
         {
             var stream = new StreamBuffer();
             // Text encoding.
-            stream.WriteByte(Id3v2FrameEncoding.GetEncodingTypeValue(TextEncoding));
+            Id3v2FrameEncoding.WriteHeader(stream, TextEncoding);
 
             var preamble = Id3v2FrameEncoding.GetEncodingPreamble(TextEncoding);
             var encoding = Id3v2FrameEncoding.GetEncoding(TextEncoding);

@@ -106,7 +106,7 @@ public sealed class Id3v2TermsOfUseFrame : Id3v2Frame
         {
             var stream = new StreamBuffer();
             // Text encoding
-            stream.WriteByte(Id3v2FrameEncoding.GetEncodingTypeValue(TextEncoding));
+            Id3v2FrameEncoding.WriteHeader(stream, TextEncoding);
 
             // Language (3 bytes, ISO-639-2 in ISO-8859-1)
             if (Language != null)

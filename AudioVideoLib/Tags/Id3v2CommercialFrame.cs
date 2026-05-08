@@ -304,7 +304,7 @@ public sealed class Id3v2CommercialFrame : Id3v2Frame
             var preamble = Id3v2FrameEncoding.GetEncodingPreamble(TextEncoding);
 
             // Text encoding
-            stream.WriteByte(Id3v2FrameEncoding.GetEncodingTypeValue(TextEncoding));
+            Id3v2FrameEncoding.WriteHeader(stream, TextEncoding);
 
             // Price string
             if (PriceString != null)
@@ -313,7 +313,7 @@ public sealed class Id3v2CommercialFrame : Id3v2Frame
             }
 
             // String terminator (0x00 in encoding)
-            stream.Write(defaultEncoding.GetBytes("\0"));
+            Id3v2FrameEncoding.WriteNullTerminator(stream, Id3v2FrameEncodingType.Default);
 
             // Valid until
             if (ValidUntil != null)
@@ -328,7 +328,7 @@ public sealed class Id3v2CommercialFrame : Id3v2Frame
             }
 
             // String terminator (0x00 in encoding)
-            stream.Write(defaultEncoding.GetBytes("\0"));
+            Id3v2FrameEncoding.WriteNullTerminator(stream, Id3v2FrameEncodingType.Default);
 
             // Received as
             stream.WriteByte((byte)ReceivedAs);
@@ -343,7 +343,7 @@ public sealed class Id3v2CommercialFrame : Id3v2Frame
             }
 
             // String terminator (0x00 in encoding)
-            stream.Write(encoding.GetBytes("\0"));
+            Id3v2FrameEncoding.WriteNullTerminator(stream, TextEncoding);
 
             // Preamble
             stream.Write(preamble);
@@ -355,7 +355,7 @@ public sealed class Id3v2CommercialFrame : Id3v2Frame
             }
 
             // String terminator (0x00 in encoding)
-            stream.Write(encoding.GetBytes("\0"));
+            Id3v2FrameEncoding.WriteNullTerminator(stream, TextEncoding);
 
             // Picture MIME type
             if (PictureMimeType != null)
@@ -364,7 +364,7 @@ public sealed class Id3v2CommercialFrame : Id3v2Frame
             }
 
             // String terminator (0x00 in encoding)
-            stream.Write(defaultEncoding.GetBytes("\0"));
+            Id3v2FrameEncoding.WriteNullTerminator(stream, Id3v2FrameEncodingType.Default);
 
             // Seller logo
             if (SellerLogo != null)

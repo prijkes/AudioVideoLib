@@ -138,7 +138,7 @@ public sealed class Id3v2UnsynchronizedLyricsFrame : Id3v2Frame
             var encoding = Id3v2FrameEncoding.GetEncoding(TextEncoding);
             var stream = new StreamBuffer();
             // Text encoding
-            stream.WriteByte(Id3v2FrameEncoding.GetEncodingTypeValue(TextEncoding));
+            Id3v2FrameEncoding.WriteHeader(stream, TextEncoding);
 
             // Language
             if (Language != null)
@@ -147,7 +147,7 @@ public sealed class Id3v2UnsynchronizedLyricsFrame : Id3v2Frame
             }
 
             // Preamble
-            stream.Write(Id3v2FrameEncoding.GetEncodingPreamble(TextEncoding));
+            Id3v2FrameEncoding.WritePreamble(stream, TextEncoding);
 
             // Content descriptor
             if (!string.IsNullOrEmpty(ContentDescriptor))
@@ -163,10 +163,10 @@ public sealed class Id3v2UnsynchronizedLyricsFrame : Id3v2Frame
             }
 
             // String terminator (0x00 in encoding)
-            stream.Write(encoding.GetBytes("\0"));
+            Id3v2FrameEncoding.WriteNullTerminator(stream, TextEncoding);
 
             // Preamble
-            stream.Write(Id3v2FrameEncoding.GetEncodingPreamble(TextEncoding));
+            Id3v2FrameEncoding.WritePreamble(stream, TextEncoding);
 
             // Lyrics/text
             if (Lyrics != null)
