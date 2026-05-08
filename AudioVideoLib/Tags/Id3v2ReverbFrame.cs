@@ -202,7 +202,8 @@ public sealed class Id3v2ReverbFrame : Id3v2Frame
     }
 
     /// <inheritdoc />
-    public override string Identifier => (Version < Id3v2Version.Id3v230) ? "REV" : "REVB";
+    // Fallback unreachable in normal flow: IsVersionSupported rejects unsupported versions at construction. See GetIdentifierFromFactory remarks.
+    public override string Identifier => GetIdentifierFromFactory() ?? "REVB";
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

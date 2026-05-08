@@ -115,7 +115,8 @@ public sealed class Id3v2SyncedTempoCodesFrame : Id3v2Frame
     }
 
     /// <inheritdoc />
-    public override string Identifier => (Version < Id3v2Version.Id3v230) ? "STC" : "SYTC";
+    // Fallback unreachable in normal flow: IsVersionSupported rejects unsupported versions at construction. See GetIdentifierFromFactory remarks.
+    public override string Identifier => GetIdentifierFromFactory() ?? "SYTC";
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

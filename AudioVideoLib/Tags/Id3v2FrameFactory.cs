@@ -1,6 +1,7 @@
 namespace AudioVideoLib.Tags;
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -305,12 +306,33 @@ public partial class Id3v2Frame
     /// The identifier if found; otherwise, null.
     /// </returns>
     public static string? GetIdentifier<T>(Id3v2Version version) where T : Id3v2Frame
-    {
-        return
-            FrameFactories.Where(f => f.Type == typeof(T) && f.Identifiers != null && f.Identifiers.Values.Any(v => v != null && v.Contains(version)))
-                .Select(f => f.Identifiers!.Where(i => i.Value != null && i.Value.Contains(version)).Select(i => i.Key).FirstOrDefault())
-                .FirstOrDefault();
-    }
+        => LookupIdentifier(typeof(T), version);
+
+    /// <summary>
+    /// Resolves the canonical identifier for THIS frame instance at its current
+    /// <see cref="Version"/> by querying the factory table. Returns null if the type
+    /// isn't registered or the version isn't supported by any of its registered
+    /// identifiers — derived classes that override <see cref="Identifier"/> provide
+    /// a string-literal fallback as defense in depth, though
+    /// <see cref="IsVersionSupported"/> should reject those cases at construction time.
+    /// </summary>
+    protected string? GetIdentifierFromFactory()
+        => LookupIdentifier(GetType(), Version);
+
+    private static readonly ConcurrentDictionary<(Type Type, Id3v2Version Version), string?> IdentifierCache = new();
+
+    private static string? LookupIdentifier(Type type, Id3v2Version version)
+        => IdentifierCache.GetOrAdd(
+            (type, version),
+            key => FrameFactories
+                .Where(f => f.Type == key.Type
+                         && f.Identifiers != null
+                         && f.Identifiers.Values.Any(v => v != null && v.Contains(key.Version)))
+                .Select(f => f.Identifiers!
+                    .Where(i => i.Value != null && i.Value.Contains(key.Version))
+                    .Select(i => i.Key)
+                    .FirstOrDefault())
+                .FirstOrDefault());
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

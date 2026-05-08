@@ -165,7 +165,8 @@ public sealed class Id3v2LinkedInformationFrame : Id3v2Frame
     }
 
     /// <inheritdoc />
-    public override string Identifier => (Version < Id3v2Version.Id3v230) ? "LNK" : "LINK";
+    // Fallback unreachable in normal flow: IsVersionSupported rejects unsupported versions at construction. See GetIdentifierFromFactory remarks.
+    public override string Identifier => GetIdentifierFromFactory() ?? "LINK";
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
