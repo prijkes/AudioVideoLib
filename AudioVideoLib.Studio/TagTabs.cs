@@ -3,17 +3,15 @@ namespace AudioVideoLib.Studio;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
 using AudioVideoLib.Studio.Editors.Id3v2;
+using AudioVideoLib.Studio.Mvvm;
 using AudioVideoLib.Tags;
 
-public abstract class TagTabViewModel : INotifyPropertyChanged
+public abstract class TagTabViewModel : ObservableObject
 {
-    public event PropertyChangedEventHandler? PropertyChanged;
-
     public string Header
     {
         get;
@@ -29,16 +27,7 @@ public abstract class TagTabViewModel : INotifyPropertyChanged
     public bool IsDirty
     {
         get;
-        protected set
-        {
-            if (field == value)
-            {
-                return;
-            }
-
-            field = value;
-            Notify();
-        }
+        protected set => Set(ref field, value);
     }
 
     public virtual bool IsEditable => false;
@@ -50,23 +39,6 @@ public abstract class TagTabViewModel : INotifyPropertyChanged
 
     public void MarkDirty()
     {
-        IsDirty = true;
-    }
-
-    protected void Notify([CallerMemberName] string? propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-
-    protected void SetField<T>(ref T backingField, T value, [CallerMemberName] string? propertyName = null)
-    {
-        if (EqualityComparer<T>.Default.Equals(backingField, value))
-        {
-            return;
-        }
-
-        backingField = value;
-        Notify(propertyName);
         IsDirty = true;
     }
 }
@@ -186,7 +158,7 @@ public sealed class Id3v2TabViewModel : TagTabViewModel
         }
 
         backing = value;
-        Notify(propertyName);
+        OnPropertyChanged(propertyName);
         IsDirty = true;
     }
 
@@ -378,7 +350,7 @@ public sealed class Id3v1TabViewModel : TagTabViewModel
             }
 
             field = value;
-            Notify();
+            OnPropertyChanged(nameof(TrackNumber));
             IsDirty = true;
         }
     }
@@ -418,7 +390,7 @@ public sealed class Id3v1TabViewModel : TagTabViewModel
         }
 
         backing = value;
-        Notify(propertyName);
+        OnPropertyChanged(propertyName);
         IsDirty = true;
     }
 
@@ -436,7 +408,7 @@ public sealed class Id3v1TabViewModel : TagTabViewModel
         }
 
         backing = value;
-        Notify(propertyName);
+        OnPropertyChanged(propertyName);
 
         // Re-decode the underlying tag's raw bytes through the new encoding so
         // the displayed string updates immediately.
@@ -597,10 +569,8 @@ public sealed class ApeTabViewModel : TagTabViewModel
     }
 }
 
-public sealed class ApeItemRow(ApeItem item, Action markDirty) : INotifyPropertyChanged
+public sealed class ApeItemRow(ApeItem item, Action markDirty) : ObservableObject
 {
-    public event PropertyChangedEventHandler? PropertyChanged;
-
     public string Key { get; } = item.Key;
 
     public string Type { get; } = item switch
@@ -618,32 +588,28 @@ public sealed class ApeItemRow(ApeItem item, Action markDirty) : INotifyProperty
         get;
         set
         {
-            if (field == value)
-            {
-                return;
-            }
-
             if (!IsEditable)
             {
                 return;
             }
 
-            field = value ?? string.Empty;
-
-            switch (item)
+            var newValue = value ?? string.Empty;
+            if (Set(ref field, newValue))
             {
-                case ApeLocatorItem loc:
-                    loc.Values.Clear();
-                    loc.Values.Add(field);
-                    break;
-                case ApeUtf8Item utf8:
-                    utf8.Values.Clear();
-                    utf8.Values.Add(field);
-                    break;
-            }
+                switch (item)
+                {
+                    case ApeLocatorItem loc:
+                        loc.Values.Clear();
+                        loc.Values.Add(field);
+                        break;
+                    case ApeUtf8Item utf8:
+                        utf8.Values.Clear();
+                        utf8.Values.Add(field);
+                        break;
+                }
 
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Value)));
-            markDirty();
+                markDirty();
+            }
         }
     } = item switch
     {
@@ -707,10 +673,8 @@ public sealed class Lyrics3v2TabViewModel : TagTabViewModel
     }
 }
 
-public sealed class Lyrics3v2FieldRow(Lyrics3v2Field source, Action markDirty) : INotifyPropertyChanged
+public sealed class Lyrics3v2FieldRow(Lyrics3v2Field source, Action markDirty) : ObservableObject
 {
-    public event PropertyChangedEventHandler? PropertyChanged;
-
     public string Identifier { get; } = source.Identifier;
 
     public bool IsEditable { get; } = source is Lyrics3v2TextField;
@@ -720,25 +684,21 @@ public sealed class Lyrics3v2FieldRow(Lyrics3v2Field source, Action markDirty) :
         get;
         set
         {
-            if (field == value)
-            {
-                return;
-            }
-
             if (!IsEditable)
             {
                 return;
             }
 
-            field = value ?? string.Empty;
-
-            if (source is Lyrics3v2TextField textField)
+            var newValue = value ?? string.Empty;
+            if (Set(ref field, newValue))
             {
-                textField.Value = field;
-            }
+                if (source is Lyrics3v2TextField textField)
+                {
+                    textField.Value = field;
+                }
 
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Value)));
-            markDirty();
+                markDirty();
+            }
         }
     } = source switch
     {
@@ -800,34 +760,29 @@ public sealed class VorbisTabViewModel : TagTabViewModel
     }
 }
 
-public sealed class VorbisCommentRow(VorbisComment comment, Action markDirty) : INotifyPropertyChanged
+public sealed class VorbisCommentRow(VorbisComment comment, Action markDirty) : ObservableObject
 {
-    public event PropertyChangedEventHandler? PropertyChanged;
-
     public string Name
     {
         get;
         set
         {
-            if (field == value)
+            var newValue = value ?? string.Empty;
+            if (Set(ref field, newValue))
             {
-                return;
-            }
+                try
+                {
+                    comment.Name = field;
+                }
+                catch
+                {
+                    // Validation rejects invalid chars; keep the VM value anyway so the
+                    // grid doesn't revert silently, but don't mark dirty.
+                    return;
+                }
 
-            field = value ?? string.Empty;
-            try
-            {
-                comment.Name = field;
+                markDirty();
             }
-            catch
-            {
-                // Validation rejects invalid chars; keep the VM value anyway so the
-                // grid doesn't revert silently, but don't mark dirty.
-                return;
-            }
-
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Name)));
-            markDirty();
         }
     } = comment.Name ?? string.Empty;
 
@@ -836,16 +791,12 @@ public sealed class VorbisCommentRow(VorbisComment comment, Action markDirty) : 
         get;
         set
         {
-            if (field == value)
+            var newValue = value ?? string.Empty;
+            if (Set(ref field, newValue))
             {
-                return;
+                comment.Value = field;
+                markDirty();
             }
-
-            field = value ?? string.Empty;
-            comment.Value = field;
-
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Value)));
-            markDirty();
         }
     } = comment.Value ?? string.Empty;
 }
@@ -873,7 +824,7 @@ public sealed class Lyrics3v1TabViewModel : TagTabViewModel
             }
 
             field = value ?? string.Empty;
-            Notify();
+            OnPropertyChanged(nameof(Lyrics));
             IsDirty = true;
         }
     } = string.Empty;

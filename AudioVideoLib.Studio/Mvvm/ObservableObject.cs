@@ -12,16 +12,19 @@ public abstract class ObservableObject : INotifyPropertyChanged
 
     /// <summary>
     /// Setter helper: short-circuits on equality, writes the field, raises
-    /// PropertyChanged for the caller-member-name'd property.
+    /// PropertyChanged for the caller-member-name'd property. Returns
+    /// <c>true</c> if the value changed (and PropertyChanged was raised),
+    /// <c>false</c> if it short-circuited on equality.
     /// </summary>
-    protected void Set<T>(ref T storage, T value, [CallerMemberName] string? prop = null)
+    protected bool Set<T>(ref T storage, T value, [CallerMemberName] string? prop = null)
     {
         if (Equals(storage, value))
         {
-            return;
+            return false;
         }
         storage = value;
         OnPropertyChanged(prop);
+        return true;
     }
 
     /// <summary>
