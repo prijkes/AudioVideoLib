@@ -59,7 +59,7 @@ public sealed class ManageFramesViewModel
                 var exists = tag.Frames.Any(f =>
                     f is Id3v2UrlLinkFrame && string.Equals(f.Identifier, ident, StringComparison.Ordinal));
                 return new Row(ident, u.FriendlyName, urlFrameCategory,
-                               exists, IsUniqueInstance: true, typeof(Id3v2UrlLinkFrame));
+                               exists, IsUniqueInstance: !u.AllowMultiple, typeof(Id3v2UrlLinkFrame));
             });
 
         All = [.. registryRows

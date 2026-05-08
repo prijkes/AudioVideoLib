@@ -144,6 +144,26 @@ public class ManageFramesViewModelTests
     }
 
     [Fact]
+    public void GetActionLabel_WoarAlreadyInTag_ReturnsAdd()
+    {
+        // ID3v2 §4.3.1: WOAR may appear once per performer when the audio has
+        // multiple artists, so an existing WOAR must still allow Add.
+        var tag = new Id3v2Tag(Id3v2Version.Id3v240);
+        tag.SetFrame(new Id3v2UrlLinkFrame(Id3v2Version.Id3v240, "WOAR") { Url = "http://artist1.example" });
+        var vm = new ManageFramesViewModel(TagItemEditorRegistry.Shared, tag);
+        Assert.Equal("Add", vm.GetActionLabel(vm.All.Single(r => r.Identifier == "WOAR")));
+    }
+
+    [Fact]
+    public void GetActionLabel_WarV220AlreadyInTag_ReturnsAdd()
+    {
+        var tag = new Id3v2Tag(Id3v2Version.Id3v220);
+        tag.SetFrame(new Id3v2UrlLinkFrame(Id3v2Version.Id3v220, "WAR") { Url = "http://artist1.example" });
+        var vm = new ManageFramesViewModel(TagItemEditorRegistry.Shared, tag);
+        Assert.Equal("Add", vm.GetActionLabel(vm.All.Single(r => r.Identifier == "WAR")));
+    }
+
+    [Fact]
     public void All_V230_IncludesRgad()
     {
         var tag = new Id3v2Tag(Id3v2Version.Id3v230);
