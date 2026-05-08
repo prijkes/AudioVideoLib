@@ -20,9 +20,9 @@ public sealed class Id3v2EncryptionMethodRegistrationFrame : Id3v2Frame
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Id3v2EncryptionMethodRegistrationFrame"/> class with version <see cref="Id3v2Version.Id3v220"/>.
+    /// Initializes a new instance of the <see cref="Id3v2EncryptionMethodRegistrationFrame"/> class with version <see cref="Id3v2Version.Id3v230"/>.
     /// </summary>
-    public Id3v2EncryptionMethodRegistrationFrame() : base(Id3v2Version.Id3v220)
+    public Id3v2EncryptionMethodRegistrationFrame() : base(Id3v2Version.Id3v230)
     {
     }
 
@@ -33,10 +33,6 @@ public sealed class Id3v2EncryptionMethodRegistrationFrame : Id3v2Frame
     /// <exception cref="InvalidVersionException">Thrown if <paramref name="version"/> is not supported by this frame.</exception>
     public Id3v2EncryptionMethodRegistrationFrame(Id3v2Version version) : base(version)
     {
-        if (!IsVersionSupported(version))
-        {
-            throw new InvalidVersionException($"Version {version} not supported by this frame.");
-        }
     }
 
     ////------------------------------------------------------------------------------------------------------------------------------

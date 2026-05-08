@@ -37,10 +37,6 @@ public sealed class Id3v2UniqueFileIdentifierFrame : Id3v2Frame
     /// <exception cref="InvalidVersionException">Thrown if <paramref name="version"/> is not supported by this frame.</exception>
     public Id3v2UniqueFileIdentifierFrame(Id3v2Version version) : base(version)
     {
-        if (!IsVersionSupported(version))
-        {
-            throw new InvalidVersionException($"Version {version} not supported by this frame.");
-        }
     }
 
     ////------------------------------------------------------------------------------------------------------------------------------

@@ -45,12 +45,26 @@ public partial class Id3v2Frame : IAudioTagFrame, IEquatable<Id3v2Frame>
 
         Identifier = identifier;
         Version = version;
+
+        // Virtual call from constructor: dispatches to the derived IsVersionSupported.
+        // Audited safe — Id3v2TextFrame and Id3v2UrlLinkFrame's overrides read _identifier
+        // (null at this point because they call : base(version), not : base(version, id))
+        // and fall through via null-fallthrough to the default base check, which only
+        // consults the just-set Version. See Id3v2FrameBaseCtorTests for the pin.
+#pragma warning disable CA2214 // Virtual call from constructor — audited safe; see comment above.
+        if (!IsVersionSupported(version))
+        {
+            throw new InvalidVersionException($"Version {version} not supported by this frame.");
+        }
+#pragma warning restore CA2214
     }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Id3v2Frame"/> class.
     /// </summary>
     /// <param name="version">The <see cref="Id3v2Version"/> of the <see cref="Id3v2Tag"/>.</param>
+    /// <exception cref="InvalidDataException">Thrown if <paramref name="version"/> is not a valid <see cref="Id3v2Version"/>.</exception>
+    /// <exception cref="InvalidVersionException">Thrown if <paramref name="version"/> is not supported by this frame.</exception>
     protected Id3v2Frame(Id3v2Version version)
     {
         if (!IsValidVersion(version))
@@ -59,6 +73,14 @@ public partial class Id3v2Frame : IAudioTagFrame, IEquatable<Id3v2Frame>
         }
 
         Version = version;
+
+        // See comment in (version, identifier) ctor above for the CA2214 audit.
+#pragma warning disable CA2214
+        if (!IsVersionSupported(version))
+        {
+            throw new InvalidVersionException($"Version {version} not supported by this frame.");
+        }
+#pragma warning restore CA2214
     }
 
     private Id3v2Frame(string identifier)
@@ -172,6 +194,11 @@ public partial class Id3v2Frame : IAudioTagFrame, IEquatable<Id3v2Frame>
     /// Unless overridden, the <paramref name="version"/> is supported if any of the following is true:
     /// * Both <paramref name="version"/> and the current <see cref="Version"/> are equal to or higher than <see cref="Id3v2Version.Id3v230"/>.
     /// * Both <paramref name="version"/> and the current <see cref="Version"/> are lower than <see cref="Id3v2Version.Id3v230"/>.
+    /// <para />
+    /// This method is called from the base constructor: overrides must not access derived-class
+    /// state that isn't initialised yet. Reading <see cref="Version"/> is safe (the base ctor sets
+    /// it before the call); reading <see cref="Identifier"/> is also safe in `(version, identifier)`
+    /// flows. Reading other backing fields is not safe — those are still null/default.
     /// </remarks>
     public virtual bool IsVersionSupported(Id3v2Version version)
     {
