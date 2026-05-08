@@ -266,6 +266,23 @@ public partial class Id3v2Frame
         }
     }
 
+    /// <summary>
+    /// Validates a non-empty <paramref name="value"/> can be encoded in
+    /// <paramref name="encoding"/>. Null or empty values pass without inspection.
+    /// </summary>
+    /// <param name="value">The text to validate.</param>
+    /// <param name="encoding">The encoding to validate against.</param>
+    /// <param name="fieldName">Field name surfaced in the exception message.</param>
+    /// <param name="newlineAllowed">Whether <c>\r</c> / <c>\n</c> are permitted.</param>
+    /// <exception cref="InvalidDataException">Thrown when the value is non-empty and contains characters not representable in <paramref name="encoding"/>.</exception>
+    public static void ValidateEncodedText(string value, Id3v2FrameEncodingType encoding, string fieldName, bool newlineAllowed = false)
+    {
+        if (!string.IsNullOrEmpty(value) && !IsValidTextString(value, encoding, newlineAllowed))
+        {
+            throw new InvalidDataException($"{fieldName} contains one or more invalid characters for the specified frame encoding type.");
+        }
+    }
+
     ////------------------------------------------------------------------------------------------------------------------------------
 
     /// <summary>

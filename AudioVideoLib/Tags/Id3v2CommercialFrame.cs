@@ -60,16 +60,8 @@ public sealed class Id3v2CommercialFrame : Id3v2Frame
 
         set
         {
-            if (!string.IsNullOrEmpty(NameOfSeller) && !IsValidTextString(NameOfSeller, value, false))
-            {
-                throw new InvalidDataException("NameOfSeller contains one or more invalid characters for the specified frame encoding type.");
-            }
-
-            if (!string.IsNullOrEmpty(ShortDescription) && !IsValidTextString(ShortDescription, value, false))
-            {
-                throw new InvalidDataException("ShortDescription contains one or more invalid characters for the specified frame encoding type.");
-            }
-
+            ValidateEncodedText(NameOfSeller, value, nameof(NameOfSeller), false);
+            ValidateEncodedText(ShortDescription, value, nameof(ShortDescription), false);
             _frameEncodingType = value;
         }
     }

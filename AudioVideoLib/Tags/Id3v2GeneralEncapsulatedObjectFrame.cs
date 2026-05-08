@@ -54,17 +54,8 @@ public sealed class Id3v2GeneralEncapsulatedObjectFrame : Id3v2Frame
 
         set
         {
-            if (!string.IsNullOrEmpty(Filename) && !IsValidTextString(Filename, value, false))
-            {
-                throw new InvalidDataException("Filename contains one or more invalid characters for the specified frame encoding type.");
-            }
-
-            if (!string.IsNullOrEmpty(ContentDescription) && !IsValidTextString(ContentDescription, value, false))
-            {
-                throw new InvalidDataException(
-                    "ContentDescription contains one or more invalid characters for the specified frame encoding type.");
-            }
-
+            ValidateEncodedText(Filename, value, nameof(Filename), false);
+            ValidateEncodedText(ContentDescription, value, nameof(ContentDescription), false);
             _frameEncodingType = value;
         }
     }

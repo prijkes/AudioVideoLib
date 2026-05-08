@@ -51,16 +51,8 @@ public sealed class Id3v2UnsynchronizedLyricsFrame : Id3v2Frame
 
         set
         {
-            if (!string.IsNullOrEmpty(ContentDescriptor) && !IsValidTextString(ContentDescriptor, value, false))
-            {
-                throw new InvalidDataException("ContentDescriptor contains one or more invalid characters for the specified frame encoding type.");
-            }
-
-            if (!string.IsNullOrEmpty(Lyrics) && !IsValidTextString(Lyrics, value, true))
-            {
-                throw new InvalidDataException("Lyrics contains one or more invalid characters for the specified frame encoding type.");
-            }
-
+            ValidateEncodedText(ContentDescriptor, value, nameof(ContentDescriptor), false);
+            ValidateEncodedText(Lyrics, value, nameof(Lyrics), true);
             field = value;
         }
     }

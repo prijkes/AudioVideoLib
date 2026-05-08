@@ -51,16 +51,8 @@ public sealed class Id3v2UserDefinedTextInformationFrame : Id3v2Frame
 
         set
         {
-            if (!string.IsNullOrEmpty(Description) && !IsValidTextString(Description, value, false))
-            {
-                throw new InvalidDataException("Description contains one or more invalid characters for the specified frame encoding type.");
-            }
-
-            if (!string.IsNullOrEmpty(Value) && !IsValidTextString(Value, value, false))
-            {
-                throw new InvalidDataException("Value contains one or more invalid characters for the specified frame encoding type.");
-            }
-
+            ValidateEncodedText(Description, value, nameof(Description), false);
+            ValidateEncodedText(Value, value, nameof(Value), false);
             field = value;
         }
     }
