@@ -16,7 +16,7 @@ public static class Id3v2FrameLookup
     /// Resolves an editor attribute to the identifier its frames carry at
     /// <paramref name="version"/>. Tries the most-likely ctors first; returns
     /// <c>null</c> for editors whose frames refuse construction at the given
-    /// version (the lib's RGAD is V230-only-but-throws-on-V230 quirk).
+    /// version.
     /// </summary>
     internal static string? IdentifierFor(Id3v2FrameEditorAttribute attr, Id3v2Version version)
     {
@@ -35,9 +35,8 @@ public static class Id3v2FrameLookup
             }
             catch
             {
-                // Fall through — some frames have a (Id3v2Version) ctor that throws on the
-                // active version even though the editor declares it supported (e.g. RGAD's
-                // IsVersionSupported is buggy in the lib).
+                // Fall through to the (Id3v2Version, string) overload below — frames whose
+                // sole ctor takes an extra arg (e.g. LinkedInformationFrame) reach this path.
             }
         }
 
