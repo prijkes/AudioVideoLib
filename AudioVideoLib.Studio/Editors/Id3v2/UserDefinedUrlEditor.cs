@@ -1,6 +1,5 @@
 namespace AudioVideoLib.Studio.Editors.Id3v2;
 
-using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -57,9 +56,9 @@ public sealed class UserDefinedUrlEditor
             error = "Description is required for a user-defined URL frame (WXXX).";
             return false;
         }
-        if (string.IsNullOrEmpty(Url) || !Uri.TryCreate(Url, UriKind.Absolute, out _))
+        if (string.IsNullOrEmpty(Url) || !Id3v2Frame.IsValidUrl(Url))
         {
-            error = "URL must be an absolute URI (e.g. \"http://example.com/\").";
+            error = "URL must be a valid RFC 1738 URL (e.g. \"http://example.com/\").";
             return false;
         }
         error = null;

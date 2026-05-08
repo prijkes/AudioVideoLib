@@ -78,9 +78,9 @@ public sealed class ComrEditor : ITagItemEditor<Id3v2CommercialFrame>, INotifyPr
             error = "Valid until must be 8 digits in YYYYMMDD format.";
             return false;
         }
-        if (!string.IsNullOrEmpty(ContactUrl) && !Uri.IsWellFormedUriString(ContactUrl, UriKind.Absolute))
+        if (!string.IsNullOrEmpty(ContactUrl) && !Id3v2Frame.IsValidUrl(ContactUrl))
         {
-            error = "Contact URL must be a valid absolute URL.";
+            error = "Contact URL must be a valid RFC 1738 URL.";
             return false;
         }
         error = null;

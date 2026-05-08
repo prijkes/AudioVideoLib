@@ -50,9 +50,9 @@ public sealed class UrlFrameEditor : ITagItemEditor<Id3v2UrlLinkFrame>, INotifyP
 
     public bool Validate(out string? error)
     {
-        if (string.IsNullOrEmpty(Url) || !Uri.TryCreate(Url, UriKind.Absolute, out _))
+        if (string.IsNullOrEmpty(Url) || !Id3v2Frame.IsValidUrl(Url))
         {
-            error = "URL must be an absolute URI (e.g. \"http://example.com/\").";
+            error = "URL must be a valid RFC 1738 URL (e.g. \"http://example.com/\").";
             return false;
         }
         error = null;
