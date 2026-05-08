@@ -141,6 +141,41 @@ public class Id3v2FrameBugFixTests
         Assert.Equal((byte)24, rt.ChannelInformation[0].BitsRepresentingPeak);
     }
 
+    // B7 — SYLT writer must emit a BOM preamble before each syllable in UTF-16 modes.
+    [Fact]
+    public void Sylt_EachSyllableInUtf16HasBomPreamble()
+    {
+        var f = new Id3v2SynchronizedLyricsFrame(Id3v2Version.Id3v240)
+        {
+            TextEncoding = Id3v2FrameEncodingType.UTF16LittleEndian,
+            Language = "eng",
+            TimeStampFormat = Id3v2TimeStampFormat.AbsoluteTimeMilliseconds,
+            ContentType = Id3v2ContentType.Lyrics,
+            ContentDescriptor = "lyrics",
+        };
+        f.LyricSyncs.Add(new Id3v2LyricSync("hello", 1000));
+        f.LyricSyncs.Add(new Id3v2LyricSync("world", 2000));
+
+        var data = f.Data;
+        // Roundtrip back through tag to confirm both syllables read correctly.
+        var rt = RoundTrip(Id3v2Version.Id3v240, f);
+        Assert.Equal(2, rt.LyricSyncs.Count);
+        Assert.Equal("hello", rt.LyricSyncs.ElementAt(0).Syllable);
+        Assert.Equal("world", rt.LyricSyncs.ElementAt(1).Syllable);
+
+        // Byte-level check: 0xFF 0xFE (UTF-16LE BOM) must appear at least three times —
+        // before content descriptor and before each of the two syllables.
+        var bomCount = 0;
+        for (var i = 0; i < data.Length - 1; i++)
+        {
+            if (data[i] == 0xFF && data[i + 1] == 0xFE)
+            {
+                bomCount++;
+            }
+        }
+        Assert.True(bomCount >= 3, $"expected at least 3 UTF-16LE BOMs; got {bomCount}");
+    }
+
     // B6 — COMR TextEncoding setter must validate dependent fields against the NEW value.
     [Fact]
     public void Comr_ShortDescriptionMustBeValidUnderCurrentEncoding()

@@ -217,8 +217,14 @@ public sealed class Id3v2SynchronizedLyricsFrame : Id3v2Frame
             stream.Write(syncIdentifier);
 
             var requiresNewLine = (Version >= Id3v2Version.Id3v240) && ((ContentType == Id3v2ContentType.MovementName) || (ContentType == Id3v2ContentType.Events));
+            var syllablePreamble = Id3v2FrameEncoding.GetEncodingPreamble(TextEncoding);
             foreach (var ls in LyricSyncs)
             {
+                // Per-syllable BOM preamble: ID3v2.4 §4 requires every UTF-16 string
+                // to begin with a BOM so readers can disambiguate endianness without
+                // inheriting the descriptor's encoding context.
+                stream.Write(syllablePreamble);
+
                 // Syllable
                 var syllable = (requiresNewLine && !ls.Syllable.EndsWith("\n")) ? ls.Syllable + "\n" : ls.Syllable;
                 stream.WriteString(syllable, encoding);
