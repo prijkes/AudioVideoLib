@@ -16,7 +16,7 @@ public sealed class Equ2RowVm : ObservableObject
 
 [Id3v2FrameEditor(typeof(Id3v2Equalisation2Frame),
     Category = Id3v2FrameCategory.AudioAdjustment,
-    MenuLabel = "Equalisation 2 (EQU2)",
+    MenuLabel = "Equalisation 2",
     Order = 23,
     SupportedVersions = Id3v2VersionMask.V240,
     IsUniqueInstance = false)]

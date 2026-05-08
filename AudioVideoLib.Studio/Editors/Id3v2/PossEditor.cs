@@ -8,7 +8,7 @@ using AudioVideoLib.Tags;
 
 [Id3v2FrameEditor(typeof(Id3v2PositionSynchronizationFrame),
     Category = Id3v2FrameCategory.TimingAndSync,
-    MenuLabel = "Position synchronization (POSS)",
+    MenuLabel = "Position synchronization",
     Order = 16,
     SupportedVersions = Id3v2VersionMask.V230 | Id3v2VersionMask.V240,
     IsUniqueInstance = true)]

@@ -15,7 +15,7 @@ public sealed class MlltRowVm : ObservableObject
 
 [Id3v2FrameEditor(typeof(Id3v2MpegLocationLookupTableFrame),
     Category = Id3v2FrameCategory.TimingAndSync,
-    MenuLabel = "MPEG location lookup table (MLLT)",
+    MenuLabel = "MPEG location lookup table",
     Order = 14,
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = true)]

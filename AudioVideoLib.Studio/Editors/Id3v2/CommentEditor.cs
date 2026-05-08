@@ -8,7 +8,7 @@ using AudioVideoLib.Tags;
 
 [Id3v2FrameEditor(typeof(Id3v2CommentFrame),
     Category = Id3v2FrameCategory.CommentsAndLyrics,
-    MenuLabel = "Comment (COMM)",
+    MenuLabel = "Comment",
     Order = 9,
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = false)]

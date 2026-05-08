@@ -8,7 +8,7 @@ using AudioVideoLib.Tags;
 
 [Id3v2FrameEditor(typeof(Id3v2OwnershipFrame),
     Category = Id3v2FrameCategory.CommerceAndRights,
-    MenuLabel = "Ownership (OWNE)",
+    MenuLabel = "Ownership",
     Order = 29,
     SupportedVersions = Id3v2VersionMask.V230 | Id3v2VersionMask.V240,
     IsUniqueInstance = true)]
@@ -48,28 +48,12 @@ public sealed class OwneEditor : ObservableObject, ITagItemEditor<Id3v2Ownership
             error = "Price paid is required.";
             return false;
         }
-        if (!string.IsNullOrEmpty(DateOfPurchase) && !IsEightDigits(DateOfPurchase))
+        if (!string.IsNullOrEmpty(DateOfPurchase) && !Id3v2DateValidation.IsYyyyMmDd(DateOfPurchase))
         {
             error = "Date of purchase must be 8 digits in YYYYMMDD format.";
             return false;
         }
         error = null;
-        return true;
-    }
-
-    private static bool IsEightDigits(string value)
-    {
-        if (value.Length != 8)
-        {
-            return false;
-        }
-        foreach (var c in value)
-        {
-            if (c is < '0' or > '9')
-            {
-                return false;
-            }
-        }
         return true;
     }
 

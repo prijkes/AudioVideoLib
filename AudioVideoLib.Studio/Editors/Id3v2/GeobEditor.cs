@@ -7,7 +7,7 @@ using AudioVideoLib.Tags;
 
 [Id3v2FrameEditor(typeof(Id3v2GeneralEncapsulatedObjectFrame),
     Category = Id3v2FrameCategory.Attachments,
-    MenuLabel = "General encapsulated object (GEOB)",
+    MenuLabel = "General encapsulated object",
     Order = 28,
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = false)]

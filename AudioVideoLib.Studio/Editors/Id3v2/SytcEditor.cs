@@ -15,7 +15,7 @@ public sealed class SytcRowVm : ObservableObject
 
 [Id3v2FrameEditor(typeof(Id3v2SyncedTempoCodesFrame),
     Category = Id3v2FrameCategory.TimingAndSync,
-    MenuLabel = "Synced tempo codes (SYTC)",
+    MenuLabel = "Synced tempo codes",
     Order = 15,
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = true)]

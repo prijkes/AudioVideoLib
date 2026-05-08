@@ -7,7 +7,7 @@ using AudioVideoLib.Tags;
 
 [Id3v2FrameEditor(typeof(Id3v2UnsynchronizedLyricsFrame),
     Category = Id3v2FrameCategory.CommentsAndLyrics,
-    MenuLabel = "Unsynchronized lyrics (USLT)",
+    MenuLabel = "Unsynchronized lyrics",
     Order = 11,
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = false)]

@@ -15,7 +15,7 @@ public sealed class EtcoRowVm : ObservableObject
 
 [Id3v2FrameEditor(typeof(Id3v2EventTimingCodesFrame),
     Category = Id3v2FrameCategory.TimingAndSync,
-    MenuLabel = "Event timing codes (ETCO)",
+    MenuLabel = "Event timing codes",
     Order = 13,
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = true)]

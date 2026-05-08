@@ -8,7 +8,7 @@ using AudioVideoLib.Tags;
 
 [Id3v2FrameEditor(typeof(Id3v2RecommendedBufferSizeFrame),
     Category = Id3v2FrameCategory.System,
-    MenuLabel = "Recommended buffer size (RBUF)",
+    MenuLabel = "Recommended buffer size",
     Order = 35,
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = true)]

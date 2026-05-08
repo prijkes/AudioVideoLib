@@ -8,7 +8,7 @@ using AudioVideoLib.Tags;
 
 [Id3v2FrameEditor(typeof(Id3v2SeekFrame),
     Category = Id3v2FrameCategory.System,
-    MenuLabel = "Seek (SEEK)",
+    MenuLabel = "Seek",
     Order = 36,
     SupportedVersions = Id3v2VersionMask.V240,
     IsUniqueInstance = true)]

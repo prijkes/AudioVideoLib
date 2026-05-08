@@ -15,7 +15,7 @@ public sealed class IplsRowVm : ObservableObject
 
 [Id3v2FrameEditor(typeof(Id3v2InvolvedPeopleListFrame),
     Category = Id3v2FrameCategory.People,
-    MenuLabel = "Involved people list (IPLS)",
+    MenuLabel = "Involved people list",
     Order = 19,
     SupportedVersions = Id3v2VersionMask.V220 | Id3v2VersionMask.V221 | Id3v2VersionMask.V230,
     IsUniqueInstance = true)]

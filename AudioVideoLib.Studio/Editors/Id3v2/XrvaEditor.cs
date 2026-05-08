@@ -17,7 +17,7 @@ public sealed class XrvaRowVm : ObservableObject
 
 [Id3v2FrameEditor(typeof(Id3v2ExperimentalRelativeVolumeAdjustment2Frame),
     Category = Id3v2FrameCategory.Experimental,
-    MenuLabel = "Experimental volume adjustment 2 (XRVA)",
+    MenuLabel = "Experimental volume adjustment 2",
     Order = 38,
     SupportedVersions = Id3v2VersionMask.V240,
     IsUniqueInstance = false)]

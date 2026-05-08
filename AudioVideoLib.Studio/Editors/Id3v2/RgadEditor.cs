@@ -8,7 +8,7 @@ using AudioVideoLib.Tags;
 
 [Id3v2FrameEditor(typeof(Id3v2ReplayGainAdjustmentFrame),
     Category = Id3v2FrameCategory.Experimental,
-    MenuLabel = "Replay gain (RGAD)",
+    MenuLabel = "Replay gain",
     Order = 39,
     SupportedVersions = Id3v2VersionMask.V230,
     IsUniqueInstance = true,

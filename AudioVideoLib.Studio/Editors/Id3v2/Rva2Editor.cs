@@ -17,7 +17,7 @@ public sealed class Rva2RowVm : ObservableObject
 
 [Id3v2FrameEditor(typeof(Id3v2RelativeVolumeAdjustment2Frame),
     Category = Id3v2FrameCategory.AudioAdjustment,
-    MenuLabel = "Relative volume adjustment 2 (RVA2)",
+    MenuLabel = "Relative volume adjustment 2",
     Order = 21,
     SupportedVersions = Id3v2VersionMask.V240,
     IsUniqueInstance = false)]

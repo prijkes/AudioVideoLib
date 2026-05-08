@@ -8,7 +8,7 @@ using AudioVideoLib.Tags;
 
 [Id3v2FrameEditor(typeof(Id3v2LinkedInformationFrame),
     Category = Id3v2FrameCategory.TimingAndSync,
-    MenuLabel = "Linked information (LINK)",
+    MenuLabel = "Linked information",
     Order = 18,
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = false)]

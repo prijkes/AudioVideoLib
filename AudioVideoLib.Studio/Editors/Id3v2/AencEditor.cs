@@ -7,7 +7,7 @@ using AudioVideoLib.Tags;
 
 [Id3v2FrameEditor(typeof(Id3v2AudioEncryptionFrame),
     Category = Id3v2FrameCategory.EncryptionAndCompression,
-    MenuLabel = "Audio encryption (AENC)",
+    MenuLabel = "Audio encryption",
     Order = 31,
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = false)]

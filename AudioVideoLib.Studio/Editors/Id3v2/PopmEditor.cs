@@ -8,7 +8,7 @@ using AudioVideoLib.Tags;
 
 [Id3v2FrameEditor(typeof(Id3v2PopularimeterFrame),
     Category = Id3v2FrameCategory.CountersAndRatings,
-    MenuLabel = "Popularimeter (POPM)",
+    MenuLabel = "Popularimeter",
     Order = 26,
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = false)]

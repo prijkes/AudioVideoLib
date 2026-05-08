@@ -8,7 +8,7 @@ using AudioVideoLib.Tags;
 
 [Id3v2FrameEditor(typeof(Id3v2ReverbFrame),
     Category = Id3v2FrameCategory.AudioAdjustment,
-    MenuLabel = "Reverb (REVB)",
+    MenuLabel = "Reverb",
     Order = 24,
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = true)]

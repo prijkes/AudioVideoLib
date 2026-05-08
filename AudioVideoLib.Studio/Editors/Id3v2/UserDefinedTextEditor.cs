@@ -8,7 +8,7 @@ using AudioVideoLib.Tags;
 
 [Id3v2FrameEditor(typeof(Id3v2UserDefinedTextInformationFrame),
     Category = Id3v2FrameCategory.TextFrames,
-    MenuLabel = "User-defined text (TXXX)",
+    MenuLabel = "User-defined text",
     Order = 2,
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = false)]

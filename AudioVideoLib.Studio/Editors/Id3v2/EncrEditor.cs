@@ -7,7 +7,7 @@ using AudioVideoLib.Tags;
 
 [Id3v2FrameEditor(typeof(Id3v2EncryptionMethodRegistrationFrame),
     Category = Id3v2FrameCategory.Identification,
-    MenuLabel = "Encryption method (ENCR)",
+    MenuLabel = "Encryption method",
     Order = 8,
     SupportedVersions = Id3v2VersionMask.V230 | Id3v2VersionMask.V240,
     IsUniqueInstance = false)]

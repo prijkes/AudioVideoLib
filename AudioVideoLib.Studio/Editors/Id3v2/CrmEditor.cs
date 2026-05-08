@@ -10,7 +10,7 @@ using Microsoft.Win32;
 
 [Id3v2FrameEditor(typeof(Id3v2EncryptedMetaFrame),
     Category = Id3v2FrameCategory.Containers,
-    MenuLabel = "Encrypted meta (CRM)",
+    MenuLabel = "Encrypted meta",
     Order = 33,
     SupportedVersions = Id3v2VersionMask.V220 | Id3v2VersionMask.V221,
     IsUniqueInstance = false,

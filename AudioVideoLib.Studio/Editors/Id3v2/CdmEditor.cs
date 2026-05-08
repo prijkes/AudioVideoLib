@@ -7,7 +7,7 @@ using AudioVideoLib.Tags;
 
 [Id3v2FrameEditor(typeof(Id3v2CompressedDataMetaFrame),
     Category = Id3v2FrameCategory.Containers,
-    MenuLabel = "Compressed data meta (CDM)",
+    MenuLabel = "Compressed data meta",
     Order = 32,
     SupportedVersions = Id3v2VersionMask.V221,
     IsUniqueInstance = false,

@@ -7,7 +7,7 @@ using AudioVideoLib.Tags;
 
 [Id3v2FrameEditor(typeof(Id3v2AttachedPictureFrame),
     Category = Id3v2FrameCategory.Attachments,
-    MenuLabel = "Attached picture (APIC)",
+    MenuLabel = "Attached picture",
     Order = 27,
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = false)]

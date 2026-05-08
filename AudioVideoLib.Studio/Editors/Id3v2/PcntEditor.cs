@@ -8,7 +8,7 @@ using AudioVideoLib.Tags;
 
 [Id3v2FrameEditor(typeof(Id3v2PlayCounterFrame),
     Category = Id3v2FrameCategory.CountersAndRatings,
-    MenuLabel = "Play counter (PCNT)",
+    MenuLabel = "Play counter",
     Order = 25,
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = true)]

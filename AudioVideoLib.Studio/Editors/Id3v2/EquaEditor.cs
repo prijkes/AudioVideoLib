@@ -18,7 +18,7 @@ public sealed class EquaRowVm : ObservableObject
 
 [Id3v2FrameEditor(typeof(Id3v2EqualisationFrame),
     Category = Id3v2FrameCategory.AudioAdjustment,
-    MenuLabel = "Equalisation (EQUA)",
+    MenuLabel = "Equalisation",
     Order = 22,
     SupportedVersions = Id3v2VersionMask.V220 | Id3v2VersionMask.V221 | Id3v2VersionMask.V230,
     IsUniqueInstance = true)]

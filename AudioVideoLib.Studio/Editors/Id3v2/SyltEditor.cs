@@ -15,7 +15,7 @@ public sealed class SyltRowVm : ObservableObject
 
 [Id3v2FrameEditor(typeof(Id3v2SynchronizedLyricsFrame),
     Category = Id3v2FrameCategory.CommentsAndLyrics,
-    MenuLabel = "Synchronized lyrics (SYLT)",
+    MenuLabel = "Synchronized lyrics",
     Order = 12,
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = false)]

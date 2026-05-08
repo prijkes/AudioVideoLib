@@ -7,7 +7,7 @@ using AudioVideoLib.Tags;
 
 [Id3v2FrameEditor(typeof(Id3v2MusicCdIdentifierFrame),
     Category = Id3v2FrameCategory.Identification,
-    MenuLabel = "Music CD identifier (MCDI)",
+    MenuLabel = "Music CD identifier",
     Order = 6,
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = true)]

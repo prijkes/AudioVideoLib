@@ -14,7 +14,7 @@ public sealed class AspiRowVm : ObservableObject
 
 [Id3v2FrameEditor(typeof(Id3v2AudioSeekPointIndexFrame),
     Category = Id3v2FrameCategory.TimingAndSync,
-    MenuLabel = "Audio seek point index (ASPI)",
+    MenuLabel = "Audio seek point index",
     Order = 17,
     SupportedVersions = Id3v2VersionMask.V240,
     IsUniqueInstance = true)]

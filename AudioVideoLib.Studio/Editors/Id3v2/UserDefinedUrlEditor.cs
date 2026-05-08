@@ -8,7 +8,7 @@ using AudioVideoLib.Tags;
 
 [Id3v2FrameEditor(typeof(Id3v2UserDefinedUrlLinkFrame),
     Category = Id3v2FrameCategory.UrlFrames,
-    MenuLabel = "User-defined URL (WXXX)",
+    MenuLabel = "User-defined URL",
     Order = 2,
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = false)]

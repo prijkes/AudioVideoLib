@@ -8,7 +8,7 @@ using AudioVideoLib.Tags;
 
 [Id3v2FrameEditor(typeof(Id3v2TermsOfUseFrame),
     Category = Id3v2FrameCategory.CommentsAndLyrics,
-    MenuLabel = "Terms of use (USER)",
+    MenuLabel = "Terms of use",
     Order = 10,
     SupportedVersions = Id3v2VersionMask.V230 | Id3v2VersionMask.V240,
     IsUniqueInstance = false)]

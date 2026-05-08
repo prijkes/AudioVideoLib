@@ -7,7 +7,7 @@ using AudioVideoLib.Tags;
 
 [Id3v2FrameEditor(typeof(Id3v2UniqueFileIdentifierFrame),
     Category = Id3v2FrameCategory.Identification,
-    MenuLabel = "Unique file identifier (UFID)",
+    MenuLabel = "Unique file identifier",
     Order = 5,
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = false)]

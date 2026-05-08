@@ -7,7 +7,7 @@ using AudioVideoLib.Tags;
 
 [Id3v2FrameEditor(typeof(Id3v2SignatureFrame),
     Category = Id3v2FrameCategory.System,
-    MenuLabel = "Signature (SIGN)",
+    MenuLabel = "Signature",
     Order = 37,
     SupportedVersions = Id3v2VersionMask.V240,
     IsUniqueInstance = false)]

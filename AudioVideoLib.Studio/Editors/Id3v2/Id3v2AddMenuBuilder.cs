@@ -16,30 +16,13 @@ public static class Id3v2AddMenuBuilder
         ArgumentNullException.ThrowIfNull(tag);
 
         var ident = Id3v2FrameLookup.IdentifierFor(attribute, tag.Version) ?? "?";
-        var name = StripTrailingIdentifier(attribute.MenuLabel, ident);
+        var name = attribute.MenuLabel ?? string.Empty;
         var existing = attribute.IsUniqueInstance
             && tag.Frames.Any(f => f.GetType() == attribute.ItemType);
         var verb = existing ? "Edit" : "Add";
         return string.IsNullOrEmpty(name)
             ? $"{verb} {ident}…"
             : $"{verb} {ident} — {name}…";
-    }
-
-    /// <summary>
-    /// Editor MenuLabel attributes commonly include a trailing parenthetical of the
-    /// frame's identifier (e.g. "Comment (COMM)"). The unified menu-label format renders
-    /// the identifier separately, so strip that parenthetical to avoid duplication.
-    /// </summary>
-    private static string StripTrailingIdentifier(string menuLabel, string identifier)
-    {
-        if (string.IsNullOrEmpty(menuLabel))
-        {
-            return string.Empty;
-        }
-        var suffix = $" ({identifier})";
-        return menuLabel.EndsWith(suffix, StringComparison.Ordinal)
-            ? menuLabel[..^suffix.Length]
-            : menuLabel;
     }
 
     public static Id3v2MenuModel BuildModel(TagItemEditorRegistry registry, Id3v2Tag tag)

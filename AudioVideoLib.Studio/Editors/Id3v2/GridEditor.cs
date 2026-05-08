@@ -7,7 +7,7 @@ using AudioVideoLib.Tags;
 
 [Id3v2FrameEditor(typeof(Id3v2GroupIdentificationRegistrationFrame),
     Category = Id3v2FrameCategory.Identification,
-    MenuLabel = "Group identification (GRID)",
+    MenuLabel = "Group identification",
     Order = 7,
     SupportedVersions = Id3v2VersionMask.V230 | Id3v2VersionMask.V240,
     IsUniqueInstance = false)]

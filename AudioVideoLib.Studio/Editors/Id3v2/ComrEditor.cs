@@ -7,7 +7,7 @@ using AudioVideoLib.Tags;
 
 [Id3v2FrameEditor(typeof(Id3v2CommercialFrame),
     Category = Id3v2FrameCategory.CommerceAndRights,
-    MenuLabel = "Commercial (COMR)",
+    MenuLabel = "Commercial",
     Order = 30,
     SupportedVersions = Id3v2VersionMask.V230 | Id3v2VersionMask.V240,
     IsUniqueInstance = false)]
@@ -59,7 +59,7 @@ public sealed class ComrEditor : BinaryDataEditorBase, ITagItemEditor<Id3v2Comme
 
     public bool Validate(out string? error)
     {
-        if (!string.IsNullOrEmpty(ValidUntil) && !IsEightDigits(ValidUntil))
+        if (!string.IsNullOrEmpty(ValidUntil) && !Id3v2DateValidation.IsYyyyMmDd(ValidUntil))
         {
             error = "Valid until must be 8 digits in YYYYMMDD format.";
             return false;
@@ -70,22 +70,6 @@ public sealed class ComrEditor : BinaryDataEditorBase, ITagItemEditor<Id3v2Comme
             return false;
         }
         error = null;
-        return true;
-    }
-
-    private static bool IsEightDigits(string value)
-    {
-        if (value.Length != 8)
-        {
-            return false;
-        }
-        foreach (var c in value)
-        {
-            if (c is < '0' or > '9')
-            {
-                return false;
-            }
-        }
         return true;
     }
 
