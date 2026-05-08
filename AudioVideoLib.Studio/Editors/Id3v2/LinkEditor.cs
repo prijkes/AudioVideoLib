@@ -1,7 +1,5 @@
 namespace AudioVideoLib.Studio.Editors.Id3v2;
 
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Windows;
 
 using AudioVideoLib.Studio.Editors;
@@ -13,7 +11,7 @@ using AudioVideoLib.Tags;
     Order = 18,
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = false)]
-public sealed class LinkEditor : ITagItemEditor<Id3v2LinkedInformationFrame>, INotifyPropertyChanged
+public sealed class LinkEditor : EditorBase, ITagItemEditor<Id3v2LinkedInformationFrame>
 {
     private Id3v2Version _version = Id3v2Version.Id3v240;
 
@@ -77,15 +75,4 @@ public sealed class LinkEditor : ITagItemEditor<Id3v2LinkedInformationFrame>, IN
         return true;
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    private void Set<T>(ref T storage, T value, [CallerMemberName] string? prop = null)
-    {
-        if (Equals(storage, value))
-        {
-            return;
-        }
-        storage = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-    }
 }

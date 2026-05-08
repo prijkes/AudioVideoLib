@@ -1,28 +1,15 @@
 namespace AudioVideoLib.Studio.Editors.Id3v2;
 
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Windows;
 
 using AudioVideoLib.Studio.Editors;
 using AudioVideoLib.Tags;
 
-public sealed class MlltRowVm : INotifyPropertyChanged
+public sealed class MlltRowVm : EditorBase
 {
     public byte DeviationInBytes { get => field; set => Set(ref field, value); }
     public byte DeviationInMilliseconds { get => field; set => Set(ref field, value); }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    private void Set<T>(ref T storage, T value, [CallerMemberName] string? prop = null)
-    {
-        if (Equals(storage, value))
-        {
-            return;
-        }
-        storage = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-    }
 }
 
 [Id3v2FrameEditor(typeof(Id3v2MpegLocationLookupTableFrame),
@@ -32,7 +19,7 @@ public sealed class MlltRowVm : INotifyPropertyChanged
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = true)]
 public sealed class MlltEditor
-    : CollectionEditorBase<Id3v2MpegLocationLookupTableFrame, MlltRowVm>, INotifyPropertyChanged
+    : CollectionEditorBase<Id3v2MpegLocationLookupTableFrame, MlltRowVm>
 {
     public short MpegFramesBetweenReference { get => field; set => Set(ref field, value); }
     public int BytesBetweenReference { get => field; set => Set(ref field, value); }
@@ -102,15 +89,4 @@ public sealed class MlltEditor
         return true;
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    private void Set<T>(ref T storage, T value, [CallerMemberName] string? prop = null)
-    {
-        if (Equals(storage, value))
-        {
-            return;
-        }
-        storage = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-    }
 }

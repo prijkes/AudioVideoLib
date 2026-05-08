@@ -1,29 +1,16 @@
 namespace AudioVideoLib.Studio.Editors.Id3v2;
 
-using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Windows;
 
 using AudioVideoLib.Studio.Editors;
 using AudioVideoLib.Tags;
 
-public sealed class Equ2RowVm : INotifyPropertyChanged
+public sealed class Equ2RowVm : EditorBase
 {
     public short Frequency { get => field; set => Set(ref field, value); }
     public short VolumeAdjustment { get => field; set => Set(ref field, value); }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    private void Set<T>(ref T storage, T value, [CallerMemberName] string? prop = null)
-    {
-        if (Equals(storage, value))
-        {
-            return;
-        }
-        storage = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-    }
 }
 
 [Id3v2FrameEditor(typeof(Id3v2Equalisation2Frame),
@@ -33,7 +20,7 @@ public sealed class Equ2RowVm : INotifyPropertyChanged
     SupportedVersions = Id3v2VersionMask.V240,
     IsUniqueInstance = false)]
 public sealed class Equ2Editor
-    : CollectionEditorBase<Id3v2Equalisation2Frame, Equ2RowVm>, INotifyPropertyChanged
+    : CollectionEditorBase<Id3v2Equalisation2Frame, Equ2RowVm>
 {
     public Id3v2InterpolationMethod InterpolationMethod { get => field; set => Set(ref field, value); }
     public string Identification { get => field; set => Set(ref field, value); } = string.Empty;
@@ -96,15 +83,4 @@ public sealed class Equ2Editor
         return true;
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    private void Set<T>(ref T storage, T value, [CallerMemberName] string? prop = null)
-    {
-        if (Equals(storage, value))
-        {
-            return;
-        }
-        storage = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-    }
 }

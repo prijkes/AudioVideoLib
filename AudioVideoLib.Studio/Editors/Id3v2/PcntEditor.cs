@@ -1,7 +1,5 @@
 namespace AudioVideoLib.Studio.Editors.Id3v2;
 
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Windows;
 
 using AudioVideoLib.Studio.Editors;
@@ -13,7 +11,7 @@ using AudioVideoLib.Tags;
     Order = 25,
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = true)]
-public sealed class PcntEditor : ITagItemEditor<Id3v2PlayCounterFrame>, INotifyPropertyChanged
+public sealed class PcntEditor : EditorBase, ITagItemEditor<Id3v2PlayCounterFrame>
 {
     public long Counter { get => field; set => Set(ref field, value); }
 
@@ -46,15 +44,4 @@ public sealed class PcntEditor : ITagItemEditor<Id3v2PlayCounterFrame>, INotifyP
         return true;
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    private void Set<T>(ref T storage, T value, [CallerMemberName] string? prop = null)
-    {
-        if (Equals(storage, value))
-        {
-            return;
-        }
-        storage = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-    }
 }

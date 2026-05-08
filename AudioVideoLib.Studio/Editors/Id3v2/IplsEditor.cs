@@ -1,28 +1,15 @@
 namespace AudioVideoLib.Studio.Editors.Id3v2;
 
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Windows;
 
 using AudioVideoLib.Studio.Editors;
 using AudioVideoLib.Tags;
 
-public sealed class IplsRowVm : INotifyPropertyChanged
+public sealed class IplsRowVm : EditorBase
 {
     public string Involvement { get => field; set => Set(ref field, value); } = string.Empty;
     public string Involvee { get => field; set => Set(ref field, value); } = string.Empty;
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    private void Set<T>(ref T storage, T value, [CallerMemberName] string? prop = null)
-    {
-        if (Equals(storage, value))
-        {
-            return;
-        }
-        storage = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-    }
 }
 
 [Id3v2FrameEditor(typeof(Id3v2InvolvedPeopleListFrame),
@@ -32,7 +19,7 @@ public sealed class IplsRowVm : INotifyPropertyChanged
     SupportedVersions = Id3v2VersionMask.V220 | Id3v2VersionMask.V221 | Id3v2VersionMask.V230,
     IsUniqueInstance = true)]
 public sealed class IplsEditor
-    : CollectionEditorBase<Id3v2InvolvedPeopleListFrame, IplsRowVm>, INotifyPropertyChanged
+    : CollectionEditorBase<Id3v2InvolvedPeopleListFrame, IplsRowVm>
 {
     public Id3v2FrameEncodingType Encoding { get => field; set => Set(ref field, value); }
 
@@ -97,15 +84,4 @@ public sealed class IplsEditor
         return true;
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    private void Set<T>(ref T storage, T value, [CallerMemberName] string? prop = null)
-    {
-        if (Equals(storage, value))
-        {
-            return;
-        }
-        storage = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-    }
 }

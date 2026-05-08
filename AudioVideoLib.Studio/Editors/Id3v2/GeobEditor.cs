@@ -1,15 +1,9 @@
 namespace AudioVideoLib.Studio.Editors.Id3v2;
 
-using System;
-using System.ComponentModel;
-using System.IO;
-using System.Runtime.CompilerServices;
 using System.Windows;
 
 using AudioVideoLib.Studio.Editors;
 using AudioVideoLib.Tags;
-
-using Microsoft.Win32;
 
 [Id3v2FrameEditor(typeof(Id3v2GeneralEncapsulatedObjectFrame),
     Category = Id3v2FrameCategory.Attachments,
@@ -17,17 +11,15 @@ using Microsoft.Win32;
     Order = 28,
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = false)]
-public sealed class GeobEditor : ITagItemEditor<Id3v2GeneralEncapsulatedObjectFrame>, INotifyPropertyChanged
+public sealed class GeobEditor : BinaryDataEditorBase, ITagItemEditor<Id3v2GeneralEncapsulatedObjectFrame>
 {
     public Id3v2FrameEncodingType Encoding { get => field; set => Set(ref field, value); }
     public string MimeType { get => field; set => Set(ref field, value); } = string.Empty;
     public string Filename { get => field; set => Set(ref field, value); } = string.Empty;
     public string ContentDescription { get => field; set => Set(ref field, value); } = string.Empty;
-    public byte[] Data { get => field; set => Set(ref field, value ?? []); } = [];
 
-    public string DataInfo => Data.Length == 0
-        ? "(no data)"
-        : $"{Data.Length:N0} bytes";
+    protected override string FileDialogTitle => "Select encapsulated object";
+    protected override string FileDialogFilter => "All files|*.*";
 
     public Id3v2GeneralEncapsulatedObjectFrame CreateNew(object tag)
         => new(((Id3v2Tag)tag).Version);
@@ -76,47 +68,5 @@ public sealed class GeobEditor : ITagItemEditor<Id3v2GeneralEncapsulatedObjectFr
         }
         error = null;
         return true;
-    }
-
-    public void LoadDataFromFile(string path) => Data = File.ReadAllBytes(path);
-
-    public void ClearData() => Data = [];
-
-    internal void LoadDataFromFile(Window owner)
-    {
-        var dlg = new OpenFileDialog
-        {
-            Title = "Select encapsulated object",
-            Filter = "All files|*.*",
-        };
-        if (dlg.ShowDialog(owner) != true)
-        {
-            return;
-        }
-        try
-        {
-            LoadDataFromFile(dlg.FileName);
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show(owner, $"Could not read file:\n\n{ex.Message}", "Load",
-                MessageBoxButton.OK, MessageBoxImage.Warning);
-        }
-    }
-
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    private void Set<T>(ref T storage, T value, [CallerMemberName] string? prop = null)
-    {
-        if (Equals(storage, value))
-        {
-            return;
-        }
-        storage = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-        if (prop == nameof(Data))
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DataInfo)));
-        }
     }
 }

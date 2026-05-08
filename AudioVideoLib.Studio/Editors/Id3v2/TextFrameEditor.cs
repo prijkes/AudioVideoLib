@@ -1,8 +1,6 @@
 namespace AudioVideoLib.Studio.Editors.Id3v2;
 
 using System;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Windows;
 
 using AudioVideoLib.Studio.Editors;
@@ -13,7 +11,7 @@ using AudioVideoLib.Tags;
     MenuLabel = "Text frame",
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = false)]
-public sealed class TextFrameEditor : ITagItemEditor<Id3v2TextFrame>, INotifyPropertyChanged
+public sealed class TextFrameEditor : EditorBase, ITagItemEditor<Id3v2TextFrame>
 {
     public string Identifier { get => field; set => Set(ref field, value); } = "TIT2";
     public string Value { get => field; set => Set(ref field, value); } = string.Empty;
@@ -66,15 +64,4 @@ public sealed class TextFrameEditor : ITagItemEditor<Id3v2TextFrame>, INotifyPro
         return true;
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    private void Set<T>(ref T storage, T value, [CallerMemberName] string? prop = null)
-    {
-        if (Equals(storage, value))
-        {
-            return;
-        }
-        storage = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-    }
 }

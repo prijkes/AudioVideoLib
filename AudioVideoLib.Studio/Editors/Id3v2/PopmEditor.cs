@@ -1,7 +1,5 @@
 namespace AudioVideoLib.Studio.Editors.Id3v2;
 
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Windows;
 
 using AudioVideoLib.Studio.Editors;
@@ -13,7 +11,7 @@ using AudioVideoLib.Tags;
     Order = 26,
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = false)]
-public sealed class PopmEditor : ITagItemEditor<Id3v2PopularimeterFrame>, INotifyPropertyChanged
+public sealed class PopmEditor : EditorBase, ITagItemEditor<Id3v2PopularimeterFrame>
 {
     public string EmailToUser { get => field; set => Set(ref field, value); } = string.Empty;
     public int Rating { get => field; set => Set(ref field, value); }
@@ -68,15 +66,4 @@ public sealed class PopmEditor : ITagItemEditor<Id3v2PopularimeterFrame>, INotif
         return true;
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    private void Set<T>(ref T storage, T value, [CallerMemberName] string? prop = null)
-    {
-        if (Equals(storage, value))
-        {
-            return;
-        }
-        storage = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-    }
 }

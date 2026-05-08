@@ -1,30 +1,17 @@
 namespace AudioVideoLib.Studio.Editors.Id3v2;
 
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Windows;
 
 using AudioVideoLib.Studio.Editors;
 using AudioVideoLib.Tags;
 
-public sealed class XrvaRowVm : INotifyPropertyChanged
+public sealed class XrvaRowVm : EditorBase
 {
     public Id3v2ChannelType ChannelType { get => field; set => Set(ref field, value); }
     public float VolumeAdjustment { get => field; set => Set(ref field, value); }
     public byte BitsRepresentingPeak { get => field; set => Set(ref field, value); }
     public long PeakVolume { get => field; set => Set(ref field, value); }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    private void Set<T>(ref T storage, T value, [CallerMemberName] string? prop = null)
-    {
-        if (Equals(storage, value))
-        {
-            return;
-        }
-        storage = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-    }
 }
 
 [Id3v2FrameEditor(typeof(Id3v2ExperimentalRelativeVolumeAdjustment2Frame),
@@ -34,7 +21,7 @@ public sealed class XrvaRowVm : INotifyPropertyChanged
     SupportedVersions = Id3v2VersionMask.V240,
     IsUniqueInstance = false)]
 public sealed class XrvaEditor
-    : CollectionEditorBase<Id3v2ExperimentalRelativeVolumeAdjustment2Frame, XrvaRowVm>, INotifyPropertyChanged
+    : CollectionEditorBase<Id3v2ExperimentalRelativeVolumeAdjustment2Frame, XrvaRowVm>
 {
     public string Identification { get => field; set => Set(ref field, value); } = string.Empty;
 
@@ -101,15 +88,4 @@ public sealed class XrvaEditor
         return true;
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    private void Set<T>(ref T storage, T value, [CallerMemberName] string? prop = null)
-    {
-        if (Equals(storage, value))
-        {
-            return;
-        }
-        storage = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-    }
 }

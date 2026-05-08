@@ -1,7 +1,5 @@
 namespace AudioVideoLib.Studio.Editors.Id3v2;
 
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Windows;
 
 using AudioVideoLib.Studio.Editors;
@@ -13,7 +11,7 @@ using AudioVideoLib.Tags;
     Order = 35,
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = true)]
-public sealed class RbufEditor : ITagItemEditor<Id3v2RecommendedBufferSizeFrame>, INotifyPropertyChanged
+public sealed class RbufEditor : EditorBase, ITagItemEditor<Id3v2RecommendedBufferSizeFrame>
 {
     public int BufferSize { get => field; set => Set(ref field, value); }
     public bool UseEmbeddedInfo { get => field; set => Set(ref field, value); }
@@ -63,15 +61,4 @@ public sealed class RbufEditor : ITagItemEditor<Id3v2RecommendedBufferSizeFrame>
         return true;
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    private void Set<T>(ref T storage, T value, [CallerMemberName] string? prop = null)
-    {
-        if (Equals(storage, value))
-        {
-            return;
-        }
-        storage = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-    }
 }

@@ -1,7 +1,5 @@
 namespace AudioVideoLib.Studio.Editors.Id3v2;
 
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Windows;
 
 using AudioVideoLib.Studio.Editors;
@@ -14,7 +12,7 @@ using AudioVideoLib.Tags;
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = false)]
 public sealed class UserDefinedUrlEditor
-    : ITagItemEditor<Id3v2UserDefinedUrlLinkFrame>, INotifyPropertyChanged
+    : EditorBase, ITagItemEditor<Id3v2UserDefinedUrlLinkFrame>
 {
     public Id3v2FrameEncodingType Encoding { get => field; set => Set(ref field, value); }
     public string Description { get => field; set => Set(ref field, value); } = string.Empty;
@@ -65,15 +63,4 @@ public sealed class UserDefinedUrlEditor
         return true;
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    private void Set<T>(ref T storage, T value, [CallerMemberName] string? prop = null)
-    {
-        if (Equals(storage, value))
-        {
-            return;
-        }
-        storage = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-    }
 }

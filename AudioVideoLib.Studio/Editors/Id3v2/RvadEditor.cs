@@ -1,7 +1,5 @@
 namespace AudioVideoLib.Studio.Editors.Id3v2;
 
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Windows;
 
 using AudioVideoLib.Studio.Editors;
@@ -13,7 +11,7 @@ using AudioVideoLib.Tags;
     Order = 20,
     SupportedVersions = Id3v2VersionMask.V220 | Id3v2VersionMask.V221 | Id3v2VersionMask.V230,
     IsUniqueInstance = true)]
-public sealed class RvadEditor : ITagItemEditor<Id3v2RelativeVolumeAdjustmentFrame>, INotifyPropertyChanged
+public sealed class RvadEditor : EditorBase, ITagItemEditor<Id3v2RelativeVolumeAdjustmentFrame>
 {
     public int IncrementDecrement { get => field; set => Set(ref field, value); }
     public int VolumeDescriptionBits { get => field; set => Set(ref field, value); } = 16;
@@ -127,15 +125,4 @@ public sealed class RvadEditor : ITagItemEditor<Id3v2RelativeVolumeAdjustmentFra
         || PeakVolumeCenterChannel < 0
         || PeakVolumeBassChannel < 0;
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    private void Set<T>(ref T storage, T value, [CallerMemberName] string? prop = null)
-    {
-        if (Equals(storage, value))
-        {
-            return;
-        }
-        storage = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-    }
 }

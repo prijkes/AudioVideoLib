@@ -1,28 +1,15 @@
 namespace AudioVideoLib.Studio.Editors.Id3v2;
 
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Windows;
 
 using AudioVideoLib.Studio.Editors;
 using AudioVideoLib.Tags;
 
-public sealed class SytcRowVm : INotifyPropertyChanged
+public sealed class SytcRowVm : EditorBase
 {
     public int BeatsPerMinute { get => field; set => Set(ref field, value); }
     public int TimeStamp { get => field; set => Set(ref field, value); }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    private void Set<T>(ref T storage, T value, [CallerMemberName] string? prop = null)
-    {
-        if (Equals(storage, value))
-        {
-            return;
-        }
-        storage = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-    }
 }
 
 [Id3v2FrameEditor(typeof(Id3v2SyncedTempoCodesFrame),
@@ -32,7 +19,7 @@ public sealed class SytcRowVm : INotifyPropertyChanged
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = true)]
 public sealed class SytcEditor
-    : CollectionEditorBase<Id3v2SyncedTempoCodesFrame, SytcRowVm>, INotifyPropertyChanged
+    : CollectionEditorBase<Id3v2SyncedTempoCodesFrame, SytcRowVm>
 {
     public Id3v2TimeStampFormat TimeStampFormat { get => field; set => Set(ref field, value); }
 
@@ -103,15 +90,4 @@ public sealed class SytcEditor
         return true;
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    private void Set<T>(ref T storage, T value, [CallerMemberName] string? prop = null)
-    {
-        if (Equals(storage, value))
-        {
-            return;
-        }
-        storage = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-    }
 }

@@ -1,7 +1,5 @@
 namespace AudioVideoLib.Studio.Editors.Id3v2;
 
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Windows;
 
 using AudioVideoLib.Studio.Editors;
@@ -13,7 +11,7 @@ using AudioVideoLib.Tags;
     Order = 9,
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = false)]
-public sealed class CommentEditor : ITagItemEditor<Id3v2CommentFrame>, INotifyPropertyChanged
+public sealed class CommentEditor : EditorBase, ITagItemEditor<Id3v2CommentFrame>
 {
     public Id3v2FrameEncodingType Encoding { get => field; set => Set(ref field, value); }
     public string Language { get => field; set => Set(ref field, value); } = "eng";
@@ -61,15 +59,4 @@ public sealed class CommentEditor : ITagItemEditor<Id3v2CommentFrame>, INotifyPr
         return true;
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    private void Set<T>(ref T storage, T value, [CallerMemberName] string? prop = null)
-    {
-        if (Equals(storage, value))
-        {
-            return;
-        }
-        storage = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-    }
 }

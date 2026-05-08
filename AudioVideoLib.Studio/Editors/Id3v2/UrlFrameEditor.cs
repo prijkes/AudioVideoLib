@@ -1,8 +1,6 @@
 namespace AudioVideoLib.Studio.Editors.Id3v2;
 
 using System;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Windows;
 
 using AudioVideoLib.Studio.Editors;
@@ -13,7 +11,7 @@ using AudioVideoLib.Tags;
     MenuLabel = "URL frame",
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = false)]
-public sealed class UrlFrameEditor : ITagItemEditor<Id3v2UrlLinkFrame>, INotifyPropertyChanged
+public sealed class UrlFrameEditor : EditorBase, ITagItemEditor<Id3v2UrlLinkFrame>
 {
     public string Identifier { get => field; set => Set(ref field, value); } = "WCOM";
     public string Url { get => field; set => Set(ref field, value); } = string.Empty;
@@ -59,15 +57,4 @@ public sealed class UrlFrameEditor : ITagItemEditor<Id3v2UrlLinkFrame>, INotifyP
         return true;
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    private void Set<T>(ref T storage, T value, [CallerMemberName] string? prop = null)
-    {
-        if (Equals(storage, value))
-        {
-            return;
-        }
-        storage = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-    }
 }

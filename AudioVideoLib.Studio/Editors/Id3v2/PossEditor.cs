@@ -1,7 +1,5 @@
 namespace AudioVideoLib.Studio.Editors.Id3v2;
 
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Windows;
 
 using AudioVideoLib.Studio.Editors;
@@ -13,7 +11,7 @@ using AudioVideoLib.Tags;
     Order = 16,
     SupportedVersions = Id3v2VersionMask.V230 | Id3v2VersionMask.V240,
     IsUniqueInstance = true)]
-public sealed class PossEditor : ITagItemEditor<Id3v2PositionSynchronizationFrame>, INotifyPropertyChanged
+public sealed class PossEditor : EditorBase, ITagItemEditor<Id3v2PositionSynchronizationFrame>
 {
     public Id3v2TimeStampFormat TimeStampFormat { get => field; set => Set(ref field, value); }
         = Id3v2TimeStampFormat.AbsoluteTimeMilliseconds;
@@ -56,15 +54,4 @@ public sealed class PossEditor : ITagItemEditor<Id3v2PositionSynchronizationFram
         return true;
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    private void Set<T>(ref T storage, T value, [CallerMemberName] string? prop = null)
-    {
-        if (Equals(storage, value))
-        {
-            return;
-        }
-        storage = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-    }
 }

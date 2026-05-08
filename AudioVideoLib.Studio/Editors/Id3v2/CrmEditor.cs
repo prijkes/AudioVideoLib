@@ -1,8 +1,6 @@
 namespace AudioVideoLib.Studio.Editors.Id3v2;
 
-using System.ComponentModel;
 using System.IO;
-using System.Runtime.CompilerServices;
 using System.Windows;
 
 using AudioVideoLib.Studio.Editors;
@@ -17,7 +15,7 @@ using Microsoft.Win32;
     SupportedVersions = Id3v2VersionMask.V220 | Id3v2VersionMask.V221,
     IsUniqueInstance = false,
     KnownIdentifier = "CRM")]
-public sealed class CrmEditor : WrapperEditorBase<Id3v2EncryptedMetaFrame>, INotifyPropertyChanged
+public sealed class CrmEditor : WrapperEditorBase<Id3v2EncryptedMetaFrame>
 {
     public string OwnerIdentifier { get => field; set => Set(ref field, value); } = string.Empty;
     public string ContentExplanation { get => field; set => Set(ref field, value); } = string.Empty;
@@ -114,19 +112,12 @@ public sealed class CrmEditor : WrapperEditorBase<Id3v2EncryptedMetaFrame>, INot
         }
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    private void Set<T>(ref T storage, T value, [CallerMemberName] string? prop = null)
+    protected override void OnPropertyChanged(string? prop)
     {
-        if (Equals(storage, value))
-        {
-            return;
-        }
-        storage = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        base.OnPropertyChanged(prop);
         if (prop == nameof(Data))
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DataInfo)));
+            base.OnPropertyChanged(nameof(DataInfo));
         }
     }
 }

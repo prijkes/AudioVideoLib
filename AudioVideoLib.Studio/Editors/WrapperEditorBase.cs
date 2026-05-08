@@ -27,7 +27,7 @@ public interface IWrapperEditor
     void OnAfterEdit(Id3v2Tag tag, Id3v2Frame self);
 }
 
-public abstract class WrapperEditorBase<TFrame> : ITagItemEditor<TFrame>, IWrapperEditor
+public abstract class WrapperEditorBase<TFrame> : EditorBase, ITagItemEditor<TFrame>, IWrapperEditor
     where TFrame : Id3v2Frame
 {
     public IReadOnlyList<Id3v2Frame> WrappableSnapshot { get; private set; } = [];

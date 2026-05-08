@@ -1,7 +1,5 @@
 namespace AudioVideoLib.Studio.Editors.Id3v2;
 
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Windows;
 
 using AudioVideoLib.Studio.Editors;
@@ -13,7 +11,7 @@ using AudioVideoLib.Tags;
     Order = 24,
     SupportedVersions = Id3v2VersionMask.All,
     IsUniqueInstance = true)]
-public sealed class RevbEditor : ITagItemEditor<Id3v2ReverbFrame>, INotifyPropertyChanged
+public sealed class RevbEditor : EditorBase, ITagItemEditor<Id3v2ReverbFrame>
 {
     public int ReverbLeftMilliseconds { get => field; set => Set(ref field, value); }
     public int ReverbRightMilliseconds { get => field; set => Set(ref field, value); }
@@ -97,15 +95,4 @@ public sealed class RevbEditor : ITagItemEditor<Id3v2ReverbFrame>, INotifyProper
 
     private static bool IsByte(int v) => v is >= 0 and <= 255;
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    private void Set<T>(ref T storage, T value, [CallerMemberName] string? prop = null)
-    {
-        if (Equals(storage, value))
-        {
-            return;
-        }
-        storage = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-    }
 }
