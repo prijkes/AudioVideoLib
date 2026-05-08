@@ -338,8 +338,7 @@ public sealed class Id3v2RelativeVolumeAdjustmentFrame : Id3v2Frame
     }
 
     /// <inheritdoc />
-    // Fallback unreachable in normal flow: IsVersionSupported rejects unsupported versions at construction. See GetIdentifierFromFactory remarks.
-    public override string Identifier => GetIdentifierFromFactory() ?? "RVAD";
+    public override string Identifier => GetIdentifierFromFactory();
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

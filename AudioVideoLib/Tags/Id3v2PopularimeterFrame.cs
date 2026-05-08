@@ -121,8 +121,7 @@ public sealed class Id3v2PopularimeterFrame : Id3v2Frame
     }
 
     /// <inheritdoc />
-    // Fallback unreachable in normal flow: IsVersionSupported rejects unsupported versions at construction. See GetIdentifierFromFactory remarks.
-    public override string Identifier => GetIdentifierFromFactory() ?? "POPM";
+    public override string Identifier => GetIdentifierFromFactory();
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

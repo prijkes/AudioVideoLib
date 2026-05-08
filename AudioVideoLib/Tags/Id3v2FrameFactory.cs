@@ -310,14 +310,27 @@ public partial class Id3v2Frame
 
     /// <summary>
     /// Resolves the canonical identifier for THIS frame instance at its current
-    /// <see cref="Version"/> by querying the factory table. Returns null if the type
-    /// isn't registered or the version isn't supported by any of its registered
-    /// identifiers — derived classes that override <see cref="Identifier"/> provide
-    /// a string-literal fallback as defense in depth, though
-    /// <see cref="IsVersionSupported"/> should reject those cases at construction time.
+    /// <see cref="Version"/> by querying the factory table. The factory table is
+    /// the single source of truth: every concrete <see cref="Id3v2Frame"/> subclass
+    /// that delegates its <see cref="Identifier"/> to this method MUST be registered
+    /// for every version its <see cref="IsVersionSupported"/> accepts — and base
+    /// constructors enforce <see cref="IsVersionSupported"/> at construction time, so
+    /// reaching this method with an unregistered <c>(Type, Version)</c> pair is a bug.
+    /// Throws <see cref="InvalidOperationException"/> in that case so the mistake is
+    /// surfaced loudly instead of silently producing the wrong identifier.
     /// </summary>
-    protected string? GetIdentifierFromFactory()
-        => LookupIdentifier(GetType(), Version);
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the runtime type is not registered in <see cref="FrameFactories"/>
+    /// for the current <see cref="Version"/>. Indicates a missing factory registration
+    /// or an <see cref="IsVersionSupported"/> override that admits a version the factory
+    /// doesn't know about.
+    /// </exception>
+    protected string GetIdentifierFromFactory()
+        => LookupIdentifier(GetType(), Version)
+           ?? throw new InvalidOperationException(
+               $"No factory identifier registered for {GetType().Name} at version {Version}. "
+               + "This is a contract violation: every supported (frame type, version) pair "
+               + "must appear in Id3v2Frame.FrameFactories.");
 
     private static readonly ConcurrentDictionary<(Type Type, Id3v2Version Version), string?> IdentifierCache = new();
 

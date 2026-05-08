@@ -126,8 +126,7 @@ public sealed class Id3v2EventTimingCodesFrame : Id3v2Frame
     }
 
     /// <inheritdoc />
-    // Fallback unreachable in normal flow: IsVersionSupported rejects unsupported versions at construction. See GetIdentifierFromFactory remarks.
-    public override string Identifier => GetIdentifierFromFactory() ?? "ETCO";
+    public override string Identifier => GetIdentifierFromFactory();
 
     ////------------------------------------------------------------------------------------------------------------------------------
 

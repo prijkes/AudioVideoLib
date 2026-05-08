@@ -251,8 +251,7 @@ public sealed class Id3v2AttachedPictureFrame : Id3v2Frame
     }
 
     /// <inheritdoc />
-    // Fallback unreachable in normal flow: IsVersionSupported rejects unsupported versions at construction. See GetIdentifierFromFactory remarks.
-    public override string Identifier => GetIdentifierFromFactory() ?? "APIC";
+    public override string Identifier => GetIdentifierFromFactory();
 
     ////------------------------------------------------------------------------------------------------------------------------------
 
