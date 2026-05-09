@@ -98,25 +98,24 @@
                 </Grid>
                 <GroupBox Grid.Row="1" Margin="0,10,0,0">
                     <GroupBox.Header>
-                        <DockPanel LastChildFill="False">
-                            <TextBlock Text="All frames" VerticalAlignment="Center" />
-                            <Button DockPanel.Dock="Right"
-                                    Content="Manage frames…"
-                                    Margin="6,0,0,0"
-                                    Padding="8,1"
-                                    FontSize="11"
-                                    Click="ManageFramesButton_Click" />
-                            <Button DockPanel.Dock="Right"
-                                    Content="+ Frame"
-                                    Margin="12,0,0,0"
-                                    Padding="8,1"
-                                    FontSize="11"
-                                    Click="AddFrameButton_Click">
-                                <Button.ContextMenu>
-                                    <ContextMenu x:Name="AddFrameMenu" />
-                                </Button.ContextMenu>
-                            </Button>
-                        </DockPanel>
+                        <StackPanel>
+                            <TextBlock Text="All frames" />
+                            <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                <Button Content="+ Frame"
+                                        Padding="8,1"
+                                        FontSize="11"
+                                        Click="AddFrameButton_Click">
+                                    <Button.ContextMenu>
+                                        <ContextMenu x:Name="AddFrameMenu" />
+                                    </Button.ContextMenu>
+                                </Button>
+                                <Button Content="Manage frames…"
+                                        Margin="6,0,0,0"
+                                        Padding="8,1"
+                                        FontSize="11"
+                                        Click="ManageFramesButton_Click" />
+                            </StackPanel>
+                        </StackPanel>
                     </GroupBox.Header>
                     <DataGrid ItemsSource="{Binding AdvancedFrames}"
                               AutoGenerateColumns="False"
@@ -225,6 +224,7 @@
                     <DataGrid.RowStyle>
                         <Style TargetType="DataGridRow">
                             <EventSetter Event="PreviewMouseRightButtonUp" Handler="ApeItemRow_PreviewMouseRightButtonUp" />
+                            <EventSetter Event="MouseDoubleClick"           Handler="ApeItemRow_MouseDoubleClick" />
                         </Style>
                     </DataGrid.RowStyle>
                     <DataGrid.Columns>

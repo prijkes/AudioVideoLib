@@ -6,7 +6,7 @@ Change categories follow [Keep a Changelog](https://keepachangelog.com/):
 | Version | Date | Highlights |
 |---|---|---|
 | [`(next release)`](#next-release) | _unreleased_ | _No changes yet._ |
-| [`0.9.0`](#090--2026-05-06) | 2026-05-06 | Studio: full ID3v2 frame editor surface — every of the 39 frame classes is now Add / Edit-capable, plus a "Manage frames" power-user search dialog. New tag-format-agnostic editor framework (`Editors/`) ready for future APE / Vorbis / Lyrics3v2 / ID3v1 layers. |
+| [`0.9.0`](#090--2026-05-10) | 2026-05-10 | Studio: full ID3v2 frame editor surface — every of the 39 frame classes is now Add / Edit-capable, plus a "Manage frames" power-user search dialog. APEv2 items can now be added as Text / Binary / Locator and edited with multi-value support. New tag-format-agnostic editor framework (`Editors/`) ready for future Vorbis / Lyrics3v2 / ID3v1 layers. |
 | [`0.8.0`](#080--2026-05-06) | 2026-05-06 | Format pack: Musepack / WavPack / TrueAudio / Monkey's Audio walkers; `IMediaContainer` now extends `IDisposable`; `FlacStream` / `MpaStream` switch to byte-passthrough on save; full FLAC parser revival closing 11 audited bugs. |
 | [`0.7.0`](#070--2026-04-27) | 2026-04-27 | `Mp4Stream` and `AsfStream` complete the streaming refactor — every splice rewriter now operates without buffering the source file. |
 | [`0.6.0`](#060--2026-04-27) | 2026-04-27 | Large-file performance: streaming Matroska reader/writer (40 GB MKV is now viable); `ISourceReader` random-access abstraction; ID3v2 read-path allocation fixes. |
@@ -24,9 +24,12 @@ _No changes yet._
 
 ---
 
-## 0.9.0 — 2026-05-06
+## 0.9.0 — 2026-05-10
 
 ### Added
+
+- **AudioVideoLib.Studio: APEv2 item add/edit surface.** The "+ Item" button on the APE tab now opens a dialog with a type selector (Text (UTF-8) / Binary / External locator (URI)). Binary items get a hex/ASCII editor (the existing `Controls.HexEditor`) plus "Load from file…" and "Clear data" buttons, with a live byte-count readout. Locator items validate URIs against `Uri.IsWellFormedUriString`; bad input keeps the dialog open instead of half-mutating the model.
+- **APEv2 item edit dialog.** Double-click or right-click → "Edit ..." on an APE row opens a modal with a multi-line value box where each line is stored as a separate value (APEv2's `\0`-separated multi-value semantics). Works for both UTF-8 text and Locator items; the Locator variant validates each line as a URI before mutating. Encoding is unconditionally UTF-8 — the dialog deliberately omits an encoding row, since the format gives no choice.
 
 - **AudioVideoLib.Studio: complete ID3v2 frame editor surface.** Every of the 39 ID3v2 frame classes is now Add / Edit-capable through dedicated dialogs filtered by the active tag version:
   - **Text frames** (TIT2 / TPE1 / TALB / TYER / TDRC / 50+ IDs across v2.2 / v2.3 / v2.4) and **URL frames** (WCOM / WOAR / WPUB / …) via family editors.
@@ -58,6 +61,10 @@ _No changes yet._
 - `Id3v2TabViewModel` exposes `AddFrame(Id3v2Frame)` / `FindRow(Id3v2Frame)` / `RefreshFrameRow(Id3v2Frame)`. Per-frame `AddTextFrame`, `AddUrlFrame`, `AddPictureFrame`, `AddLyricsFrame`, `AddPrivateFrame`, `AddUniqueFileIdentifierFrame` are now `[Obsolete]` thin wrappers (will be removed in the next release).
 - `App.xaml`: registers `BoolToInTagConverter` plus seven `ObjectDataProvider` enum-values resources for editor combos.
 - New `AudioVideoLib.Studio.Tests` project with 276 tests covering registry behaviour, version mask, known-id tables, menu builder, BuildEntryLabel smart toggle, all 39 editor Load / Save / Validate, ManageFramesViewModel, and golden snapshots of the menu structure per ID3v2 version.
+
+### Fixed
+
+- **`ApeTabViewModel`: adding an item with an existing key duplicated the row.** `ApeTag.SetItem` replaces an existing same-key item (case-insensitive), but the row collection was unconditionally appending — leaving two rows pointing at the same underlying item. The Add path now mirrors `SetItem`'s replace semantics, keeping `Items` and `Tag.Items` in sync.
 
 ### Notes
 

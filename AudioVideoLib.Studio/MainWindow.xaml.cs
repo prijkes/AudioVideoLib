@@ -746,16 +746,29 @@ public partial class MainWindow : Window
             return;
         }
 
-        var key = InputDialog.Ask(this, "Add APE item", "Item key (e.g., Title, Artist, Album, BPM):");
-        if (string.IsNullOrWhiteSpace(key))
+        var dlg = AddApeItemDialog.Show(this);
+        if (dlg == null)
         {
             return;
         }
 
         try
         {
-            tab.AddTextItem(key.Trim());
-            UpdateStatus($"Added APE item {key}");
+            switch (dlg.Kind)
+            {
+                case AddApeItemDialog.ApeItemKind.Text:
+                    tab.AddTextItem(dlg.Key, dlg.TextValue);
+                    UpdateStatus($"Added APE text item {dlg.Key}");
+                    break;
+                case AddApeItemDialog.ApeItemKind.Binary:
+                    tab.AddBinaryItem(dlg.Key, dlg.BinaryData);
+                    UpdateStatus($"Added APE binary item {dlg.Key} ({dlg.BinaryData.Length:N0} bytes)");
+                    break;
+                case AddApeItemDialog.ApeItemKind.Locator:
+                    tab.AddLocatorItem(dlg.Key, dlg.LocatorUri);
+                    UpdateStatus($"Added APE locator item {dlg.Key}");
+                    break;
+            }
         }
         catch (Exception ex)
         {
@@ -867,12 +880,55 @@ public partial class MainWindow : Window
         }
 
         row.IsSelected = true;
-        ShowDeleteRowMenu(row, $"Delete {item.Key}", () =>
+
+        var menu = new ContextMenu();
+        if (item.Item is ApeUtf8Item or ApeLocatorItem)
+        {
+            var edit = new MenuItem { Header = $"Edit {item.Key}…" };
+            edit.Click += (_, _) => EditApeItem(item, tab);
+            menu.Items.Add(edit);
+            menu.Items.Add(new Separator());
+        }
+        var delete = new MenuItem { Header = $"Delete {item.Key}" };
+        delete.Click += (_, _) =>
         {
             tab.RemoveItem(item);
             UpdateStatus($"Removed APE item {item.Key}");
-        });
+        };
+        menu.Items.Add(delete);
+        menu.PlacementTarget = row;
+        menu.IsOpen = true;
         e.Handled = true;
+    }
+
+    private void ApeItemRow_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        if (sender is not DataGridRow row || row.Item is not ApeItemRow item || CurrentApeTab is not { } tab)
+        {
+            return;
+        }
+
+        if (item.Item is not (ApeUtf8Item or ApeLocatorItem))
+        {
+            return;
+        }
+
+        // The DataGrid would otherwise enter inline edit mode on double-click;
+        // suppress that and route to the modal instead.
+        e.Handled = EditApeItem(item, tab);
+    }
+
+    private bool EditApeItem(ApeItemRow row, ApeTabViewModel tab)
+    {
+        if (!EditApeItemDialog.Edit(this, row.Item))
+        {
+            return false;
+        }
+
+        row.RefreshValueDisplay();
+        tab.MarkDirty();
+        UpdateStatus($"Edited APE item {row.Key}");
+        return true;
     }
 
     private void Lyrics3FieldRow_PreviewMouseRightButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)

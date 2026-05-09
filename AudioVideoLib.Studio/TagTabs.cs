@@ -544,9 +544,58 @@ public sealed class ApeTabViewModel : TagTabViewModel
             item.Values.Add(value);
         }
 
+        return AddItemRow(item);
+    }
+
+    public ApeItemRow AddBinaryItem(string key, byte[] data)
+    {
+        var item = new ApeBinaryItem(Tag.Version, key)
+        {
+            Data = data ?? [],
+        };
+
+        return AddItemRow(item);
+    }
+
+    public ApeItemRow AddLocatorItem(string key, string uri)
+    {
+        var item = new ApeLocatorItem(Tag.Version, key);
+        if (!string.IsNullOrEmpty(uri))
+        {
+            // ApeLocatorItem.Values rejects malformed URIs with InvalidDataException;
+            // caller surfaces that to the user.
+            item.Values.Add(uri);
+        }
+
+        return AddItemRow(item);
+    }
+
+    private ApeItemRow AddItemRow(ApeItem item)
+    {
+        // ApeTag.SetItem replaces a same-key item (case-insensitive) instead of appending,
+        // so the row collection has to follow the same semantics or it drifts out of sync.
         Tag.SetItem(item);
         var row = new ApeItemRow(item, () => IsDirty = true);
-        Items.Add(row);
+
+        var existingIndex = -1;
+        for (var i = 0; i < Items.Count; i++)
+        {
+            if (string.Equals(Items[i].Key, item.Key, StringComparison.OrdinalIgnoreCase))
+            {
+                existingIndex = i;
+                break;
+            }
+        }
+
+        if (existingIndex >= 0)
+        {
+            Items[existingIndex] = row;
+        }
+        else
+        {
+            Items.Add(row);
+        }
+
         IsDirty = true;
         return row;
     }
@@ -571,6 +620,10 @@ public sealed class ApeTabViewModel : TagTabViewModel
 
 public sealed class ApeItemRow(ApeItem item, Action markDirty) : ObservableObject
 {
+    private string _value = FormatValue(item);
+
+    public ApeItem Item { get; } = item;
+
     public string Key { get; } = item.Key;
 
     public string Type { get; } = item switch
@@ -585,7 +638,7 @@ public sealed class ApeItemRow(ApeItem item, Action markDirty) : ObservableObjec
 
     public string Value
     {
-        get;
+        get => _value;
         set
         {
             if (!IsEditable)
@@ -594,24 +647,34 @@ public sealed class ApeItemRow(ApeItem item, Action markDirty) : ObservableObjec
             }
 
             var newValue = value ?? string.Empty;
-            if (Set(ref field, newValue))
+            if (!Set(ref _value, newValue))
             {
-                switch (item)
-                {
-                    case ApeLocatorItem loc:
-                        loc.Values.Clear();
-                        loc.Values.Add(field);
-                        break;
-                    case ApeUtf8Item utf8:
-                        utf8.Values.Clear();
-                        utf8.Values.Add(field);
-                        break;
-                }
-
-                markDirty();
+                return;
             }
+
+            switch (Item)
+            {
+                case ApeLocatorItem loc:
+                    loc.Values.Clear();
+                    loc.Values.Add(_value);
+                    break;
+                case ApeUtf8Item utf8:
+                    utf8.Values.Clear();
+                    utf8.Values.Add(_value);
+                    break;
+            }
+
+            markDirty();
         }
-    } = item switch
+    }
+
+    /// <summary>
+    /// Recomputes the displayed value from the underlying item without writing
+    /// back. Use after an external editor mutates the item directly.
+    /// </summary>
+    public void RefreshValueDisplay() => Set(ref _value, FormatValue(Item), nameof(Value));
+
+    private static string FormatValue(ApeItem item) => item switch
     {
         ApeLocatorItem loc => string.Join(" / ", loc.Values),
         ApeUtf8Item u => string.Join(" / ", u.Values),
