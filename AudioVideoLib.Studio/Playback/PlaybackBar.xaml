@@ -18,20 +18,85 @@
                     Width="28"
                     Margin="0,0,8,0"
                     Click="Stop_Click" />
-            <TextBlock x:Name="PositionText"
+            <TextBlock x:Name="TimeText"
                        DockPanel.Dock="Left"
-                       Text="00:00"
+                       Text="00:00 / 00:00"
                        FontFamily="Consolas"
                        VerticalAlignment="Center"
-                       Width="50" />
-            <TextBlock x:Name="DurationText"
-                       DockPanel.Dock="Right"
-                       Text="00:00"
-                       FontFamily="Consolas"
-                       VerticalAlignment="Center"
-                       Width="50"
-                       Margin="8,0,0,0"
-                       TextAlignment="Right" />
+                       Margin="0,0,8,0" />
+            <ToggleButton x:Name="VolumeButton"
+                          DockPanel.Dock="Right"
+                          Content="🔊"
+                          Width="28"
+                          Height="22"
+                          Margin="8,0,0,0"
+                          ToolTip="Volume"
+                          Cursor="Hand"
+                          FontFamily="Segoe UI Emoji"
+                          FontSize="14"
+                          Foreground="{DynamicResource TextPrimaryBrush}">
+                <!-- Custom template so the icon stays visible across idle / hover / pressed / checked.
+                     The default ToggleButton chrome wipes the content on hover under the dark theme. -->
+                <ToggleButton.Template>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border x:Name="Bd"
+                                Background="Transparent"
+                                BorderBrush="Transparent"
+                                BorderThickness="1"
+                                CornerRadius="3"
+                                SnapsToDevicePixels="True">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              TextElement.Foreground="{TemplateBinding Foreground}"
+                                              TextElement.FontFamily="{TemplateBinding FontFamily}"
+                                              TextElement.FontSize="{TemplateBinding FontSize}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Surface3Brush}" />
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Surface3Brush}" />
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource AccentBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </ToggleButton.Template>
+            </ToggleButton>
+            <Popup x:Name="VolumePopup"
+                   PlacementTarget="{Binding ElementName=VolumeButton}"
+                   Placement="Top"
+                   StaysOpen="False"
+                   AllowsTransparency="True"
+                   IsOpen="{Binding IsChecked, ElementName=VolumeButton, Mode=TwoWay}">
+                <Border Background="{DynamicResource Surface2Brush}"
+                        BorderBrush="{DynamicResource BorderBrush}"
+                        BorderThickness="1"
+                        Padding="6,8"
+                        Margin="0,0,0,4">
+                    <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                        <TextBlock x:Name="VolumeText"
+                                   Text="50%"
+                                   FontFamily="Consolas"
+                                   FontSize="11"
+                                   Foreground="{DynamicResource TextSecondaryBrush}"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,0,0,4" />
+                        <Slider x:Name="VolumeSlider"
+                                Orientation="Vertical"
+                                Minimum="0"
+                                Maximum="100"
+                                Value="50"
+                                Height="120"
+                                IsMoveToPointEnabled="True"
+                                ValueChanged="VolumeSlider_ValueChanged" />
+                    </StackPanel>
+                </Border>
+            </Popup>
             <TextBlock x:Name="FrameText"
                        DockPanel.Dock="Right"
                        Text=""

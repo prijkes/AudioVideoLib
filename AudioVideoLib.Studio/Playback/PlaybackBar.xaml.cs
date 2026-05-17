@@ -1,6 +1,7 @@
 namespace AudioVideoLib.Studio.Playback;
 
 using System;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -20,8 +21,7 @@ public partial class PlaybackBar : UserControl
             Dispatcher.Invoke(() =>
             {
                 PositionSlider.Maximum = _controller.Duration.TotalSeconds;
-                DurationText.Text = Format(_controller.Duration);
-                PositionText.Text = Format(TimeSpan.Zero);
+                UpdateTimeText(TimeSpan.Zero);
             });
         };
         _controller.PositionChanged += (_, pos) =>
@@ -34,7 +34,7 @@ public partial class PlaybackBar : UserControl
             Dispatcher.Invoke(() =>
             {
                 PositionSlider.Value = pos.TotalSeconds;
-                PositionText.Text = Format(pos);
+                UpdateTimeText(pos);
                 UpdateFrameText(pos);
             });
         };
@@ -51,6 +51,10 @@ public partial class PlaybackBar : UserControl
                 PlayPauseButton.Content = "▶";
             });
         };
+
+        // Sync the slider to whatever the underlying MediaPlayer was initialized to (default 0.5).
+        VolumeSlider.Value = _controller.Volume * 100;
+        UpdateVolumeUi(_controller.Volume);
     }
 
     private string _frameUnit = "Frame";
@@ -60,8 +64,7 @@ public partial class PlaybackBar : UserControl
         _controller.Stop();
         PlayPauseButton.Content = "▶";
         PositionSlider.Value = 0;
-        PositionText.Text = "00:00";
-        DurationText.Text = "00:00";
+        UpdateTimeText(TimeSpan.Zero);
 
         _totalFrames = totalFrames;
         _frameUnit = unit;
@@ -80,6 +83,11 @@ public partial class PlaybackBar : UserControl
         {
             _controller.Open(filePath);
         }
+    }
+
+    private void UpdateTimeText(TimeSpan position)
+    {
+        TimeText.Text = $"{Format(position)} / {Format(_controller.Duration)}";
     }
 
     private void UpdateFrameText(TimeSpan position)
@@ -117,7 +125,7 @@ public partial class PlaybackBar : UserControl
         _controller.Stop();
         PlayPauseButton.Content = "▶";
         PositionSlider.Value = 0;
-        PositionText.Text = "00:00";
+        UpdateTimeText(TimeSpan.Zero);
         if (_totalFrames > 0)
         {
             FrameText.Text = $"{_frameUnit} 0 / {_totalFrames:N0}";
@@ -140,6 +148,25 @@ public partial class PlaybackBar : UserControl
         {
             _controller.Position = TimeSpan.FromSeconds(PositionSlider.Value);
         }
+    }
+
+    private void VolumeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+    {
+        var linear = e.NewValue / 100.0;
+        _controller.Volume = linear;
+        UpdateVolumeUi(linear);
+    }
+
+    private void UpdateVolumeUi(double linear)
+    {
+        VolumeText.Text = ((int)System.Math.Round(linear * 100)).ToString(CultureInfo.InvariantCulture) + "%";
+        VolumeButton.Content = linear switch
+        {
+            <= 0.0  => "🔇",
+            < 0.34  => "🔈",
+            < 0.67  => "🔉",
+            _       => "🔊",
+        };
     }
 
     private static string Format(TimeSpan ts) =>

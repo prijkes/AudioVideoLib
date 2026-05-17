@@ -42,6 +42,13 @@ public sealed class PlaybackController : IDisposable
     public TimeSpan Duration =>
         _player.NaturalDuration.HasTimeSpan ? _player.NaturalDuration.TimeSpan : TimeSpan.Zero;
 
+    /// <summary>Linear playback volume in [0, 1]. Mirrors <see cref="MediaPlayer.Volume"/>.</summary>
+    public double Volume
+    {
+        get => _player.Volume;
+        set => _player.Volume = Math.Clamp(value, 0.0, 1.0);
+    }
+
     public void Open(string path)
     {
         _tick.Stop();
